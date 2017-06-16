@@ -38,7 +38,12 @@ public class BoardActivity extends AppCompatActivity {
             Toast.makeText(BoardActivity.this, "Does not adhere to rules of Sudoku ", Toast.LENGTH_SHORT).show();
         }
     }
-
+    /************************************
+     * PreCheck checks if an entry is valid. Checks the
+     * state of the board to make sure it adheres
+     * to the rules of Sudoku. Returns true if valid,
+     * false if not valid.
+     *********************************/
     public boolean preCheck(int[] board){
         int[][] nowBoard = new int[9][9];
         int count = 0;

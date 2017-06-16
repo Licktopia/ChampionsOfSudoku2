@@ -56,12 +56,7 @@ public class SudokuSolver {
      *********************************/
     public int[] getStartBoard(){return startBoard;}
 
-    /************************************
-     * PreCheck checks if an entry is valid. Checks the
-     * state of the board to make sure it adheres
-     * to the rules of Sudoku. Returns true if valid,
-     * false if not valid.
-     *********************************/
+
 
 
     private class LocationBoard {
