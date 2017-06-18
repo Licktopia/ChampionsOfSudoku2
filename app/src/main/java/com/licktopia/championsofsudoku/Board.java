@@ -134,4 +134,14 @@ public class Board {
         return true; // Cluster is valid
     }
 
+
+    /* Clear board to original state */
+    public void resetToStart() {
+        for (int i = 0; i < SIZE; i++) {
+            for (int j = 0; j < SIZE; j++) {
+                if(!startingValue[i][j])
+                    contents[i][j] = 0;
+            }
+        }
+    }
 }
