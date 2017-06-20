@@ -13,6 +13,7 @@ public class Game
     //time in seconds
     private long runningTime = 0;
 
+
     //Time which timer was last started
     private long startTime;
 

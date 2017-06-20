@@ -7,7 +7,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import com.licktopia.championsofsudoku.Board;
+import com.licktopia.championsofsudoku.Sudoku.Board;
 
 /**
  * Handles state changes for the display of an individual Sudoku square
@@ -17,11 +17,15 @@ public class Square {
 
     private Context context;
     private RelativeLayout squareHolder;
-    private TextView number;
+    private ImageView number;
     private ImageView art;
     private LinearLayout notepad;
     private ImageView[] notepadNums;
 
+
+    public RelativeLayout getSquareHolder() {
+        return squareHolder;
+    }
 
     /* Constructor */
     public Square(Context context, RelativeLayout squareHolder) {
@@ -39,7 +43,7 @@ public class Square {
         LayoutInflater li = LayoutInflater.from(context);
 
         View v = li.inflate(R.layout.square, null);
-        number = (TextView) v.findViewById(R.id.squareNumber);
+        number = (ImageView) v.findViewById(R.id.squareNumber);
         art = (ImageView) v.findViewById(R.id.squareArt);
         notepad = (LinearLayout) v.findViewById(R.id.squareNotepad);
         notepadNums[0] = (ImageView) v.findViewById(R.id.squareNotepad1);
@@ -57,11 +61,11 @@ public class Square {
 
 
     /* Set number displayed in square */
-    public void setNumber(int n) {
+    public void setBigNumber(int n) {
         if (n == 0)
             squareHolder.setBackground(null);   // Remove display object
         else
-            squareHolder.setBackground(context.getDrawable(Tags.numberImageTags[n - 1])); // Set background image
+            number.setImageDrawable(context.getDrawable(Tags.numberImageTags[n - 1])); // Set background image
     }
 
 

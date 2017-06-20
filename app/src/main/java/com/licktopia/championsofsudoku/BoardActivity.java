@@ -2,35 +2,59 @@ package com.licktopia.championsofsudoku;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
+
+import com.licktopia.championsofsudoku.Sudoku.Board;
+import com.licktopia.championsofsudoku.Sudoku.Game;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.concurrent.ThreadLocalRandom;
 
+import static com.licktopia.championsofsudoku.R.id.squareNumber;
+
 public class BoardActivity extends AppCompatActivity {
 
     private Square[] squares;
+    private int selectedSquare = -1;
+    private Game mGame;
+    private int level = 1;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_board);
         squares = new Square[Board.SIZE * Board.SIZE];
+        mGame = new Game(level, this);
+
         SudokuSolver mSudokuSolver = new SudokuSolver(1,this); //test passing in "Easy level"
         int boardNumber = mSudokuSolver.getBoardNumber();//get board number
         int[] startBoard = mSudokuSolver.getStartBoard();//get starting board
         int[] solvedBoard = mSudokuSolver.getSolution();//get solved board
 
+        initializeBoard(startBoard);
+
+        listeners();
+
+    }
+
+    private void initializeBoard(int[] startBoard) {
         for(int i = 0; i < squares.length; i++) {//set up starting board
             RelativeLayout rl = (RelativeLayout) findViewById(Tags.squareTags[i]); // get Relative layout
             squares[i] = new Square(this, rl);
-            squares[i].setNumber(startBoard[i]);
-        }
+            if(mGame.setBoardValueAt(i)) {
+                squares[i].setBigNumber(startBoard[i]);
+            }
+            else{
 
+            }
+        }
     }
+
     /************************************
      * PreCheck checks if an entry is valid. Checks the
      * state of the board to make sure it adheres
@@ -100,6 +124,25 @@ public class BoardActivity extends AppCompatActivity {
             }
         }
         return true;
+    }
+
+    public void listeners(){
+        for(int i = 0; i <81; i++){
+            final int finalI = i;
+            final int finalI1 = i;
+            squares[i].getSquareHolder().setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    selectedSquare = finalI1;
+                    commands(finalI);
+                }
+            });
+        }
+    }
+    public void commands(int squareNumber){
+
+        if(mGames.getBoardValueAt(mConverter.getxCord(),mConverter.getyCord()));
+
     }
 
 
