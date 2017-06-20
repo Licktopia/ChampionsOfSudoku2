@@ -35,7 +35,7 @@ public class CellState
         this.row = row;
         this.col = col;
         this.value = value;
-        notepad = new boolean[3][3];
+        this.notepad = notepad.clone();
 
     }
 
@@ -66,6 +66,9 @@ public class CellState
 
         }
     }
+
+
+
 
     int getValue() {
         return value;
