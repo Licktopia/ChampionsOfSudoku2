@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.licktopia.championsofsudoku.Sudoku.Board;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
