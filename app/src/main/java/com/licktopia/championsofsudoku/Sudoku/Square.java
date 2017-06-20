@@ -6,11 +6,11 @@ package com.licktopia.championsofsudoku.Sudoku;
 
 
 //Represents a single cell on a Sudoku board
-class Cell
+class Square
 {
     private boolean[][] notepad;
     private int value = -1;
-    protected Cell(int entry)
+    protected Square(int entry)
     {
         notepad = new boolean[3][3];
         this.value = entry;
@@ -82,23 +82,23 @@ class Cell
 
     //saves state of cell given the row and column
     //returns null if the save state failed
-    protected CellState saveState(int row, int col)
+    protected SquareState saveState(int row, int col, int boardSize)
     {
-        CellState sav = null;
+        SquareState sav = null;
         try
         {
-            sav = new CellState(row, col, this.notepad, this.value);
+            sav = new SquareState(row, col, this.notepad, this.value, boardSize);
 
         }
-        catch(CellState.InvalidRow e)
+        catch(SquareState.InvalidRow e)
         {
             System.err.printf("%d is not a valid row!", row);
         }
-        catch(CellState.InvalidCol e)
+        catch(SquareState.InvalidCol e)
         {
             System.err.printf("%d is not a valid column!", col);
         }
-        catch(CellState.InvalidNotepad e)
+        catch(SquareState.InvalidNotepad e)
         {
             System.err.printf("Notepad is not a valid size!");
         }
@@ -119,8 +119,8 @@ class Cell
         value = 0;
     }
 
-    //given a CellState object restore the cell values
-    protected void restoreState(CellState state)
+    //given a SquareState object restore the cell values
+    protected void restoreState(SquareState state)
     {
         //restore state
         for(int i = 1; i <= 9; i++)

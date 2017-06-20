@@ -1,7 +1,7 @@
 package com.licktopia.championsofsudoku.Sudoku;
 
 import android.content.Context;
-import java.io.File;
+
 import java.util.Arrays;
 import java.util.Stack;
 
@@ -13,7 +13,7 @@ public class Board {
 
     private static int SIZE = 9;         // Board size
     private static int CLUSTER_SIZE = 3; // Size of N x N cluster
-    private Cell[][] contents;           // Holds values of the sudoku puzzle
+    private Square[][] contents;           // Holds values of the sudoku puzzle
     private boolean[][] startingValue;  // Tracks which values are part of the starting board
     private int openSquares;            // Tracks how many squares are empty
 
@@ -28,14 +28,14 @@ public class Board {
             // Handle error
         }
 
-        contents = new Cell[SIZE][SIZE];
+        contents = new Square[SIZE][SIZE];
         startingValue = new boolean[SIZE][SIZE];
         openSquares = 0;
 
         // Copy parameter values into contents array
         for (int i = 0; i < values.length; i++) {
             if (values[i] != 0) {   // Non-empty square
-                contents[i / SIZE][i % SIZE] = new Cell(values[i]);
+                contents[i / SIZE][i % SIZE] = new Square(values[i]);
                 startingValue[i / SIZE][i % SIZE] = true;
             }
             else                    // Empty square
@@ -69,7 +69,7 @@ public class Board {
             openSquares--; // Decrement number of open squares
             //clear redo
             redoStk = new Stack();
-            undoStk.push(contents[row][col].saveState(row, col));
+            undoStk.push(contents[row][col].saveState(row, col, this.SIZE));
             contents[row][col].setValue(value);     // Assign value
         }
 
@@ -175,17 +175,17 @@ public class Board {
 
     //returns current state of a altered cell after an undo
     //returns null if no undo occurred
-    private Stack<CellState> undoStk = new Stack<>();
-    protected CellState undo()
+    private Stack<SquareState> undoStk = new Stack<>();
+    protected SquareState undo()
     {
         if(undoStk.isEmpty()){
             return null;
         }
-        CellState temp = undoStk.pop();
+        SquareState temp = undoStk.pop();
 
         contents[temp.getRow()][temp.getCol()].restoreState(temp);
 
-        redoStk.push(contents[temp.getRow()][temp.getCol()].saveState(temp.getRow(), temp.getCol()));
+        redoStk.push(contents[temp.getRow()][temp.getCol()].saveState(temp.getRow(), temp.getCol(), this.SIZE));
         return temp;
     }
 
@@ -197,18 +197,18 @@ public class Board {
 
     //returns current state of a altered cell after an redo
     //returns null if no redo occurred
-    private Stack<CellState> redoStk = new Stack<>();
-    protected CellState redo()
+    private Stack<SquareState> redoStk = new Stack<>();
+    protected SquareState redo()
     {
         if(redoStk.isEmpty()){
             return null;
         }
 
-        CellState temp = redoStk.pop();
+        SquareState temp = redoStk.pop();
 
         contents[temp.getRow()][temp.getCol()].restoreState(temp);
 
-        undoStk.push(contents[temp.getRow()][temp.getCol()].saveState(temp.getRow(), temp.getCol()));
+        undoStk.push(contents[temp.getRow()][temp.getCol()].saveState(temp.getRow(), temp.getCol(), this.SIZE));
         return temp;
     }
 
@@ -222,5 +222,11 @@ public class Board {
     protected boolean saveGame()
     {
         return false;
+    }
+
+    //gets the length for both the rows and columns of the game
+    protected int getSize()
+    {
+            return  SIZE;
     }
 }

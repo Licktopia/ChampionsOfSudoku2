@@ -5,18 +5,19 @@ package com.licktopia.championsofsudoku.Sudoku;
  */
 
 //stores the state of a given cell
-public class CellState
+public class SquareState
 {
     private int row = -1;
     private int col = -1;
     private boolean[][] notepad;
     private int value = -1;
+    private int boardSize = -1;
 
     //row is the row location of cell
     //col is the column location of cell
     //notepad is the current state of the notepad
     //entry is the current state of the square entry
-    CellState(int row, int col, boolean[][] notepad, int value) throws InvalidRow, InvalidCol, InvalidNotepad
+    SquareState(int row, int col, boolean[][] notepad, int value, int boardSize) throws InvalidRow, InvalidCol, InvalidNotepad
     {
         if(row <= 0)
         {
@@ -36,7 +37,7 @@ public class CellState
         this.col = col;
         this.value = value;
         this.notepad = notepad.clone();
-
+        this.boardSize = boardSize;
     }
 
     public int getCol()
@@ -47,6 +48,7 @@ public class CellState
     {
         return row;
     }
+    public int getIdx() { return col + boardSize * row;}
 
     //num is the value which is the current state of the notepad
     //returns the boolean for the given num
