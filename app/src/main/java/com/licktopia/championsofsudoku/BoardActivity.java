@@ -2,6 +2,7 @@ package com.licktopia.championsofsudoku;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
@@ -11,32 +12,24 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class BoardActivity extends AppCompatActivity {
 
+    private Square[] squares;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_board);
-
+        squares = new Square[Board.SIZE * Board.SIZE];
         SudokuSolver mSudokuSolver = new SudokuSolver(1,this); //test passing in "Easy level"
-        int boardNumber = mSudokuSolver.getBoardNumber();
-        int[] startBoard = mSudokuSolver.getStartBoard();
-        int[] solvedBoard = mSudokuSolver.getSolution();
-        String sBoard = "";
-        String fBoard = "";
-        for(int i = 0; i<81; i++){
-            sBoard+=startBoard[i];
-            fBoard+=solvedBoard[i];
-        }
-        Toast.makeText(BoardActivity.this, "Board number is " + boardNumber, Toast.LENGTH_SHORT).show();
-        Toast.makeText(BoardActivity.this, "Beginning board is " + sBoard, Toast.LENGTH_SHORT).show();
-        Toast.makeText(BoardActivity.this, "Solved board is " + fBoard, Toast.LENGTH_SHORT).show();
+        int boardNumber = mSudokuSolver.getBoardNumber();//get board number
+        int[] startBoard = mSudokuSolver.getStartBoard();//get starting board
+        int[] solvedBoard = mSudokuSolver.getSolution();//get solved board
 
-        if(preCheck(startBoard)){
-            Toast.makeText(BoardActivity.this, "Board is good ", Toast.LENGTH_SHORT).show();
+        for(int i = 0; i < squares.length; i++) {//set up starting board
+            RelativeLayout rl = (RelativeLayout) findViewById(Tags.squareTags[i]); // get Relative layout
+            squares[i] = new Square(this, rl);
+            squares[i].setNumber(startBoard[i]);
         }
-        else{
-            Toast.makeText(BoardActivity.this, "Does not adhere to rules of Sudoku ", Toast.LENGTH_SHORT).show();
-        }
+
     }
     /************************************
      * PreCheck checks if an entry is valid. Checks the

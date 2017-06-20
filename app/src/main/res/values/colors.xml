@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorPrimary">#FFFFFF</color>
+    <color name="colorPrimaryDark">#454444</color>
+    <color name="textColorPrimary">#030303</color>
+    <color name="colorAccent">#1e91d6</color>
+    <color name="colorHighLight">#f0e4e3de</color>
+    <color name="Jeffgrey">#7c7c7c</color>
+    <color name="standout">#e7e4d6</color>
+    <color name="ltgrey">#a0cccccc</color>
+    <color name="darkwhite">#fdfdfb</color>
+    <color name="guess">#926239</color>
+    <color name="white">#ffffff</color>
+    <color name="colorFondo">#eb454444</color>
+    <color name="colorFondoTrans">#f5454444</color>
+    <color name="colorKeypad">#454444</color>
+    <color name="lightred">#ea3f6a</color>
+    <color name="silver">#7c8597</color>
+    <color name="green">#329d53</color>
+    <color name="highlightred">#46d9433b</color>
 </resources>
