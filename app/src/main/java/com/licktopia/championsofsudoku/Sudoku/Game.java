@@ -15,13 +15,12 @@ public class Game
 
 
     //Time which timer was last started
-    private long startTime;
+    private long startTime = -1;
 
     //context is need to load from assets folder
-    protected Game(int level, Context ctx)
+    public Game(int level, Context ctx)
     {
         curBoard = new Board(level, ctx);
-        this.unpauseTimer();
     }
 
     private Board curBoard;
