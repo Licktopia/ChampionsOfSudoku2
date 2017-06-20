@@ -8,10 +8,11 @@
     <color name="Jeffgrey">#7c7c7c</color>
     <color name="standout">#e7e4d6</color>
     <color name="ltgrey">#a0cccccc</color>
-    <color name="darkwhite">#fdfdfb</color>
+    <color name="notepadColorHighlight">#fdfdfb</color>
+    <color name="notepadNumberHighlight">#888888</color>
     <color name="guess">#926239</color>
     <color name="white">#ffffff</color>
-    <color name="colorFondo">#eb454444</color>
+    <color name="background">#eb454444</color>
     <color name="colorFondoTrans">#f5454444</color>
     <color name="colorKeypad">#454444</color>
     <color name="lightred">#ea3f6a</color>
@@ -28,5 +29,5 @@
     <color name="color8">#F2CA08</color>
     <color name="color9">#329d53</color>
 
-    "#ABD03A", "#1E91D6","#ea3f6a","#7D1538","#7c8597","#E18335","#4A2772","#F2CA08","#329d53"
+
 </resources>

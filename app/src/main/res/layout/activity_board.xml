@@ -38,7 +38,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="80"
-            android:background="@color/colorFondo">
+            android:background="@color/background">
 
             <ImageView
                 android:id="@+id/artHolder"
@@ -106,7 +106,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/colorFondo">
+                    android:background="@color/background">
 
                 </RelativeLayout>
 
@@ -122,7 +122,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/colorFondo">
+                    android:background="@color/background">
 
                 </RelativeLayout>
 
@@ -138,7 +138,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="3dp"
-                    android:background="@color/colorFondo">
+                    android:background="@color/background">
 
                 </RelativeLayout>
 
@@ -154,7 +154,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/colorFondo">
+                    android:background="@color/background">
 
                 </RelativeLayout>
 
@@ -170,7 +170,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/colorFondo">
+                    android:background="@color/background">
 
                 </RelativeLayout>
 
@@ -186,7 +186,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="3dp"
-                    android:background="@color/colorFondo">
+                    android:background="@color/background">
 
                 </RelativeLayout>
 
@@ -202,7 +202,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/colorFondo">
+                    android:background="@color/background">
 
                 </RelativeLayout>
 
@@ -218,7 +218,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/colorFondo">
+                    android:background="@color/background">
 
                 </RelativeLayout>
 
@@ -237,7 +237,7 @@
                 android:id="@+id/filler"
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
-                android:background="@color/colorFondo"
+                android:background="@color/background"
                 android:orientation="vertical"></LinearLayout>
 
             <LinearLayout
@@ -259,7 +259,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/colorFondo">
+                    android:background="@color/background">
 
                 </RelativeLayout>
 
@@ -275,7 +275,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/colorFondo">
+                    android:background="@color/background">
 
                 </RelativeLayout>
 
@@ -291,7 +291,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="3dp"
-                    android:background="@color/colorFondo">
+                    android:background="@color/background">
 
                 </RelativeLayout>
 
@@ -307,7 +307,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/colorFondo">
+                    android:background="@color/background">
 
                 </RelativeLayout>
 
@@ -323,7 +323,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/colorFondo">
+                    android:background="@color/background">
 
                 </RelativeLayout>
 
@@ -339,7 +339,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="3dp"
-                    android:background="@color/colorFondo">
+                    android:background="@color/background">
 
                 </RelativeLayout>
 
@@ -355,7 +355,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/colorFondo">
+                    android:background="@color/background">
 
                 </RelativeLayout>
 
@@ -371,7 +371,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/colorFondo">
+                    android:background="@color/background">
 
                 </RelativeLayout>
 
@@ -390,7 +390,7 @@
                 android:id="@+id/filler2"
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
-                android:background="@color/colorFondo"
+                android:background="@color/background"
                 android:orientation="vertical"></LinearLayout>
 
             <LinearLayout
@@ -413,7 +413,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/colorFondo">
+                    android:background="@color/background">
 
                 </RelativeLayout>
 
@@ -429,7 +429,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/colorFondo">
+                    android:background="@color/background">
 
                 </RelativeLayout>
 
@@ -445,7 +445,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="3dp"
-                    android:background="@color/colorFondo">
+                    android:background="@color/background">
 
                 </RelativeLayout>
 
@@ -461,7 +461,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/colorFondo">
+                    android:background="@color/background">
 
                 </RelativeLayout>
 
@@ -477,7 +477,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/colorFondo">
+                    android:background="@color/background">
 
                 </RelativeLayout>
 
@@ -493,7 +493,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="3dp"
-                    android:background="@color/colorFondo">
+                    android:background="@color/background">
 
                 </RelativeLayout>
 
@@ -509,7 +509,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/colorFondo">
+                    android:background="@color/background">
 
                 </RelativeLayout>
 
@@ -525,7 +525,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/colorFondo">
+                    android:background="@color/background">
 
                 </RelativeLayout>
 
@@ -544,7 +544,7 @@
                 android:id="@+id/filler3"
                 android:layout_width="3dp"
                 android:layout_height="match_parent"
-                android:background="@color/colorFondo"
+                android:background="@color/background"
                 android:orientation="vertical"></LinearLayout>
 
             <LinearLayout
@@ -567,7 +567,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/colorFondo">
+                    android:background="@color/background">
 
                 </RelativeLayout>
 
@@ -583,7 +583,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/colorFondo">
+                    android:background="@color/background">
 
                 </RelativeLayout>
 
@@ -599,7 +599,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="3dp"
-                    android:background="@color/colorFondo">
+                    android:background="@color/background">
 
                 </RelativeLayout>
 
@@ -615,7 +615,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/colorFondo">
+                    android:background="@color/background">
 
                 </RelativeLayout>
 
@@ -631,7 +631,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/colorFondo">
+                    android:background="@color/background">
 
                 </RelativeLayout>
 
@@ -647,7 +647,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="3dp"
-                    android:background="@color/colorFondo">
+                    android:background="@color/background">
 
                 </RelativeLayout>
 
@@ -663,7 +663,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/colorFondo">
+                    android:background="@color/background">
 
                 </RelativeLayout>
 
@@ -679,7 +679,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/colorFondo">
+                    android:background="@color/background">
 
                 </RelativeLayout>
 
@@ -698,7 +698,7 @@
                 android:id="@+id/filler4"
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
-                android:background="@color/colorFondo"
+                android:background="@color/background"
                 android:orientation="vertical"></LinearLayout>
 
             <LinearLayout
@@ -721,7 +721,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/colorFondo">
+                    android:background="@color/background">
 
                 </RelativeLayout>
 
@@ -737,7 +737,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/colorFondo">
+                    android:background="@color/background">
 
                 </RelativeLayout>
 
@@ -753,7 +753,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="3dp"
-                    android:background="@color/colorFondo">
+                    android:background="@color/background">
 
                 </RelativeLayout>
 
@@ -769,7 +769,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/colorFondo">
+                    android:background="@color/background">
 
                 </RelativeLayout>
 
@@ -785,7 +785,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/colorFondo">
+                    android:background="@color/background">
 
                 </RelativeLayout>
 
@@ -801,7 +801,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="3dp"
-                    android:background="@color/colorFondo">
+                    android:background="@color/background">
 
                 </RelativeLayout>
 
@@ -817,7 +817,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/colorFondo">
+                    android:background="@color/background">
 
                 </RelativeLayout>
 
@@ -833,7 +833,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/colorFondo">
+                    android:background="@color/background">
 
                 </RelativeLayout>
 
@@ -852,7 +852,7 @@
                 android:id="@+id/filler5"
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
-                android:background="@color/colorFondo"
+                android:background="@color/background"
                 android:orientation="vertical"></LinearLayout>
 
             <LinearLayout
@@ -875,7 +875,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/colorFondo">
+                    android:background="@color/background">
 
                 </RelativeLayout>
 
@@ -891,7 +891,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/colorFondo">
+                    android:background="@color/background">
 
                 </RelativeLayout>
 
@@ -907,7 +907,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="3dp"
-                    android:background="@color/colorFondo">
+                    android:background="@color/background">
 
                 </RelativeLayout>
 
@@ -923,7 +923,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/colorFondo">
+                    android:background="@color/background">
 
                 </RelativeLayout>
 
@@ -939,7 +939,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/colorFondo">
+                    android:background="@color/background">
 
                 </RelativeLayout>
 
@@ -955,7 +955,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="3dp"
-                    android:background="@color/colorFondo">
+                    android:background="@color/background">
 
                 </RelativeLayout>
 
@@ -971,7 +971,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/colorFondo">
+                    android:background="@color/background">
 
                 </RelativeLayout>
 
@@ -987,7 +987,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/colorFondo">
+                    android:background="@color/background">
 
                 </RelativeLayout>
 
@@ -1006,7 +1006,7 @@
                 android:id="@+id/filler6"
                 android:layout_width="3dp"
                 android:layout_height="match_parent"
-                android:background="@color/colorFondo"
+                android:background="@color/background"
                 android:orientation="vertical"></LinearLayout>
 
             <LinearLayout
@@ -1029,7 +1029,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/colorFondo">
+                    android:background="@color/background">
 
                 </RelativeLayout>
 
@@ -1045,7 +1045,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/colorFondo">
+                    android:background="@color/background">
 
                 </RelativeLayout>
 
@@ -1061,7 +1061,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="3dp"
-                    android:background="@color/colorFondo">
+                    android:background="@color/background">
 
                 </RelativeLayout>
 
@@ -1077,7 +1077,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/colorFondo">
+                    android:background="@color/background">
 
                 </RelativeLayout>
 
@@ -1093,7 +1093,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/colorFondo">
+                    android:background="@color/background">
 
                 </RelativeLayout>
 
@@ -1109,7 +1109,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="3dp"
-                    android:background="@color/colorFondo">
+                    android:background="@color/background">
 
                 </RelativeLayout>
 
@@ -1125,7 +1125,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/colorFondo">
+                    android:background="@color/background">
 
                 </RelativeLayout>
 
@@ -1141,7 +1141,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/colorFondo">
+                    android:background="@color/background">
 
                 </RelativeLayout>
 
@@ -1160,7 +1160,7 @@
                 android:id="@+id/filler7"
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
-                android:background="@color/colorFondo"
+                android:background="@color/background"
                 android:orientation="vertical"></LinearLayout>
 
             <LinearLayout
@@ -1183,7 +1183,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/colorFondo">
+                    android:background="@color/background">
 
                 </RelativeLayout>
 
@@ -1199,7 +1199,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/colorFondo">
+                    android:background="@color/background">
 
                 </RelativeLayout>
 
@@ -1215,7 +1215,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="3dp"
-                    android:background="@color/colorFondo">
+                    android:background="@color/background">
 
                 </RelativeLayout>
 
@@ -1231,7 +1231,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/colorFondo">
+                    android:background="@color/background">
 
                 </RelativeLayout>
 
@@ -1247,7 +1247,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/colorFondo">
+                    android:background="@color/background">
 
                 </RelativeLayout>
 
@@ -1263,7 +1263,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="3dp"
-                    android:background="@color/colorFondo">
+                    android:background="@color/background">
 
                 </RelativeLayout>
 
@@ -1279,7 +1279,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/colorFondo">
+                    android:background="@color/background">
 
                 </RelativeLayout>
 
@@ -1295,7 +1295,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/colorFondo">
+                    android:background="@color/background">
 
                 </RelativeLayout>
 
@@ -1314,7 +1314,7 @@
                 android:id="@+id/filler8"
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
-                android:background="@color/colorFondo"
+                android:background="@color/background"
                 android:orientation="vertical"></LinearLayout>
 
             <LinearLayout
@@ -1337,7 +1337,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/colorFondo">
+                    android:background="@color/background">
 
                 </RelativeLayout>
 
@@ -1353,7 +1353,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/colorFondo">
+                    android:background="@color/background">
 
                 </RelativeLayout>
 
@@ -1369,7 +1369,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="3dp"
-                    android:background="@color/colorFondo">
+                    android:background="@color/background">
 
                 </RelativeLayout>
 
@@ -1385,7 +1385,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/colorFondo">
+                    android:background="@color/background">
 
                 </RelativeLayout>
 
@@ -1401,7 +1401,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/colorFondo">
+                    android:background="@color/background">
 
                 </RelativeLayout>
 
@@ -1417,7 +1417,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="3dp"
-                    android:background="@color/colorFondo">
+                    android:background="@color/background">
 
                 </RelativeLayout>
 
@@ -1433,7 +1433,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/colorFondo">
+                    android:background="@color/background">
 
                 </RelativeLayout>
 
@@ -1449,7 +1449,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/colorFondo">
+                    android:background="@color/background">
 
                 </RelativeLayout>
 

@@ -1,5 +1,8 @@
 package com.licktopia.championsofsudoku;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -9,6 +12,9 @@ import android.widget.RelativeLayout;
 
 import com.licktopia.championsofsudoku.Sudoku.Board;
 import com.licktopia.championsofsudoku.Sudoku.Game;
+
+import static android.graphics.Color.WHITE;
+import static android.view.View.GONE;
 
 public class BoardActivity extends AppCompatActivity {
 
@@ -37,8 +43,9 @@ public class BoardActivity extends AppCompatActivity {
 
 
         initializeButtons();
-        initializeBoard(mBoard.getStartBoard());//get starting board
+        initializeBoard();//get starting board
         listeners();//set all listeners for BoardActivity layout
+        customizeLayout();
 
     }
 
@@ -55,16 +62,16 @@ public class BoardActivity extends AppCompatActivity {
      * Function binds 81 squares and sets
      * number/color to starting value
      *********************************/
-    private void initializeBoard(int[] startBoard) {
+    private void initializeBoard() {
         for(int i = 0; i < squares.length; i++) {//set up starting board
             RelativeLayout rl = (RelativeLayout) findViewById(Tags.squareTags[i]); // get Relative layout
             squares[i] = new Square(this, rl);
             if(mGame.setBoardValueAt(i)) {
                 if(!colorGame) {//set number
-                    squares[i].setBigNumber(startBoard[i]);
+                    squares[i].setBigNumber(mGame.getBoardValueAt(i));
                 }
                 else{//set color
-                    squares[i].setSquareColor(startBoard[i]);
+                    squares[i].setSquareColor(mGame.getBoardValueAt(i));
 
                 }
             }
@@ -197,11 +204,19 @@ public class BoardActivity extends AppCompatActivity {
      *********************************/
     private void smallNumPadListener() {
         if (selectedSquare > -1) {
+            RelativeLayout notepadBackground = (RelativeLayout)findViewById(R.id.scratch_bg);
             if (smallNumPadState) {
                 smallNumPadState = false;
+                notepadBackground.setBackgroundColor(getResources().getColor(R.color.colorKeypad));
 
             } else {
                 smallNumPadState = true;
+                if(!colorGame) {
+                    notepadBackground.setBackgroundColor(getResources().getColor(R.color.notepadNumberHighlight));
+                }
+                else{
+                    notepadBackground.setBackgroundColor(getResources().getColor(R.color.notepadColorHighlight));
+                }
             }
         }
     }
@@ -210,6 +225,8 @@ public class BoardActivity extends AppCompatActivity {
      *********************************/
     private void keyboardDownButtonListener(){
         selectedSquare = -1;
+        closeKeyboard();
+        removeAllHighlights();
     }
 
 
@@ -225,7 +242,79 @@ public class BoardActivity extends AppCompatActivity {
         }
 
     }
+    private void customizeLayout(){
+        /////set keypad colors
+        for(int i=0; i<Board.SIZE;i++){
+            if(!colorGame){
+                numberButtons[i].setBackgroundColor(getResources().getColor(R.color.colorKeypad));
+                numberButtons[i].setText(i+1);
+            }
+            else{
+                numberButtons[i].setBackgroundColor(Tags.colors[i]);
+                numberButtons[i].setText("");
+            }
+        }
+        /////reset all keypad buttons to original color
+        RelativeLayout notepadBackground = (RelativeLayout)findViewById(R.id.scratch_bg);
+        notepadBackground.setBackgroundColor(getResources().getColor(R.color.colorKeypad));
+        clearButton.setBackgroundColor(getResources().getColor(R.color.colorKeypad));
+        keyboardDownButton.setBackgroundColor(getResources().getColor(R.color.colorKeypad));
+
+        /////////set notepadbutton with correct image, color or number
+        ImageButton notepadIcon = (ImageButton)findViewById(R.id.scratch);
+        if(!colorGame){
+            notepadIcon.setImageDrawable(getResources().getDrawable(R.drawable.numbers));
+        }
+        else{
+            notepadIcon.setImageDrawable(getResources().getDrawable(R.drawable.colors));
+        }
 
 
+    }
 
-}
+    private void closeKeyboard() {
+
+
+           /*
+            mBottomLayout.setVisibility(View.VISIBLE);
+            mHintsLayout.setVisibility(View.VISIBLE);
+
+            ObjectAnimator scalex = ObjectAnimator.ofFloat(mBottomLayout, "scaleY", 0, 1);
+            scalex.setDuration(50);
+
+
+            ObjectAnimator scaley = ObjectAnimator.ofFloat(mKeypad, "scaleY", 1, 0);
+            scaley.setDuration(50);
+            AnimatorSet set2 = new AnimatorSet();
+            set2.playSequentially(scaley, scalex);
+            set2.start();
+            mKeypad.setVisibility(GONE);
+
+
+            mSolveButton.setClickable(true);
+            mCheckProgress.setClickable(true);
+            mKeypad.setClickable(false);
+            mKeypad.setClickable(true);
+            for (int i = 0; i < 10; i++) {
+                mArrayButtons[i].setClickable(false);
+            }
+            mDown.setClickable(false);
+            mScratch.setClickable(false);
+            keyboardOpen = false;
+            for (int i = 0; i < 81; i++) {
+                if (colorState) {
+                    mRelLay[i].setAlpha(1);
+                    mBigNum[i].setAlpha(1);
+                    if (mBigNum[i].getText() == "") {
+                        mRelLay[i].setBackgroundColor(WHITE);
+                    }
+
+                } else {
+                    mRelLay[i].setBackgroundColor(WHITE);
+                }
+                */
+            }
+
+    }
+
+
