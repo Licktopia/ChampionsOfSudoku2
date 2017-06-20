@@ -81,15 +81,18 @@ public class Board {
     }
 
 
+    /* Checks if current board is valid */
+    public boolean isBoardValid() {
+        for (int i = 0; i < SIZE; i++) {
+            if (!isRowValid(i) || !isColumnValid(i) || !isClusterValid(i))
+                return false; // Board not correct
+        }
+        return true;
+    }
+
     /* Checks if board is complete and correct */
     public boolean isSolution() {
-        if (isBoardFull()) {
-            for (int i = 0; i < SIZE; i++) {
-                if (!isRowValid(i) || !isColumnValid(i) || !isClusterValid(i))
-                    return false; // Board not correct
-            }
-        }
-        return true; // Board is complete and correct
+        return isBoardFull() && isBoardValid(); // Board is complete and correct
     }
 
 
