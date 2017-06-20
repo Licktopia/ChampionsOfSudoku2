@@ -18,4 +18,15 @@
     <color name="silver">#7c8597</color>
     <color name="green">#329d53</color>
     <color name="highlightred">#46d9433b</color>
+    <color name="color1">#ABD03A</color>
+    <color name="color2">#1E91D6</color>
+    <color name="color3">#ea3f6a</color>
+    <color name="color4">#7D1538</color>
+    <color name="color5">#7c8597</color>
+    <color name="color6">#E18335</color>
+    <color name="color7">#4A2772</color>
+    <color name="color8">#F2CA08</color>
+    <color name="color9">#329d53</color>
+
+    "#ABD03A", "#1E91D6","#ea3f6a","#7D1538","#7c8597","#E18335","#4A2772","#F2CA08","#329d53"
 </resources>

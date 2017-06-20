@@ -18,6 +18,7 @@ public class Square {
     private Context context;
     private RelativeLayout squareHolder;
     private ImageView number;
+    private RelativeLayout color;
     private ImageView art;
     private LinearLayout notepad;
     private ImageView[] notepadNums;
@@ -44,6 +45,7 @@ public class Square {
 
         View v = li.inflate(R.layout.square, null);
         number = (ImageView) v.findViewById(R.id.squareNumber);
+        color = (RelativeLayout) v.findViewById(R.id.squareColor);
         art = (ImageView) v.findViewById(R.id.squareArt);
         notepad = (LinearLayout) v.findViewById(R.id.squareNotepad);
         notepadNums[0] = (ImageView) v.findViewById(R.id.squareNotepad1);
@@ -66,6 +68,14 @@ public class Square {
             squareHolder.setBackground(null);   // Remove display object
         else
             number.setImageDrawable(context.getDrawable(Tags.numberImageTags[n - 1])); // Set background image
+    }
+
+    /* Set number displayed in square */
+    public void setSquareColor(int n) {
+        if (n == 0)
+            squareHolder.setBackground(null);   // Remove display object
+        else
+            color.setBackground(context.getDrawable(Tags.colors[n - 1])); // Set background image
     }
 
 

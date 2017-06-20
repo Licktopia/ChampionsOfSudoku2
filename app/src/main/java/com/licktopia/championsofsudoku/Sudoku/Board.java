@@ -11,7 +11,7 @@ import java.util.Stack;
 
 public class Board {
 
-    private static int SIZE = 9;         // Board size
+    public static int SIZE = 9;         // Board size
     private static int CLUSTER_SIZE = 3; // Size of N x N cluster
     private Square[][] contents;           // Holds values of the sudoku puzzle
     private boolean[][] startingValue;  // Tracks which values are part of the starting board
