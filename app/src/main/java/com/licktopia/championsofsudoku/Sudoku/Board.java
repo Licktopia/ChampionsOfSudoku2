@@ -44,14 +44,18 @@ public class Board {
     }
 
 
+    //stores the ids of squares which prevent setValueAt from making a move
+    private Stack<Integer> problemSqrs;
     /* Inserts parameter value at the board location specified by row and col.
-    *  Returns true if value inserted successfully, false if not */
-    protected boolean setValueAt(int row, int col, int value) {
+    *  Returns empty stack if value inserted successfully, not empty if not */
+    protected Stack<Integer> setValueAt(int row, int col, int value) {
+        //return this stack
+        problemSqrs = new Stack();
 
         if (value < 0 || value > SIZE)      // Check value input
-            return false;
+            return problemSqrs;
         if (startingValue[row][col])        // Check not trying to change a starting value
-            return false;
+            return problemSqrs;
 
         boolean isValid = false;
 
@@ -61,6 +65,7 @@ public class Board {
         }
         else {
             int clusterNum = ((row / CLUSTER_SIZE) * CLUSTER_SIZE) + (col / CLUSTER_SIZE);  // Get cluster number
+            //isRowValid, isColumnValid and isClusterValid all add to this.problemSqrs if they are false
             isValid = (isRowValid(row) && isColumnValid(col) && isClusterValid(clusterNum));
         }
 
@@ -73,7 +78,7 @@ public class Board {
             contents[row][col].setValue(value);     // Assign value
         }
 
-        return isValid;
+        return problemSqrs;
     }
 
 
@@ -100,9 +105,12 @@ public class Board {
 
 
     /* Checks if current board is valid */
+    //adds id of problem square to problemSqrs
     protected boolean isBoardValid() {
+        //must be reset before using isRowValid isColumnValid and !isClusterValid
+        problemSqrs = new Stack();
         for (int i = 0; i < SIZE; i++) {
-            if (!isRowValid(i) || !isColumnValid(i) || !isClusterValid(i))
+            if (!isRowValid(i) || !isColumnValid(i) || !isClusterValid(i)){}
                 return false; // Board not correct
         }
         return true;
@@ -115,12 +123,17 @@ public class Board {
 
 
     /* Check that row provided does not contain conflicts */
+    // adds to this.problemSqr if false
     private boolean isRowValid(int row) {
 
         for (int i = 0; i < SIZE - 1; i++) {
             for (int j = i + 1; j < SIZE; j++) {
                 if (contents[row][i].getValue() != 0 && contents[row][i] == contents[row][j])
+                {
+                    problemSqrs.push(row * SIZE + i);
                     return false;  // Found repeat, row invalid
+                }
+
             }
         }
         return true; // Row is valid
@@ -128,11 +141,15 @@ public class Board {
 
 
     /* Check that column provided does not contain conflicts */
+    // adds to this.problemSqr if false
      private boolean isColumnValid(int col) {
         for (int i = 0; i < SIZE - 1; i++) {
             for (int j = i + 1; j < SIZE; j++) {
                 if (contents[i][col].getValue() != 0 && contents[i][col] == contents[j][col])
+                {
+                    problemSqrs.push(i * SIZE + col);
                     return false; // Found repeat, column invalid
+                }
             }
         }
         return true; // Column is valid
@@ -140,6 +157,7 @@ public class Board {
 
 
     /* Check that cluster provided does not contain conflicts */
+    // adds to this.problemSqr if false
     public boolean isClusterValid(int cluster) {
 
         // Get cluster start indices based on board size
@@ -156,7 +174,10 @@ public class Board {
         Arrays.sort(clusterNums);
         for (int i = 0; i < SIZE - 1; i++) {
             if (clusterNums[i] != 0 && clusterNums[i] == clusterNums[i + 1])
+            {
+                problemSqrs.push(((i / CLUSTER_SIZE) + rowStart) * SIZE + ((i % CLUSTER_SIZE) + colStart));
                 return false; // Found repeat, cluster invalid
+            }
         }
         return true; // Cluster is valid
     }

@@ -1,6 +1,7 @@
 package com.licktopia.championsofsudoku.Sudoku;
 
 import android.content.Context;
+import java.util.Stack;
 
 /**
  * Created by John Konecny on 6/19/2017.
@@ -26,13 +27,17 @@ public class Game
     private Board curBoard;
 
     //sets value of square given row and col
-    public void setBoardValueAt(int row, int col, int value) {
-        this.curBoard.setValueAt(row, col, value);
+    //returns empty stack if successful
+    //returns ids of problem squares in stack if failed
+    public Stack<Integer> setBoardValueAt(int row, int col, int value) {
+        return this.curBoard.setValueAt(row, col, value);
     }
 
     //sets value of square given the index
-    public void setBoardValueAt(int idx, int value) {
-        this.curBoard.setValueAt(idxToRow(idx), idxToCol(idx), value);
+    //returns empty stack if successful
+    //returns ids of problem squares in stack if failed
+    public Stack<Integer> setBoardValueAt(int idx, int value) {
+        return this.curBoard.setValueAt(idxToRow(idx), idxToCol(idx), value);
     }
 
     //gets value of square given row and col
