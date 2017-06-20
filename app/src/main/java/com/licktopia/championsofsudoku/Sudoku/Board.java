@@ -40,25 +40,31 @@ public class Board {
 
 
     /* Inserts parameter value at the board location specified by row and col.
-    *  Returns true if value inserted is valid with current board, false if not */
-    //TODO Does the game allow you to enter conflicting numbers (i.e. two of same number in row)?
+    *  Returns true if value inserted successfully, false if not */
     public boolean setValueAt(int row, int col, int value) {
 
-        if (value < 0 || value > SIZE)  // Check value input
+        if (value < 0 || value > SIZE)      // Check value input
             return false;
-        if (startingValue[row][col])    // Check not trying to change a starting value
+        if (startingValue[row][col])        // Check not trying to change a starting value
             return false;
 
-        contents[row][col] = value;     // Assign value
+        int oldValue = contents[row][col];
+        contents[row][col] = value;         // Assign value
 
-        if (value == 0) {               // Removing value
-            openSquares++;              // Increment number of open squares
+        if (value == 0) {                   // Removing value
+            openSquares++;                  // Increment number of open squares
             return true;
         }
         else {
-            openSquares--;              // Decrement number of open squares
             int clusterNum = ((row / CLUSTER_SIZE) * CLUSTER_SIZE) + (col / CLUSTER_SIZE);  // Get cluster number
-            return (isRowValid(row) && isColumnValid(col) && isClusterValid(clusterNum));
+            if (isRowValid(row) && isColumnValid(col) && isClusterValid(clusterNum)) {
+                openSquares--;                  // Decrement number of open squares
+                return true;                    // Value successfully changed
+            }
+            else {
+                contents[row][col] = oldValue;  // Value violates constraints, revert to old
+                return false;                   // Value not changed
+            }
         }
     }
 

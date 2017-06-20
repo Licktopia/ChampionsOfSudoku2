@@ -7,6 +7,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import com.licktopia.championsofsudoku.Board;
 
 /**
  * Handles state changes for the display of an individual Sudoku square
