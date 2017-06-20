@@ -11,24 +11,23 @@ import java.io.InputStreamReader;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class BoardActivity extends AppCompatActivity {
-    RelativeLayout[] squareHolders;
+
+    private Square[] squares;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_board);
-        Tags mTags = new Tags();//tag object
-        squareHolders = new RelativeLayout[81]; //array of Relative layouts
+        squares = new Square[Board.SIZE * Board.SIZE];
         SudokuSolver mSudokuSolver = new SudokuSolver(1,this); //test passing in "Easy level"
         int boardNumber = mSudokuSolver.getBoardNumber();//get board number
         int[] startBoard = mSudokuSolver.getStartBoard();//get starting board
         int[] solvedBoard = mSudokuSolver.getSolution();//get solved board
 
-        for(int i = 0; i<81; i++) {//set up starting board
-            squareHolders[i] = (RelativeLayout) findViewById(mTags.squareTags[i]);//bind Relative layout
-            if(startBoard[i]!=0) {
-                squareHolders[i].setBackground(getResources().getDrawable(mTags.numberImageTags[startBoard[i] - 1]));//assign number to square
-            }
+        for(int i = 0; i < squares.length; i++) {//set up starting board
+            RelativeLayout rl = (RelativeLayout) findViewById(Tags.squareTags[i]); // get Relative layout
+            squares[i] = new Square(this, rl);
+            squares[i].setNumber(startBoard[i]);
         }
 
     }
