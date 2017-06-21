@@ -22,10 +22,13 @@ public class Game
     //time in seconds
     private long startTime = -1;
 
+    //stores the total bonus given for the score
+    private int level = -1;
+
     //context is need to load from assets folder
     public Game(int level, Context ctx)
     {
-
+        this.level = level;
         curBoard = new Board(level, ctx);
         solutionSolver = new Solver(curBoard);
         if(solutionSolver.solve() == null)
@@ -159,9 +162,143 @@ public class Game
     //gets the total score for the game
     public long getScore()
     {
-        return -5;
+        return getLevelBonus() +
+                totalOneTimeGuesses() * getOneTimeGuessSquareBonus() -
+                (long)(getTimePenalty() * (double)getRunningTime()) -
+                (long)(getIncorrectGuessesPenalty() * (double)totalIncorrectGuesses());
     }
 
+    private long getLevelBonus()
+    {
+        switch(level)
+        {
+            //beginner
+            case 0:
+                return 0;
+            //easy
+            case 1:
+                return 20;
+            //medium
+            case 2:
+                return 100;
+            //hard
+            case 3:
+                return 200;
+            //expert
+            case 4:
+                return 300;
+            //master
+            case 5:
+                return 400;
+            default:
+                return 0;
+        }
+    }
+
+    private long totalOneTimeGuesses()
+    {
+        long totalOneTimeGuesses = 0;
+        for(int i = 0; i < curBoard.totalBoardElements(); i++)
+        {
+            if(curBoard.noMoreThanOneGuessAt(i) &&
+                    !curBoard.isStartingValue(i) &&
+                    curBoard.getValueAt(i) != 0)
+            {
+                totalOneTimeGuesses++;
+            }
+        }
+        return totalOneTimeGuesses;
+    }
+
+
+    private long getOneTimeGuessSquareBonus()
+    {
+        switch(level)
+        {
+            //beginner
+            case 0:
+                return 30;
+            //easy
+            case 1:
+                return 60;
+            //medium
+            case 2:
+                return 100;
+            //hard
+            case 3:
+                return 110;
+            //expert
+            case 4:
+                return 120;
+            //master
+            case 5:
+                return 130;
+            default:
+                return 0;
+        }
+    }
+
+    //in points per seconds
+    private double getTimePenalty()
+    {
+        switch(level)
+        {
+            //beginner
+            case 0:
+                return 0;
+            //easy
+            case 1:
+                return 1 / 30;
+            //medium
+            case 2:
+                return 10 / 25;
+            //hard
+            case 3:
+                return 10 / 25;
+            //expert
+            case 4:
+                return 10 / 25;
+            //master
+            case 5:
+                return 10 / 25;
+            default:
+                return 0;
+        }
+    }
+
+    private long totalIncorrectGuesses()
+    {
+        return curBoard.totalIncorrectGuesses();
+    }
+
+
+    //in points per seconds
+    private double getIncorrectGuessesPenalty()
+    {
+        switch(level)
+        {
+            //beginner
+            case 0:
+                return 0;
+            //easy
+            case 1:
+                return 1 / 30;
+            //medium
+            case 2:
+                return 10 / 25;
+            //hard
+            case 3:
+                return 10 / 25;
+            //expert
+            case 4:
+                return 10 / 25;
+            //master
+            case 5:
+                return 10 / 25;
+            default:
+                return 0;
+        }
+    }
     //stores solution to game
     private Solver solutionSolver;
 
