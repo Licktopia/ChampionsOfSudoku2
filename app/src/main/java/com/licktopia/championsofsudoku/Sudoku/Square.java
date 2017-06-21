@@ -11,6 +11,10 @@ class Square
     private boolean isStartingValue;
     private boolean[] notepad;
     private int value = -1;
+    //true if the user has changed the square number
+    private boolean hasBeenChange = false;
+    //true if the square has been change no more than once
+    private boolean noMoreThanOneGuess = true;
     protected Square(int entry, boolean isStartingValue, int boardSize)
     {
         notepad = new boolean[boardSize];
@@ -33,6 +37,14 @@ class Square
     }
 
     protected void setValue(int entry) {
+        if(!hasBeenChange)
+        {
+            hasBeenChange = true;
+        }
+        else
+        {
+            noMoreThanOneGuess = false;
+        }
         this.value = entry;
     }
 
@@ -91,5 +103,7 @@ class Square
     {
         return this.isStartingValue;
     }
+
+    protected boolean noMoreThanOneGuess(){return this.noMoreThanOneGuess;}
 
 }

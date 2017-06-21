@@ -15,7 +15,7 @@ public class Board {
     private static int CLUSTER_SIZE = 3; // Size of N x N cluster
     private Square[][] contents;           // Holds values of the sudoku puzzle
     private int openSquares;            // Tracks how many squares are empty
-
+    private int incorrectGuesses = 0; //total number of incorrect guesses
 
     /* Constructor*/
     protected Board(int level, Context ctx) {
@@ -56,7 +56,6 @@ public class Board {
         // copy all data from oldBoard into this
         for (int i = 0; i < this.totalBoardRows(); i++) {
             for (int j = 0; j < this.totalBoardCols(); j++) {
-
                 contents[i][j] = new Square(oldBoard.getValueAt(i, j), oldBoard.isStartingValue(i, j), SIZE);
                 for(int k = 1; k <= SIZE; k ++)
                 {
@@ -109,6 +108,7 @@ public class Board {
         }
         else
         {
+            incorrectGuesses++;
             contents[row][col].setValue(tempVal);     // restore old value
         }
 
@@ -162,6 +162,19 @@ public class Board {
     protected boolean isStartingValue(int idx)
     {
         return this.isStartingValue(idxToRow(idx), idxToCol(idx));
+    }
+
+
+    //return if a square at row, col is a starting value
+    protected boolean noMoreThanOneGuessAt(int row, int col)
+    {
+        return contents[row][col].noMoreThanOneGuess();
+    }
+
+    //return if a square at the index is a starting value
+    protected boolean noMoreThanOneGuessAt(int idx)
+    {
+        return this.noMoreThanOneGuessAt(idxToRow(idx), idxToCol(idx));
     }
 
 
@@ -337,6 +350,8 @@ public class Board {
 
     //retuns the current state of a square at idx
     protected  SquareState getState(int idx) {return this.getState(idxToRow(idx), idxToCol(idx));}
+
+    protected int totalIncorrectGuesses(){ return incorrectGuesses; }
 
     //given an index for a single dimensional array of the board
     //converts it into the correct row of a 2d board array
