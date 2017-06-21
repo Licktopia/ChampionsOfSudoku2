@@ -4,6 +4,7 @@ import android.content.Context;
 
 import java.util.Queue;
 import java.util.Stack;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by John Konecny on 6/19/2017.
@@ -18,6 +19,7 @@ public class Game
 
 
     //Time which timer was last started
+    //time in seconds
     private long startTime = -1;
 
     //context is need to load from assets folder
@@ -143,15 +145,21 @@ public class Game
         if(isPaused)
         {
             isPaused = false;
-            startTime = System.currentTimeMillis();
+            startTime = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
         }
     }
 
     //returns running time in seconds
     public long getRunningTime()
     {
-        long endTime = System.currentTimeMillis();
-        return runningTime + (long)((endTime - startTime) / 1000.0);
+        long endTime = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
+        return runningTime + endTime - startTime;
+    }
+
+    //gets the total score for the game
+    public long getScore()
+    {
+        return -5;
     }
 
     //stores solution to game
