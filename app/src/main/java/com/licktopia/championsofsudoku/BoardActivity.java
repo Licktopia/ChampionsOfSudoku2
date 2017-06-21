@@ -76,12 +76,15 @@ public class BoardActivity extends AppCompatActivity {
         mRedoButton = (ImageButton)findViewById(R.id.forwardButton);
         notepadIcon = (ImageButton) findViewById(R.id.scratch);
 
+
+
         mPlaySounds = new PlaySounds();
         mGame = new Game(level, this);//Game instance
+        size = mGame.totalBoardRows();
         startAnimationHandler = new Handler();
         squareViews = new SquareView[size * size];//array of 81 squareViews
         numberButtons = new Button[size];//keypad 1-9
-        size = mGame.totalBoardRows();
+
 
 
         updateUndoRedo();
@@ -168,7 +171,9 @@ public class BoardActivity extends AppCompatActivity {
         mChronometer.stop();
         super.onPause();
     }
-
+    /************************************
+     * Initialize all keypad buttons
+     *********************************/
     private void initializeButtons() {
         for (int i = 0; i < Tags.numberButtonTags.length; i++) {//getButtons
             numberButtons[i] = (Button) findViewById(Tags.numberButtonTags[i]);
@@ -180,7 +185,8 @@ public class BoardActivity extends AppCompatActivity {
 
     /************************************
      * Function binds 81 squareViews and sets
-     * number/color to starting value
+     * number/color to starting value with animation
+     * Then sets starts the clock
      *********************************/
     private void initializeBoard() {
         for (int i = 0; i < squareViews.length; i++) {//set up starting board
@@ -239,7 +245,9 @@ public class BoardActivity extends AppCompatActivity {
 
 
     }
-
+    /************************************
+     * Listener for toolbar icon
+     *********************************/
     private void toolbarButtonsListener(Toolbar toolbar) {
         toolbar.findViewById(R.id.home_menu_button).setOnClickListener(new View.OnClickListener() {
             @Override
