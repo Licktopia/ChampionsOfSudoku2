@@ -13,6 +13,7 @@ import android.widget.RelativeLayout;
 
 public class SquareView {
 
+    private static final float colorSquareTransparency = .8f;
     private Context context;
     private RelativeLayout squareHolder;
     private RelativeLayout highlight;
@@ -74,8 +75,10 @@ public class SquareView {
     public void setSquareColor(int n) {
         if (n == 0)
             squareHolder.setBackground(null);   // Remove display object
-        else
+        else {
             color.setBackground(context.getDrawable(Tags.colors[n - 1])); // Set background image
+            squareHolder.setAlpha(colorSquareTransparency);
+        }
     }
 
 

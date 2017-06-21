@@ -3,6 +3,8 @@ package com.licktopia.championsofsudoku;
 import android.content.Context;
 import android.media.MediaPlayer;
 
+import com.licktopia.championsofsudoku.Settings.SudokuSettings;
+
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -11,13 +13,16 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class PlaySounds {
     private MediaPlayer mp = null;
-    private boolean mute = false;
+
+    public void setMute(boolean mute) {
+        this.mute = mute;
+    }
+
+    private boolean mute;
     public void playSounds(Context context, int sound){
 
-        // if(mp!=null&&(mp.isPlaying()||mp.isLooping())){
-        // mp.stop();
-        //mp.release();
-        //}
+        SudokuSettings settings = new SudokuSettings(context);
+        mute = settings.getSoundPreference();
         if(!mute){
 
             if(sound ==1) {

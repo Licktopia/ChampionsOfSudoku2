@@ -176,6 +176,8 @@
             android:layout_centerVertical="true"
             android:gravity="center"
             android:includeFontPadding="false"
+            android:scaleX=".75"
+            android:scaleY=".75"
             android:textColor="@android:color/black"
             android:textSize="28sp" />
 

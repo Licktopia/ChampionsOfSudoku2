@@ -37,20 +37,14 @@ public class MainMenuActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main_menu);
         mLevelSelect = (LinearLayout)findViewById(R.id.level_select);
         mModeSelect = (LinearLayout)findViewById(R.id.mode_select);
+        mPlaySounds = new PlaySounds();
         initAnimation();
         levelButtonInitialize();
         modeButtonInitialize();
         menuBackInitialize();
         setMessage();
-        mPlaySounds = new PlaySounds();
         initializeLick();
         initializeShareBar();
-
-
-
-
-
-
     }
 
     private void initializeShareBar() {

@@ -3,8 +3,11 @@ package com.licktopia.championsofsudoku;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.ActivityOptions;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -20,6 +23,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.licktopia.championsofsudoku.Settings.SudokuSettings;
+import com.licktopia.championsofsudoku.Settings.SudokuSettingsActivity;
 import com.licktopia.championsofsudoku.Sudoku.Board;
 import com.licktopia.championsofsudoku.Sudoku.Game;
 
@@ -30,11 +35,15 @@ import static android.view.View.GONE;
 
 public class BoardActivity extends AppCompatActivity {
 
+    PlaySounds mPlaySounds;
+    SudokuSettings settings;
     private SquareView[] squareViews;
     private int selectedSquare = -1;
     private boolean colorGame = false;
     private boolean rowColHighlights = true;
     private boolean keyboardState = true;
+    private boolean allAllhighlights = true;
+    private boolean solvedState = false;
     private Game mGame;
     private int level = 1;
     private boolean smallNumPadState = false;
@@ -52,9 +61,9 @@ public class BoardActivity extends AppCompatActivity {
         setContentView(R.layout.activity_board);
         colorGame = getIntent().getExtras().getBoolean("COLOR_MODE");
         level = getIntent().getExtras().getInt("LEVEL"); //gets Store Number from start screen activity
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         RelativeLayout toolbarContainer = (RelativeLayout)findViewById(R.id.toolbar_container);
+        mPlaySounds = new PlaySounds();
         this.setSupportActionBar(toolbar);
         mGame = new Game(level, this);//Game instance
         size = mGame.totalBoardRows();
@@ -64,8 +73,16 @@ public class BoardActivity extends AppCompatActivity {
 
         initializeButtons();
         initializeBoard();//get starting board
-        listeners();//set all listeners for BoardActivity layout
+        listeners(toolbar);//set all listeners for BoardActivity layout
         customizeLayout();
+    }
+
+    @Override
+    protected void onResume() {
+        settings = new SudokuSettings(this);
+        allAllhighlights = settings.getHighlightPreference();
+        mPlaySounds.setMute(settings.getSoundPreference());
+        super.onResume();
     }
 
 
@@ -100,9 +117,10 @@ public class BoardActivity extends AppCompatActivity {
     /************************************
      * Calls appropriate listener functions
      *********************************/
-    public void listeners() {
+    public void listeners(Toolbar toolbar) {
         squareListeners();
         keyboardDownButtonListener();
+        toolbarButtonsListener(toolbar);
         if(selectedSquare>-1) {
             numberListeners();
             smallNumPadListener();
@@ -110,6 +128,16 @@ public class BoardActivity extends AppCompatActivity {
         }
 
 
+    }
+
+    private void toolbarButtonsListener(Toolbar toolbar) {
+        toolbar.findViewById(R.id.home_menu_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                homeClick();
+
+            }
+        });
     }
 
     /************************************
@@ -404,7 +432,7 @@ public class BoardActivity extends AppCompatActivity {
 
         return true;
     }
-
+*/
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -413,110 +441,57 @@ public class BoardActivity extends AppCompatActivity {
         int id = item.getItemId();
 
 
-        //noinspection SimplifiableIfStatement
-        if (id == com.licktopia.championsofsudoku.R.id.new_board) {
-            mChronometer.stop();
-            if(solvedState==false) {
-
-
-                closeKeyboard();
-
-                for (int i = 0; i < 81; i++) {
-                    //mBigNum[i] = (TextView) findViewById(bigNumTags[i]);
-                    mBigNum[i].setText(null);
-                    mRelLay[i].setBackgroundColor(WHITE);
-                    mBigNum[i].setVisibility(View.VISIBLE);
-                    //mSmallGrid[i].setVisibility(View.VISIBLE);
-                    //mRelLay[i].setClickable(true);
-                    //for (int j = 0; j < 9; j++) {
-                    // mSmallNums[i][j].setVisibility(View.INVISIBLE);
-                    //mSmallNums[i][j].setText("");
-                    //}
-
-                }
-
-                mBottomLayout.setVisibility(View.GONE);
-
-
-                continueFunction();
-
-            }
-            return true;
-        }
-
-
-        if (id == com.licktopia.sudokutopia.R.id.action_share) {
-            share();
-        }
-
-        if (id == R.id.action_logout) {
-            gameHelper.signOut();
-
-            Toast.makeText(MainActivity.this, "Logging out..." , Toast.LENGTH_SHORT).show();
-            clickedOut = true;
-            updateUi(false);
-            boolean change = myDb.changeUser(currentGamerName,currentGamerId,myStats.XP);
-            if(change){
-                // Toast.makeText(MainActivity.this, "Changed successfully" , Toast.LENGTH_SHORT).show();
-            }
-            else{
-                Toast.makeText(MainActivity.this, "Not Changed" , Toast.LENGTH_SHORT).show();
-            }
-
-
-        }
-        if (id == R.id.action_login) {
-
-            gameHelper.beginUserInitiatedSignIn();
-
-        }
-        if (id == R.id.action_instructions) {
-            if (solvedState == false) {
-                Intent intent = new Intent(this, InstructionsActivity.class);
-
-                if(!isOld) {
-                    ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(this);//fade in out transition
-                    startActivity(intent, options.toBundle());
-                }
-                else{
-                    startActivity(intent);
-                }
-            }
-        }
-        if (id == R.id.action_about) {
-            if (solvedState == false) {
-                Intent intent = new Intent(this, AboutActivity.class);
-                if(!isOld) {
-                    ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(this);//fade in out transition
-                    startActivity(intent, options.toBundle());
-                }
-                else{
-                    startActivity(intent);
-                }
-            }
-        }
         if (id == R.id.settingsMenu) {
             Intent intent = new Intent(this, SudokuSettingsActivity.class);
-            if(!isOld) {
-                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(this);//fade in out transition
-                startActivity(intent, options.toBundle());
-            }
-            else{
+
+
                 startActivity(intent);
-            }
 
-        }
-
-        if (id == R.id.save_and_exit) {
-
-            Toast.makeText(MainActivity.this, R.string.coming_soon, Toast.LENGTH_SHORT).show();//show warning
 
         }
 
         return true;
 
     }
-    */
+
+    @Override
+    public void onBackPressed() {
+        final Intent intent = new Intent(BoardActivity.this, MainMenuActivity.class);//state intent to go to Shopping Cart Activity
+        if(!solvedState) {
+            new AlertDialog.Builder(this)
+                    .setMessage(getString(R.string.are_you_sure))
+                    .setCancelable(true)
+                    .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            startActivity(intent);//GO
+                        }
+                    })
+                    .setNegativeButton(getString(R.string.no), null)
+                    .show();
+        }
+        else{
+            startActivity(intent);//GO
+        }
+    }
+    private void homeClick() {
+        final Intent intent = new Intent(BoardActivity.this, MainMenuActivity.class);//state intent to go to Shopping Cart Activity
+        if(!solvedState) {
+            new AlertDialog.Builder(this)
+                    .setMessage(getString(R.string.quit_to_menu))
+                    .setCancelable(true)
+                    .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            startActivity(intent);//GO
+                        }
+                    })
+                    .setNegativeButton(getString(R.string.no), null)
+                    .show();
+        }
+        else{
+            startActivity(intent);//GO
+        }
+    }
+
 }
 
 
