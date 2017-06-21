@@ -2,14 +2,11 @@ package com.licktopia.championsofsudoku;
 
 import android.animation.ObjectAnimator;
 import android.content.Context;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-
-import static android.graphics.Color.BLACK;
 
 /**
  * Handles state changes for the display of an individual Sudoku square
@@ -17,8 +14,8 @@ import static android.graphics.Color.BLACK;
 
 public class SquareView {
 
-    private static final float colorSquareTransparency = .8f;
-    private static final float colorSquareScaleFactor = .9f;
+    private static final float COLOR_SQUARE_TRANSPARENCY = .8f;
+    private static final float COLOR_SQUARE_SCALE_FACTOR = .9f;
 
     private Context context;
     private RelativeLayout squareHolder;
@@ -83,7 +80,7 @@ public class SquareView {
             squareHolder.setBackground(null);   // Remove display object
         else {
             color.setBackground(context.getDrawable(Tags.colors[n - 1])); // Set background image
-            squareHolder.setAlpha(colorSquareTransparency);
+            squareHolder.setAlpha(COLOR_SQUARE_TRANSPARENCY);
         }
     }
 
@@ -109,7 +106,7 @@ public class SquareView {
             color.setAlpha(0f);
             color.setBackground(context.getDrawable(Tags.colors[n - 1])); // Set background image
             ObjectAnimator mainFade = ObjectAnimator.ofFloat(color, "alpha", 0, 1);
-            ObjectAnimator mainFade2 = ObjectAnimator.ofFloat(squareHolder, "alpha", 1, colorSquareTransparency);
+            ObjectAnimator mainFade2 = ObjectAnimator.ofFloat(squareHolder, "alpha", 1, COLOR_SQUARE_TRANSPARENCY);
             mainFade.setDuration(700);
             mainFade2.setDuration(700);
             mainFade.start();

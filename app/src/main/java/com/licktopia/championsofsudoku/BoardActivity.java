@@ -32,9 +32,10 @@ import static android.view.View.GONE;
 
 public class BoardActivity extends AppCompatActivity {
 
-    PlaySounds mPlaySounds;
-    Chronometer mChronometer;
-    SudokuSettings settings;
+    private static final float UNDOREDOALPHA = .45f;
+    private PlaySounds mPlaySounds;
+    private Chronometer mChronometer;
+    private SudokuSettings settings;
     private Handler startAnimationHandler;
     private SquareView[] squareViews;
     private int selectedSquare = -1;
@@ -48,6 +49,8 @@ public class BoardActivity extends AppCompatActivity {
     private boolean smallNumPadState = false;
     private Button[] numberButtons;
     private Button clearButton;
+    private ImageButton mUndoButton;
+    private ImageButton mRedoButton;
     private ImageButton notepadIcon;
     private RelativeLayout numberPadButtonBackground;
     private ImageButton keyboardDownButton;
@@ -60,30 +63,80 @@ public class BoardActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_board);
+        //pass in mode and level
         colorGame = getIntent().getExtras().getBoolean("COLOR_MODE");
         level = getIntent().getExtras().getInt("LEVEL"); //gets Store Number from start screen activity
+        //initialize actiion bar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        RelativeLayout toolbarContainer = (RelativeLayout)findViewById(R.id.toolbar_container);
-        notepadIcon = (ImageButton) findViewById(R.id.scratch);
-        mPlaySounds = new PlaySounds();
         this.setSupportActionBar(toolbar);
+        RelativeLayout toolbarContainer = (RelativeLayout)findViewById(R.id.toolbar_container);
+        //bindings
+        mChronometer = (Chronometer)findViewById(com.licktopia.championsofsudoku.R.id.chronometer);
+        mUndoButton = (ImageButton)findViewById(R.id.backButton);
+        mRedoButton = (ImageButton)findViewById(R.id.forwardButton);
+        notepadIcon = (ImageButton) findViewById(R.id.scratch);
+
+        mPlaySounds = new PlaySounds();
         mGame = new Game(level, this);//Game instance
         startAnimationHandler = new Handler();
-        size = mGame.totalBoardRows();
-        //size = 9;
         squareViews = new SquareView[size * size];//array of 81 squareViews
         numberButtons = new Button[size];//keypad 1-9
+        size = mGame.totalBoardRows();
 
+
+        updateUndoRedo();
         initializeButtons();
         initializeBoard();//get starting board
         customizeLayout();
         listeners(toolbar);//set all listeners for BoardActivity layout
-        mChronometer = (Chronometer)findViewById(com.licktopia.championsofsudoku.R.id.chronometer);
+
+
+
 
 
 
     }
+    /************************************
+     * Initialize undo redo buttons and sets
+     *********************************/
+    private void undoRedoListener() {
 
+        mUndoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+        mRedoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+    }
+
+    /************************************
+     * Dims or brightens undo redo buttons
+     * if undo or redo is not possible or possible
+     *********************************/
+    private void updateUndoRedo() {
+        if(mGame.canUndo()){
+            mUndoButton.setAlpha(1);
+        }
+        else{
+            mUndoButton.setAlpha(UNDOREDOALPHA);
+        }
+        if(mGame.canRedo()){
+            mRedoButton.setAlpha(1);
+        }
+        else{
+            mRedoButton.setAlpha(UNDOREDOALPHA);
+        }
+    }
+
+    /************************************
+     * Starts Chronometer for the first time
+     *********************************/
     private void startTimer() {
         mGame.unpauseTimer();
         mGame.getRunningTime();
@@ -181,6 +234,7 @@ public class BoardActivity extends AppCompatActivity {
         numberListeners();
         smallNumPadListener();
         clearButtonLisener();
+        undoRedoListener();
 
 
 
