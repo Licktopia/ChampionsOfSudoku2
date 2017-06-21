@@ -165,13 +165,14 @@ public class Game
 
 
     //returns the total number of elements in the board
-    protected  int totalBoardElements() {return curBoard.totalBoardElements(); }
+    public  int totalBoardElements() {return curBoard.totalBoardElements(); }
 
     //returns the total number of rows in the board
-    protected  int totalBoardRows() {return curBoard.totalBoardRows(); }
+    public  int totalBoardRows() {return curBoard.totalBoardRows(); }
 
     //returns the total number of columns in the board
-    protected  int totalBoardCols() {return curBoard.totalBoardCols(); }
+    public  int totalBoardCols() {return curBoard.totalBoardCols(); }
 
-
+    //returns the column/row size of a cluster
+    public  int getClusterSize() {return curBoard.getClusterSize(); }
 }

@@ -6,17 +6,16 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
-import com.licktopia.championsofsudoku.Sudoku.Board;
 
 /**
  * Handles state changes for the display of an individual Sudoku square
  */
 
-public class Square {
+public class SquareView {
 
     private Context context;
     private RelativeLayout squareHolder;
+    private RelativeLayout highlight;
     private ImageView number;
     private RelativeLayout color;
     private ImageView art;
@@ -29,11 +28,11 @@ public class Square {
     }
 
     /* Constructor */
-    public Square(Context context, RelativeLayout squareHolder) {
+    public SquareView(Context context, RelativeLayout squareHolder) {
 
         this.context = context;
         this.squareHolder = squareHolder;
-        this.notepadNums = new ImageView[Board.SIZE];
+        this.notepadNums = new ImageView[9];
 
         inflateSquareHolder();
     }
@@ -43,7 +42,8 @@ public class Square {
     private void inflateSquareHolder() {
         LayoutInflater li = LayoutInflater.from(context);
 
-        View v = li.inflate(R.layout.square, null);
+        View v = li.inflate(R.layout.squareView, null);
+        highlight = (RelativeLayout) v.findViewById(R.id.highlight);
         number = (ImageView) v.findViewById(R.id.squareNumber);
         color = (RelativeLayout) v.findViewById(R.id.squareColor);
         art = (ImageView) v.findViewById(R.id.squareArt);
@@ -70,7 +70,7 @@ public class Square {
             number.setImageDrawable(context.getDrawable(Tags.numberImageTags[n - 1])); // Set background image
     }
 
-    /* Set number displayed in square */
+    /* Set color displayed in square */
     public void setSquareColor(int n) {
         if (n == 0)
             squareHolder.setBackground(null);   // Remove display object
@@ -101,7 +101,10 @@ public class Square {
 
 
     /* Sets highlight state of current square */
-    public void setHighlight() {
-        //TODO
+    public void setHighlighted(boolean highlighted) {
+        if (highlighted)
+            highlight.setBackgroundColor(context.getColor(R.color.colorHighLight)); // Set to highlighted
+        else
+            highlight.setBackgroundColor(context.getColor(R.color.white)); // Remove highlight
     }
 }

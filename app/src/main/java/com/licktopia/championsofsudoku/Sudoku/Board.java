@@ -307,6 +307,11 @@ public class Board {
             return  SIZE;
     }
 
+    //gets the length for both the rows and columns of a cluster
+    protected int getClusterSize() {
+        return CLUSTER_SIZE;
+    }
+
     //returns the total number of elements in the board
     protected  int totalBoardElements() {return totalBoardRows() * totalBoardCols(); }
 

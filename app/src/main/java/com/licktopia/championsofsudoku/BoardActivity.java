@@ -1,8 +1,5 @@
 package com.licktopia.championsofsudoku;
 
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
-import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -13,12 +10,9 @@ import android.widget.RelativeLayout;
 import com.licktopia.championsofsudoku.Sudoku.Board;
 import com.licktopia.championsofsudoku.Sudoku.Game;
 
-import static android.graphics.Color.WHITE;
-import static android.view.View.GONE;
-
 public class BoardActivity extends AppCompatActivity {
 
-    private Square[] squares;
+    private SquareView[] squareViews;
     private int selectedSquare = -1;
     private boolean colorGame = false;
     private boolean rowColHighlights = true;
@@ -30,16 +24,18 @@ public class BoardActivity extends AppCompatActivity {
     private RelativeLayout numberPadButton;
     private ImageButton keyboardDownButton;
     private Board mBoard;
+    private int size;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_board);
-        squares = new Square[Board.SIZE * Board.SIZE];//array of 81 squares
         mGame = new Game(level, this);//Game instance
-        mBoard= new Board(level,this); //test passing in "Easy level"
-        numberButtons = new Button[Board.SIZE];//keypad 1-9
+        mBoard = new Board(level,this); //test passing in "Easy level"
+        size = mGame.totalBoardRows();
+        squareViews = new SquareView[size * size];//array of 81 squareViews
+        numberButtons = new Button[size];//keypad 1-9
 
 
         initializeButtons();
@@ -58,20 +54,21 @@ public class BoardActivity extends AppCompatActivity {
         numberPadButton = (RelativeLayout) findViewById(R.id.scratch_bg);
         keyboardDownButton = (ImageButton)findViewById(R.id.down);
     }
+
     /************************************
-     * Function binds 81 squares and sets
+     * Function binds 81 squareViews and sets
      * number/color to starting value
      *********************************/
     private void initializeBoard() {
-        for(int i = 0; i < squares.length; i++) {//set up starting board
+        for(int i = 0; i < squareViews.length; i++) {//set up starting board
             RelativeLayout rl = (RelativeLayout) findViewById(Tags.squareTags[i]); // get Relative layout
-            squares[i] = new Square(this, rl);
+            squareViews[i] = new SquareView(this, rl);
             if(mGame.setBoardValueAt(i)) {
                 if(!colorGame) {//set number
-                    squares[i].setBigNumber(mGame.getBoardValueAt(i));
+                    squareViews[i].setBigNumber(mGame.getBoardValueAt(i));
                 }
                 else{//set color
-                    squares[i].setSquareColor(mGame.getBoardValueAt(i));
+                    squareViews[i].setSquareColor(mGame.getBoardValueAt(i));
 
                 }
             }
@@ -164,13 +161,13 @@ public class BoardActivity extends AppCompatActivity {
 
     }
     /************************************
-     * Listeners for 81 squares
+     * Listeners for 81 squareViews
      *********************************/
     private void squareListeners() {
-        for(int i = 0; i <81; i++){
+        for(int i = 0; i < (size * size); i++){
             final int finalI = i;
             final int finalI1 = i;
-            squares[i].getSquareHolder().setOnClickListener(new View.OnClickListener() {
+            squareViews[i].getSquareHolder().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
@@ -183,7 +180,7 @@ public class BoardActivity extends AppCompatActivity {
      * Listeners for keypad 1-9
      *********************************/
     private void numberListeners(){
-        for(int i = 0; i<Board.SIZE; i++){
+        for(int i = 0; i < size; i++){
             final int finalI = i;
             numberButtons[i].setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -207,15 +204,15 @@ public class BoardActivity extends AppCompatActivity {
             RelativeLayout notepadBackground = (RelativeLayout)findViewById(R.id.scratch_bg);
             if (smallNumPadState) {
                 smallNumPadState = false;
-                notepadBackground.setBackgroundColor(getResources().getColor(R.color.colorKeypad));
+                notepadBackground.setBackgroundColor(getColor(R.color.colorKeypad));
 
             } else {
                 smallNumPadState = true;
                 if(!colorGame) {
-                    notepadBackground.setBackgroundColor(getResources().getColor(R.color.notepadNumberHighlight));
+                    notepadBackground.setBackgroundColor(getColor(R.color.notepadNumberHighlight));
                 }
                 else{
-                    notepadBackground.setBackgroundColor(getResources().getColor(R.color.notepadColorHighlight));
+                    notepadBackground.setBackgroundColor(getColor(R.color.notepadColorHighlight));
                 }
             }
         }
@@ -230,12 +227,36 @@ public class BoardActivity extends AppCompatActivity {
     }
 
 
+    private void removeAllHighlights() {
+        for (int i = 0; i < squareViews.length; i++) {
+            squareViews[i].setHighlighted(false);
+        }
+    }
+
 
     public void squareCommands(int squareNumber){
-        selectedSquare = squareNumber;
 
+        // Get location information for selected square
+        selectedSquare = squareNumber;
+        int row = selectedSquare / size;
+        int col = selectedSquare % size;
+        int clusterSize = mGame.getClusterSize();
+        int cluster = ((row / clusterSize) * clusterSize) + (col / clusterSize);
+
+        // Set highlights for every square based on selection
+        for (int i = 0; i < squareViews.length; i++) {
+            // Get location info for each
+            int iRow = i / size;
+            int iCol = i % size;
+            int iCluster = ((iRow / clusterSize) * clusterSize) + (iCol / clusterSize);
+            if (iRow == row || iCol == col || iCluster == cluster)
+                squareViews[i].setHighlighted(true); // Set true if current square is connected to selected
+            else
+                squareViews[i].setHighlighted(false);
+        }
 
     };
+
     private void numberCommands(int keypadNumber){
         if(selectedSquare>-1){
 
@@ -244,7 +265,7 @@ public class BoardActivity extends AppCompatActivity {
     }
     private void customizeLayout(){
         /////set keypad colors
-        for(int i=0; i<Board.SIZE;i++){
+        for(int i=0; i < size; i++){
             if(!colorGame){
                 numberButtons[i].setBackgroundColor(getResources().getColor(R.color.colorKeypad));
                 numberButtons[i].setText(i+1);
