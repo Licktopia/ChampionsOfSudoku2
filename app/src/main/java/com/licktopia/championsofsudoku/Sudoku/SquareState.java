@@ -28,7 +28,7 @@ public class SquareState
             throw new InvalidCol();
         }
         //must be a 3x3 matrix
-        else if(notepad.length < 1 || notepad.length > 3)
+        else if(notepad.length != boardSize)
         {
             throw new InvalidNotepad();
         }

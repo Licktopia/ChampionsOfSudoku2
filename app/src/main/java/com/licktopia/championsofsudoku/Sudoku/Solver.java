@@ -41,11 +41,11 @@ class Solver {
                     testVal++;
 
                     //if all options have been tried for this cell then go back
-                    if(testVal > 9)
+                    if(testVal > curBoard.getSize())
                     {
                         //loop until a non-starting value is found
                         //which also can have a valid entry
-                        while(i >= 0 && testVal > 9)
+                        while(i >= 0 && testVal > curBoard.getSize())
                         {
                             //blank out the square with all of its options exhausted
                             curBoard.setValueAt(i, 0);
