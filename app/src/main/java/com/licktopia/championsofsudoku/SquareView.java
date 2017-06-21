@@ -14,6 +14,7 @@ import android.widget.RelativeLayout;
 public class SquareView {
 
     private static final float colorSquareTransparency = .8f;
+    private static final float colorSquareScaleFactor = .9f;
     private Context context;
     private RelativeLayout squareHolder;
     private RelativeLayout highlight;
