@@ -36,7 +36,16 @@ public class SquareState
         this.row = row;
         this.col = col;
         this.value = value;
-        this.notepad = notepad.clone();
+
+        this.notepad = new boolean [notepad.length][notepad[0].length];
+
+        for(int i = 0; i < notepad.length; i++)
+        {
+            for(int j = 0; j < notepad[i].length; j++)
+            {
+                this.notepad[i][j] = notepad[i][j];
+            }
+        }
         this.boardSize = boardSize;
     }
 

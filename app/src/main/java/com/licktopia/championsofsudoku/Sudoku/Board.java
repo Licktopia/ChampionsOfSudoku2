@@ -11,10 +11,9 @@ import java.util.Stack;
 
 public class Board {
 
-    public static int SIZE = 9;         // Board size
+    private static int SIZE = 9;         // Board size
     private static int CLUSTER_SIZE = 3; // Size of N x N cluster
     private Square[][] contents;           // Holds values of the sudoku puzzle
-    private boolean[][] startingValue;  // Tracks which values are part of the starting board
     private int openSquares;            // Tracks how many squares are empty
 
 
@@ -29,17 +28,41 @@ public class Board {
         }
 
         contents = new Square[SIZE][SIZE];
-        startingValue = new boolean[SIZE][SIZE];
         openSquares = 0;
 
         // Copy parameter values into contents array
         for (int i = 0; i < values.length; i++) {
             if (values[i] != 0) {   // Non-empty square
-                contents[i / SIZE][i % SIZE] = new Square(values[i]);
-                startingValue[i / SIZE][i % SIZE] = true;
+                contents[i / SIZE][i % SIZE] = new Square(values[i], true);
             }
             else                    // Empty square
+            {
+                contents[i / SIZE][i % SIZE] = new Square(values[i], false);
                 openSquares++;
+            }
+
+
+        }
+    }
+
+    //creates exact copy of passed board
+    protected Board(Board oldBoard)
+    {
+
+
+        contents = new Square[SIZE][SIZE];
+        openSquares = 0;
+
+        // copy all data from oldBoard into this
+        for (int i = 0; i < this.totalBoardRows(); i++) {
+            for (int j = 0; j < this.totalBoardCols(); j++) {
+
+                contents[i][j] = new Square(oldBoard.getValueAt(i, j), oldBoard.isStartingValue(i, j));
+                for(int k = 1; k <= 9; k ++)
+                {
+                    this.setNotepadAt(i, j, k, oldBoard.getNotepadAt(i, j, k));
+                }
+            }
         }
     }
 
@@ -54,7 +77,7 @@ public class Board {
 
         if (value < 0 || value > SIZE)      // Check value input
             return problemSqrs;
-        if (startingValue[row][col])        // Check not trying to change a starting value
+        if (contents[row][col].isStartingValue())        // Check not trying to change a starting value
             return problemSqrs;
 
         boolean isValid = false;
@@ -81,21 +104,54 @@ public class Board {
         return problemSqrs;
     }
 
+    //sets value of square given the index
+    //returns empty stack if successful
+    //returns ids of problem squares in stack if failed
+    protected Stack<Integer> setValueAt(int idx, int value) {
+        return this.setValueAt(idxToRow(idx), idxToCol(idx), value);
+    }
+
 
     /* Get value at given row/column */
     protected int getValueAt(int row, int col) {
         return contents[row][col].getValue();
     }
 
-    void setNotepadAt(int row, int col, int num, boolean value) {
+    //gets value of square given the index
+    protected int getValueAt(int idx) {
+        return this.getValueAt(idxToRow(idx), idxToCol(idx));
+    }
+
+    protected void setNotepadAt(int row, int col, int num, boolean value) {
         contents[row][col].setNotepad(num, value);
     }
 
-    boolean getNotepadAt(int row, int col, int num) {
+    //set cell notepad value for given num
+    //for a square given its index for a single dimensional array of the board
+    protected void setNotepadAt(int idx, int num, boolean value) {
+        this.setNotepadAt(idxToRow(idx), idxToCol(idx), num, value);
+    }
+
+    protected boolean getNotepadAt(int row, int col, int num) {
         return contents[row][col].getNotepad(num);
     }
 
+    //get cell notepad value for given num
+    protected boolean getNotepadAt(int idx, int num) {
+        return this.getNotepadAt(idxToRow(idx), idxToCol(idx), num);
+    }
 
+    //return if a square at row, col is a starting value
+    protected boolean isStartingValue(int row, int col)
+    {
+        return contents[row][col].isStartingValue();
+    }
+
+    //return if a square at the index is a starting value
+    protected boolean isStartingValue(int idx)
+    {
+        return this.isStartingValue(idxToRow(idx), idxToCol(idx));
+    }
 
 
     /* Returns whether or not every space has been filled */
@@ -187,7 +243,7 @@ public class Board {
     public void resetToStart() {
         for (int i = 0; i < SIZE; i++) {
             for (int j = 0; j < SIZE; j++) {
-                if(!startingValue[i][j])
+                if(!contents[i][j].isStartingValue())
                     contents[i][j].setValue(0);
             }
         }
@@ -249,5 +305,34 @@ public class Board {
     protected int getSize()
     {
             return  SIZE;
+    }
+
+    //returns the total number of elements in the board
+    protected  int totalBoardElements() {return totalBoardRows() * totalBoardCols(); }
+
+    //returns the total number of rows in the board
+    protected  int totalBoardRows() {return contents.length; }
+
+    //returns the total number of columns in the board
+    protected  int totalBoardCols() {return contents[0].length; }
+
+    //retuns the current state of a square at row, col
+    protected  SquareState getState(int row, int col) {return contents[row][col].saveState(row, col, SIZE);}
+
+    //retuns the current state of a square at idx
+    protected  SquareState getState(int idx) {return this.getState(idxToRow(idx), idxToCol(idx));}
+
+    //given an index for a single dimensional array of the board
+    //converts it into the correct row of a 2d board array
+    private int idxToRow(int idx)
+    {
+        return idx / this.getSize();
+    }
+
+    //given an index for a single dimensional array of the board
+    //converts it into the correct column of a 2d board array
+    private int idxToCol(int idx)
+    {
+        return idx % this.getSize();
     }
 }

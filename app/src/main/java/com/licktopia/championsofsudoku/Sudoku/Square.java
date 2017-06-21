@@ -8,12 +8,14 @@ package com.licktopia.championsofsudoku.Sudoku;
 //Represents a single cell on a Sudoku board
 class Square
 {
+    private boolean isStartingValue;
     private boolean[][] notepad;
     private int value = -1;
-    protected Square(int entry)
+    protected Square(int entry, boolean isStartingValue)
     {
         notepad = new boolean[3][3];
         this.value = entry;
+        this.isStartingValue = isStartingValue;
     }
 
     //num is the value which is the current state of the notepad
@@ -128,6 +130,11 @@ class Square
             this.setNotepad(i, state.getNotepad(i));
         }
         this.setValue(state.getValue());
+    }
+
+    protected boolean isStartingValue()
+    {
+        return this.isStartingValue;
     }
 
 }

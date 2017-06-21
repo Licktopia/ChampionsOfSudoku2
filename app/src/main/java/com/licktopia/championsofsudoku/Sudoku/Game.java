@@ -1,6 +1,8 @@
 package com.licktopia.championsofsudoku.Sudoku;
 
 import android.content.Context;
+
+import java.util.Queue;
 import java.util.Stack;
 
 /**
@@ -21,7 +23,13 @@ public class Game
     //context is need to load from assets folder
     public Game(int level, Context ctx)
     {
+
         curBoard = new Board(level, ctx);
+        solutionSolver = new Solver(curBoard);
+        if(solutionSolver.solve() == null)
+        {
+            System.err.printf("Game cannot be solved!\n");
+        }
     }
 
     private Board curBoard;
@@ -37,7 +45,7 @@ public class Game
     //returns empty stack if successful
     //returns ids of problem squares in stack if failed
     public Stack<Integer> setBoardValueAt(int idx, int value) {
-        return this.curBoard.setValueAt(idxToRow(idx), idxToCol(idx), value);
+        return this.curBoard.setValueAt(idx, value);
     }
 
     //gets value of square given row and col
@@ -47,13 +55,26 @@ public class Game
 
     //gets value of square given the index
     public int getBoardValueAt(int idx) {
-        return curBoard.getValueAt(idxToRow(idx), idxToCol(idx));
+        return curBoard.getValueAt(idx);
+    }
+
+    //return if a square at the index is a starting value
+    public boolean isStartingValue(int idx)
+    {
+        return curBoard.isStartingValue(idx);
+    }
+
+
+    //return if a square at row, col is a starting value
+    public boolean isStartingValue(int row, int col)
+    {
+        return curBoard.isStartingValue(row, col);
     }
 
     //set cell notepad value for given num
     //for a square given its index for a single dimensional array of the board
     public void setBoardNotepadAt(int idx, int num, boolean value) {
-        this.curBoard.setNotepadAt(idxToRow(idx), idxToCol(idx), num, value);
+        this.curBoard.setNotepadAt(idx, num, value);
     }
 
     //set cell notepad value for given num
@@ -64,7 +85,7 @@ public class Game
     //gets the notepad value for boolean num
     // for a square given its index for a single dimensional array of the board
     public boolean getBoardNotepadAt(int idx, int num) {
-        return curBoard.getNotepadAt(idxToRow(idx), idxToCol(idx), num);
+        return curBoard.getNotepadAt(idx, num);
     }
 
     //get cell notepad value for given num
@@ -133,18 +154,24 @@ public class Game
         return runningTime + (long)((endTime - startTime) / 1000.0);
     }
 
-    //given an index for a single dimensional array of the board
-    //converts it into the correct row of a 2d board array
-    private int idxToRow(int idx)
+    //stores solution to game
+    private Solver solutionSolver;
+
+    //returns the steps required to solve from a blank board
+    public Queue<SquareState> getSolutionSteps()
     {
-        return idx / curBoard.getSize();
+        return solutionSolver.getSolvingSteps();
     }
 
-    //given an index for a single dimensional array of the board
-    //converts it into the correct column of a 2d board array
-    private int idxToCol(int idx)
-    {
-        return idx % curBoard.getSize();
-    }
+
+    //returns the total number of elements in the board
+    protected  int totalBoardElements() {return curBoard.totalBoardElements(); }
+
+    //returns the total number of rows in the board
+    protected  int totalBoardRows() {return curBoard.totalBoardRows(); }
+
+    //returns the total number of columns in the board
+    protected  int totalBoardCols() {return curBoard.totalBoardCols(); }
+
 
 }
