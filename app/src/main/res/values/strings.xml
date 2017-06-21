@@ -21,4 +21,6 @@
     <string name="Scoresummary">The score will always be hidden until the puzzle is solved. It cannot be toggled by clicking on it.</string>
     <string name="facebook_app_id">1540779445995070</string>
     <string name="save_exit">Save and Exit</string>
+    <string name="harder_puzzle_message">Harder puzzles will earn more XP</string>
+    <string name="app_url">https://play.google.com/store/apps/details?id=com.licktopia.sudokutopia</string>
 </resources>

@@ -48,6 +48,9 @@ public class BoardActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_board);
+        colorGame = getIntent().getExtras().getBoolean("COLOR_MODE");
+        level = getIntent().getExtras().getInt("LEVEL"); //gets Store Number from start screen activity
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         //RelativeLayout toolbarContainer = (RelativeLayout)findViewById(R.id.toolbar_container);
         this.setSupportActionBar(toolbar);
