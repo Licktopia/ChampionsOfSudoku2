@@ -1,21 +1,38 @@
 package com.licktopia.championsofsudoku;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.app.ActivityOptions;
+import android.content.Intent;
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.licktopia.championsofsudoku.Sudoku.Board;
 import com.licktopia.championsofsudoku.Sudoku.Game;
+
+import static android.graphics.Color.WHITE;
+import static android.view.View.GONE;
 
 public class BoardActivity extends AppCompatActivity {
 
     private SquareView[] squareViews;
     private int selectedSquare = -1;
-    private boolean colorGame = false;
+    private boolean colorGame = true;
     private boolean rowColHighlights = true;
+    private boolean keyboardState = true;
     private Game mGame;
     private int level = 1;
     private boolean smallNumPadState = false;
@@ -31,15 +48,18 @@ public class BoardActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_board);
-        mGame = new Game(level, this);//Game instance
-        mBoard = new Board(level,this); //test passing in "Easy level"
-        size = mGame.totalBoardRows();
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        //RelativeLayout toolbarContainer = (RelativeLayout)findViewById(R.id.toolbar_container);
+        this.setSupportActionBar(toolbar);
+        //mGame = new Game(level, this);//Game instance
+        //size = mGame.totalBoardRows();
+        size = 9;
         squareViews = new SquareView[size * size];//array of 81 squareViews
         numberButtons = new Button[size];//keypad 1-9
 
 
         initializeButtons();
-        initializeBoard();//get starting board
+        // initializeBoard();//get starting board
         listeners();//set all listeners for BoardActivity layout
         customizeLayout();
 
@@ -47,12 +67,12 @@ public class BoardActivity extends AppCompatActivity {
 
 
     private void initializeButtons() {
-        for(int i = 0; i < Tags.numberButtonTags.length; i++){//getButtons
-            numberButtons[i] = (Button)findViewById(Tags.numberButtonTags[i]);
+        for (int i = 0; i < Tags.numberButtonTags.length; i++) {//getButtons
+            numberButtons[i] = (Button) findViewById(Tags.numberButtonTags[i]);
         }
-        clearButton = (Button)findViewById(R.id.clear);
+        clearButton = (Button) findViewById(R.id.clear);
         numberPadButton = (RelativeLayout) findViewById(R.id.scratch_bg);
-        keyboardDownButton = (ImageButton)findViewById(R.id.down);
+        keyboardDownButton = (ImageButton) findViewById(R.id.down);
     }
 
     /************************************
@@ -60,127 +80,62 @@ public class BoardActivity extends AppCompatActivity {
      * number/color to starting value
      *********************************/
     private void initializeBoard() {
-        for(int i = 0; i < squareViews.length; i++) {//set up starting board
+        for (int i = 0; i < squareViews.length; i++) {//set up starting board
             RelativeLayout rl = (RelativeLayout) findViewById(Tags.squareTags[i]); // get Relative layout
             squareViews[i] = new SquareView(this, rl);
-            if(mGame.setBoardValueAt(i)) {
-                if(!colorGame) {//set number
+            if (mGame.getBoardValueAt(i) != 0) {
+                if (!colorGame) {//set number
                     squareViews[i].setBigNumber(mGame.getBoardValueAt(i));
-                }
-                else{//set color
+                } else {//set color
                     squareViews[i].setSquareColor(mGame.getBoardValueAt(i));
 
                 }
-            }
-            else{
+            } else {
 
             }
         }
     }
 
-    /************************************
-     * PreCheck checks if an entry is valid. Checks the
-     * state of the board to make sure it adheres
-     * to the rules of Sudoku. Returns true if valid,
-     * false if not valid.
-     *********************************/
-    public boolean preCheck(int[] board){
-        int[][] nowBoard = new int[9][9];
-        int count = 0;
-        for(int i = 0; i < 9; i++){
-            for (int j = 0; j<9; j++){
-                nowBoard[i][j] = board[count];
-                count++;
-            }
-        }
-
-        for (int i = 0; i < 9; i++)//for each row, column and cluster - outer of nested loop
-        {
-
-            int rowbank[] = { 0,0,0,0,0,0,0,0,0,0 };//create new empty row to fill
-            int colbank[] = { 0,0,0,0,0,0,0,0,0,0 };//create new empty column to fill
-            int clusterbank[] = { 0,0,0,0,0,0,0,0,0,0 };//create new empty cluster to fill
-
-            //SECTION CONVERTS CLUSTER INTO A FLAT ARRAY
-
-            int edgerow = 0;//Setting Edge parameters
-            int edgecol = 0;
-            edgecol = 3*((i + 3) % 3);
-
-            if (i == 3 || i == 4 || i ==5) { edgerow += 3; }
-            if (i == 6 || i == 7 || i == 8) { edgerow += 6; }
-
-            int val = 0;
-            int clusterArray[] = { 0,0,0,0,0,0,0,0,0 };//array that will hold cluster
-
-            for (int m = 0; m < 3; m++)
-            {
-                for (int p = 0; p < 3; p++)
-                {
-                    //copying current cluster into flat cluster Array
-                    clusterArray[val] = nowBoard[m + edgerow][p+edgecol];
-                    val++;
-                }
-            }
-
-            for (int j = 0; j < 9; j++)//puts number 1-9 into bank slot of number
-            {
-                if(rowbank[nowBoard[i][j]] == 0) {
-                    rowbank[nowBoard[i][j]] = nowBoard[i][j];
-                }
-                else {
-                    return false;
-                }
-                if(colbank[nowBoard[j][i]] == 0) {
-                    colbank[nowBoard[j][i]] = nowBoard[j][i];
-                }
-                else{
-                    return false;
-                }
-                //put value found in clustArrray[j] into empty cluster vector
-                if(clusterbank[clusterArray[j]] == 0) {
-                    clusterbank[clusterArray[j]] = clusterArray[j];
-                }
-                else{
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
 
     /************************************
      * Calls appropriate listener functions
      *********************************/
-    public void listeners(){
+    public void listeners() {
         squareListeners();
-        numberListeners();
-        smallNumPadListener();
-        clearButtonLisener();
         keyboardDownButtonListener();
+        if(selectedSquare>-1) {
+            numberListeners();
+            smallNumPadListener();
+            clearButtonLisener();
+        }
+
 
     }
+
     /************************************
      * Listeners for 81 squareViews
      *********************************/
     private void squareListeners() {
-        for(int i = 0; i < (size * size); i++){
+        for (int i = 0; i < (size * size); i++) {
             final int finalI = i;
             final int finalI1 = i;
+            RelativeLayout rl = (RelativeLayout) findViewById(Tags.squareTags[i]);
+            squareViews[i] = new SquareView(this, rl);
             squareViews[i].getSquareHolder().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
-                    squareCommands(finalI);
+                    //squareCommands(finalI);
                 }
             });
         }
     }
+
     /************************************
      * Listeners for keypad 1-9
      *********************************/
-    private void numberListeners(){
-        for(int i = 0; i < size; i++){
+    private void numberListeners() {
+        for (int i = 0; i < size; i++) {
             final int finalI = i;
             numberButtons[i].setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -190,52 +145,78 @@ public class BoardActivity extends AppCompatActivity {
             });
         }
     }
+
     /************************************
      * Listeners numberPadButton
      *********************************/
-    private void clearButtonLisener(){
+    private void clearButtonLisener() {
+        clearButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
+            }
+        });
     }
+
     /************************************
      * Listener numberPadButton
      *********************************/
     private void smallNumPadListener() {
-        if (selectedSquare > -1) {
-            RelativeLayout notepadBackground = (RelativeLayout)findViewById(R.id.scratch_bg);
-            if (smallNumPadState) {
-                smallNumPadState = false;
-                notepadBackground.setBackgroundColor(getColor(R.color.colorKeypad));
+        numberPadButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (selectedSquare > -1) {
+                    RelativeLayout notepadBackground = (RelativeLayout) findViewById(R.id.scratch_bg);
+                    if (smallNumPadState) {
+                        smallNumPadState = false;
+                        notepadBackground.setBackgroundColor(getColor(R.color.colorKeypad));
 
-            } else {
-                smallNumPadState = true;
-                if(!colorGame) {
-                    notepadBackground.setBackgroundColor(getColor(R.color.notepadNumberHighlight));
-                }
-                else{
-                    notepadBackground.setBackgroundColor(getColor(R.color.notepadColorHighlight));
+                    } else {
+                        smallNumPadState = true;
+                        if (!colorGame) {
+                            notepadBackground.setBackgroundColor(getColor(R.color.notepadNumberHighlight));
+                        } else {
+                            notepadBackground.setBackgroundColor(getColor(R.color.notepadColorHighlight));
+                        }
+                    }
                 }
             }
-        }
+        });
+
     }
+
     /************************************
      * Listener keboardDownButton
      *********************************/
-    private void keyboardDownButtonListener(){
-        selectedSquare = -1;
-        closeKeyboard();
-        removeAllHighlights();
+    private void keyboardDownButtonListener() {
+        keyboardDownButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectedSquare = -1;
+                closeKeyboard();
+                removeAllHighlights();
+            }
+        });
+
     }
 
-
+    /************************************
+     * Clears highlights from squares
+     *********************************/
     private void removeAllHighlights() {
         for (int i = 0; i < squareViews.length; i++) {
             squareViews[i].setHighlighted(false);
         }
     }
 
-
-    public void squareCommands(int squareNumber){
-
+    /************************************
+     * Logic for 81 squares
+     *********************************/
+    public void squareCommands(int squareNumber) {
+        if(!keyboardState){
+            openKeyboard();
+        }
+        removeAllHighlights();
         // Get location information for selected square
         selectedSquare = squareNumber;
         int row = selectedSquare / size;
@@ -255,87 +236,252 @@ public class BoardActivity extends AppCompatActivity {
                 squareViews[i].setHighlighted(false);
         }
 
-    };
+    }
 
-    private void numberCommands(int keypadNumber){
-        if(selectedSquare>-1){
+    /************************************
+     * Logic for 1-9 keypadbuttons
+     *********************************/
+    private void numberCommands(int keypadNumber) {
 
-        }
 
     }
-    private void customizeLayout(){
+
+    /************************************
+     * Number vs Color initial setup
+     *********************************/
+    private void customizeLayout() {
         /////set keypad colors
-        for(int i=0; i < size; i++){
-            if(!colorGame){
+        for (int i = 0; i < size; i++) {
+            if (!colorGame) {
                 numberButtons[i].setBackgroundColor(getResources().getColor(R.color.colorKeypad));
-                numberButtons[i].setText(i+1);
-            }
-            else{
-                numberButtons[i].setBackgroundColor(Tags.colors[i]);
+                numberButtons[i].setText(String.format("%d", i + 1));
+            } else {
+                numberButtons[i].setBackgroundColor(getResources().getColor(Tags.colors[i]));
                 numberButtons[i].setText("");
             }
         }
         /////reset all keypad buttons to original color
-        RelativeLayout notepadBackground = (RelativeLayout)findViewById(R.id.scratch_bg);
+        RelativeLayout notepadBackground = (RelativeLayout) findViewById(R.id.scratch_bg);
         notepadBackground.setBackgroundColor(getResources().getColor(R.color.colorKeypad));
         clearButton.setBackgroundColor(getResources().getColor(R.color.colorKeypad));
         keyboardDownButton.setBackgroundColor(getResources().getColor(R.color.colorKeypad));
 
         /////////set notepadbutton with correct image, color or number
-        ImageButton notepadIcon = (ImageButton)findViewById(R.id.scratch);
-        if(!colorGame){
+        ImageButton notepadIcon = (ImageButton) findViewById(R.id.scratch);
+        ImageView artHolder = (ImageView)findViewById(R.id.artHolder);
+        if (!colorGame) {
             notepadIcon.setImageDrawable(getResources().getDrawable(R.drawable.numbers));
-        }
-        else{
+            artHolder.setImageDrawable(null);
+
+        } else {
             notepadIcon.setImageDrawable(getResources().getDrawable(R.drawable.colors));
+            BackgroundImages mBackgroundImages = new BackgroundImages();
+            artHolder.setImageDrawable(getResources().getDrawable(mBackgroundImages.getImage()));
+            //int imageNumber = mBackgroundImages.getPictureNumber();
         }
 
 
     }
 
+    /************************************
+     * Close keyboard animation
+     *********************************/
     private void closeKeyboard() {
+        keyboardState=false;
+        removeAllHighlights();
+        LinearLayout mBottomLayout = (LinearLayout)findViewById(R.id.bottomLayout);
+        RelativeLayout mKeypad = (RelativeLayout) findViewById(R.id.keypad);
+        mBottomLayout.setVisibility(View.VISIBLE);
+
+        ObjectAnimator scalex = ObjectAnimator.ofFloat(mBottomLayout, "scaleY", 0, 1);
+        scalex.setDuration(50);
 
 
-           /*
-            mBottomLayout.setVisibility(View.VISIBLE);
-            mHintsLayout.setVisibility(View.VISIBLE);
+        ObjectAnimator scaley = ObjectAnimator.ofFloat(mKeypad, "scaleY", 1, 0);
+        scaley.setDuration(50);
+        AnimatorSet set2 = new AnimatorSet();
+        set2.playSequentially(scaley, scalex);
+        set2.start();
+        mKeypad.setVisibility(GONE);
 
-            ObjectAnimator scalex = ObjectAnimator.ofFloat(mBottomLayout, "scaleY", 0, 1);
+
+    }
+    /************************************
+     * Open keyboard animation
+     *********************************/
+    private void openKeyboard() {
+            keyboardState = true;
+            LinearLayout mBottomLayout = (LinearLayout)findViewById(R.id.bottomLayout);
+            RelativeLayout mKeypad = (RelativeLayout) findViewById(R.id.keypad);
+            mBottomLayout.setVisibility(View.GONE);
+
+            mKeypad.setVisibility(View.VISIBLE);
+            ObjectAnimator scalex = ObjectAnimator.ofFloat(mBottomLayout, "scaleY", 1, 0);
             scalex.setDuration(50);
 
-
-            ObjectAnimator scaley = ObjectAnimator.ofFloat(mKeypad, "scaleY", 1, 0);
+            ObjectAnimator scaley = ObjectAnimator.ofFloat(mKeypad, "scaleY", 0, 1);
             scaley.setDuration(50);
             AnimatorSet set2 = new AnimatorSet();
-            set2.playSequentially(scaley, scalex);
+            set2.playSequentially(scalex, scaley);
             set2.start();
-            mKeypad.setVisibility(GONE);
 
 
-            mSolveButton.setClickable(true);
-            mCheckProgress.setClickable(true);
-            mKeypad.setClickable(false);
-            mKeypad.setClickable(true);
-            for (int i = 0; i < 10; i++) {
-                mArrayButtons[i].setClickable(false);
-            }
-            mDown.setClickable(false);
-            mScratch.setClickable(false);
-            keyboardOpen = false;
-            for (int i = 0; i < 81; i++) {
-                if (colorState) {
-                    mRelLay[i].setAlpha(1);
-                    mBigNum[i].setAlpha(1);
-                    if (mBigNum[i].getText() == "") {
-                        mRelLay[i].setBackgroundColor(WHITE);
-                    }
-
-                } else {
-                    mRelLay[i].setBackgroundColor(WHITE);
-                }
-                */
-            }
 
     }
+    /************************************
+     * Overflow menu functions
+     *********************************/
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(com.licktopia.championsofsudoku.R.menu.menu_main, menu);
+
+       /*
+        if(!gameHelper.isSignedIn()){
+            menu.getItem(4).setVisible(false);
+            menu.getItem(5).setVisible(true);
+        }
+        else {
+            menu.getItem(4).setVisible(true);
+            menu.getItem(5).setVisible(false);
+        }
+        */
+
+        return true;
+    }
+/*
+    public boolean onPrepareOptionsMenu(Menu menu){
+
+        SpannableString s = new SpannableString("Save and Exit");
+        s.setSpan(new ForegroundColorSpan(Color.LTGRAY), 0, s.length(), 0);
+
+
+        menu.getItem(7).setTitle(s);
+
+        if(!gameHelper.isSignedIn()){
+            menu.getItem(4).setVisible(false);
+            menu.getItem(5).setVisible(true);
+        }
+        else {
+            menu.getItem(4).setVisible(true);
+            menu.getItem(5).setVisible(false);
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+
+        //noinspection SimplifiableIfStatement
+        if (id == com.licktopia.championsofsudoku.R.id.new_board) {
+            mChronometer.stop();
+            if(solvedState==false) {
+
+
+                closeKeyboard();
+
+                for (int i = 0; i < 81; i++) {
+                    //mBigNum[i] = (TextView) findViewById(bigNumTags[i]);
+                    mBigNum[i].setText(null);
+                    mRelLay[i].setBackgroundColor(WHITE);
+                    mBigNum[i].setVisibility(View.VISIBLE);
+                    //mSmallGrid[i].setVisibility(View.VISIBLE);
+                    //mRelLay[i].setClickable(true);
+                    //for (int j = 0; j < 9; j++) {
+                    // mSmallNums[i][j].setVisibility(View.INVISIBLE);
+                    //mSmallNums[i][j].setText("");
+                    //}
+
+                }
+
+                mBottomLayout.setVisibility(View.GONE);
+
+
+                continueFunction();
+
+            }
+            return true;
+        }
+
+
+        if (id == com.licktopia.sudokutopia.R.id.action_share) {
+            share();
+        }
+
+        if (id == R.id.action_logout) {
+            gameHelper.signOut();
+
+            Toast.makeText(MainActivity.this, "Logging out..." , Toast.LENGTH_SHORT).show();
+            clickedOut = true;
+            updateUi(false);
+            boolean change = myDb.changeUser(currentGamerName,currentGamerId,myStats.XP);
+            if(change){
+                // Toast.makeText(MainActivity.this, "Changed successfully" , Toast.LENGTH_SHORT).show();
+            }
+            else{
+                Toast.makeText(MainActivity.this, "Not Changed" , Toast.LENGTH_SHORT).show();
+            }
+
+
+        }
+        if (id == R.id.action_login) {
+
+            gameHelper.beginUserInitiatedSignIn();
+
+        }
+        if (id == R.id.action_instructions) {
+            if (solvedState == false) {
+                Intent intent = new Intent(this, InstructionsActivity.class);
+
+                if(!isOld) {
+                    ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(this);//fade in out transition
+                    startActivity(intent, options.toBundle());
+                }
+                else{
+                    startActivity(intent);
+                }
+            }
+        }
+        if (id == R.id.action_about) {
+            if (solvedState == false) {
+                Intent intent = new Intent(this, AboutActivity.class);
+                if(!isOld) {
+                    ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(this);//fade in out transition
+                    startActivity(intent, options.toBundle());
+                }
+                else{
+                    startActivity(intent);
+                }
+            }
+        }
+        if (id == R.id.settingsMenu) {
+            Intent intent = new Intent(this, SudokuSettingsActivity.class);
+            if(!isOld) {
+                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(this);//fade in out transition
+                startActivity(intent, options.toBundle());
+            }
+            else{
+                startActivity(intent);
+            }
+
+        }
+
+        if (id == R.id.save_and_exit) {
+
+            Toast.makeText(MainActivity.this, R.string.coming_soon, Toast.LENGTH_SHORT).show();//show warning
+
+        }
+
+        return true;
+
+    }
+    */
+}
 
 

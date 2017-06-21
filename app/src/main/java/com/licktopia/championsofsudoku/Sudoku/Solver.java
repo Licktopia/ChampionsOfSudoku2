@@ -25,6 +25,7 @@ class Solver {
     //returns a null board if it cannot be solved
     protected  Board solve()
     {
+        solvingSteps = new LinkedList<SquareState>();
         int i = 0;
         curBoard.resetToStart();
 

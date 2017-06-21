@@ -4,19 +4,36 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_weight="91"
-    android:background="@android:color/transparent"
+    android:background="@drawable/backgroundcroppedsmall"
+    android:visibility="visible"
     tools:context="com.licktopia.championsofsudoku.BoardActivity"
     tools:visibility="visible">
 
+    <RelativeLayout
+        android:id="@+id/toolbar_container"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_weight="9"
+        android:visibility="visible"
+        tools:visibility="visible">
+
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/toolbar_main"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:visibility="invisible" />
+    </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/background"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar_container"
         android:background="@android:color/transparent"
         tools:visibility="invisible">
 
@@ -27,11 +44,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/bottomLayout"
+        android:layout_below="@+id/toolbar_container"
         android:layout_centerHorizontal="true"
         android:orientation="vertical"
         android:visibility="visible"
-        android:weightSum="100"
 
+        android:weightSum="100"
         tools:visibility="visible">
 
         <RelativeLayout
@@ -66,6 +84,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar_container"
         android:orientation="vertical"
         android:weightSum="100">
 
@@ -1473,6 +1492,7 @@
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:layout_weight="20"
+            android:visibility="visible"
             tools:visibility="visible">
 
             <LinearLayout
@@ -1701,9 +1721,9 @@
             android:layout_weight="20"
             android:background="@android:color/transparent"
             android:orientation="horizontal"
-            android:visibility="invisible"
+            android:visibility="gone"
             android:weightSum="2"
-            tools:visibility="visible">
+            tools:visibility="gone">
 
 
             <LinearLayout
@@ -1712,6 +1732,7 @@
                 android:layout_height="match_parent"
                 android:background="@color/white"
                 android:orientation="horizontal"
+                android:visibility="gone"
                 android:weightSum="100"
                 tools:visibility="gone">
 
@@ -1855,6 +1876,7 @@
                 android:layout_marginLeft="4dp"
                 android:layout_marginRight="4dp"
                 android:orientation="horizontal"
+                android:visibility="visible"
                 android:weightSum="4">
 
                 <LinearLayout
@@ -2040,6 +2062,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar_container"
         android:orientation="vertical"
         android:weightSum="100">
 

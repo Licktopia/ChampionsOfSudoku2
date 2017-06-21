@@ -42,7 +42,7 @@ public class SquareView {
     private void inflateSquareHolder() {
         LayoutInflater li = LayoutInflater.from(context);
 
-        View v = li.inflate(R.layout.squareView, null);
+        View v = li.inflate(R.layout.square_view, null);
         highlight = (RelativeLayout) v.findViewById(R.id.highlight);
         number = (ImageView) v.findViewById(R.id.squareNumber);
         color = (RelativeLayout) v.findViewById(R.id.squareColor);
