@@ -20,6 +20,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="com.licktopia.championsofsudoku.Settings.SudokuSettingsActivity"
+            android:label="Settings"
+            android:theme="@style/Base.Theme.AppCompat.Light" />
     </application>
 
 </manifest>

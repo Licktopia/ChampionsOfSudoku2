@@ -23,4 +23,8 @@
     <string name="save_exit">Save and Exit</string>
     <string name="harder_puzzle_message">Harder puzzles will earn more XP</string>
     <string name="app_url">https://play.google.com/store/apps/details?id=com.licktopia.sudokutopia</string>
+    <string name="quit_to_menu">Quit to main menu?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="are_you_sure">Are you sure you want to exit? In game progress may be lost. Finished games data is already saved.</string>
 </resources>
