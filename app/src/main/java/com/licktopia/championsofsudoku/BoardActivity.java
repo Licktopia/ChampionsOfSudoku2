@@ -2,17 +2,14 @@ package com.licktopia.championsofsudoku;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.app.ActivityOptions;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.SystemClock;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.text.SpannableString;
-import android.text.style.ForegroundColorSpan;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,35 +18,34 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.licktopia.championsofsudoku.Settings.SudokuSettings;
 import com.licktopia.championsofsudoku.Settings.SudokuSettingsActivity;
 import com.licktopia.championsofsudoku.Sudoku.Board;
 import com.licktopia.championsofsudoku.Sudoku.Game;
 
-import java.util.Stack;
-
-import static android.graphics.Color.WHITE;
+import static android.graphics.Color.BLACK;
+import static android.graphics.Color.TRANSPARENT;
 import static android.view.View.GONE;
 
 public class BoardActivity extends AppCompatActivity {
 
     PlaySounds mPlaySounds;
     SudokuSettings settings;
+    private Handler startAnimationHandler;
     private SquareView[] squareViews;
     private int selectedSquare = -1;
     private boolean colorGame = false;
     private boolean rowColHighlights = true;
     private boolean keyboardState = true;
-    private boolean allAllhighlights = true;
     private boolean solvedState = false;
     private Game mGame;
     private int level = 1;
     private boolean smallNumPadState = false;
     private Button[] numberButtons;
     private Button clearButton;
-    private RelativeLayout numberPadButton;
+    private ImageButton notepadIcon;
+    private RelativeLayout numberPadButtonBackground;
     private ImageButton keyboardDownButton;
     private Board mBoard;
     private int size;
@@ -63,9 +59,11 @@ public class BoardActivity extends AppCompatActivity {
         level = getIntent().getExtras().getInt("LEVEL"); //gets Store Number from start screen activity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         RelativeLayout toolbarContainer = (RelativeLayout)findViewById(R.id.toolbar_container);
+        notepadIcon = (ImageButton) findViewById(R.id.scratch);
         mPlaySounds = new PlaySounds();
         this.setSupportActionBar(toolbar);
         mGame = new Game(level, this);//Game instance
+        startAnimationHandler = new Handler();
         size = mGame.totalBoardRows();
         //size = 9;
         squareViews = new SquareView[size * size];//array of 81 squareViews
@@ -73,14 +71,15 @@ public class BoardActivity extends AppCompatActivity {
 
         initializeButtons();
         initializeBoard();//get starting board
-        listeners(toolbar);//set all listeners for BoardActivity layout
         customizeLayout();
+        listeners(toolbar);//set all listeners for BoardActivity layout
+
     }
 
     @Override
     protected void onResume() {
         settings = new SudokuSettings(this);
-        allAllhighlights = settings.getHighlightPreference();
+        rowColHighlights= settings.getHighlightPreference();
         mPlaySounds.setMute(settings.getSoundPreference());
         super.onResume();
     }
@@ -91,7 +90,7 @@ public class BoardActivity extends AppCompatActivity {
             numberButtons[i] = (Button) findViewById(Tags.numberButtonTags[i]);
         }
         clearButton = (Button) findViewById(R.id.clear);
-        numberPadButton = (RelativeLayout) findViewById(R.id.scratch_bg);
+        numberPadButtonBackground = (RelativeLayout) findViewById(R.id.scratch_bg);
         keyboardDownButton = (ImageButton) findViewById(R.id.down);
     }
 
@@ -103,13 +102,30 @@ public class BoardActivity extends AppCompatActivity {
         for (int i = 0; i < squareViews.length; i++) {//set up starting board
             RelativeLayout rl = (RelativeLayout) findViewById(Tags.squareTags[i]); // get Relative layout
             squareViews[i] = new SquareView(this, rl);
-            int value = mGame.getBoardValueAt(i);
+            final int value = mGame.getBoardValueAt(i);
 
-            if (!colorGame) {//set number
-                squareViews[i].setBigNumber(value);
-            } else {//set color
-                squareViews[i].setSquareColor(value);
+            int timer;
+            if(value == 0){
+                timer = 0;
+            }else {
+                timer = value * 250 + 700;
             }
+
+            final int finalI = i;
+            startAnimationHandler.postDelayed(new Runnable() {
+
+                @Override
+                public void run() {
+
+                    if(colorGame){
+                        squareViews[finalI].setSquareColorAnimated(value);
+                    }
+                    else {
+                        squareViews[finalI].setBigNumberAnimated(value);
+                    }
+                }
+            }, timer);
+
         }
     }
 
@@ -121,11 +137,10 @@ public class BoardActivity extends AppCompatActivity {
         squareListeners();
         keyboardDownButtonListener();
         toolbarButtonsListener(toolbar);
-        if(selectedSquare>-1) {
-            numberListeners();
-            smallNumPadListener();
-            clearButtonLisener();
-        }
+        numberListeners();
+        smallNumPadListener();
+        clearButtonLisener();
+
 
 
     }
@@ -174,7 +189,7 @@ public class BoardActivity extends AppCompatActivity {
     }
 
     /************************************
-     * Listeners numberPadButton
+     * Listeners numberPadButtonBackground
      *********************************/
     private void clearButtonLisener() {
         clearButton.setOnClickListener(new View.OnClickListener() {
@@ -186,10 +201,10 @@ public class BoardActivity extends AppCompatActivity {
     }
 
     /************************************
-     * Listener numberPadButton
+     * Listener numberPadButtonBackground
      *********************************/
     private void smallNumPadListener() {
-        numberPadButton.setOnClickListener(new View.OnClickListener() {
+        notepadIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (selectedSquare > -1) {
@@ -253,7 +268,15 @@ public class BoardActivity extends AppCompatActivity {
             int iRow = i / size;
             int iCol = i % size;
             int iCluster = ((iRow / clusterSize) * clusterSize) + (iCol / clusterSize);
-            if (iRow == row || iCol == col || iCluster == cluster)
+            if(i==selectedSquare){
+                if(!colorGame){
+
+                }
+                else{
+
+                }
+            }
+            else if (iRow == row || iCol == col || iCluster == cluster)
                 squareViews[i].setHighlighted(true); // Set true if current square is connected to selected
             else
                 squareViews[i].setHighlighted(false);
@@ -330,7 +353,7 @@ public class BoardActivity extends AppCompatActivity {
         keyboardDownButton.setBackgroundColor(getResources().getColor(R.color.colorKeypad));
 
         /////////set notepadbutton with correct image, color or number
-        ImageButton notepadIcon = (ImageButton) findViewById(R.id.scratch);
+
         ImageView artHolder = (ImageView)findViewById(R.id.artHolder);
         if (!colorGame) {
             notepadIcon.setImageDrawable(getResources().getDrawable(R.drawable.numbers));

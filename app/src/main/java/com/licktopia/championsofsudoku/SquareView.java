@@ -1,11 +1,15 @@
 package com.licktopia.championsofsudoku;
 
+import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+
+import static android.graphics.Color.BLACK;
 
 /**
  * Handles state changes for the display of an individual Sudoku square
@@ -15,6 +19,7 @@ public class SquareView {
 
     private static final float colorSquareTransparency = .8f;
     private static final float colorSquareScaleFactor = .9f;
+
     private Context context;
     private RelativeLayout squareHolder;
     private RelativeLayout highlight;
@@ -79,6 +84,37 @@ public class SquareView {
         else {
             color.setBackground(context.getDrawable(Tags.colors[n - 1])); // Set background image
             squareHolder.setAlpha(colorSquareTransparency);
+        }
+    }
+
+    /* Set number displayed in square */
+    public void setBigNumberAnimated(int n) {
+        if (n == 0)
+            number.setImageDrawable(null);   // Remove display object
+        else {
+            number.setAlpha(0f);
+            number.setImageDrawable(context.getDrawable(Tags.numberImageTags[n - 1])); // Set background image
+            ObjectAnimator mainFade = ObjectAnimator.ofFloat(number, "alpha", 0, 1);
+            mainFade.setDuration(700);
+            mainFade.start();
+
+        }
+    }
+
+    /* Set color displayed in square */
+    public void setSquareColorAnimated(int n) {
+        if (n == 0)
+            squareHolder.setBackground(null);   // Remove display object
+        else {
+            color.setAlpha(0f);
+            color.setBackground(context.getDrawable(Tags.colors[n - 1])); // Set background image
+            ObjectAnimator mainFade = ObjectAnimator.ofFloat(color, "alpha", 0, 1);
+            ObjectAnimator mainFade2 = ObjectAnimator.ofFloat(squareHolder, "alpha", 1, colorSquareTransparency);
+            mainFade.setDuration(700);
+            mainFade2.setDuration(700);
+            mainFade.start();
+            mainFade2.start();
+
         }
     }
 
