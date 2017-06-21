@@ -120,12 +120,11 @@ public class BoardActivity extends AppCompatActivity {
             final int finalI = i;
             final int finalI1 = i;
             RelativeLayout rl = (RelativeLayout) findViewById(Tags.squareTags[i]);
-            squareViews[i] = new SquareView(this, rl);
             squareViews[i].getSquareHolder().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
-                    //squareCommands(finalI);
+                    squareCommands(finalI);
                 }
             });
         }
@@ -272,16 +271,13 @@ public class BoardActivity extends AppCompatActivity {
         if (selectedSquare == -1 || mGame.isStartingValue(selectedSquare))
             return;
 
-        /*
-        else if {
-            if (smallNumPadState)
+        else {
+            //if (smallNumPadState)
 
-            Stack<Integer> conflicts = mGame.setBoardValueAt(selectedSquare, keypadNumber);  // Set board value to number
-
-
-            if (conflicts.isEmpty())
+            //Stack<Integer> conflicts = mGame.setBoardValueAt(selectedSquare, keypadNumber);  // Set board value to number
+            //if (conflicts.isEmpty())
             //TODO Check stack for conflicting squares
-        } */
+        }
 
     }
 
