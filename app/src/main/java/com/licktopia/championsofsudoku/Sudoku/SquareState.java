@@ -9,7 +9,7 @@ public class SquareState
 {
     private int row = -1;
     private int col = -1;
-    private boolean[][] notepad;
+    private boolean[] notepad;
     private int value = -1;
     private int boardSize = -1;
 
@@ -17,18 +17,18 @@ public class SquareState
     //col is the column location of cell
     //notepad is the current state of the notepad
     //entry is the current state of the square entry
-    SquareState(int row, int col, boolean[][] notepad, int value, int boardSize) throws InvalidRow, InvalidCol, InvalidNotepad
+    SquareState(int row, int col, boolean[] notepad, int value, int boardSize) throws InvalidRow, InvalidCol, InvalidNotepad
     {
-        if(row <= 0)
+        if(row < 0)
         {
             throw new InvalidRow();
         }
-        else if(col <= 0)
+        else if(col < 0)
         {
             throw new InvalidCol();
         }
         //must be a 3x3 matrix
-        else if(notepad[0].length < 1 || notepad.length < 1 || notepad[0].length > 3 || notepad.length > 3)
+        else if(notepad.length < 1 || notepad.length > 3)
         {
             throw new InvalidNotepad();
         }
@@ -37,14 +37,11 @@ public class SquareState
         this.col = col;
         this.value = value;
 
-        this.notepad = new boolean [notepad.length][notepad[0].length];
+        this.notepad = new boolean [notepad.length];
 
         for(int i = 0; i < notepad.length; i++)
         {
-            for(int j = 0; j < notepad[i].length; j++)
-            {
-                this.notepad[i][j] = notepad[i][j];
-            }
+            this.notepad[i] = notepad[i];
         }
         this.boardSize = boardSize;
     }
@@ -63,19 +60,7 @@ public class SquareState
     //returns the boolean for the given num
     public boolean getNotepad(int num) {
 
-        switch (num){
-            case 1: return notepad[0][0];
-            case 2: return notepad[0][1];
-            case 3: return notepad[0][2];
-            case 4: return notepad[1][0];
-            case 5: return notepad[1][1];
-            case 6: return notepad[1][2];
-            case 7: return notepad[2][0];
-            case 8: return notepad[2][1];
-            case 9: return notepad[2][2];
-            default: return false;
-
-        }
+        return notepad[num - 1];
     }
 
 

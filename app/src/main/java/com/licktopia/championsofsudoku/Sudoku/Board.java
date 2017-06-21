@@ -33,11 +33,11 @@ public class Board {
         // Copy parameter values into contents array
         for (int i = 0; i < values.length; i++) {
             if (values[i] != 0) {   // Non-empty square
-                contents[i / SIZE][i % SIZE] = new Square(values[i], true);
+                contents[i / SIZE][i % SIZE] = new Square(values[i], true, SIZE);
             }
             else                    // Empty square
             {
-                contents[i / SIZE][i % SIZE] = new Square(values[i], false);
+                contents[i / SIZE][i % SIZE] = new Square(values[i], false, SIZE);
                 openSquares++;
             }
 
@@ -57,8 +57,8 @@ public class Board {
         for (int i = 0; i < this.totalBoardRows(); i++) {
             for (int j = 0; j < this.totalBoardCols(); j++) {
 
-                contents[i][j] = new Square(oldBoard.getValueAt(i, j), oldBoard.isStartingValue(i, j));
-                for(int k = 1; k <= 9; k ++)
+                contents[i][j] = new Square(oldBoard.getValueAt(i, j), oldBoard.isStartingValue(i, j), SIZE);
+                for(int k = 1; k <= SIZE; k ++)
                 {
                     this.setNotepadAt(i, j, k, oldBoard.getNotepadAt(i, j, k));
                 }
@@ -81,6 +81,9 @@ public class Board {
             return problemSqrs;
 
         boolean isValid = false;
+        //stores the current state of square in case the move is invalid
+        int tempVal = contents[row][col].getValue();
+        contents[row][col].setValue(value);
 
         if (value == 0) {                   // Removing value
             openSquares++;                  // Increment number of open squares
@@ -94,11 +97,19 @@ public class Board {
 
         if(isValid)
         {
-            openSquares--; // Decrement number of open squares
+            if(tempVal == 0)
+            {
+                openSquares--; // Decrement number of open squares
+            }
+
             //clear redo
             redoStk = new Stack();
             undoStk.push(contents[row][col].saveState(row, col, this.SIZE));
-            contents[row][col].setValue(value);     // Assign value
+
+        }
+        else
+        {
+            contents[row][col].setValue(tempVal);     // restore old value
         }
 
         return problemSqrs;
@@ -184,7 +195,7 @@ public class Board {
 
         for (int i = 0; i < SIZE - 1; i++) {
             for (int j = i + 1; j < SIZE; j++) {
-                if (contents[row][i].getValue() != 0 && contents[row][i] == contents[row][j])
+                if (contents[row][i].getValue() != 0 && contents[row][i].getValue() == contents[row][j].getValue())
                 {
                     problemSqrs.push(row * SIZE + i);
                     return false;  // Found repeat, row invalid
@@ -201,7 +212,7 @@ public class Board {
      private boolean isColumnValid(int col) {
         for (int i = 0; i < SIZE - 1; i++) {
             for (int j = i + 1; j < SIZE; j++) {
-                if (contents[i][col].getValue() != 0 && contents[i][col] == contents[j][col])
+                if (contents[i][col].getValue() != 0 && contents[i][col].getValue() == contents[j][col].getValue())
                 {
                     problemSqrs.push(i * SIZE + col);
                     return false; // Found repeat, column invalid

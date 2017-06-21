@@ -33,12 +33,12 @@ class Solver {
         {
             if(!curBoard.isStartingValue(i))
             {
-
+                int testVal = curBoard.getValueAt(i);
                 //loop until a valid number can be entered
                 do
                 {
                     //value which will be tested to see if it is valid
-                    int testVal = curBoard.getValueAt(i) + 1;
+                    testVal++;
 
                     //if all options have been tried for this cell then go back
                     if(testVal > 9)
@@ -63,7 +63,7 @@ class Solver {
                             return null;
                         }
                     }
-                }while(!curBoard.setValueAt(i, curBoard.getValueAt(i) + 1).isEmpty());
+                }while(!curBoard.setValueAt(i, testVal).isEmpty());
                 solvingSteps.add(curBoard.getState(i));
             }
             i++;
