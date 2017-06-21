@@ -65,7 +65,7 @@ public class SquareView {
     /* Set number displayed in square */
     public void setBigNumber(int n) {
         if (n == 0)
-            squareHolder.setBackground(null);   // Remove display object
+            number.setImageDrawable(null);   // Remove display object
         else
             number.setImageDrawable(context.getDrawable(Tags.numberImageTags[n - 1])); // Set background image
     }

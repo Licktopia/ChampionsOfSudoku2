@@ -23,6 +23,8 @@ import android.widget.Toast;
 import com.licktopia.championsofsudoku.Sudoku.Board;
 import com.licktopia.championsofsudoku.Sudoku.Game;
 
+import java.util.Stack;
+
 import static android.graphics.Color.WHITE;
 import static android.view.View.GONE;
 
@@ -52,20 +54,18 @@ public class BoardActivity extends AppCompatActivity {
         level = getIntent().getExtras().getInt("LEVEL"); //gets Store Number from start screen activity
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        //RelativeLayout toolbarContainer = (RelativeLayout)findViewById(R.id.toolbar_container);
+        RelativeLayout toolbarContainer = (RelativeLayout)findViewById(R.id.toolbar_container);
         this.setSupportActionBar(toolbar);
-        //mGame = new Game(level, this);//Game instance
-        //size = mGame.totalBoardRows();
-        size = 9;
+        mGame = new Game(level, this);//Game instance
+        size = mGame.totalBoardRows();
+        //size = 9;
         squareViews = new SquareView[size * size];//array of 81 squareViews
         numberButtons = new Button[size];//keypad 1-9
 
-
         initializeButtons();
-        // initializeBoard();//get starting board
+        initializeBoard();//get starting board
         listeners();//set all listeners for BoardActivity layout
         customizeLayout();
-
     }
 
 
@@ -86,15 +86,12 @@ public class BoardActivity extends AppCompatActivity {
         for (int i = 0; i < squareViews.length; i++) {//set up starting board
             RelativeLayout rl = (RelativeLayout) findViewById(Tags.squareTags[i]); // get Relative layout
             squareViews[i] = new SquareView(this, rl);
-            if (mGame.getBoardValueAt(i) != 0) {
-                if (!colorGame) {//set number
-                    squareViews[i].setBigNumber(mGame.getBoardValueAt(i));
-                } else {//set color
-                    squareViews[i].setSquareColor(mGame.getBoardValueAt(i));
+            int value = mGame.getBoardValueAt(i);
 
-                }
-            } else {
-
+            if (!colorGame) {//set number
+                squareViews[i].setBigNumber(value);
+            } else {//set color
+                squareViews[i].setSquareColor(value);
             }
         }
     }
@@ -213,13 +210,9 @@ public class BoardActivity extends AppCompatActivity {
     }
 
     /************************************
-     * Logic for 81 squares
+     * Highlight connected squares
      *********************************/
-    public void squareCommands(int squareNumber) {
-        if(!keyboardState){
-            openKeyboard();
-        }
-        removeAllHighlights();
+    private void highlightConnected(int squareNumber) {
         // Get location information for selected square
         selectedSquare = squareNumber;
         int row = selectedSquare / size;
@@ -238,7 +231,36 @@ public class BoardActivity extends AppCompatActivity {
             else
                 squareViews[i].setHighlighted(false);
         }
+    }
 
+    /************************************
+     * Logic for 81 squares
+     *********************************/
+    public void squareCommands(int squareNumber) {
+        if(!keyboardState){
+            openKeyboard();
+        }
+
+        removeAllHighlights();
+
+        if (mGame.isStartingValue(squareNumber)) { // Starting square clicked
+            // TODO bold value and other matching values
+            // TODO disable all buttons except down
+            // TODO toggle highlights?
+        }
+
+        else { // Input square clicked
+
+            //Set highlights
+            squareViews[squareNumber].setHighlighted(true); //TODO change to highlight different color than others
+            if(rowColHighlights)
+                highlightConnected(squareNumber);
+
+            // Bold similar numbers
+            if (mGame.getBoardValueAt(selectedSquare) != 0) {
+                //TODO bold value and other matching values
+            }
+        }
     }
 
     /************************************
@@ -246,6 +268,20 @@ public class BoardActivity extends AppCompatActivity {
      *********************************/
     private void numberCommands(int keypadNumber) {
 
+        // If nothing selected or square is a starting square, do nothing
+        if (selectedSquare == -1 || mGame.isStartingValue(selectedSquare))
+            return;
+        
+        /*
+        else if {
+            if (smallNumPadState)
+
+            Stack<Integer> conflicts = mGame.setBoardValueAt(selectedSquare, keypadNumber);  // Set board value to number
+
+
+            if (conflicts.isEmpty())
+            //TODO Check stack for conflicting squares
+        } */
 
     }
 
