@@ -32,7 +32,7 @@ public class BoardActivity extends AppCompatActivity {
 
     private SquareView[] squareViews;
     private int selectedSquare = -1;
-    private boolean colorGame = true;
+    private boolean colorGame = false;
     private boolean rowColHighlights = true;
     private boolean keyboardState = true;
     private Game mGame;
@@ -271,7 +271,7 @@ public class BoardActivity extends AppCompatActivity {
         // If nothing selected or square is a starting square, do nothing
         if (selectedSquare == -1 || mGame.isStartingValue(selectedSquare))
             return;
-        
+
         /*
         else if {
             if (smallNumPadState)
