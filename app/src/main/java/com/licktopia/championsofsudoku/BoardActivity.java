@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -14,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Chronometer;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -31,6 +33,7 @@ import static android.view.View.GONE;
 public class BoardActivity extends AppCompatActivity {
 
     PlaySounds mPlaySounds;
+    Chronometer mChronometer;
     SudokuSettings settings;
     private Handler startAnimationHandler;
     private SquareView[] squareViews;
@@ -39,6 +42,7 @@ public class BoardActivity extends AppCompatActivity {
     private boolean rowColHighlights = true;
     private boolean keyboardState = true;
     private boolean solvedState = false;
+    private boolean animationFinished = false;
     private Game mGame;
     private int level = 1;
     private boolean smallNumPadState = false;
@@ -49,6 +53,7 @@ public class BoardActivity extends AppCompatActivity {
     private ImageButton keyboardDownButton;
     private Board mBoard;
     private int size;
+    private long timeWhenStopped;
 
 
     @Override
@@ -73,7 +78,17 @@ public class BoardActivity extends AppCompatActivity {
         initializeBoard();//get starting board
         customizeLayout();
         listeners(toolbar);//set all listeners for BoardActivity layout
+        mChronometer = (Chronometer)findViewById(com.licktopia.championsofsudoku.R.id.chronometer);
 
+
+
+    }
+
+    private void startTimer() {
+        mGame.unpauseTimer();
+        mGame.getRunningTime();
+        mChronometer.start();
+        mChronometer.setBase(SystemClock.elapsedRealtime());
     }
 
     @Override
@@ -81,9 +96,25 @@ public class BoardActivity extends AppCompatActivity {
         settings = new SudokuSettings(this);
         rowColHighlights= settings.getHighlightPreference();
         mPlaySounds.setMute(settings.getSoundPreference());
+        if(animationFinished) {
+            mChronometer.setBase(SystemClock.elapsedRealtime() + timeWhenStopped);
+            mChronometer.start();
+            mGame.unpauseTimer();
+            mGame.getRunningTime();
+        }
         super.onResume();
     }
 
+    @Override
+    protected void onPause() {
+        settings = new SudokuSettings(this);
+        rowColHighlights= settings.getHighlightPreference();
+        mPlaySounds.setMute(settings.getSoundPreference());
+        mGame.pauseTimer();
+        timeWhenStopped = mChronometer.getBase() - SystemClock.elapsedRealtime();
+        mChronometer.stop();
+        super.onPause();
+    }
 
     private void initializeButtons() {
         for (int i = 0; i < Tags.numberButtonTags.length; i++) {//getButtons
@@ -127,6 +158,16 @@ public class BoardActivity extends AppCompatActivity {
             }, timer);
 
         }
+        Handler startClockHandler = new Handler();
+        startClockHandler.postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                startTimer();
+                animationFinished = true;
+
+            }
+        },2950);
     }
 
 
@@ -153,6 +194,7 @@ public class BoardActivity extends AppCompatActivity {
 
             }
         });
+
     }
 
     /************************************
