@@ -51,7 +51,7 @@ public class Board {
 
 
         contents = new Square[SIZE][SIZE];
-        openSquares = 0;
+        openSquares = oldBoard.openSquares;
 
         // copy all data from oldBoard into this
         for (int i = 0; i < this.totalBoardRows(); i++) {
