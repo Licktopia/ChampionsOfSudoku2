@@ -10,10 +10,10 @@
         android:screenOrientation="nosensor"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".BoardActivity">
+        <activity android:name=".Activities.BoardActivity">
 
         </activity>
-        <activity android:name=".MainMenuActivity">
+        <activity android:name=".Activities.MainMenuActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

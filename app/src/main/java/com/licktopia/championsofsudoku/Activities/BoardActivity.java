@@ -1,11 +1,10 @@
-package com.licktopia.championsofsudoku;
+package com.licktopia.championsofsudoku.Activities;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
@@ -21,13 +20,16 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import com.licktopia.championsofsudoku.BackgroundImages;
+import com.licktopia.championsofsudoku.PlaySounds;
+import com.licktopia.championsofsudoku.R;
 import com.licktopia.championsofsudoku.Settings.SudokuSettings;
 import com.licktopia.championsofsudoku.Settings.SudokuSettingsActivity;
+import com.licktopia.championsofsudoku.SquareView;
 import com.licktopia.championsofsudoku.Sudoku.Board;
 import com.licktopia.championsofsudoku.Sudoku.Game;
+import com.licktopia.championsofsudoku.Tags;
 
-import static android.graphics.Color.BLACK;
-import static android.graphics.Color.TRANSPARENT;
 import static android.view.View.GONE;
 
 public class BoardActivity extends AppCompatActivity {
