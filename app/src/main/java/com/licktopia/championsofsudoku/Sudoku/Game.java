@@ -260,21 +260,21 @@ public class Game
                 return 0;
             //easy
             case 1:
-                return 1 / 30;
+                return 1.0 / 30.0;
             //medium
             case 2:
-                return 10 / 25;
+                return 10.0 / 25.0;
             //hard
             case 3:
-                return 10 / 25;
+                return 10.0 / 25.0;
             //expert
             case 4:
-                return 10 / 25;
+                return 10.0 / 25.0;
             //master
             case 5:
-                return 10 / 25;
+                return 10.0 / 25.0;
             default:
-                return 0;
+                return 0.0;
         }
     }
 
@@ -335,4 +335,9 @@ public class Game
 
     //true if the board is complete
     public boolean isGameFinish() {return curBoard.isBoardFull();}
+
+    public void resetGame()
+    {
+
+    }
 }
