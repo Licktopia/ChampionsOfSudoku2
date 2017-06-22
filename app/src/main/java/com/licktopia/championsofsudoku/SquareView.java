@@ -25,6 +25,7 @@ public class SquareView {
     private ImageView art;
     private LinearLayout notepad;
     private ImageView[] notepadNums;
+    private boolean colorMode;
 
 
     public RelativeLayout getSquareHolder() {
@@ -32,11 +33,12 @@ public class SquareView {
     }
 
     /* Constructor */
-    public SquareView(Context context, RelativeLayout squareHolder) {
+    public SquareView(Context context, RelativeLayout squareHolder, boolean colorState) {
 
         this.context = context;
         this.squareHolder = squareHolder;
         this.notepadNums = new ImageView[9];
+        this.colorMode = colorState;
 
         inflateSquareHolder();
     }
@@ -62,7 +64,12 @@ public class SquareView {
         notepadNums[7] = (ImageView) v.findViewById(R.id.squareNotepad8);
         notepadNums[8] = (ImageView) v.findViewById(R.id.squareNotepad9);
         for (int i = 0; i < notepadNums.length; i++) {
-            notepadNums[i].setImageDrawable(context.getDrawable(Tags.numberImageTags[i]));
+            if(!colorMode) {
+                notepadNums[i].setImageDrawable(context.getDrawable(Tags.numberImageTags[i]));
+            }
+            else{
+                notepadNums[i].setImageDrawable(context.getDrawable(Tags.colorButtonTags[i]));
+            }
         }
 
         squareHolder.addView(v);
@@ -70,21 +77,26 @@ public class SquareView {
 
 
     /* Set number displayed in square */
-    public void setBigNumber(int n) {
+    public void setBigNumber(int n, boolean isStartingSquare) {
         if (n == 0) {
             number.setImageDrawable(null);   // Remove display object
             number.setVisibility(View.INVISIBLE);
             notepad.setVisibility(View.VISIBLE);
         }
         else {
-            number.setImageDrawable(context.getDrawable(Tags.numberImageTags[n - 1])); // Set background image
+            if(isStartingSquare) {
+                number.setImageDrawable(context.getDrawable(Tags.numberImageTags[n - 1])); // Set background image
+            }
+            else{
+                number.setImageDrawable(context.getDrawable(Tags.greyNumberImageTags[n - 1])); // Set background image
+            }
             number.setVisibility(View.VISIBLE);
             notepad.setVisibility(View.INVISIBLE);
         }
     }
 
     /* Set color displayed in square */
-    public void setSquareColor(int n) {
+    public void setSquareColor(int n, boolean startSquare) {
         if (n == 0) {
             color.setBackground(null);   // Remove display object
             squareHolder.setAlpha(1);
@@ -92,6 +104,10 @@ public class SquareView {
         else {
             color.setBackground(context.getDrawable(Tags.colors[n - 1])); // Set background image
             squareHolder.setAlpha(COLOR_SQUARE_TRANSPARENCY);
+            if(!startSquare){
+                color.setScaleX(COLOR_SQUARE_SCALE_FACTOR);
+                color.setScaleY(COLOR_SQUARE_SCALE_FACTOR);
+            }
         }
     }
 

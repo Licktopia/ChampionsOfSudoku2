@@ -28,11 +28,10 @@ import com.licktopia.championsofsudoku.Settings.SudokuSettingsActivity;
 import com.licktopia.championsofsudoku.SquareView;
 import com.licktopia.championsofsudoku.Sudoku.Board;
 import com.licktopia.championsofsudoku.Sudoku.Game;
+import com.licktopia.championsofsudoku.Sudoku.SquareState;
 import com.licktopia.championsofsudoku.Tags;
 
 import java.util.Set;
-import java.util.Stack;
-import java.util.concurrent.TimeUnit;
 
 import static android.view.View.GONE;
 
@@ -93,7 +92,7 @@ public class BoardActivity extends AppCompatActivity {
 
 
 
-        updateUndoRedo();
+        updateUndoRedoButtons();
         initializeButtons();
         initializeBoard();//get starting board
         customizeLayout();
@@ -113,13 +112,24 @@ public class BoardActivity extends AppCompatActivity {
         mUndoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                SquareState mSquareState;
+                mSquareState= mGame.undo();
+                int square = mSquareState.getIdx();
+                int value = mGame.getBoardValueAt(square);
+                squareViews[square].setBigNumber(value, false);
+                updateUndoRedoButtons();
 
             }
         });
         mRedoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                SquareState mSquareState;
+                mSquareState= mGame.redo();
+                int square = mSquareState.getIdx();
+                int value = mGame.getBoardValueAt(square);
+                squareViews[square].setBigNumber(value, false);
+                updateUndoRedoButtons();
             }
         });
     }
@@ -128,7 +138,7 @@ public class BoardActivity extends AppCompatActivity {
      * Dims or brightens undo redo buttons
      * if undo or redo is not possible or possible
      *********************************/
-    private void updateUndoRedo() {
+    private void updateUndoRedoButtons() {
         if(mGame.canUndo()){
             mUndoButton.setAlpha(1);
         }
@@ -197,7 +207,7 @@ public class BoardActivity extends AppCompatActivity {
     private void initializeBoard() {
         for (int i = 0; i < squareViews.length; i++) {//set up starting board
             RelativeLayout rl = (RelativeLayout) findViewById(Tags.squareTags[i]); // get Relative layout
-            squareViews[i] = new SquareView(this, rl);
+            squareViews[i] = new SquareView(this, rl,colorGame);
             final int value = mGame.getBoardValueAt(i);
 
             int timer;
@@ -450,9 +460,9 @@ public class BoardActivity extends AppCompatActivity {
             if (mGame.getBoardValueAt(selectedSquare) != 0) {
                 mGame.setBoardValueAt(selectedSquare, 0);
                 if (!colorGame)
-                    currSquare.setBigNumber(0);
+                    currSquare.setBigNumber(0,false);
                 else
-                    currSquare.setSquareColor(0);
+                    currSquare.setSquareColor(0,false);
             }
             // Clearing notepad of all values
             if (keypadNumber == 0) {
@@ -486,9 +496,9 @@ public class BoardActivity extends AppCompatActivity {
             Set<Integer> conflicts = mGame.setBoardValueAt(selectedSquare, keypadNumber);  // Set board value to number
             if (conflicts.isEmpty()) {
                 if (!colorGame)
-                    currSquare.setBigNumber(keypadNumber);   // Display number
+                    currSquare.setBigNumber(keypadNumber,false);   // Display number
                 else
-                    currSquare.setSquareColor(keypadNumber); // Display color
+                    currSquare.setSquareColor(keypadNumber,false); // Display color
             }
             else {
                 for (int conflict : conflicts) {

@@ -1,8 +1,5 @@
 package com.licktopia.championsofsudoku;
 
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
-
 /**
  * Created by do_de on 6/20/2017.
  */
@@ -17,8 +14,10 @@ public class Tags {
             com.licktopia.championsofsudoku.R.id.squareholder60, com.licktopia.championsofsudoku.R.id.squareholder61, com.licktopia.championsofsudoku.R.id.squareholder62, com.licktopia.championsofsudoku.R.id.squareholder63, com.licktopia.championsofsudoku.R.id.squareholder64, com.licktopia.championsofsudoku.R.id.squareholder65, com.licktopia.championsofsudoku.R.id.squareholder66, com.licktopia.championsofsudoku.R.id.squareholder67, com.licktopia.championsofsudoku.R.id.squareholder68, com.licktopia.championsofsudoku.R.id.squareholder69, com.licktopia.championsofsudoku.R.id.squareholder70, com.licktopia.championsofsudoku.R.id.squareholder71,
             com.licktopia.championsofsudoku.R.id.squareholder72, com.licktopia.championsofsudoku.R.id.squareholder73, com.licktopia.championsofsudoku.R.id.squareholder74, com.licktopia.championsofsudoku.R.id.squareholder75, com.licktopia.championsofsudoku.R.id.squareholder76, com.licktopia.championsofsudoku.R.id.squareholder77, com.licktopia.championsofsudoku.R.id.squareholder78, com.licktopia.championsofsudoku.R.id.squareholder79, com.licktopia.championsofsudoku.R.id.squareholder80, com.licktopia.championsofsudoku.R.id.squareholder81};
 
-    public static int[] numberImageTags = {R.drawable.uno, R.drawable.dos,R.drawable.tres,R.drawable.cuatro,R.drawable.cinco,R.drawable.seis,R.drawable.siete,R.drawable.ocho,R.drawable.nueve};
+    public static int[] numberImageTags = {R.drawable.blacknum_uno, R.drawable.blacknum_dos,R.drawable.blacknum_tres,R.drawable.blacknum_cuatro,R.drawable.blacknum_cinco,R.drawable.blacknum_seis,R.drawable.blacknum_siete,R.drawable.blacknum_ocho,R.drawable.blacknum_nueve};
+    public static int[] greyNumberImageTags = {R.drawable.greynum_uno, R.drawable.greynum_dos,R.drawable.greynum_tres,R.drawable.greynum_cuatro,R.drawable.greynum_cinco,R.drawable.greynum_seis,R.drawable.greynum_siete,R.drawable.greynum_ocho,R.drawable.greynum_nueve};
     public static int[] numberButtonTags = {com.licktopia.championsofsudoku.R.id.one, com.licktopia.championsofsudoku.R.id.two, com.licktopia.championsofsudoku.R.id.three, com.licktopia.championsofsudoku.R.id.four, com.licktopia.championsofsudoku.R.id.five, com.licktopia.championsofsudoku.R.id.six, com.licktopia.championsofsudoku.R.id.seven, com.licktopia.championsofsudoku.R.id.eight, com.licktopia.championsofsudoku.R.id.nine};
+    public static int[] colorButtonTags = {R.drawable.cbut_lightgreendot, R.drawable.cbut_bluedot,R.drawable.cbut_lightreddot,R.drawable.cbut_darkreddot,R.drawable.cbut_silverdot,R.drawable.cbut_orangedot,R.drawable.cbut_purpledot,R.drawable.cbut_yellowdot,R.drawable.cbut_darkgreendot};
     public static int[] colors = {R.color.color1, R.color.color2,R.color.color3,R.color.color4,R.color.color5,R.color.color6,R.color.color7,R.color.color8,R.color.color9};
 
 }
