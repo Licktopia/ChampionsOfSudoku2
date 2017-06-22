@@ -137,13 +137,8 @@ public class BoardActivity extends AppCompatActivity {
         mUndoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int square = mGame.undo();
-                int value = mGame.getBoardValueAt(square);
-                squareViews[square].setBigNumber(value, false);
-                SquareState mSquareState;
                 if(mGame.canUndo()) {
-                    mSquareState = mGame.undo();
-                    int square = mSquareState.getIdx();
+                    int square =  mGame.undo();
                     int value = mGame.getBoardValueAt(square);
                     if(value!=0) {
                         if (!colorGame) {
@@ -168,13 +163,8 @@ public class BoardActivity extends AppCompatActivity {
         mRedoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int square = mGame.redo();
-                int value = mGame.getBoardValueAt(square);
-                squareViews[square].setBigNumber(value, false);
-                SquareState mSquareState;
                 if(mGame.canRedo()) {
-                    mSquareState = mGame.redo();
-                    int square = mSquareState.getIdx();
+                    int square = mGame.redo();
                     int value = mGame.getBoardValueAt(square);
                     squareViews[square].setBigNumber(value, false);
                 }
