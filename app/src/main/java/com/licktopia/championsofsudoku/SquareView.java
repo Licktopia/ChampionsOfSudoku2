@@ -61,6 +61,9 @@ public class SquareView {
         notepadNums[6] = (ImageView) v.findViewById(R.id.squareNotepad7);
         notepadNums[7] = (ImageView) v.findViewById(R.id.squareNotepad8);
         notepadNums[8] = (ImageView) v.findViewById(R.id.squareNotepad9);
+        for (int i = 0; i < notepadNums.length; i++) {
+            notepadNums[i].setImageDrawable(context.getDrawable(Tags.numberImageTags[i]));
+        }
 
         squareHolder.addView(v);
     }
@@ -133,14 +136,22 @@ public class SquareView {
     }
 
 
-    /* Set display of notepad number (1 - 9)*/
-    public void toggleNotepadNumber(int num) {
+    /* Set visibility of notepad number (1 - 9)*/
+    public void showNotepadNumber(int num, boolean show) {
         notepad.setVisibility(View.VISIBLE);
         number.setVisibility(View.INVISIBLE);
-        if (notepadNums[num - 1].getVisibility() == View.INVISIBLE)
+        if (show)
             notepadNums[num - 1].setVisibility(View.VISIBLE);
-        else notepadNums[num - 1].setVisibility(View.INVISIBLE);
-        System.out.println();
+        else
+            notepadNums[num - 1].setVisibility(View.INVISIBLE);
+    }
+
+    /* Toggle visibility of notepad number (1 - 9) */
+    public void toggleNotepadNumber(int num) {
+        if (notepadNums[num - 1].getVisibility() == View.VISIBLE)
+            showNotepadNumber(num, false);
+        else
+            showNotepadNumber(num, true);
     }
 
 
@@ -161,6 +172,11 @@ public class SquareView {
     /* Sets highlight state to error color */
     public void setErrorHighlight() {
         setHighlightColor(context.getColor(R.color.highlightred));
+    }
+
+    /* Sets selected square to individual highlight color */
+    public void setSelectedHightlight() {
+        setHighlightColor(context.getColor(R.color.silver));
     }
 
     /* Sets highlight layout to given color */

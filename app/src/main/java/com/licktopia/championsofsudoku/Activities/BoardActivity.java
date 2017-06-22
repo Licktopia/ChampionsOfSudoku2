@@ -378,7 +378,7 @@ public class BoardActivity extends AppCompatActivity {
             int iCluster = ((iRow / clusterSize) * clusterSize) + (iCol / clusterSize);
             if(i==selectedSquare){
                 if(!colorGame){
-
+                    squareViews[i].setSelectedHightlight();
                 }
                 else{
 
@@ -443,14 +443,32 @@ public class BoardActivity extends AppCompatActivity {
                 else
                     currSquare.setSquareColor(0);
             }
-            // Toggle notepad number and display notepad
-            mGame.setBoardNotepadAt(selectedSquare, keypadNumber, !(mGame.getBoardNotepadAt(selectedSquare, keypadNumber)));
-            currSquare.toggleNotepadNumber(keypadNumber);
+            // Clearing notepad of all values
+            if (keypadNumber == 0) {
+                for (int i = 1; i <= mGame.totalBoardRows(); i++) {
+                    mGame.setBoardNotepadAt(selectedSquare, i, false);
+                    currSquare.showNotepadNumber(i, false);
+                }
+            }
+            else {
+                // Toggle notepad number and display notepad
+                mGame.setBoardNotepadAt(selectedSquare, keypadNumber, !(mGame.getBoardNotepadAt(selectedSquare, keypadNumber)));
+                currSquare.toggleNotepadNumber(keypadNumber);
+            }
         }
 
         // Enter number into square, if valid, and display
         else {
-            // If number matches value already in square, remove number
+
+            // Clearing on empty square, removes any notepad entries
+            if (mGame.getBoardValueAt(selectedSquare) == 0 && keypadNumber == 0) {
+                for (int i = 1; i <= mGame.totalBoardRows(); i++) {
+                    mGame.setBoardNotepadAt(selectedSquare, i, false);
+                    currSquare.showNotepadNumber(i, false);
+                }
+            }
+
+            // If number clicked matches value already in square, remove number
             if (mGame.getBoardValueAt(selectedSquare) == keypadNumber)
                 keypadNumber = 0;
 
