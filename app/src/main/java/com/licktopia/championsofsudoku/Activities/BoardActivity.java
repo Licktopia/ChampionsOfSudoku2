@@ -83,7 +83,6 @@ public class BoardActivity extends AppCompatActivity {
         mChronometer = (Chronometer)findViewById(com.licktopia.championsofsudoku.R.id.chronometer);
 
 
-
         mUndoButton = (ImageButton)findViewById(R.id.backButton);
         mRedoButton = (ImageButton)findViewById(R.id.forwardButton);
         notepadIcon = (ImageButton) findViewById(R.id.scratch);
@@ -106,6 +105,14 @@ public class BoardActivity extends AppCompatActivity {
         customizeLayout();
         listeners(toolbar);//set all listeners for BoardActivity layout
         updateScore();
+        mChronometer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
+            @Override
+            public void onChronometerTick(Chronometer chronometer) {
+                updateScore();
+            }
+        });
+
+
 
 
 
@@ -263,17 +270,7 @@ public class BoardActivity extends AppCompatActivity {
                 animationFinished = true;
 
 
-                mChronometer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
-                    @Override
-                    public void onChronometerTick(Chronometer chronometer) {
 
-                        long myElapsedMillis = SystemClock.elapsedRealtime() - mChronometer.getBase();
-                        if(myElapsedMillis%1000==0){
-                            updateScore();
-
-                        }
-                    }
-                });
             }
         },2950);
     }
