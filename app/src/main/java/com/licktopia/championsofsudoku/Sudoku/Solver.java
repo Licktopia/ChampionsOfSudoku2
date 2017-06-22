@@ -2,6 +2,7 @@ package com.licktopia.championsofsudoku.Sudoku;
 
 import java.util.Queue;
 import java.util.Stack;
+import java.util.Set;
 import java.util.LinkedList;
 
 /**
@@ -91,7 +92,7 @@ class Solver {
         {
             if(!curBoard.isStartingValue(row, col))
             {
-                Stack<Integer> testStk = curBoard.setValueAt(row, col, i);
+                Set<Integer> testStk = curBoard.setValueAt(row, col, i);
                 if(testStk.isEmpty())
                 {
                     curBoard.setNotepadAt(row, col, i, true);

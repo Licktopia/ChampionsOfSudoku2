@@ -3,7 +3,9 @@ package com.licktopia.championsofsudoku.Sudoku;
 import android.content.Context;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Stack;
+import java.util.Set;
 
 /**
  * Board class represents a single instance of a Sudoku puzzle
@@ -67,12 +69,12 @@ public class Board {
 
 
     //stores the ids of squares which prevent setValueAt from making a move
-    private Stack<Integer> problemSqrs;
+    private Set<Integer> problemSqrs;
     /* Inserts parameter value at the board location specified by row and col.
     *  Returns empty stack if value inserted successfully, not empty if not */
-    protected Stack<Integer> setValueAt(int row, int col, int value) {
-        //return this stack
-        problemSqrs = new Stack();
+    protected Set<Integer> setValueAt(int row, int col, int value) {
+        //return this set
+        problemSqrs = new HashSet<Integer>();
 
         if (value < 0 || value > SIZE)      // Check value input
             return problemSqrs;
@@ -90,8 +92,13 @@ public class Board {
         }
         else {
             int clusterNum = ((row / CLUSTER_SIZE) * CLUSTER_SIZE) + (col / CLUSTER_SIZE);  // Get cluster number
+
+            //ensure that all of these operations are performed since problemSqrs gets update in them
+            boolean isRowValid = isRowValid(row);
+            boolean isColumnValid = isColumnValid(col);
+            boolean isClusterValid = isClusterValid(clusterNum);
             //isRowValid, isColumnValid and isClusterValid all add to this.problemSqrs if they are false
-            isValid = (isRowValid(row) && isColumnValid(col) && isClusterValid(clusterNum));
+            isValid = (isRowValid && isColumnValid && isClusterValid);
         }
 
         if(isValid)
@@ -118,7 +125,7 @@ public class Board {
     //sets value of square given the index
     //returns empty stack if successful
     //returns ids of problem squares in stack if failed
-    protected Stack<Integer> setValueAt(int idx, int value) {
+    protected Set<Integer> setValueAt(int idx, int value) {
         return this.setValueAt(idxToRow(idx), idxToCol(idx), value);
     }
 
@@ -188,7 +195,7 @@ public class Board {
     //adds id of problem square to problemSqrs
     protected boolean isBoardValid() {
         //must be reset before using isRowValid isColumnValid and !isClusterValid
-        problemSqrs = new Stack();
+        problemSqrs = new HashSet<Integer>();
         for (int i = 0; i < SIZE; i++) {
             if (!isRowValid(i) || !isColumnValid(i) || !isClusterValid(i)){}
                 return false; // Board not correct
@@ -210,14 +217,8 @@ public class Board {
             for (int j = i + 1; j < SIZE; j++) {
                 if (contents[row][i].getValue() != 0 && contents[row][i].getValue() == contents[row][j].getValue())
                 {
-                    if(!problemSqrs.contains(i))
-                    {
-                        problemSqrs.push(row * SIZE + i);
-                    }
-                    if(!problemSqrs.contains(j))
-                    {
-                        problemSqrs.push(row * SIZE + j);
-                    }
+                    problemSqrs.add(row * SIZE + i);
+                    problemSqrs.add(row * SIZE + j);
                     return false;  // Found repeat, row invalid
                 }
 
@@ -234,15 +235,8 @@ public class Board {
             for (int j = i + 1; j < SIZE; j++) {
                 if (contents[i][col].getValue() != 0 && contents[i][col].getValue() == contents[j][col].getValue())
                 {
-                    if(!problemSqrs.contains(i))
-                    {
-                        problemSqrs.push(i * SIZE + col);
-                    }
-                    if(!problemSqrs.contains(j))
-                    {
-                        problemSqrs.push(j * SIZE + col);
-                    }
-
+                    problemSqrs.add(i * SIZE + col);
+                    problemSqrs.add(j * SIZE + col);
 
                     return false; // Found repeat, column invalid
                 }
@@ -266,23 +260,19 @@ public class Board {
             clusterNums[i] = contents[(i / CLUSTER_SIZE) + rowStart][(i % CLUSTER_SIZE) + colStart].getValue();
         }
 
-        // Sort array and check for no repeats
-        Arrays.sort(clusterNums);
+        //check for no repeats
         for (int i = 0; i < SIZE - 1; i++) {
-            if (clusterNums[i] != 0 && clusterNums[i] == clusterNums[i + 1])
+            for(int j = i + 1; j < SIZE ; j++)
             {
-                if(!problemSqrs.contains(i))
+                if (clusterNums[i] != 0 && clusterNums[i] == clusterNums[j])
                 {
-                    problemSqrs.push(((i / CLUSTER_SIZE) + rowStart) * SIZE + ((i % CLUSTER_SIZE) + colStart));
-                }
-                if(!problemSqrs.contains(i + 1))
-                {
-                    problemSqrs.push(((i + 1 / CLUSTER_SIZE) + rowStart) * SIZE + ((i + 1 % CLUSTER_SIZE) + colStart));
-                }
+                    problemSqrs.add(((i / CLUSTER_SIZE) + rowStart) * SIZE + ((i % CLUSTER_SIZE) + colStart));
+                    problemSqrs.add(((j / CLUSTER_SIZE) + rowStart) * SIZE + ((j % CLUSTER_SIZE) + colStart));
 
-
-                return false; // Found repeat, cluster invalid
+                    return false; // Found repeat, cluster invalid
+                }
             }
+
         }
         return true; // Cluster is valid
     }

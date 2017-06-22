@@ -4,6 +4,7 @@ import android.content.Context;
 
 import java.util.Queue;
 import java.util.Stack;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -42,14 +43,14 @@ public class Game
     //sets value of square given row and col
     //returns empty stack if successful
     //returns ids of problem squares in stack if failed
-    public Stack<Integer> setBoardValueAt(int row, int col, int value) {
+    public Set<Integer> setBoardValueAt(int row, int col, int value) {
         return this.curBoard.setValueAt(row, col, value);
     }
 
     //sets value of square given the index
     //returns empty stack if successful
     //returns ids of problem squares in stack if failed
-    public Stack<Integer> setBoardValueAt(int idx, int value) {
+    public Set<Integer> setBoardValueAt(int idx, int value) {
         return this.curBoard.setValueAt(idx, value);
     }
 
