@@ -332,4 +332,7 @@ public class Game
 
     //returns the column/row size of a cluster
     public  int getClusterSize() {return curBoard.getClusterSize(); }
+
+    //true if the board is complete
+    public boolean isGameFinish() {return curBoard.isBoardFull();}
 }
