@@ -179,6 +179,10 @@ public class SquareView {
         setHighlightColor(context.getColor(R.color.silver));
     }
 
+    public void setSameNumberHighlight() {
+        setHighlightColor(context.getColor(R.color.ltgrey));
+    }
+
     /* Sets highlight layout to given color */
     private void setHighlightColor(int color) {
         highlight.setBackgroundColor(color);

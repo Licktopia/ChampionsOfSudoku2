@@ -404,7 +404,12 @@ public class BoardActivity extends AppCompatActivity {
         removeAllHighlights();
 
         if (mGame.isStartingValue(squareNumber)) { // Starting square clicked
-            // TODO bold value and other matching values
+            int value = mGame.getBoardValueAt(squareNumber);
+            for (int i = 0; i < mGame.totalBoardElements(); i++) {
+                if (mGame.getBoardValueAt(i) == value) {
+                    squareViews[i].setSameNumberHighlight();
+                }
+            }
             // TODO disable all buttons except down
             // TODO toggle highlights?
         }
@@ -418,7 +423,12 @@ public class BoardActivity extends AppCompatActivity {
 
             // Bold similar numbers
             if (mGame.getBoardValueAt(selectedSquare) != 0) {
-                //TODO bold value and other matching values
+                int value = mGame.getBoardValueAt(squareNumber);
+                for (int i = 0; i < mGame.totalBoardElements(); i++) {
+                    if (mGame.getBoardValueAt(i) == value && i != squareNumber) {
+                        squareViews[i].setSameNumberHighlight();
+                    }
+                }
             }
         }
     }
