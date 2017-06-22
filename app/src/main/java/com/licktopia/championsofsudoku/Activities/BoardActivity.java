@@ -30,6 +30,7 @@ import com.licktopia.championsofsudoku.Sudoku.Board;
 import com.licktopia.championsofsudoku.Sudoku.Game;
 import com.licktopia.championsofsudoku.Tags;
 
+import java.util.Set;
 import java.util.Stack;
 import java.util.concurrent.TimeUnit;
 
@@ -472,7 +473,7 @@ public class BoardActivity extends AppCompatActivity {
             if (mGame.getBoardValueAt(selectedSquare) == keypadNumber)
                 keypadNumber = 0;
 
-            Stack<Integer> conflicts = mGame.setBoardValueAt(selectedSquare, keypadNumber);  // Set board value to number
+            Set<Integer> conflicts = mGame.setBoardValueAt(selectedSquare, keypadNumber);  // Set board value to number
             if (conflicts.isEmpty()) {
                 if (!colorGame)
                     currSquare.setBigNumber(keypadNumber);   // Display number
