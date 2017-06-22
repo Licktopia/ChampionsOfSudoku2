@@ -140,6 +140,27 @@ public class BoardActivity extends AppCompatActivity {
                 int square = mGame.undo();
                 int value = mGame.getBoardValueAt(square);
                 squareViews[square].setBigNumber(value, false);
+                SquareState mSquareState;
+                if(mGame.canUndo()) {
+                    mSquareState = mGame.undo();
+                    int square = mSquareState.getIdx();
+                    int value = mGame.getBoardValueAt(square);
+                    if(value!=0) {
+                        if (!colorGame) {
+                            squareViews[square].setBigNumber(0, false);
+                        } else {
+                            squareViews[square].setSquareColor(0, false);
+                        }
+                    }
+                    else{
+                        if(!colorGame) {
+                            squareViews[square].setBigNumber(value, false);
+                        }
+                        else{
+                            squareViews[square].setSquareColor(value, false);
+                        }
+                    }
+                }
                 updateUndoRedoButtons();
 
             }
@@ -150,6 +171,13 @@ public class BoardActivity extends AppCompatActivity {
                 int square = mGame.redo();
                 int value = mGame.getBoardValueAt(square);
                 squareViews[square].setBigNumber(value, false);
+                SquareState mSquareState;
+                if(mGame.canRedo()) {
+                    mSquareState = mGame.redo();
+                    int square = mSquareState.getIdx();
+                    int value = mGame.getBoardValueAt(square);
+                    squareViews[square].setBigNumber(value, false);
+                }
                 updateUndoRedoButtons();
             }
         });
@@ -161,13 +189,13 @@ public class BoardActivity extends AppCompatActivity {
      *********************************/
     private void updateUndoRedoButtons() {
         if(mGame.canUndo()){
-            mUndoButton.setAlpha(1);
+            mUndoButton.setAlpha(1f);
         }
         else{
             mUndoButton.setAlpha(UNDOREDOALPHA);
         }
         if(mGame.canRedo()){
-            mRedoButton.setAlpha(1);
+            mRedoButton.setAlpha(1f);
         }
         else{
             mRedoButton.setAlpha(UNDOREDOALPHA);
