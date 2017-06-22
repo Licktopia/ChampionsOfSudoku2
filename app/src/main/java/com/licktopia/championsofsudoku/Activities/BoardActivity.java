@@ -30,6 +30,9 @@ import com.licktopia.championsofsudoku.Sudoku.Board;
 import com.licktopia.championsofsudoku.Sudoku.Game;
 import com.licktopia.championsofsudoku.Tags;
 
+import java.util.Stack;
+import java.util.concurrent.TimeUnit;
+
 import static android.view.View.GONE;
 
 public class BoardActivity extends AppCompatActivity {
@@ -241,7 +244,7 @@ public class BoardActivity extends AppCompatActivity {
         toolbarButtonsListener(toolbar);
         numberListeners();
         smallNumPadListener();
-        clearButtonLisener();
+        clearButtonListener();
         undoRedoListener();
 
 
@@ -284,7 +287,7 @@ public class BoardActivity extends AppCompatActivity {
      *********************************/
     private void numberListeners() {
         for (int i = 0; i < size; i++) {
-            final int finalI = i;
+            final int finalI = i + 1;
             numberButtons[i].setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -297,11 +300,11 @@ public class BoardActivity extends AppCompatActivity {
     /************************************
      * Listeners numberPadButtonBackground
      *********************************/
-    private void clearButtonLisener() {
+    private void clearButtonListener() {
         clearButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                numberCommands(0);
             }
         });
     }
@@ -360,9 +363,8 @@ public class BoardActivity extends AppCompatActivity {
     /************************************
      * Highlight connected squares
      *********************************/
-    private void highlightConnected(int squareNumber) {
+    private void highlightConnected() {
         // Get location information for selected square
-        selectedSquare = squareNumber;
         int row = selectedSquare / size;
         int col = selectedSquare % size;
         int clusterSize = mGame.getClusterSize();
@@ -397,6 +399,7 @@ public class BoardActivity extends AppCompatActivity {
             openKeyboard();
         }
 
+        selectedSquare = squareNumber;
         removeAllHighlights();
 
         if (mGame.isStartingValue(squareNumber)) { // Starting square clicked
@@ -410,7 +413,7 @@ public class BoardActivity extends AppCompatActivity {
             //Set highlights
             squareViews[squareNumber].setHighlighted(true); //TODO change to highlight different color than others
             if(rowColHighlights)
-                highlightConnected(squareNumber);
+                highlightConnected();
 
             // Bold similar numbers
             if (mGame.getBoardValueAt(selectedSquare) != 0) {
@@ -428,15 +431,45 @@ public class BoardActivity extends AppCompatActivity {
         if (selectedSquare == -1 || mGame.isStartingValue(selectedSquare))
             return;
 
-        else {
-            //if (smallNumPadState)
+        SquareView currSquare = squareViews[selectedSquare];
 
-            //Stack<Integer> conflicts = mGame.setBoardValueAt(selectedSquare, keypadNumber);  // Set board value to number
-            //if (conflicts.isEmpty())
-            //TODO Check stack for conflicting squares
+        // If notepad entry is active
+        if (smallNumPadState) {
+            // If square has value, remove it
+            if (mGame.getBoardValueAt(selectedSquare) != 0) {
+                mGame.setBoardValueAt(selectedSquare, 0);
+                if (!colorGame)
+                    currSquare.setBigNumber(0);
+                else
+                    currSquare.setSquareColor(0);
+            }
+            // Toggle notepad number and display notepad
+            mGame.setBoardNotepadAt(selectedSquare, keypadNumber, !(mGame.getBoardNotepadAt(selectedSquare, keypadNumber)));
+            currSquare.toggleNotepadNumber(keypadNumber);
+        }
+
+        // Enter number into square, if valid, and display
+        else {
+            // If number matches value already in square, remove number
+            if (mGame.getBoardValueAt(selectedSquare) == keypadNumber)
+                keypadNumber = 0;
+
+            Stack<Integer> conflicts = mGame.setBoardValueAt(selectedSquare, keypadNumber);  // Set board value to number
+            if (conflicts.isEmpty()) {
+                if (!colorGame)
+                    currSquare.setBigNumber(keypadNumber);   // Display number
+                else
+                    currSquare.setSquareColor(keypadNumber); // Display color
+            }
+            else {
+                for (int conflict : conflicts) {
+                    squareViews[conflict].setErrorHighlight(); // Display error highlight
+                }
+            }
         }
 
     }
+
 
     /************************************
      * Number vs Color initial setup

@@ -68,16 +68,24 @@ public class SquareView {
 
     /* Set number displayed in square */
     public void setBigNumber(int n) {
-        if (n == 0)
+        if (n == 0) {
             number.setImageDrawable(null);   // Remove display object
-        else
+            number.setVisibility(View.INVISIBLE);
+            notepad.setVisibility(View.VISIBLE);
+        }
+        else {
             number.setImageDrawable(context.getDrawable(Tags.numberImageTags[n - 1])); // Set background image
+            number.setVisibility(View.VISIBLE);
+            notepad.setVisibility(View.INVISIBLE);
+        }
     }
 
     /* Set color displayed in square */
     public void setSquareColor(int n) {
-        if (n == 0)
-            squareHolder.setBackground(null);   // Remove display object
+        if (n == 0) {
+            color.setBackground(null);   // Remove display object
+            squareHolder.setAlpha(1);
+        }
         else {
             color.setBackground(context.getDrawable(Tags.colors[n - 1])); // Set background image
             squareHolder.setAlpha(COLOR_SQUARE_TRANSPARENCY);
@@ -100,8 +108,10 @@ public class SquareView {
 
     /* Set color displayed in square */
     public void setSquareColorAnimated(int n) {
-        if (n == 0)
-            squareHolder.setBackground(null);   // Remove display object
+        if (n == 0) {
+            color.setBackground(null);   // Remove display object
+            squareHolder.setAlpha(1);
+        }
         else {
             color.setAlpha(0f);
             color.setBackground(context.getDrawable(Tags.colors[n - 1])); // Set background image
@@ -124,10 +134,13 @@ public class SquareView {
 
 
     /* Set display of notepad number (1 - 9)*/
-    public void toggleNotepadNumber(int number) {
-        if (notepadNums[number - 1].getVisibility() == View.INVISIBLE)
-            notepadNums[number - 1].setVisibility(View.VISIBLE);
-        else notepadNums[number - 1].setVisibility(View.INVISIBLE);
+    public void toggleNotepadNumber(int num) {
+        notepad.setVisibility(View.VISIBLE);
+        number.setVisibility(View.INVISIBLE);
+        if (notepadNums[num - 1].getVisibility() == View.INVISIBLE)
+            notepadNums[num - 1].setVisibility(View.VISIBLE);
+        else notepadNums[num - 1].setVisibility(View.INVISIBLE);
+        System.out.println();
     }
 
 
@@ -140,8 +153,18 @@ public class SquareView {
     /* Sets highlight state of current square */
     public void setHighlighted(boolean highlighted) {
         if (highlighted)
-            highlight.setBackgroundColor(context.getColor(R.color.colorHighLight)); // Set to highlighted
+            setHighlightColor(context.getColor(R.color.colorHighLight)); // Set to generic highlighted
         else
-            highlight.setBackgroundColor(context.getColor(R.color.white)); // Remove highlight
+            setHighlightColor(context.getColor(R.color.white)); // Remove highlight
+    }
+
+    /* Sets highlight state to error color */
+    public void setErrorHighlight() {
+        setHighlightColor(context.getColor(R.color.highlightred));
+    }
+
+    /* Sets highlight layout to given color */
+    private void setHighlightColor(int color) {
+        highlight.setBackgroundColor(color);
     }
 }
