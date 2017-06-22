@@ -151,6 +151,7 @@ public class Game
         {
             isPaused = true;
             runningTime = this.getRunningTime();
+            startTime = -1;
         }
     }
 
@@ -167,6 +168,11 @@ public class Game
     //returns running time in seconds
     public long getRunningTime()
     {
+        //clock has not be unpaused
+        if(startTime < 0)
+        {
+            return runningTime;
+        }
         long endTime = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
         return runningTime + endTime - startTime;
     }
@@ -263,16 +269,16 @@ public class Game
                 return 1.0 / 30.0;
             //medium
             case 2:
-                return 10.0 / 25.0;
+                return 1.0 / 25.0;
             //hard
             case 3:
-                return 10.0 / 25.0;
+                return 1.0 / 25.0;
             //expert
             case 4:
-                return 10.0 / 25.0;
+                return 1.0 / 25.0;
             //master
             case 5:
-                return 10.0 / 25.0;
+                return 1.0 / 25.0;
             default:
                 return 0.0;
         }
@@ -291,24 +297,24 @@ public class Game
         {
             //beginner
             case 0:
-                return 0;
+                return 0.0;
             //easy
             case 1:
-                return 1 / 30;
+                return 1.0 / 30.0;
             //medium
             case 2:
-                return 10 / 25;
+                return 10.0 / 25.0;
             //hard
             case 3:
-                return 10 / 25;
+                return 10.0 / 25.0;
             //expert
             case 4:
-                return 10 / 25;
+                return 10.0 / 25.0;
             //master
             case 5:
-                return 10 / 25;
+                return 10.0 / 25.0;
             default:
-                return 0;
+                return 0.0;
         }
     }
     //stores solution to game
