@@ -98,7 +98,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Sign Out"
-                        android:visibility="gone" />
+                        android:visibility="visible" />
 
                 </RelativeLayout>
 
@@ -165,7 +165,7 @@
                                     android:layout_centerVertical="false"
                                     android:gravity="center_vertical"
                                     android:paddingLeft="20dp"
-                                    android:text="Beginner"
+                                    android:text="@string/beginner"
                                     android:textAllCaps="false"
                                     android:textColor="@color/colorPrimaryDark"
                                     android:textSize="16sp" />
@@ -214,7 +214,7 @@
                                     android:layout_alignParentTop="true"
                                     android:gravity="center_vertical"
                                     android:paddingLeft="20dp"
-                                    android:text="Easy"
+                                    android:text="@string/easy"
                                     android:textAllCaps="false"
                                     android:textColor="@color/colorPrimaryDark"
                                     android:textSize="16sp" />
@@ -261,7 +261,7 @@
                                     android:layout_centerVertical="false"
                                     android:gravity="center_vertical"
                                     android:paddingLeft="20dp"
-                                    android:text="Medium"
+                                    android:text="@string/medium"
                                     android:textAllCaps="false"
                                     android:textColor="@color/colorPrimaryDark"
                                     android:textSize="16sp" />
@@ -308,7 +308,7 @@
                                     android:layout_centerVertical="false"
                                     android:gravity="center_vertical"
                                     android:paddingLeft="20dp"
-                                    android:text="Hard"
+                                    android:text="@string/hard"
                                     android:textAllCaps="false"
                                     android:textColor="@color/colorPrimaryDark"
                                     android:textSize="16sp" />
@@ -355,7 +355,7 @@
                                     android:layout_centerVertical="false"
                                     android:gravity="center_vertical"
                                     android:paddingLeft="20dp"
-                                    android:text="Expert"
+                                    android:text="@string/expert"
                                     android:textAllCaps="false"
                                     android:textColor="@color/colorPrimaryDark"
                                     android:textSize="16sp" />
@@ -403,7 +403,7 @@
                                     android:layout_centerVertical="false"
                                     android:gravity="center_vertical"
                                     android:paddingLeft="20dp"
-                                    android:text="Master"
+                                    android:text="@string/master"
                                     android:textAllCaps="false"
                                     android:textColor="@color/colorPrimaryDark"
                                     android:textSize="16sp" />
@@ -461,7 +461,7 @@
                                     android:layout_marginBottom="15dp"
                                     android:layout_marginLeft="15dp"
                                     android:gravity="bottom"
-                                    android:text="Art     Mode"
+                                    android:text="@string/art_mode"
                                     android:textColor="@color/colorPrimaryDark"
                                     android:textSize="20sp" />
 
@@ -520,7 +520,7 @@
                                     android:gravity="right"
                                     android:lines="2"
                                     android:maxLines="2"
-                                    android:text="Classic Numbers"
+                                    android:text="@string/classic_numbers"
                                     android:textColor="@color/colorPrimaryDark"
                                     android:textSize="20sp" />
                             </RelativeLayout>
@@ -617,11 +617,12 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/badge"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
                     android:weightSum="100"
-                    tools:visibility="visible">
+                    tools:visibility="gone">
 
                     <ImageView
                         android:id="@+id/user_stats"
@@ -633,8 +634,9 @@
                         android:layout_gravity="center"
                         android:layout_weight="75"
                         android:scaleType="fitCenter"
-                        android:visibility="gone"
-                        tools:visibility="visible" />
+                        android:visibility="visible"
+                        app:srcCompat="@drawable/rank0"
+                        tools:visibility="gone" />
 
                     <TextView
                         android:id="@+id/user_name"
@@ -644,9 +646,9 @@
                         android:layout_centerHorizontal="true"
                         android:layout_weight="25"
                         android:gravity="center"
-                        android:text="Stats &amp; More"
+                        android:text="@string/stats_amp_more"
                         android:textSize="14sp"
-                        android:visibility="gone" />
+                        android:visibility="visible" />
                 </LinearLayout>
 
             </RelativeLayout>
@@ -689,7 +691,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center_vertical"
-                    android:text="Share with your friends"
+                    android:text="@string/share_with_your_friends"
                     android:textAlignment="center"
                     android:textColor="@color/white"
                     android:textSize="16sp" />
