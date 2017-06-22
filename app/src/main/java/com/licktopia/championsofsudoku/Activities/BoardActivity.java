@@ -28,9 +28,7 @@ import com.licktopia.championsofsudoku.R;
 import com.licktopia.championsofsudoku.Settings.SudokuSettings;
 import com.licktopia.championsofsudoku.Settings.SudokuSettingsActivity;
 import com.licktopia.championsofsudoku.SquareView;
-import com.licktopia.championsofsudoku.Sudoku.Board;
 import com.licktopia.championsofsudoku.Sudoku.Game;
-import com.licktopia.championsofsudoku.Sudoku.SquareState;
 import com.licktopia.championsofsudoku.Tags;
 
 import java.util.Set;
@@ -62,7 +60,6 @@ public class BoardActivity extends AppCompatActivity {
     private ImageButton notepadIcon;
     private RelativeLayout numberPadButtonBackground;
     private ImageButton keyboardDownButton;
-    private Board mBoard;
     private int size;
     private long timeWhenStopped;
     private Handler highlightHandler;
@@ -140,9 +137,7 @@ public class BoardActivity extends AppCompatActivity {
         mUndoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SquareState mSquareState;
-                mSquareState= mGame.undo();
-                int square = mSquareState.getIdx();
+                int square = mGame.undo();
                 int value = mGame.getBoardValueAt(square);
                 squareViews[square].setBigNumber(value, false);
                 updateUndoRedoButtons();
@@ -152,9 +147,7 @@ public class BoardActivity extends AppCompatActivity {
         mRedoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SquareState mSquareState;
-                mSquareState= mGame.redo();
-                int square = mSquareState.getIdx();
+                int square = mGame.redo();
                 int value = mGame.getBoardValueAt(square);
                 squareViews[square].setBigNumber(value, false);
                 updateUndoRedoButtons();

@@ -11,7 +11,7 @@ import java.util.Set;
  * Board class represents a single instance of a Sudoku puzzle
  */
 
-public class Board {
+class Board {
 
     private static int SIZE = 9;         // Board size
     private static int CLUSTER_SIZE = 3; // Size of N x N cluster
@@ -35,11 +35,11 @@ public class Board {
         // Copy parameter values into contents array
         for (int i = 0; i < values.length; i++) {
             if (values[i] != 0) {   // Non-empty square
-                contents[i / SIZE][i % SIZE] = new Square(values[i], true, SIZE);
+                contents[i / SIZE][i % SIZE] = new Square(values[i], true, SIZE, i);
             }
             else                    // Empty square
             {
-                contents[i / SIZE][i % SIZE] = new Square(values[i], false, SIZE);
+                contents[i / SIZE][i % SIZE] = new Square(values[i], false, SIZE, i);
                 openSquares++;
             }
 
@@ -58,7 +58,7 @@ public class Board {
         // copy all data from oldBoard into this
         for (int i = 0; i < this.totalBoardRows(); i++) {
             for (int j = 0; j < this.totalBoardCols(); j++) {
-                contents[i][j] = new Square(oldBoard.getValueAt(i, j), oldBoard.isStartingValue(i, j), SIZE);
+                contents[i][j] = new Square(oldBoard.getValueAt(i, j), oldBoard.isStartingValue(i, j), SIZE, i);
                 for(int k = 1; k <= SIZE; k ++)
                 {
                     this.setNotepadAt(i, j, k, oldBoard.getNotepadAt(i, j, k));
@@ -111,7 +111,8 @@ public class Board {
 
             //clear redo
             redoStk = new Stack();
-            undoStk.push(contents[row][col].saveState(row, col, this.SIZE));
+            undoStk.push(new Square(contents[row][col]));
+            undoStk.peek().setValue(tempVal);
 
         }
         else
@@ -205,7 +206,7 @@ public class Board {
     }
 
     /* Checks if board is complete and correct */
-    public boolean isSolution() {
+    protected boolean isSolution() {
         return isBoardFull() && isBoardValid(); // Board is complete and correct
     }
 
@@ -249,7 +250,7 @@ public class Board {
 
     /* Check that cluster provided does not contain conflicts */
     // adds to this.problemSqr if false
-    public boolean isClusterValid(int cluster) {
+    private boolean isClusterValid(int cluster) {
 
         // Get cluster start indices based on board size
         int rowStart = (cluster / CLUSTER_SIZE) * CLUSTER_SIZE;
@@ -280,11 +281,10 @@ public class Board {
 
 
     /* Clear board to original state */
-    public void resetToStart() {
+    protected void resetToStart() {
         for (int i = 0; i < SIZE; i++) {
             for (int j = 0; j < SIZE; j++) {
-                if(!contents[i][j].isStartingValue())
-                    contents[i][j].setValue(0);
+                contents[i][j].reset();
             }
         }
     }
@@ -292,18 +292,18 @@ public class Board {
 
     //returns current state of a altered cell after an undo
     //returns null if no undo occurred
-    private Stack<SquareState> undoStk = new Stack<>();
-    protected SquareState undo()
+    private Stack<Square> undoStk = new Stack<>();
+    protected int undo()
     {
         if(undoStk.isEmpty()){
-            return null;
+            return -1;
         }
-        SquareState temp = undoStk.pop();
+        Square temp = undoStk.pop();
 
-        contents[temp.getRow()][temp.getCol()].restoreState(temp);
+        redoStk.push(new Square(contents[temp.getRow()][temp.getCol()]));
 
-        redoStk.push(contents[temp.getRow()][temp.getCol()].saveState(temp.getRow(), temp.getCol(), this.SIZE));
-        return temp;
+        contents[temp.getRow()][temp.getCol()] = temp;
+        return temp.getIdx();
     }
 
     //returns true if a undo can occur
@@ -314,19 +314,19 @@ public class Board {
 
     //returns current state of a altered cell after an redo
     //returns null if no redo occurred
-    private Stack<SquareState> redoStk = new Stack<>();
-    protected SquareState redo()
+    private Stack<Square> redoStk = new Stack<>();
+    protected int redo()
     {
         if(redoStk.isEmpty()){
-            return null;
+            return -1;
         }
 
-        SquareState temp = redoStk.pop();
+        Square temp = redoStk.pop();
 
-        contents[temp.getRow()][temp.getCol()].restoreState(temp);
+        undoStk.push(new Square(contents[temp.getRow()][temp.getCol()]));
 
-        undoStk.push(contents[temp.getRow()][temp.getCol()].saveState(temp.getRow(), temp.getCol(), this.SIZE));
-        return temp;
+        contents[temp.getRow()][temp.getCol()] = temp;
+        return temp.getIdx();
     }
 
     //returns true if a redo can occur
@@ -362,10 +362,10 @@ public class Board {
     protected  int totalBoardCols() {return contents[0].length; }
 
     //retuns the current state of a square at row, col
-    protected  SquareState getState(int row, int col) {return contents[row][col].saveState(row, col, SIZE);}
+    protected  Square getSquare(int row, int col) {return new Square(contents[row][col]);}
 
     //retuns the current state of a square at idx
-    protected  SquareState getState(int idx) {return this.getState(idxToRow(idx), idxToCol(idx));}
+    protected  Square getSquare(int idx) {return new Square(contents[idxToRow(idx)][idxToCol(idx)]);}
 
     protected int totalIncorrectGuesses(){ return incorrectGuesses; }
 

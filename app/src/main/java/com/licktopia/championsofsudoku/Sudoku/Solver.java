@@ -12,12 +12,12 @@ import java.util.LinkedList;
 class Solver {
 
     Board curBoard;
-    Queue<SquareState> solvingSteps;
+    Queue<Square> solvingSteps;
 
     protected Solver(Board curBoard)
     {
         this.curBoard = new Board(curBoard);
-        Queue<SquareState> solvingSteps = new LinkedList<SquareState>();
+        Queue<Square> solvingSteps = new LinkedList<Square>();
     }
 
     //solves board using backtracking method and returns solved board
@@ -26,9 +26,10 @@ class Solver {
     //returns a null board if it cannot be solved
     protected  Board solve()
     {
-        solvingSteps = new LinkedList<SquareState>();
+        solvingSteps = new LinkedList<Square>();
         int i = 0;
         curBoard.resetToStart();
+        updateAllNotepads();
 
         while(i < curBoard.totalBoardElements())
         {
@@ -50,7 +51,7 @@ class Solver {
                         {
                             //blank out the square with all of its options exhausted
                             curBoard.setValueAt(i, 0);
-                            solvingSteps.add(curBoard.getState(i));
+                            solvingSteps.add(curBoard.getSquare(i));
                             i--;
                             if(!curBoard.isStartingValue(i))
                             {
@@ -65,7 +66,7 @@ class Solver {
                         }
                     }
                 }while(!curBoard.setValueAt(i, testVal).isEmpty());
-                solvingSteps.add(curBoard.getState(i));
+                solvingSteps.add(curBoard.getSquare(i));
             }
             i++;
         }
@@ -96,20 +97,20 @@ class Solver {
                 if(testStk.isEmpty())
                 {
                     curBoard.setNotepadAt(row, col, i, true);
+
                 }
                 else
                 {
                     curBoard.setNotepadAt(row, col, i, false);
                 }
                 curBoard.setValueAt(row, col, 0);
-                //add the change to the state to the cell as a solving step
-                solvingSteps.add(curBoard.getState(row, col));
             }
-
         }
+        //add the change to the state to the cell as a solving step
+        solvingSteps.add(curBoard.getSquare(row, col));
     }
 
-    protected Queue<SquareState> getSolvingSteps()
+    protected Queue<Square> getSolvingSteps()
     {
         return  solvingSteps;
     }

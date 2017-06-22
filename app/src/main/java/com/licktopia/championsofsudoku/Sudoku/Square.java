@@ -6,20 +6,57 @@ package com.licktopia.championsofsudoku.Sudoku;
 
 
 //Represents a single cell on a Sudoku board
-class Square
+public class Square
 {
+    private int row = -1;
+    private int col = -1;
+    private int boardSize = -1;
     private boolean isStartingValue;
     private boolean[] notepad;
     private int value = -1;
     //true if the user has changed the square number
-    private boolean hasBeenChange = false;
+    private boolean hasBeenChange;
     //true if the square has been change no more than once
-    private boolean noMoreThanOneGuess = true;
-    protected Square(int entry, boolean isStartingValue, int boardSize)
+    private boolean noMoreThanOneGuess;
+    protected Square(int entry, boolean isStartingValue, int boardSize, int row, int col)
     {
+        buildSquare(entry, isStartingValue, boardSize, row, col);
+    }
+
+    protected Square(int entry, boolean isStartingValue, int boardSize, int idx)
+    {
+        buildSquare(entry, isStartingValue, boardSize, idx / boardSize, idx % boardSize);
+    }
+
+    private void buildSquare(int entry, boolean isStartingValue, int boardSize, int row, int col)
+    {
+        this.row = row;
+        this.col = col;
+        this.boardSize = boardSize;
         notepad = new boolean[boardSize];
         this.value = entry;
         this.isStartingValue = isStartingValue;
+        hasBeenChange = false;
+        noMoreThanOneGuess = true;
+    }
+
+    /*
+    * Makes exact copy of the passed square
+    * */
+    protected Square(Square oldSqr)
+    {
+        this.row = oldSqr.row;
+        this.col = oldSqr.col;
+        this.boardSize = oldSqr.boardSize;
+        this.notepad = new boolean[boardSize];
+        for(int i = 0; i < boardSize; i++)
+        {
+            this.notepad[i] = oldSqr.notepad[i];
+        }
+        this.value = oldSqr.value;
+        this.isStartingValue = oldSqr.isStartingValue;
+        this.hasBeenChange = oldSqr.hasBeenChange;
+        this.noMoreThanOneGuess = oldSqr.noMoreThanOneGuess;
     }
 
     //num is the value which is the current state of the notepad
@@ -29,12 +66,6 @@ class Square
         notepad[num - 1] = value;
     }
 
-    //num is the value which is the current state of the notepad
-    //returns the boolean for the given num
-    protected boolean getNotepad(int num) {
-
-        return notepad[num - 1];
-    }
 
     protected void setValue(int entry) {
         if(!hasBeenChange)
@@ -48,62 +79,67 @@ class Square
         this.value = entry;
     }
 
-    protected int getValue() {
-        return value;
-    }
+
 
     //saves state of cell given the row and column
     //returns null if the save state failed
-    protected SquareState saveState(int row, int col, int boardSize)
+    protected Square saveState()
     {
-        SquareState sav = null;
-        try
-        {
-            sav = new SquareState(row, col, this.notepad, this.value, boardSize);
-
-        }
-        catch(SquareState.InvalidRow e)
-        {
-            System.err.printf("%d is not a valid row!", row);
-        }
-        catch(SquareState.InvalidCol e)
-        {
-            System.err.printf("%d is not a valid column!", col);
-        }
-        catch(SquareState.InvalidNotepad e)
-        {
-            System.err.printf("Notepad is not a valid size!");
-        }
+        Square sav = new Square(this);
         return sav;
     }
 
     //resets cell to default values
     protected void reset()
     {
+
+        hasBeenChange = false;
+        noMoreThanOneGuess = true;
+        this.clear();
+
+    }
+
+    //clears user input values
+    protected void clear()
+    {
         for(int i = 0; i < notepad.length; i++)
         {
             notepad[i] = false;
         }
 
-        value = 0;
+        if(!this.isStartingValue)
+        {
+            value = 0;
+        }
     }
 
-    //given a SquareState object restore the cell values
-    protected void restoreState(SquareState state)
-    {
-        //restore state
-        for(int i = 1; i <= 9; i++)
-        {
-            this.setNotepad(i, state.getNotepad(i));
-        }
-        this.setValue(state.getValue());
-    }
 
     protected boolean isStartingValue()
     {
         return this.isStartingValue;
     }
 
+
+    //num is the value which is the current state of the notepad
+    //returns the boolean for the given num
+    public boolean getNotepad(int num) {
+
+        return notepad[num - 1];
+    }
+
     protected boolean noMoreThanOneGuess(){return this.noMoreThanOneGuess;}
+
+    public int getValue() {
+        return value;
+    }
+    public int getCol()
+    {
+        return col;
+    }
+    public int getRow()
+    {
+        return row;
+    }
+    public int getIdx() { return col + boardSize * row;}
 
 }

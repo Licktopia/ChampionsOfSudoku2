@@ -110,9 +110,9 @@ public class Game
         return curBoard.getNotepadAt(row, col, num);
     }
 
-    //returns current state of a altered cell after an undo
-    //returns null if no undo occurred
-    public SquareState undo()
+    //returns index of a altered cell after an undo
+    //returns -1 if no undo occurred
+    public int undo()
     {
         return curBoard.undo();
     }
@@ -123,9 +123,9 @@ public class Game
         return curBoard.canUndo();
     }
 
-    //returns current state of a altered cell after an redo
-    //returns null if no redo occurred
-    public SquareState redo()
+    //returns index of a altered cell after an redo
+    //returns -1 if no redo occurred
+    public int redo()
     {
         return curBoard.redo();
     }
@@ -321,7 +321,7 @@ public class Game
     private Solver solutionSolver;
 
     //returns the steps required to solve from a blank board
-    public Queue<SquareState> getSolutionSteps()
+    public Queue<Square> getSolutionSteps()
     {
         return solutionSolver.getSolvingSteps();
     }
