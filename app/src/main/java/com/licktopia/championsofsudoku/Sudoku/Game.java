@@ -87,6 +87,17 @@ public class Game
         this.curBoard.setNotepadAt(row, col, num, value);
     }
 
+    //toggles cell notepad value for given num
+    //for a square given its index for a single dimensional array of the board
+    public void toggleBoardNotepadAt(int idx, int num) {
+        this.curBoard.setNotepadAt(idx, num, !this.getBoardNotepadAt(idx, num));
+    }
+
+    //toggles cell notepad value for given num
+    public void toggleBoardNotepadAt(int row, int col, int num) {
+        this.curBoard.setNotepadAt(row, col, num, !this.getBoardNotepadAt(row, col, num));
+    }
+
     //gets the notepad value for boolean num
     // for a square given its index for a single dimensional array of the board
     public boolean getBoardNotepadAt(int idx, int num) {
