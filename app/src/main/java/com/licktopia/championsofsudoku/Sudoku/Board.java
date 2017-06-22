@@ -97,6 +97,7 @@ public class Board {
             boolean isRowValid = isRowValid(row);
             boolean isColumnValid = isColumnValid(col);
             boolean isClusterValid = isClusterValid(clusterNum);
+            problemSqrs.remove(row * SIZE + col);
             //isRowValid, isColumnValid and isClusterValid all add to this.problemSqrs if they are false
             isValid = (isRowValid && isColumnValid && isClusterValid);
         }
