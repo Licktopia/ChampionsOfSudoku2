@@ -17,6 +17,18 @@ public class PlaySounds {
     public void setMute(boolean mute) {
         this.mute = mute;
     }
+/*pos Sound: 1
+    neg Sound: 2
+    finish game: 3
+    level up: 4
+    lick sound: 5
+    start game: 6
+    sign in: 7
+    disconnect : 8
+    clock: 9
+    whoosh : 10
+
+ */
 
     private boolean mute;
     public void playSounds(Context context, int sound){

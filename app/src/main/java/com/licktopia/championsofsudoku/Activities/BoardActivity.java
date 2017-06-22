@@ -19,7 +19,9 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
+import com.google.android.gms.vision.text.Text;
 import com.licktopia.championsofsudoku.BackgroundImages;
 import com.licktopia.championsofsudoku.PlaySounds;
 import com.licktopia.championsofsudoku.R;
@@ -49,6 +51,7 @@ public class BoardActivity extends AppCompatActivity {
     private boolean keyboardState = true;
     private boolean solvedState = false;
     private boolean animationFinished = false;
+    private TextView scoreBoard;
     private Game mGame;
     private int level = 1;
     private boolean smallNumPadState = false;
@@ -77,9 +80,23 @@ public class BoardActivity extends AppCompatActivity {
         RelativeLayout toolbarContainer = (RelativeLayout)findViewById(R.id.toolbar_container);
         //bindings
         mChronometer = (Chronometer)findViewById(com.licktopia.championsofsudoku.R.id.chronometer);
+
+        mChronometer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
+            @Override
+            public void onChronometerTick(Chronometer chronometer) {
+
+                long myElapsedMillis = SystemClock.elapsedRealtime() - mChronometer.getBase();
+                if(myElapsedMillis%1000==0){
+                    updateScore();
+
+                }
+            }
+        });
+
         mUndoButton = (ImageButton)findViewById(R.id.backButton);
         mRedoButton = (ImageButton)findViewById(R.id.forwardButton);
         notepadIcon = (ImageButton) findViewById(R.id.scratch);
+        scoreBoard = (TextView)findViewById(R.id.score);
 
 
 
@@ -97,6 +114,8 @@ public class BoardActivity extends AppCompatActivity {
         initializeBoard();//get starting board
         customizeLayout();
         listeners(toolbar);//set all listeners for BoardActivity layout
+        updateScore();
+
 
 
 
@@ -107,6 +126,10 @@ public class BoardActivity extends AppCompatActivity {
     /************************************
      * Initialize undo redo buttons and sets
      *********************************/
+
+    private void updateScore(){
+        scoreBoard.setText(""+mGame.getScore());
+    }
     private void undoRedoListener() {
 
         mUndoButton.setOnClickListener(new View.OnClickListener() {
@@ -506,6 +529,8 @@ public class BoardActivity extends AppCompatActivity {
                 }
             }
         }
+        updateScore();
+        updateUndoRedoButtons();
 
     }
 
