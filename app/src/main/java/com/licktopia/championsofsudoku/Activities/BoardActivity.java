@@ -65,6 +65,7 @@ public class BoardActivity extends AppCompatActivity {
     private Board mBoard;
     private int size;
     private long timeWhenStopped;
+    private Handler highlightHandler;
 
 
     @Override
@@ -81,17 +82,7 @@ public class BoardActivity extends AppCompatActivity {
         //bindings
         mChronometer = (Chronometer)findViewById(com.licktopia.championsofsudoku.R.id.chronometer);
 
-        mChronometer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
-            @Override
-            public void onChronometerTick(Chronometer chronometer) {
 
-                long myElapsedMillis = SystemClock.elapsedRealtime() - mChronometer.getBase();
-                if(myElapsedMillis%1000==0){
-                    updateScore();
-
-                }
-            }
-        });
 
         mUndoButton = (ImageButton)findViewById(R.id.backButton);
         mRedoButton = (ImageButton)findViewById(R.id.forwardButton);
@@ -121,6 +112,13 @@ public class BoardActivity extends AppCompatActivity {
 
 
 
+
+    }
+
+    /************************************
+     * Handles the end of the game
+     *********************************/
+    private void endOfGame(){
 
     }
     /************************************
@@ -264,6 +262,18 @@ public class BoardActivity extends AppCompatActivity {
                 startTimer();
                 animationFinished = true;
 
+
+                mChronometer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
+                    @Override
+                    public void onChronometerTick(Chronometer chronometer) {
+
+                        long myElapsedMillis = SystemClock.elapsedRealtime() - mChronometer.getBase();
+                        if(myElapsedMillis%1000==0){
+                            updateScore();
+
+                        }
+                    }
+                });
             }
         },2950);
     }
@@ -467,7 +477,9 @@ public class BoardActivity extends AppCompatActivity {
     }
 
     /************************************
-     * Logic for 1-9 keypadbuttons
+     * Logic for 1-9 keypadbuttons, always
+     * updates undo-redo, score, and checks for
+     * end of game
      *********************************/
     private void numberCommands(int keypadNumber) {
 
@@ -531,6 +543,9 @@ public class BoardActivity extends AppCompatActivity {
         }
         updateScore();
         updateUndoRedoButtons();
+        if(mGame.isGameFinish()){
+            endOfGame();
+        }
 
     }
 
