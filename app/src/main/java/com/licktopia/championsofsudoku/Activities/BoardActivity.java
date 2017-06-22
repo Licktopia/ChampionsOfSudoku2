@@ -62,7 +62,6 @@ public class BoardActivity extends AppCompatActivity {
     private ImageButton notepadIcon;
     private RelativeLayout numberPadButtonBackground;
     private ImageButton keyboardDownButton;
-    private Board mBoard;
     private int size;
     private long timeWhenStopped;
     private Handler highlightHandler;
@@ -141,10 +140,26 @@ public class BoardActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 SquareState mSquareState;
-                mSquareState= mGame.undo();
-                int square = mSquareState.getIdx();
-                int value = mGame.getBoardValueAt(square);
-                squareViews[square].setBigNumber(value, false);
+                if(mGame.canUndo()) {
+                    mSquareState = mGame.undo();
+                    int square = mSquareState.getIdx();
+                    int value = mGame.getBoardValueAt(square);
+                    if(value!=0) {
+                        if (!colorGame) {
+                            squareViews[square].setBigNumber(0, false);
+                        } else {
+                            squareViews[square].setSquareColor(0, false);
+                        }
+                    }
+                    else{
+                        if(!colorGame) {
+                            squareViews[square].setBigNumber(value, false);
+                        }
+                        else{
+                            squareViews[square].setSquareColor(value, false);
+                        }
+                    }
+                }
                 updateUndoRedoButtons();
 
             }
@@ -153,10 +168,12 @@ public class BoardActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 SquareState mSquareState;
-                mSquareState= mGame.redo();
-                int square = mSquareState.getIdx();
-                int value = mGame.getBoardValueAt(square);
-                squareViews[square].setBigNumber(value, false);
+                if(mGame.canRedo()) {
+                    mSquareState = mGame.redo();
+                    int square = mSquareState.getIdx();
+                    int value = mGame.getBoardValueAt(square);
+                    squareViews[square].setBigNumber(value, false);
+                }
                 updateUndoRedoButtons();
             }
         });
@@ -168,13 +185,13 @@ public class BoardActivity extends AppCompatActivity {
      *********************************/
     private void updateUndoRedoButtons() {
         if(mGame.canUndo()){
-            mUndoButton.setAlpha(1);
+            mUndoButton.setAlpha(1f);
         }
         else{
             mUndoButton.setAlpha(UNDOREDOALPHA);
         }
         if(mGame.canRedo()){
-            mRedoButton.setAlpha(1);
+            mRedoButton.setAlpha(1f);
         }
         else{
             mRedoButton.setAlpha(UNDOREDOALPHA);
