@@ -210,7 +210,14 @@ public class Board {
             for (int j = i + 1; j < SIZE; j++) {
                 if (contents[row][i].getValue() != 0 && contents[row][i].getValue() == contents[row][j].getValue())
                 {
-                    problemSqrs.push(row * SIZE + i);
+                    if(!problemSqrs.contains(i))
+                    {
+                        problemSqrs.push(row * SIZE + i);
+                    }
+                    if(!problemSqrs.contains(j))
+                    {
+                        problemSqrs.push(row * SIZE + j);
+                    }
                     return false;  // Found repeat, row invalid
                 }
 
@@ -227,7 +234,16 @@ public class Board {
             for (int j = i + 1; j < SIZE; j++) {
                 if (contents[i][col].getValue() != 0 && contents[i][col].getValue() == contents[j][col].getValue())
                 {
-                    problemSqrs.push(i * SIZE + col);
+                    if(!problemSqrs.contains(i))
+                    {
+                        problemSqrs.push(i * SIZE + col);
+                    }
+                    if(!problemSqrs.contains(j))
+                    {
+                        problemSqrs.push(j * SIZE + col);
+                    }
+
+
                     return false; // Found repeat, column invalid
                 }
             }
@@ -255,7 +271,16 @@ public class Board {
         for (int i = 0; i < SIZE - 1; i++) {
             if (clusterNums[i] != 0 && clusterNums[i] == clusterNums[i + 1])
             {
-                problemSqrs.push(((i / CLUSTER_SIZE) + rowStart) * SIZE + ((i % CLUSTER_SIZE) + colStart));
+                if(!problemSqrs.contains(i))
+                {
+                    problemSqrs.push(((i / CLUSTER_SIZE) + rowStart) * SIZE + ((i % CLUSTER_SIZE) + colStart));
+                }
+                if(!problemSqrs.contains(i + 1))
+                {
+                    problemSqrs.push(((i + 1 / CLUSTER_SIZE) + rowStart) * SIZE + ((i + 1 % CLUSTER_SIZE) + colStart));
+                }
+
+
                 return false; // Found repeat, cluster invalid
             }
         }
