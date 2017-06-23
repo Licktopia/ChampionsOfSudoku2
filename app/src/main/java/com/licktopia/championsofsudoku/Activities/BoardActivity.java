@@ -63,7 +63,6 @@ public class BoardActivity extends AppCompatActivity {
     private ImageButton mUndoButton;
     private ImageButton mRedoButton;
     private ImageButton notepadIcon;
-    private RelativeLayout numberPadButtonBackground;
     private ImageButton keyboardDownButton;
     private int size;
     private long timeWhenStopped;
@@ -80,11 +79,9 @@ public class BoardActivity extends AppCompatActivity {
         //initialize actiion bar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         this.setSupportActionBar(toolbar);
-        RelativeLayout toolbarContainer = (RelativeLayout)findViewById(R.id.toolbar_container);
+
         //bindings
         mChronometer = (Chronometer)findViewById(com.licktopia.championsofsudoku.R.id.chronometer);
-
-
         mUndoButton = (ImageButton)findViewById(R.id.backButton);
         mRedoButton = (ImageButton)findViewById(R.id.forwardButton);
         notepadIcon = (ImageButton) findViewById(R.id.scratch);
@@ -242,7 +239,6 @@ public class BoardActivity extends AppCompatActivity {
         }
         clearButton = (Button) findViewById(R.id.clear);
         solveButton = (Button) findViewById(R.id.solveButton);
-        numberPadButtonBackground = (RelativeLayout) findViewById(R.id.scratch_bg);
         keyboardDownButton = (ImageButton) findViewById(R.id.down);
     }
 
@@ -287,7 +283,8 @@ public class BoardActivity extends AppCompatActivity {
             public void run() {
                 startTimer();
                 animationFinished = true;
-
+                ///Make board clickable
+                allClickable(true);
 
 
             }
@@ -431,6 +428,7 @@ public class BoardActivity extends AppCompatActivity {
     private void removeAllHighlights() {
         for (int i = 0; i < squareViews.length; i++) {
             squareViews[i].setHighlighted(false);
+            squareViews[i].setFullAlpha();
         }
     }
 
@@ -483,7 +481,14 @@ public class BoardActivity extends AppCompatActivity {
             int value = mGame.getBoardValueAt(squareNumber);
             for (int i = 0; i < mGame.totalBoardElements(); i++) {
                 if (mGame.getBoardValueAt(i) == value) {
-                    squareViews[i].setSameNumberHighlight();
+                    if(!colorGame) {
+                        squareViews[i].setSameNumberHighlight();
+                    }
+                }
+                else{
+                    if(colorGame){
+                        squareViews[i].setSameColorHighlight();
+                    }
                 }
             }
             // TODO disable all buttons except down
@@ -495,14 +500,23 @@ public class BoardActivity extends AppCompatActivity {
             //Set highlights
             squareViews[squareNumber].setSelectedHighlight();
             if(rowColHighlights)
-                highlightConnected();
+                if(!colorGame) {
+                    highlightConnected();
+                }
 
             // Bold similar numbers
             if (mGame.getBoardValueAt(selectedSquare) != 0) {
                 int value = mGame.getBoardValueAt(squareNumber);
                 for (int i = 0; i < mGame.totalBoardElements(); i++) {
-                    if (mGame.getBoardValueAt(i) == value && i != squareNumber) {
-                        squareViews[i].setSameNumberHighlight();
+                    if (mGame.getBoardValueAt(i) == value) {
+                        if(!colorGame) {
+                            squareViews[i].setSameNumberHighlight();
+                        }
+                    }
+                    else{
+                        if(colorGame){
+                            squareViews[i].setSameColorHighlight();
+                        }
                     }
                 }
             }
@@ -617,6 +631,8 @@ public class BoardActivity extends AppCompatActivity {
      * Number vs Color initial setup
      *********************************/
     private void customizeLayout() {
+        /////make board unclickable, made clickable after start animation
+        allClickable(false);
         /////set keypad colors
         for (int i = 0; i < size; i++) {
             if (!colorGame) {
@@ -646,7 +662,19 @@ public class BoardActivity extends AppCompatActivity {
             artHolder.setImageDrawable(getResources().getDrawable(mBackgroundImages.getImage()));
             //int imageNumber = mBackgroundImages.getPictureNumber();
         }
+    }
 
+    private void allClickable(boolean clickable){
+
+        for (SquareView squareView : squareViews) {
+            squareView.getSquareHolder().setClickable(clickable);
+        }
+        for (Button numberButton : numberButtons) {
+            numberButton.setClickable(clickable);
+        }
+        clearButton.setClickable(clickable);
+        keyboardDownButton.setClickable(clickable);
+        notepadIcon.setClickable(clickable);
 
     }
 
@@ -742,6 +770,10 @@ public class BoardActivity extends AppCompatActivity {
         if (id == R.id.main_menu) {
             goToMainMenu();
         }
+
+        if (id == R.id.action_share) {
+            share();
+        }
         return true;
 
     }
@@ -786,6 +818,25 @@ public class BoardActivity extends AppCompatActivity {
         else{
             startActivity(intent);//GO
         }
+    }
+
+    private void share() {
+
+        Intent i = new Intent(
+
+                Intent.ACTION_SEND);
+
+        i.setType("text/plain");
+        i.putExtra(
+
+                Intent.EXTRA_TEXT, this.getString(R.string.app_url));
+
+        startActivity(Intent.createChooser(
+
+                i,
+
+                "Share via"));
+
     }
 
 }

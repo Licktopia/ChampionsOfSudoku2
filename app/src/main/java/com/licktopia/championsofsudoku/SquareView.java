@@ -19,10 +19,12 @@ public class SquareView {
 
     private static final float COLOR_SQUARE_TRANSPARENCY = .8f;
     private static final float COLOR_SQUARE_SCALE_FACTOR = .9f;
+    private static final float COLOR_SQUARE_SAME_NUMBER_TRANSPARENCY = .3f;
 
     private Context context;
     private RelativeLayout squareHolder;
     private RelativeLayout highlight;
+    private RelativeLayout selectedSquare;
     private ImageView number;
     private RelativeLayout color;
     private ImageView art;
@@ -53,6 +55,7 @@ public class SquareView {
 
         View v = li.inflate(R.layout.square_view, null);
         highlight = (RelativeLayout) v.findViewById(R.id.highlight);
+        selectedSquare = (RelativeLayout) v.findViewById(R.id.selected);
         number = (ImageView) v.findViewById(R.id.squareNumber);
         color = (RelativeLayout) v.findViewById(R.id.squareColor);
         art = (ImageView) v.findViewById(R.id.squareArt);
@@ -184,8 +187,10 @@ public class SquareView {
     public void setHighlighted(boolean highlighted) {
         if (highlighted)
             setHighlightColor(context.getColor(R.color.colorHighLight)); // Set to generic highlighted
-        else
+        else {
             setHighlightColor(context.getColor(R.color.white)); // Remove highlight
+            selectedSquare.setBackground(null);
+        }
     }
 
 
@@ -197,17 +202,34 @@ public class SquareView {
 
     /* Sets selected square to individual highlight color */
     public void setSelectedHighlight() {
-        setHighlightColor(context.getColor(R.color.silver));
+        setHighlightMarker();
     }
 
     public void setSameNumberHighlight() {
-        setHighlightColor(context.getColor(R.color.ltgrey));
+        setHighlightColor(context.getColor(R.color.samecolorhiglight));
+    }
+
+    public void setSameColorHighlight() {
+        color.setAlpha(COLOR_SQUARE_SAME_NUMBER_TRANSPARENCY);
     }
 
     /* Sets highlight layout to given color */
     private void setHighlightColor(int color) {
         highlight.setBackgroundColor(color);
 
+
     }
+
+    /* Sets highlight layout to given selected marker */
+    private void setHighlightMarker() {
+       selectedSquare.setBackground(context.getDrawable(R.drawable.selected_square_marker));
+
+    }
+    /* Sets Alpha back to full */
+    public void setFullAlpha() {
+        color.setAlpha(1f);
+
+    }
+
 
 }
