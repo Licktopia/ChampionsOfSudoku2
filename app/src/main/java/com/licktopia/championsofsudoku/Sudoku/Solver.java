@@ -89,10 +89,12 @@ class Solver {
     //updates notepad for square at row, col so that only valid moves are true
     private void updateNotepad(int row, int col)
     {
-        for(int i = 1; i < curBoard.getSize(); i++)
+        if(!curBoard.isStartingValue(row, col))
         {
-            if(!curBoard.isStartingValue(row, col))
+            for(int i = 1; i < curBoard.getSize(); i++)
             {
+
+
                 Set<Integer> testStk = curBoard.setValueAt(row, col, i);
                 if(testStk.isEmpty())
                 {
@@ -104,10 +106,12 @@ class Solver {
                     curBoard.setNotepadAt(row, col, i, false);
                 }
                 curBoard.setValueAt(row, col, 0);
+
             }
+            //add the change to the state to the cell as a solving step
+            solvingSteps.add(curBoard.getSquare(row, col));
         }
-        //add the change to the state to the cell as a solving step
-        solvingSteps.add(curBoard.getSquare(row, col));
+
     }
 
     protected Queue<Square> getSolvingSteps()

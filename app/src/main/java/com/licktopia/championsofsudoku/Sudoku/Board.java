@@ -58,11 +58,7 @@ class Board {
         // copy all data from oldBoard into this
         for (int i = 0; i < this.totalBoardRows(); i++) {
             for (int j = 0; j < this.totalBoardCols(); j++) {
-                contents[i][j] = new Square(oldBoard.getValueAt(i, j), oldBoard.isStartingValue(i, j), SIZE, i);
-                for(int k = 1; k <= SIZE; k ++)
-                {
-                    this.setNotepadAt(i, j, k, oldBoard.getNotepadAt(i, j, k));
-                }
+                contents[i][j] = new Square(oldBoard.contents[i][j]);
             }
         }
     }
