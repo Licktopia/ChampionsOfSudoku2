@@ -26,6 +26,7 @@ import com.google.example.games.basegameutils.BaseGameUtils;
 
 import com.licktopia.championsofsudoku.PlaySounds;
 import com.licktopia.championsofsudoku.R;
+import com.licktopia.championsofsudoku.Sudoku.GamerProfileActivity;
 
 public class MainMenuActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
@@ -100,6 +101,7 @@ public class MainMenuActivity extends AppCompatActivity implements GoogleApiClie
                 signOutClicked();
             }
         });
+
     }
 
     @Override
@@ -122,6 +124,7 @@ public class MainMenuActivity extends AppCompatActivity implements GoogleApiClie
         // The player is signed in. Hide the sign-in button and allow the
         // player to proceed.
         updateUI(true);
+        loadPlayer();
 
     }
 
@@ -177,6 +180,12 @@ public class MainMenuActivity extends AppCompatActivity implements GoogleApiClie
                         requestCode, resultCode, R.string.signin_failure);
             }
         }
+    }
+
+    private void loadPlayer(){
+        String gamerName = Games.Players.getCurrentPlayer(mGoogleApiClient).getDisplayName();
+        String gamerId = Games.Players.getCurrentPlayer(mGoogleApiClient).getPlayerId();
+        mBadgeButtonInitialize(gamerName, gamerId);
     }
     private void updateUI(boolean loggedIn){
         if(loggedIn){
@@ -238,6 +247,18 @@ public class MainMenuActivity extends AppCompatActivity implements GoogleApiClie
             }
 
 
+        });
+    }
+
+    private void mBadgeButtonInitialize(final String gamername, String gamerID){
+        mBadge.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainMenuActivity.this, GamerProfileActivity.class);
+                intent.putExtra("GAMERNAME", gamername);
+                intent.putExtra("GAMERID", gamername);
+                startActivity(intent);
+            }
         });
     }
 

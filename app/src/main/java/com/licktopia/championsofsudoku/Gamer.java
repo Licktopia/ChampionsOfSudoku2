@@ -8,7 +8,7 @@ public class Gamer {
 
     protected static int[] LEVEL_MARKERS = {100, 200, 400, 800, 1600, 3200, 6400}; //TODO Decide on level values
 
-    private String username;
+    private static  String username;
     private int id;
     private int level;
     private int xp;

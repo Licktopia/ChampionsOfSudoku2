@@ -55,7 +55,6 @@ public class BoardActivity extends AppCompatActivity {
     private boolean animationFinished = false;
     private TextView scoreBoard;
     private Game mGame;
-    private int level = 1;
     private boolean smallNumPadState = false;
     private Button[] numberButtons;
     private Button clearButton;
@@ -75,7 +74,7 @@ public class BoardActivity extends AppCompatActivity {
         setContentView(R.layout.activity_board);
         //pass in mode and level
         colorGame = getIntent().getExtras().getBoolean("COLOR_MODE");
-        level = getIntent().getExtras().getInt("LEVEL"); //gets Store Number from start screen activity
+        int level = getIntent().getExtras().getInt("LEVEL");
         //initialize actiion bar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         this.setSupportActionBar(toolbar);
@@ -125,7 +124,42 @@ public class BoardActivity extends AppCompatActivity {
      * Handles the end of the game
      *********************************/
     private void endOfGame(){
+        LinearLayout mHintsLayout = (LinearLayout)findViewById(R.id.hints_layout);
+        LinearLayout mEndGameLayout = (LinearLayout)findViewById(R.id.end_game_layout);
+        final RelativeLayout mStatsBox = (RelativeLayout) findViewById(R.id.game_stats_box);
+        final LinearLayout mLevelUpBox = (LinearLayout) findViewById(R.id.level_up_view);
+        final ImageButton mCloseLevelUp = (ImageButton) findViewById(R.id.close_levelup);
+        ImageButton mCloseStats = (ImageButton) findViewById(R.id.close_stats);
+        int sound;
+        mStatsBox.setVisibility(View.VISIBLE);
+        mCloseStats.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mStatsBox.setVisibility(GONE);
+            }
+        });
+        boolean levelUp = false;
+        if(!levelUp){
+            sound = 3;
+        }
+        else {
+            sound = 4;
+            mLevelUpBox.setVisibility(View.VISIBLE);
+            mCloseLevelUp.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mLevelUpBox.setVisibility(GONE);
+                }
+            });
 
+        }
+        mPlaySounds.playSounds(this,sound);
+
+        mHintsLayout.setVisibility(GONE);
+        mEndGameLayout.setVisibility(View.VISIBLE);
+        if(!keyboardState){
+            closeKeyboard();
+        }
     }
     /************************************
      * Initialize undo redo buttons and sets
