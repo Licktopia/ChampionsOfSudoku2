@@ -191,7 +191,7 @@ public class SquareView {
     }
 
     /* Sets selected square to individual highlight color */
-    public void setSelectedHightlight() {
+    public void setSelectedHighlight() {
         setHighlightColor(context.getColor(R.color.silver));
     }
 

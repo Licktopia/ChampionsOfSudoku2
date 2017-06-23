@@ -21,7 +21,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.google.android.gms.vision.text.Text;
 import com.licktopia.championsofsudoku.BackgroundImages;
 import com.licktopia.championsofsudoku.PlaySounds;
 import com.licktopia.championsofsudoku.R;
@@ -29,8 +28,10 @@ import com.licktopia.championsofsudoku.Settings.SudokuSettings;
 import com.licktopia.championsofsudoku.Settings.SudokuSettingsActivity;
 import com.licktopia.championsofsudoku.SquareView;
 import com.licktopia.championsofsudoku.Sudoku.Game;
+import com.licktopia.championsofsudoku.Sudoku.Square;
 import com.licktopia.championsofsudoku.Tags;
 
+import java.util.Queue;
 import java.util.Set;
 
 import static android.view.View.GONE;
@@ -55,6 +56,7 @@ public class BoardActivity extends AppCompatActivity {
     private boolean smallNumPadState = false;
     private Button[] numberButtons;
     private Button clearButton;
+    private Button solveButton;
     private ImageButton mUndoButton;
     private ImageButton mRedoButton;
     private ImageButton notepadIcon;
@@ -84,7 +86,7 @@ public class BoardActivity extends AppCompatActivity {
         mRedoButton = (ImageButton)findViewById(R.id.forwardButton);
         notepadIcon = (ImageButton) findViewById(R.id.scratch);
         scoreBoard = (TextView)findViewById(R.id.score);
-
+        highlightHandler = new Handler();
 
 
         mPlaySounds = new PlaySounds();
@@ -234,6 +236,7 @@ public class BoardActivity extends AppCompatActivity {
             numberButtons[i] = (Button) findViewById(Tags.numberButtonTags[i]);
         }
         clearButton = (Button) findViewById(R.id.clear);
+        solveButton = (Button) findViewById(R.id.solveButton);
         numberPadButtonBackground = (RelativeLayout) findViewById(R.id.scratch_bg);
         keyboardDownButton = (ImageButton) findViewById(R.id.down);
     }
@@ -297,6 +300,7 @@ public class BoardActivity extends AppCompatActivity {
         numberListeners();
         smallNumPadListener();
         clearButtonListener();
+        solveButtonListener();
         undoRedoListener();
 
 
@@ -397,10 +401,23 @@ public class BoardActivity extends AppCompatActivity {
             public void onClick(View v) {
                 selectedSquare = -1;
                 closeKeyboard();
+                highlightHandler.removeCallbacksAndMessages(null);
                 removeAllHighlights();
             }
         });
 
+    }
+
+    /************************************
+     * Listeners numberPadButtonBackground
+     *********************************/
+    private void solveButtonListener() {
+        solveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                solvePuzzle();
+            }
+        });
     }
 
     /************************************
@@ -430,7 +447,7 @@ public class BoardActivity extends AppCompatActivity {
             int iCluster = ((iRow / clusterSize) * clusterSize) + (iCol / clusterSize);
             if(i==selectedSquare){
                 if(!colorGame){
-                    squareViews[i].setSelectedHightlight();
+                    squareViews[i].setSelectedHighlight();
                 }
                 else{
 
@@ -447,11 +464,13 @@ public class BoardActivity extends AppCompatActivity {
      * Logic for 81 squares
      *********************************/
     public void squareCommands(int squareNumber) {
+
         if(!keyboardState){
             openKeyboard();
         }
 
         selectedSquare = squareNumber;
+        highlightHandler.removeCallbacksAndMessages(null);
         removeAllHighlights();
 
         if (mGame.isStartingValue(squareNumber)) { // Starting square clicked
@@ -468,7 +487,7 @@ public class BoardActivity extends AppCompatActivity {
         else { // Input square clicked
 
             //Set highlights
-            squareViews[squareNumber].setHighlighted(true); //TODO change to highlight different color than others
+            squareViews[squareNumber].setSelectedHighlight();
             if(rowColHighlights)
                 highlightConnected();
 
@@ -490,6 +509,9 @@ public class BoardActivity extends AppCompatActivity {
      * end of game
      *********************************/
     private void numberCommands(int keypadNumber) {
+
+        // Cancel any delayed highlighting
+        highlightHandler.removeCallbacksAndMessages(null);
 
         // If nothing selected or square is a starting square, do nothing
         if (selectedSquare == -1 || mGame.isStartingValue(selectedSquare))
@@ -545,7 +567,17 @@ public class BoardActivity extends AppCompatActivity {
             }
             else {
                 for (int conflict : conflicts) {
-                    squareViews[conflict].setErrorHighlight(); // Display error highlight
+                    squareViews[conflict].setErrorHighlight();     // Display error highlight
+                    highlightHandler.postDelayed(new Runnable() {  // Wait then remove error color
+                        @Override
+                        public void run() {
+                            // Reset to regular selection highlights
+                            removeAllHighlights();
+                            squareViews[selectedSquare].setSelectedHighlight();
+                            if (rowColHighlights)
+                                highlightConnected();
+                        }
+                    }, 1000);
                 }
             }
         }
@@ -557,6 +589,21 @@ public class BoardActivity extends AppCompatActivity {
 
     }
 
+    /* Uses the BoardActivity UI to solve a puzzle given the solution steps */
+    public void solvePuzzle() {
+
+        // If notepad selected, unselect
+        if (smallNumPadState)
+            notepadIcon.performClick();
+
+        // Get solution steps
+        Queue<Square> steps = mGame.getSolutionSteps();
+        while (!steps.isEmpty()) {
+            Square square = steps.poll();
+            selectedSquare = square.getIdx();
+            numberCommands(square.getValue());
+        }
+    }
 
     /************************************
      * Number vs Color initial setup
