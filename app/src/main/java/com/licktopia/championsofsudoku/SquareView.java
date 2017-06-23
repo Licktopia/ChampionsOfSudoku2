@@ -1,7 +1,10 @@
 package com.licktopia.championsofsudoku;
 
+import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -185,6 +188,8 @@ public class SquareView {
             setHighlightColor(context.getColor(R.color.white)); // Remove highlight
     }
 
+
+
     /* Sets highlight state to error color */
     public void setErrorHighlight() {
         setHighlightColor(context.getColor(R.color.highlightred));
@@ -202,5 +207,7 @@ public class SquareView {
     /* Sets highlight layout to given color */
     private void setHighlightColor(int color) {
         highlight.setBackgroundColor(color);
+
     }
+
 }

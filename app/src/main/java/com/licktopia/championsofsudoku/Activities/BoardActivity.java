@@ -5,11 +5,14 @@ import android.animation.ObjectAnimator;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -220,6 +223,8 @@ public class BoardActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
+        removeAllHighlights();
+        selectedSquare = -1;
         settings = new SudokuSettings(this);
         rowColHighlights= settings.getHighlightPreference();
         mPlaySounds.setMute(settings.getSoundPreference());
@@ -429,6 +434,7 @@ public class BoardActivity extends AppCompatActivity {
         }
     }
 
+
     /************************************
      * Highlight connected squares
      *********************************/
@@ -560,12 +566,14 @@ public class BoardActivity extends AppCompatActivity {
 
             Set<Integer> conflicts = mGame.setBoardValueAt(selectedSquare, keypadNumber);  // Set board value to number
             if (conflicts.isEmpty()) {
+                mPlaySounds.playSounds(this,1);
                 if (!colorGame)
                     currSquare.setBigNumber(keypadNumber,false);   // Display number
                 else
                     currSquare.setSquareColor(keypadNumber,false); // Display color
             }
             else {
+                mPlaySounds.playSounds(this,2);
                 for (int conflict : conflicts) {
                     squareViews[conflict].setErrorHighlight();     // Display error highlight
                     highlightHandler.postDelayed(new Runnable() {  // Wait then remove error color
@@ -577,7 +585,7 @@ public class BoardActivity extends AppCompatActivity {
                             if (rowColHighlights)
                                 highlightConnected();
                         }
-                    }, 1000);
+                    }, 2000);
                 }
             }
         }
@@ -695,40 +703,16 @@ public class BoardActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(com.licktopia.championsofsudoku.R.menu.menu_main, menu);
 
-       /*
-        if(!gameHelper.isSignedIn()){
-            menu.getItem(4).setVisible(false);
-            menu.getItem(5).setVisible(true);
-        }
-        else {
-            menu.getItem(4).setVisible(true);
-            menu.getItem(5).setVisible(false);
-        }
-        */
-
         return true;
     }
-/*
-    public boolean onPrepareOptionsMenu(Menu menu){
 
+    public boolean onPrepareOptionsMenu(Menu menu){
         SpannableString s = new SpannableString("Save and Exit");
         s.setSpan(new ForegroundColorSpan(Color.LTGRAY), 0, s.length(), 0);
-
-
-        menu.getItem(7).setTitle(s);
-
-        if(!gameHelper.isSignedIn()){
-            menu.getItem(4).setVisible(false);
-            menu.getItem(5).setVisible(true);
-        }
-        else {
-            menu.getItem(4).setVisible(true);
-            menu.getItem(5).setVisible(false);
-        }
-
+        menu.getItem(5).setTitle(s);
         return true;
     }
-*/
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -739,13 +723,25 @@ public class BoardActivity extends AppCompatActivity {
 
         if (id == R.id.settingsMenu) {
             Intent intent = new Intent(this, SudokuSettingsActivity.class);
-
-
                 startActivity(intent);
-
-
         }
 
+        if (id == R.id.action_instructions) {
+                Intent intent = new Intent(this, InstructionsActivity.class);
+                    startActivity(intent);
+
+        }
+        if (id == R.id.action_about) {
+                Intent intent = new Intent(this, AboutActivity.class);
+                    startActivity(intent);
+        }
+
+        if (id == R.id.save_and_exit) {
+
+        }
+        if (id == R.id.main_menu) {
+            goToMainMenu();
+        }
         return true;
 
     }
@@ -770,6 +766,10 @@ public class BoardActivity extends AppCompatActivity {
         }
     }
     private void homeClick() {
+        goToMainMenu();
+    }
+
+    private void goToMainMenu() {
         final Intent intent = new Intent(BoardActivity.this, MainMenuActivity.class);//state intent to go to Shopping Cart Activity
         if(!solvedState) {
             new AlertDialog.Builder(this)

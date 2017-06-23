@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/toolbar"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="48dp"
     android:background="@android:color/transparent"
     android:contentInsetLeft="3dp"
     android:contentInsetRight="3dp"
@@ -46,8 +46,10 @@
             android:layout_alignParentLeft="false"
             android:layout_marginLeft="10dp"
             android:layout_toEndOf="@+id/home_menu_button"
+            android:layout_toLeftOf="@+id/chronometer"
             android:layout_toRightOf="@+id/home_menu_button"
-            android:gravity="left|center_vertical|center"
+            android:layout_toStartOf="@+id/chronometer"
+            android:gravity="center_vertical|center"
             android:text="Score"
             android:textColor="@android:color/white"
             android:textSize="22sp"
@@ -60,10 +62,6 @@
             android:layout_height="match_parent"
             android:layout_alignParentTop="true"
             android:layout_centerInParent="true"
-            android:layout_toEndOf="@+id/score"
-            android:layout_toLeftOf="@+id/history"
-            android:layout_toRightOf="@+id/score"
-            android:layout_toStartOf="@+id/history"
             android:gravity="center"
             android:textColor="@android:color/white"
             android:textSize="22sp"
@@ -73,18 +71,24 @@
             android:id="@+id/history"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_alignParentEnd="false"
             android:layout_alignParentRight="true"
+            android:layout_toEndOf="@+id/chronometer"
+            android:layout_toLeftOf="@+id/dummy"
+            android:layout_toRightOf="@+id/chronometer"
+            android:layout_toStartOf="@+id/dummy"
             android:background="@android:color/transparent"
-            android:gravity="right|center_vertical"
+            android:gravity="center_vertical|center"
             android:orientation="horizontal"
+            android:padding="5dp"
             android:visibility="visible">
 
             <ImageButton
                 android:id="@+id/backButton"
-                android:layout_width="25dp"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="3dp"
-                android:layout_weight="1"
+                android:layout_width="30dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_marginRight="6dp"
                 android:background="@android:color/transparent"
                 android:rotation="255"
                 android:scaleType="fitCenter"
@@ -94,10 +98,9 @@
 
             <ImageButton
                 android:id="@+id/forwardButton"
-                android:layout_width="25dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="3dp"
-                android:layout_weight="1"
+                android:layout_width="30dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="6dp"
                 android:background="@android:color/transparent"
                 android:rotation="65"
                 android:scaleType="fitCenter"
@@ -105,6 +108,13 @@
                 android:visibility="visible"
                 app:srcCompat="@drawable/redo" />
         </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/dummy"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:orientation="horizontal"></LinearLayout>
     </RelativeLayout>
 
 

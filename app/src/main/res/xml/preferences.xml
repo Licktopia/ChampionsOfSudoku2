@@ -10,10 +10,6 @@
         android:key="@string/sounds_key"
         android:title="@string/Sounds"
         android:defaultValue="false"/>
-    <CheckBoxPreference
-        android:key="@string/score_key"
-        android:title="@string/Score"
-        android:summary="@string/Scoresummary"
-        android:defaultValue="false"/>
+
 
 </PreferenceScreen>

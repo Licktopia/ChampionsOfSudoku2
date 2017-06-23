@@ -37,14 +37,5 @@ public class SudokuSettings {
                 .apply();//asynchronous, commit is not
     }
 
-    public boolean getScorePreference(){
-        return mSharedPreferences.getBoolean("Score", false);
-    }
 
-    public void setScorePreference(boolean score){
-        mSharedPreferences
-                .edit()
-                .putBoolean("Score", score)
-                .apply();//asynchronous, commit is not
-    }
 }

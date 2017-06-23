@@ -82,7 +82,7 @@ public class MainMenuActivity extends AppCompatActivity implements GoogleApiClie
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .addApi(Games.API).addScope(Games.SCOPE_GAMES)
-                //.addApi(Drive.API).addScope(Drive.SCOPE_APPFOLDER)
+                .addApi(Drive.API).addScope(Drive.SCOPE_APPFOLDER)
                 // add other APIs and scopes here as needed
                 .build();
 

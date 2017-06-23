@@ -5,7 +5,7 @@
 
     <application
         android:allowBackup="true"
-        android:debuggable="false"
+
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
@@ -16,6 +16,12 @@
             android:name="com.google.android.gms.games.APP_ID"
             android:value="@string/app_id" />
         <activity android:name=".Activities.BoardActivity">
+
+        </activity>
+        <activity android:name=".Activities.InstructionsActivity">
+
+        </activity>
+        <activity android:name=".Activities.AboutActivity">
 
         </activity>
         <activity android:name=".Activities.MainMenuActivity">
