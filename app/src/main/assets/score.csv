@@ -1,5 +1,5 @@
 Level,0,1,2,3,4,5
 Base Point (pts),0,20,100,200,300,400
 One Time Guess Bonus (pts),30,60,100,110,120,130
-Running Time Penalty (pts/sec),0,0.033333333,0.4,0.4,0.4,0.5
+Running Time Penalty (pts/sec),0,0.033333333,0.04,0.04,0.04,0.05
 Incorrect Guess Penalty (pts/guess),0,0.033333333,0.033333333,0.04,0.04,0.04
