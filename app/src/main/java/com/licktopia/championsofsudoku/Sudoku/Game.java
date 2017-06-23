@@ -18,6 +18,7 @@ public class Game
     //time in seconds
     private long runningTime = 0;
 
+    private ScoreWeights scoreWeights;
 
     //Time which timer was last started
     //time in seconds
@@ -32,9 +33,10 @@ public class Game
         this.level = level;
         curBoard = new Board(level, ctx);
         solutionSolver = new Solver(curBoard);
+        scoreWeights = FileIO.loadScoreWeights(level, ctx);
         if(solutionSolver.solve() == null)
         {
-            System.err.printf("Game cannot be solved!\n");
+            System.out.printf("Game cannot be solved!\n");
         }
     }
 
@@ -188,29 +190,7 @@ public class Game
 
     private long getLevelBonus()
     {
-        switch(level)
-        {
-            //beginner
-            case 0:
-                return 0;
-            //easy
-            case 1:
-                return 20;
-            //medium
-            case 2:
-                return 100;
-            //hard
-            case 3:
-                return 200;
-            //expert
-            case 4:
-                return 300;
-            //master
-            case 5:
-                return 400;
-            default:
-                return 0;
-        }
+        return scoreWeights.getBasePoints();
     }
 
     private long totalOneTimeGuesses()
@@ -231,57 +211,13 @@ public class Game
 
     private long getOneTimeGuessSquareBonus()
     {
-        switch(level)
-        {
-            //beginner
-            case 0:
-                return 30;
-            //easy
-            case 1:
-                return 60;
-            //medium
-            case 2:
-                return 100;
-            //hard
-            case 3:
-                return 110;
-            //expert
-            case 4:
-                return 120;
-            //master
-            case 5:
-                return 130;
-            default:
-                return 0;
-        }
+        return scoreWeights.getOneTimeGuessBonus();
     }
 
     //in points per seconds
     private double getTimePenalty()
     {
-        switch(level)
-        {
-            //beginner
-            case 0:
-                return 0;
-            //easy
-            case 1:
-                return 1.0 / 30.0;
-            //medium
-            case 2:
-                return 1.0 / 25.0;
-            //hard
-            case 3:
-                return 1.0 / 25.0;
-            //expert
-            case 4:
-                return 1.0 / 25.0;
-            //master
-            case 5:
-                return 1.0 / 25.0;
-            default:
-                return 0.0;
-        }
+        return scoreWeights.getRunningTimePenalty();
     }
 
     private long totalIncorrectGuesses()
@@ -293,29 +229,7 @@ public class Game
     //in points per seconds
     private double getIncorrectGuessesPenalty()
     {
-        switch(level)
-        {
-            //beginner
-            case 0:
-                return 0.0;
-            //easy
-            case 1:
-                return 1.0 / 30.0;
-            //medium
-            case 2:
-                return 10.0 / 25.0;
-            //hard
-            case 3:
-                return 10.0 / 25.0;
-            //expert
-            case 4:
-                return 10.0 / 25.0;
-            //master
-            case 5:
-                return 10.0 / 25.0;
-            default:
-                return 0.0;
-        }
+        return scoreWeights.getIncorrectGuessPenalty();
     }
     //stores solution to game
     private Solver solutionSolver;

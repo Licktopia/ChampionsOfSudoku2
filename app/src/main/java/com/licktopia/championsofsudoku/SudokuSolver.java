@@ -1,17 +1,13 @@
 package com.licktopia.championsofsudoku;
 
 import android.content.Context;
-import android.content.res.AssetManager;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.security.AccessControlContext;
 import java.util.Arrays;
 import java.util.Vector;
 import java.util.concurrent.ThreadLocalRandom;
-
-import static java.security.AccessController.getContext;
 
 /**
  * Created by jeff on 12/15/16.
@@ -545,22 +541,22 @@ public class SudokuSolver {
 
 
         if(level == 0){
-            filename="0.txt";
+            filename= "boards/0.txt";
         }
         else if(level==1){
-            filename="1.txt";
+            filename= "boards/1.txt";
         }
         else if(level==1){
-            filename="2.txt";
+            filename= "boards/2.txt";
         }
         else if(level==1){
-            filename="3.txt";
+            filename= "boards/3.txt";
         }
         else if(level==1){
-            filename="4.txt";
+            filename= "boards/4.txt";
         }
         else {
-            filename="5.txt";
+            filename= "boards/5.txt";
         }
         BufferedReader reader = null;
         StringBuilder builder = new StringBuilder();
