@@ -1,9 +1,9 @@
 package com.licktopia.championsofsudoku.Activities;
 
+import android.content.Intent;
 import android.graphics.Color;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
+
+
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -11,42 +11,30 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.games.Games;
 import com.google.example.games.basegameutils.BaseGameActivity;
-import com.google.example.games.basegameutils.BaseGameUtils;
 import com.google.example.games.basegameutils.GameHelper;
 import com.licktopia.championsofsudoku.R;
 import com.licktopia.championsofsudoku.SudokuFacts;
 
-public class GamerProfileActivity extends AppCompatActivity {
-    GoogleApiClient mGoogleApiClient;
-    SudokuFacts sudokuFacts;
-    private boolean mAutoSignInFlow = false;
-    GameHelper gameHelper;
+public class GamerProfileActivity extends BaseGameActivity {
+
+    private SudokuFacts sudokuFacts;
+    private GameHelper gameHelper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gamer_profile);
 
         gameHelper = new GameHelper(this, GameHelper.CLIENT_GAMES);
-
-        GameHelper.GameHelperListener gameHelperListener = new GameHelper.GameHelperListener()
-        {
-            @Override
-            public void onSignInFailed(){ }
-
-            @Override
-            public void onSignInSucceeded(){ }
-        };
-
-        gameHelper.setup(gameHelperListener);
+        //TODO Remove this for production
+        gameHelper.enableDebugLog(true);
+        gameHelper.setup(this);
 
 
 
-        mAutoSignInFlow = getIntent().getExtras().getBoolean("AUTOSIGN");
+
         updateUI();
         listeners();
     }
@@ -72,10 +60,10 @@ public class GamerProfileActivity extends AppCompatActivity {
         mAchievementButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
+                if (gameHelper.getApiClient() != null && gameHelper.getApiClient().isConnected()) {
                     // Call a Play Games services API method, for example:
 
-                    startActivityForResult(Games.Achievements.getAchievementsIntent(mGoogleApiClient),
+                    startActivityForResult(Games.Achievements.getAchievementsIntent(gameHelper.getApiClient()),
                             5434);
                 } else {
                     // Alternative implementation (or warn user that they must
@@ -101,7 +89,7 @@ public class GamerProfileActivity extends AppCompatActivity {
         mDidYouKnow.setBackgroundColor(Color.parseColor(color));
         mFactBackground.setBackgroundColor(Color.parseColor(color));
         mTitleName.setBackgroundColor(Color.parseColor(color));
-        mTitleName.setText(gamerName);
+       // mTitleName.setText(gamerName);
     }
 
 
@@ -109,7 +97,6 @@ public class GamerProfileActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
             gameHelper.onStart(this);
 
 
@@ -119,6 +106,30 @@ public class GamerProfileActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         gameHelper.onStop();
+
+    }
+
+    @Override
+    public void onSignInFailed() {
+        Toast.makeText(this,"You are no longer logged in",Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(GamerProfileActivity.this, GamerProfileActivity.class);
+        startActivity(intent);
+    }
+
+
+    @Override
+    public void onSignInSucceeded() {
+        if(gameHelper.getApiClient().isConnected()) {
+            TextView mTitleName = (TextView) findViewById(R.id.title_name);
+            mTitleName.setText(Games.Players.getCurrentPlayer(gameHelper.getApiClient()).getDisplayName());
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        gameHelper.onActivityResult(requestCode, resultCode, data);
 
     }
 }
