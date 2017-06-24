@@ -348,6 +348,15 @@ class Board {
         return CLUSTER_SIZE;
     }
 
+    //returns the number of starting squares in board
+    protected  int getTotalStartingSquares() {
+        int total = 0;
+        for (int i = 0; i < totalBoardElements(); i++)
+            if (isStartingValue(i))
+                total++;
+        return total;
+    }
+
     //returns the total number of elements in the board
     protected  int totalBoardElements() {return totalBoardRows() * totalBoardCols(); }
 
