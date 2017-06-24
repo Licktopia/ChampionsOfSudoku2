@@ -14,7 +14,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.google.android.gms.games.Games;
+import com.google.android.gms.games.snapshot.SnapshotMetadata;
+import com.google.android.gms.games.snapshot.Snapshots;
 import com.google.example.games.basegameutils.BaseGameActivity;
 
 
@@ -23,8 +27,13 @@ import com.google.example.games.basegameutils.GameHelper;
 import com.licktopia.championsofsudoku.PlaySounds;
 import com.licktopia.championsofsudoku.R;
 
+import java.math.BigInteger;
+import java.util.Random;
+
 public class MainMenuActivity  extends BaseGameActivity{
     private static final String PREF_FILE = "com.licktopia.championsofsudoku.preferences";
+    private static final int RC_SAVED_GAMES = 9009;
+    private String mCurrentSaveName = "snapshotTemp";
 
     private int[] levelButtonTags = {R.id.beginnerButton,R.id.easyButton,R.id.mediumButton,R.id.hardButton,R.id.expertButton,R.id.masterButton};
     private int[] modeButtonTags = {R.id.topiaChoice,R.id.numberChoice};
@@ -70,6 +79,13 @@ public class MainMenuActivity  extends BaseGameActivity{
         setMessage();
         initializeLick();
         initializeShareBar();
+        Button mResumeButton = (Button)findViewById(R.id.resume);
+        mResumeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showSavedGamesUI();
+            }
+        });
     }
 
     /***************************************
@@ -261,6 +277,18 @@ public class MainMenuActivity  extends BaseGameActivity{
         mPlaySounds.playSounds(this, 5);
     }
 
+    private void showSavedGamesUI() {
+        if(gameHelper.getApiClient().isConnected()) {
+            int maxNumberOfSavedGamesToShow = 5;
+            Intent savedGamesIntent = Games.Snapshots.getSelectSnapshotIntent(gameHelper.getApiClient(),
+                    "See My Saves", true, true, maxNumberOfSavedGamesToShow);
+            startActivityForResult(savedGamesIntent, RC_SAVED_GAMES);
+        }
+        else{
+            Toast.makeText(this, R.string.login_touse_thisfeature,Toast.LENGTH_SHORT).show();
+        }
+    }
+
     private void setMessage(){
         TextView mMessage = (TextView)findViewById(R.id.message);
         if(gameHelper.getApiClient().isConnected()){
@@ -325,8 +353,25 @@ public class MainMenuActivity  extends BaseGameActivity{
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         gameHelper.onActivityResult(requestCode, resultCode, data);
+        if (data != null) {
+            if (data.hasExtra(Snapshots.EXTRA_SNAPSHOT_METADATA)) {
+                // Load a snapshot.
+                SnapshotMetadata snapshotMetadata = (SnapshotMetadata)
+                        data.getParcelableExtra(Snapshots.EXTRA_SNAPSHOT_METADATA);
+                mCurrentSaveName = snapshotMetadata.getUniqueName();
+
+                // Load the game data from the Snapshot
+                // ...
+            } else if (data.hasExtra(Snapshots.EXTRA_SNAPSHOT_NEW)) {
+                // Create a new snapshot named with a unique string
+                String unique = new BigInteger(281, new Random()).toString(13);
+                mCurrentSaveName = "snapshotTemp-" + unique;
+
+                // Create the new snapshot
+                // ...
+            }
+        }
 
     }
 
@@ -340,4 +385,6 @@ public class MainMenuActivity  extends BaseGameActivity{
     public void onSignInSucceeded() {
         updateUI(true);
     }
+
+
 }

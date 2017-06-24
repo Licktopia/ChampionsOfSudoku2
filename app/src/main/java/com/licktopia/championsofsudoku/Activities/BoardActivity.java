@@ -5,6 +5,7 @@ import android.animation.ObjectAnimator;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Handler;
 import android.os.SystemClock;
@@ -27,8 +28,12 @@ import android.widget.Toast;
 
 
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.games.Games;
 
+import com.google.android.gms.games.snapshot.Snapshot;
+import com.google.android.gms.games.snapshot.SnapshotMetadataChange;
+import com.google.android.gms.games.snapshot.Snapshots;
 import com.google.example.games.basegameutils.BaseGameActivity;
 import com.google.example.games.basegameutils.GameHelper;
 import com.licktopia.championsofsudoku.BackgroundImages;
@@ -924,6 +929,21 @@ public class BoardActivity extends BaseGameActivity{
         }
     }
 
+    private PendingResult<Snapshots.CommitSnapshotResult> writeSnapshot(Snapshot snapshot,
+                                                                        byte[] data, Bitmap coverImage, String desc) {
+
+        // Set the data payload for the snapshot
+        snapshot.getSnapshotContents().writeBytes(data);
+
+        // Create the change operation
+        SnapshotMetadataChange metadataChange = new SnapshotMetadataChange.Builder()
+                .setCoverImage(coverImage)
+                .setDescription(desc)
+                .build();
+
+        // Commit the operation
+        return Games.Snapshots.commitAndClose(gameHelper.getApiClient(), snapshot, metadataChange);
+    }
 
 
 }
