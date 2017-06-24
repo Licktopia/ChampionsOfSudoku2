@@ -131,7 +131,7 @@ public class GameHelper implements GoogleApiClient.ConnectionCallbacks,
     // Whether to automatically try to sign in on onStart(). We only set this
     // to true when the sign-in process fails or the user explicitly signs out.
     // We set it back to false when the user initiates the sign in process.
-    boolean mConnectOnStart = true;
+    boolean mConnectOnStart = false;
 
     /*
      * Whether user has specifically requested that the sign-in process begin.
@@ -179,7 +179,7 @@ public class GameHelper implements GoogleApiClient.ConnectionCallbacks,
     // Should we start the flow to sign the user in automatically on startup? If
     // so, up to
     // how many times in the life of the application?
-    static final int DEFAULT_MAX_SIGN_IN_ATTEMPTS = 3;
+    static final int DEFAULT_MAX_SIGN_IN_ATTEMPTS = 0;
     int mMaxAutoSignInAttempts = DEFAULT_MAX_SIGN_IN_ATTEMPTS;
 
     /**
@@ -364,6 +364,8 @@ public class GameHelper implements GoogleApiClient.ConnectionCallbacks,
 
         debugLog("onStart");
         assertConfigured("onStart");
+        SharedPreferences sp = mAppContext.getSharedPreferences(GAMEHELPER_SHARED_PREFS, Context.MODE_PRIVATE);
+        mConnectOnStart = sp.getBoolean(KEY_AUTO_SIGN_IN, false);
 
         if (mConnectOnStart) {
             if (mGoogleApiClient.isConnected()) {
@@ -538,6 +540,9 @@ public class GameHelper implements GoogleApiClient.ConnectionCallbacks,
         // Ready to disconnect
         debugLog("Disconnecting client.");
         mConnectOnStart = false;
+        SharedPreferences.Editor editor = mAppContext.getSharedPreferences(GAMEHELPER_SHARED_PREFS, Context.MODE_PRIVATE).edit();
+        editor.putBoolean(KEY_AUTO_SIGN_IN, false);
+        editor.commit();
         mConnecting = false;
         mGoogleApiClient.disconnect();
     }
@@ -629,7 +634,9 @@ public class GameHelper implements GoogleApiClient.ConnectionCallbacks,
         resetSignInCancellations();
         mSignInCancelled = false;
         mConnectOnStart = true;
-
+        SharedPreferences.Editor editor = mAppContext.getSharedPreferences(GAMEHELPER_SHARED_PREFS, Context.MODE_PRIVATE).edit();
+        editor.putBoolean(KEY_AUTO_SIGN_IN, true);
+        editor.commit();
         if (mGoogleApiClient.isConnected()) {
             // nothing to do
             logWarn("beginUserInitiatedSignIn() called when already connected. "
@@ -739,7 +746,7 @@ public class GameHelper implements GoogleApiClient.ConnectionCallbacks,
 
     private final String GAMEHELPER_SHARED_PREFS = "GAMEHELPER_SHARED_PREFS";
     private final String KEY_SIGN_IN_CANCELLATIONS = "KEY_SIGN_IN_CANCELLATIONS";
-
+    private final String KEY_AUTO_SIGN_IN = "KEY_AUTO_SIGN_IN";
     // Return the number of times the user has cancelled the sign-in flow in the
     // life of the app
     int getSignInCancellations() {

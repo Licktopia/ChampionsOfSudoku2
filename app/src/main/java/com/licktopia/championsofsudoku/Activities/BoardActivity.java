@@ -23,6 +23,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.games.Games;
 
 import com.licktopia.championsofsudoku.BackgroundImages;
 import com.licktopia.championsofsudoku.PlaySounds;
@@ -39,7 +44,7 @@ import java.util.Set;
 
 import static android.view.View.GONE;
 
-public class BoardActivity extends AppCompatActivity {
+public class BoardActivity extends AppCompatActivity{
 
     private static final float UNDOREDOALPHA = .45f;
     private PlaySounds mPlaySounds;
@@ -66,6 +71,7 @@ public class BoardActivity extends AppCompatActivity {
     private int size;
     private long timeWhenStopped;
     private Handler highlightHandler;
+    private GoogleApiClient mGoogleApiClient;
 
 
     @Override
@@ -78,6 +84,16 @@ public class BoardActivity extends AppCompatActivity {
         //initialize actiion bar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         this.setSupportActionBar(toolbar);
+
+/*
+        gameHelper = new GameHelper(this, GameHelper.CLIENT_GAMES);
+        gameHelper.setup(this);
+        mGoogleApiClient = gameHelper.getApiClient();
+        //mGoogleApiClient.connect();
+        if(mGoogleApiClient.isConnected()){
+            Toast.makeText(this,"We're connected",Toast.LENGTH_SHORT).show();
+        }
+        */
 
         //bindings
         mChronometer = (Chronometer)findViewById(com.licktopia.championsofsudoku.R.id.chronometer);
@@ -870,8 +886,60 @@ public class BoardActivity extends AppCompatActivity {
                 i,
 
                 "Share via"));
+        //unlockAchievements(R.string.achievement_joy_giver);
 
     }
+/*
+    private void unlockAchievements(int achievement){
+        if(gameHelper.isSignedIn()) {
+            if (achievement == 1) {// Joy Giver Share
+
+                Games.Achievements.unlock(gameHelper.getApiClient(), getString(achievement));
+            }
+            else if (achievement == 2) {// Up and Comer
+                Games.Achievements.unlock(gameHelper.getApiClient(), getString(achievement));
+            }
+            else if (achievement == 3) {// Sharp Shooter
+                Games.Achievements.unlock(gameHelper.getApiClient(), getString(achievement));
+            }
+            else if (achievement == 4) {// Speed Demon
+                Games.Achievements.unlock(gameHelper.getApiClient(), getString(achievement));
+            }
+            else if (achievement == 5) {// Big Time Scorer
+                Games.Achievements.unlock(gameHelper.getApiClient(), getString(achievement));
+            }
+            else if (achievement == 6) {// Up and Comer
+                Games.Achievements.unlock(gameHelper.getApiClient(), getString(achievement));
+            }
+            else if (achievement == 7) {// Sharp Shooter
+                Games.Achievements.unlock(gameHelper.getApiClient(), getString(achievement));
+            }
+            else if (achievement == 8) {// Speed Demon
+                Games.Achievements.unlock(gameHelper.getApiClient(), getString(achievement));
+            }
+            else if (achievement == 9) {// Big Time Scorer
+                Games.Achievements.unlock(gameHelper.getApiClient(), getString(achievement));
+            }
+            else if (achievement == 10) {// Up and Comer
+                Games.Achievements.unlock(gameHelper.getApiClient(), getString(achievement));
+            }
+            else if (achievement == 11) {// Sharp Shooter
+                Games.Achievements.unlock(gameHelper.getApiClient(), getString(achievement));
+            }
+            else if (achievement == 12) {// Speed Demon
+                Games.Achievements.unlock(gameHelper.getApiClient(), getString(achievement));
+            }
+            else if (achievement == 13) {// Big Time Scorer
+                Games.Achievements.unlock(gameHelper.getApiClient(), getString(achievement));
+            }
+            else if (achievement == 14) {// Braggart
+
+                Games.Achievements.unlock(gameHelper.getApiClient(), getString(achievement));
+            }
+        }
+    }
+    */
+
 
 }
 

@@ -30,7 +30,7 @@
             android:name=".Settings.SudokuSettingsActivity"
             android:label="Settings"
             android:theme="@style/Base.Theme.AppCompat.Light" />
-        <activity android:name=".Sudoku.GamerProfileActivity"></activity>
+        <activity android:name=".Activities.GamerProfileActivity"></activity>
     </application>
 
 </manifest>

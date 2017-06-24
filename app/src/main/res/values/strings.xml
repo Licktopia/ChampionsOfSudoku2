@@ -22,7 +22,7 @@
     <string name="facebook_app_id">1540779445995070</string>
     <string name="save_exit">Save and Exit</string>
     <string name="harder_puzzle_message">Harder puzzles will earn more XP</string>
-    <string name="app_url">https://play.google.com/store/apps/details?id=com.licktopia.sudokutopia</string>
+    <string name="app_url">https://play.google.com/apps/testing/com.licktopia.championsofsudoku</string>
     <string name="quit_to_menu">Quit to main menu?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
@@ -40,4 +40,30 @@
     <string name="classic_numbers">Classic Numbers</string>
     <string name="stats_amp_more"><![CDATA[Stats & More]]></string>
     <string name="sign_in_message">Sign In to view stats, level up, and more</string>
+    <string name="login_tosee_leaderboards">You must be logged in to view leaderboards</string>
+    <string name="leaderboard_fastest_time_beginner">CgkIpIq_8IcXEAIQAQ</string>
+    <string name="leaderboard_fastest_time_easy">CgkIpIq_8IcXEAIQAg</string>
+    <string name="leaderboard_fastest_time_medium">CgkIpIq_8IcXEAIQAw</string>
+    <string name="leaderboard_fastest_time_hard">CgkIpIq_8IcXEAIQBA</string>
+    <string name="leaderboard_fastest_time_expert">CgkIpIq_8IcXEAIQBQ</string>
+    <string name="leaderboard_fastest_time_master">CgkIpIq_8IcXEAIQBg</string>
+    <string name="leaderboard_most_total_xp">CgkIpIq_8IcXEAIQBw</string>
+    <string name="leaderboard_highest_single_game_score">CgkIpIq_8IcXEAIQCA</string>
+    <string name="package_name">com.licktopia.championsofsudoku</string>
+    <string name="achievement_joy_giver">CgkIpIq_8IcXEAIQCQ</string>
+    <string name="achievement_up_and_comer">CgkIpIq_8IcXEAIQCg</string>
+    <string name="achievement_sharp_shooter">CgkIpIq_8IcXEAIQCw</string>
+    <string name="achievement_speed_demon">CgkIpIq_8IcXEAIQDA</string>
+    <string name="achievement_big_time_scorer">CgkIpIq_8IcXEAIQDQ</string>
+    <string name="achievement_up_and_comer_ii">CgkIpIq_8IcXEAIQDg</string>
+    <string name="achievement_sharp_shooter_ii">CgkIpIq_8IcXEAIQDw</string>
+    <string name="achievement_speed_demon_ii">CgkIpIq_8IcXEAIQEA</string>
+    <string name="achievement_big_time_scorer_ii">CgkIpIq_8IcXEAIQEQ</string>
+    <string name="achievement_up_and_comer_iii">CgkIpIq_8IcXEAIQEg</string>
+    <string name="achievement_sharp_shooter_iii">CgkIpIq_8IcXEAIQEw</string>
+    <string name="achievement_speed_demon_iii">CgkIpIq_8IcXEAIQFA</string>
+    <string name="achievement_big_time_scorer_iii">CgkIpIq_8IcXEAIQFQ</string>
+    <string name="achievement_braggart">CgkIpIq_8IcXEAIQFg</string>
+    <string name="mustbe_loggedin_viewachievements">You must be logged in to view achievements</string>
+
 </resources>

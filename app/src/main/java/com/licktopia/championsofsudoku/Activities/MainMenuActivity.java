@@ -16,17 +16,16 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.*;
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.drive.Drive;
 import com.google.android.gms.games.Games;
+import com.google.example.games.basegameutils.BaseGameActivity;
 import com.google.example.games.basegameutils.BaseGameUtils;
+
 
 import com.licktopia.championsofsudoku.PlaySounds;
 import com.licktopia.championsofsudoku.R;
-import com.licktopia.championsofsudoku.Sudoku.GamerProfileActivity;
 
 public class MainMenuActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
@@ -45,7 +44,7 @@ public class MainMenuActivity extends AppCompatActivity implements GoogleApiClie
     private Animation animShow, animHide, animHiSl, animShSlow;
     private PlaySounds mPlaySounds;
 
-    private GoogleApiClient mGoogleApiClient;
+    public static GoogleApiClient mGoogleApiClient;
     private static int RC_SIGN_IN = 9001;
     private boolean mResolvingConnectionFailure = false;
     private boolean mAutoStartSignInFlow = false;
@@ -63,6 +62,8 @@ public class MainMenuActivity extends AppCompatActivity implements GoogleApiClie
         SharedPreferences mSharedPreferences = getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
         ed = mSharedPreferences.edit();
         ed.apply();
+
+
         mAutoStartSignInFlow = mSharedPreferences.getBoolean(SIGN_IN_FLOW, false);
         signInInitialization();
         initAnimation();
@@ -107,7 +108,10 @@ public class MainMenuActivity extends AppCompatActivity implements GoogleApiClie
     @Override
     protected void onStart() {
         super.onStart();
-        mGoogleApiClient.connect();
+        if(mAutoStartSignInFlow) {
+            mGoogleApiClient.connect();
+        }
+
     }
 
     @Override
@@ -211,6 +215,7 @@ public class MainMenuActivity extends AppCompatActivity implements GoogleApiClie
     // Call when the sign-out button is clicked
     private void signOutClicked() {
         mSignInClicked = false;
+        mAutoStartSignInFlow = false;
         Games.signOut(mGoogleApiClient);
         mGoogleApiClient.disconnect();
         updateUI(false);
@@ -257,6 +262,7 @@ public class MainMenuActivity extends AppCompatActivity implements GoogleApiClie
                 Intent intent = new Intent(MainMenuActivity.this, GamerProfileActivity.class);
                 intent.putExtra("GAMERNAME", gamername);
                 intent.putExtra("GAMERID", gamername);
+                intent.putExtra("AUTOSIGN", mAutoStartSignInFlow);
                 startActivity(intent);
             }
         });
@@ -374,6 +380,13 @@ public class MainMenuActivity extends AppCompatActivity implements GoogleApiClie
                 i,
 
                 "Share via"));
+
+        if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
+            // Call a Play Games services API method, for example:
+            Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_joy_giver));
+        }
+
+
 
     }
 }
