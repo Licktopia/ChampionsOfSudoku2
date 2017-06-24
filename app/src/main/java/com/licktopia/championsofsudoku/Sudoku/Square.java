@@ -127,6 +127,27 @@ public class Square
         return notepad[num - 1];
     }
 
+    // Returns number of values set to true in notepad
+    protected int getTotalNotepadValues() {
+        int total = 0;
+        for (boolean b : notepad)
+            if (b) total++;
+        return total;
+    }
+
+    // Compare notepad of one square to another
+    protected boolean hasSameNotepad(Square square) {
+        if (notepad.length != square.notepad.length)
+            return false;
+
+        for (int i = 0; i < notepad.length; i++) {
+            if (notepad[i] != square.notepad[i])
+                return false;
+        }
+
+        return true;
+    }
+
     protected boolean noMoreThanOneGuess(){return this.noMoreThanOneGuess;}
 
     public int getValue() {
