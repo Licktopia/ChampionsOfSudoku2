@@ -267,20 +267,17 @@ public class GameHelper implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.Builder builder = new GoogleApiClient.Builder(
                 mActivity, this, this);
 
-        if (0 != (mRequestedClients & CLIENT_GAMES)) {
+
             builder.addApi(Games.API, mGamesApiOptions);
             builder.addScope(Games.SCOPE_GAMES);
-        }
 
-        if (0 != (mRequestedClients & CLIENT_PLUS)) {
-            builder.addApi(Plus.API);
-            builder.addScope(Plus.SCOPE_PLUS_LOGIN);
-        }
 
-        if (0 != (mRequestedClients & CLIENT_SNAPSHOT)) {
+
+
+
           builder.addScope(Drive.SCOPE_APPFOLDER);
           builder.addApi(Drive.API);
-        }
+
 
         mGoogleApiClientBuilder = builder;
         return builder;
