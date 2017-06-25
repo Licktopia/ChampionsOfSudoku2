@@ -362,6 +362,14 @@ class Board {
         return getTotalNotepadValues(idxToRow(idx), idxToCol(idx));
     }
 
+    // Returns number of times a notepad number appears in a given group of indices
+    protected int getTotalNotepadOccurrences(int[] indices, int num) {
+        int total = 0;
+        for (int i : indices)
+            if (getValueAt(i) == 0 && getNotepadAt(i, num)) total++;
+        return total;
+    }
+
     // Compare notepad of one square to another
     protected boolean hasSameNotepad(int idx1, int idx2) {
         for (int i = 0; i < SIZE; i++) {
@@ -369,6 +377,15 @@ class Board {
                 return false;
         }
 
+        return true;
+    }
+
+    // Compares a list of squares to see if two notepad numbers appear in the same positions
+    protected boolean hasSameNotepadPositions(int[] indices, int num1, int num2) {
+        for (int i : indices) {
+            if (getNotepadAt(i, num1) != getNotepadAt(i, num2))
+                return false;
+        }
         return true;
     }
 
@@ -383,6 +400,46 @@ class Board {
         int cluster1 = ((idxToRow(idx1) / CLUSTER_SIZE) * CLUSTER_SIZE) + (idxToCol(idx1) / CLUSTER_SIZE);
         int cluster2 = ((idxToRow(idx2) / CLUSTER_SIZE) * CLUSTER_SIZE) + (idxToCol(idx2) / CLUSTER_SIZE);
         return cluster1 == cluster2;
+    }
+
+    // Returns an array of indices of all squares in same row as idx
+    protected int[] getRowIndices(int idx) {
+        int[] indices = new int[SIZE];
+        int rowStart = idx - idxToCol(idx);
+        for (int i = 0; i < SIZE; i++) {
+            indices[i] = rowStart + i;
+        }
+        return indices;
+    }
+
+    // Returns an array of indices of all squares in same column as idx
+    protected int[] getColIndices(int idx) {
+        int[] indices = new int[SIZE];
+        int column = idxToCol(idx);
+        for (int i = 0; i < SIZE; i++) {
+            indices[i] = column + (SIZE * i);
+        }
+        return indices;
+    }
+
+    // Returns an array of indices of all squares in same cluster as idx
+    protected int[] getClusterIndices(int idx) {
+
+        // Get cluster number
+        int cluster = ((idxToRow(idx) / CLUSTER_SIZE) * CLUSTER_SIZE) + (idxToCol(idx) / CLUSTER_SIZE);
+
+        // Get cluster start indices based on board size
+        int rowStart = (cluster / CLUSTER_SIZE) * CLUSTER_SIZE;
+        int colStart = (cluster % CLUSTER_SIZE) * CLUSTER_SIZE;
+        int indexStart = rowStart * SIZE + colStart;
+
+        // Add indices to array
+        int[] indices = new int[SIZE];
+        for (int i = 0; i < SIZE; i++) {
+            indices[i] = indexStart + (i % CLUSTER_SIZE) + ((i / CLUSTER_SIZE) * SIZE);
+        }
+
+        return indices;
     }
 
     //returns the number of open squares in board
