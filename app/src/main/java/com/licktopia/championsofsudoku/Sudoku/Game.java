@@ -260,4 +260,9 @@ public class Game
     {
 
     }
+    public int getNumberOpenSquares(){
+        int val = 0;
+        val = curBoard.getOpenSquares();
+        return val;
+    }
 }

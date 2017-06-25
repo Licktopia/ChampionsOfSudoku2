@@ -19,7 +19,6 @@
     <string name="Score">Always Hide Score</string>
     <string name="sign_in_button">Sign in</string>
     <string name="Scoresummary">The score will always be hidden until the puzzle is solved. It cannot be toggled by clicking on it.</string>
-    <string name="facebook_app_id">1540779445995070</string>
     <string name="save_exit">Save and Exit</string>
     <string name="harder_puzzle_message">Harder puzzles will earn more XP</string>
     <string name="app_url">https://play.google.com/apps/testing/com.licktopia.championsofsudoku</string>
@@ -66,5 +65,6 @@
     <string name="achievement_braggart">CgkIpIq_8IcXEAIQFg</string>
     <string name="mustbe_loggedin_viewachievements">You must be logged in to view achievements</string>
     <string name="login_touse_thisfeature">You must be logged in to use this feature</string>
-
+    <string name="login_toview_profile">You must be logged in to view gamer profile</string>
+    <string name="facebook_app_id">308707836247832</string>
 </resources>
