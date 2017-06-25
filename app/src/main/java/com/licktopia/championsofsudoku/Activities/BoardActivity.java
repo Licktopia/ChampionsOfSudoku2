@@ -82,6 +82,8 @@ public class BoardActivity extends BaseGameActivity{
     private Button[] numberButtons;
     private Button clearButton;
     private Button solveButton;
+    private Button checkProgressButton;
+    private Button nakedSingleButton;
     private ImageButton mUndoButton;
     private ImageButton mRedoButton;
     private ImageButton notepadIcon;
@@ -342,6 +344,8 @@ public class BoardActivity extends BaseGameActivity{
         }
         clearButton = (Button) findViewById(R.id.clear);
         solveButton = (Button) findViewById(R.id.solveButton);
+        checkProgressButton = (Button) findViewById(R.id.progressButton);
+        nakedSingleButton = (Button) findViewById(R.id.naked_single);
         keyboardDownButton = (ImageButton) findViewById(R.id.down);
     }
 
@@ -571,7 +575,7 @@ public class BoardActivity extends BaseGameActivity{
     }
 
     /************************************
-     * Listeners numberPadButtonBackground
+     * Listeners solveButton
      *********************************/
     private void solveButtonListener() {
         solveButton.setOnClickListener(new View.OnClickListener() {
@@ -580,6 +584,37 @@ public class BoardActivity extends BaseGameActivity{
                endOfGame(true);
             }
         });
+    }
+
+    /************************************
+     * Listeners checkProgressButton
+     *********************************/
+    private void checkProgressButtonListener() {
+        checkProgressButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                updateBoard();
+            }
+        });
+    }
+
+    /************************************
+     * Listeners nakedSingleButton
+     *********************************/
+    private void nakedSingleButtonListener() {
+        nakedSingleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                endOfGame(true);
+            }
+        });
+    }
+
+    /************************************
+     * Update board
+     *********************************/
+    private void updateBoard() {
+
     }
 
     /************************************
