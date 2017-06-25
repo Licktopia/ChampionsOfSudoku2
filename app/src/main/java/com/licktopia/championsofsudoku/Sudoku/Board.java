@@ -16,6 +16,7 @@ class Board {
     private static int SIZE = 9;         // Board size
     private static int CLUSTER_SIZE = 3; // Size of N x N cluster
     private Square[][] contents;           // Holds values of the sudoku puzzle
+    private int startingOpenSquares;     // Tracks the starting amount of open squares
     private int openSquares;            // Tracks how many squares are empty
     private int incorrectGuesses = 0; //total number of incorrect guesses
 
@@ -42,7 +43,7 @@ class Board {
                 contents[i / SIZE][i % SIZE] = new Square(values[i], false, SIZE, i);
                 openSquares++;
             }
-
+            startingOpenSquares = openSquares;
 
         }
     }
@@ -54,6 +55,7 @@ class Board {
 
         contents = new Square[SIZE][SIZE];
         openSquares = oldBoard.openSquares;
+        startingOpenSquares = oldBoard.startingOpenSquares;
 
         // copy all data from oldBoard into this
         for (int i = 0; i < this.totalBoardRows(); i++) {
@@ -444,6 +446,8 @@ class Board {
 
     //returns the number of open squares in board
     protected  int getOpenSquares() { return openSquares; }
+
+    protected int getStartingOpenSquares() { return startingOpenSquares; }
 
     //returns the total number of elements in the board
     protected  int totalBoardElements() {return totalBoardRows() * totalBoardCols(); }

@@ -79,7 +79,7 @@ public class MainMenuActivity  extends BaseGameActivity{
         setMessage();
         initializeLick();
         initializeShareBar();
-        Button mResumeButton = (Button)findViewById(R.id.resume);
+        LinearLayout mResumeButton = (LinearLayout) findViewById(R.id.resume);
         mResumeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -142,7 +142,7 @@ public class MainMenuActivity  extends BaseGameActivity{
                 userSignIn = false;
             }
             mSignInButton.setVisibility(View.GONE);
-            mSignOutButton.setVisibility(View.VISIBLE);
+            //mSignOutButton.setVisibility(View.VISIBLE);
             mBadge.setVisibility(View.VISIBLE);
             loadPlayer();
             setMessage();
@@ -182,7 +182,7 @@ public class MainMenuActivity  extends BaseGameActivity{
     }
 
     private void initializeLick() {
-        ImageView mLick = (ImageView)findViewById(R.id.lick);
+        LinearLayout mLick = (LinearLayout)findViewById(R.id.lick);
         mLick.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -205,13 +205,13 @@ public class MainMenuActivity  extends BaseGameActivity{
         });
     }
 
-    private void mBadgeButtonInitialize(final String gamername, String gamerID){
+    private void mBadgeButtonInitialize(final String gamername, final String gamerID){
         mBadge.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainMenuActivity.this, GamerProfileActivity.class);
                 intent.putExtra("GAMERNAME", gamername);
-                intent.putExtra("GAMERID", gamername);
+                intent.putExtra("GAMERID", gamerID);
                 startActivity(intent);
             }
         });

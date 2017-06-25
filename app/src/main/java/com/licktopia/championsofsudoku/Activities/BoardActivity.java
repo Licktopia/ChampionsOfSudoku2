@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
@@ -27,10 +28,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.share.Sharer;
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.widget.ShareDialog;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.games.Games;
 
+import com.google.android.gms.games.Player;
 import com.google.android.gms.games.snapshot.Snapshot;
 import com.google.android.gms.games.snapshot.SnapshotMetadataChange;
 import com.google.android.gms.games.snapshot.Snapshots;
@@ -46,9 +54,11 @@ import com.licktopia.championsofsudoku.Sudoku.Game;
 import com.licktopia.championsofsudoku.Sudoku.Square;
 import com.licktopia.championsofsudoku.Tags;
 
+import java.util.ArrayList;
 import java.util.Queue;
 import java.util.Set;
 
+import static android.graphics.Color.WHITE;
 import static android.view.View.GONE;
 
 public class BoardActivity extends BaseGameActivity{
@@ -65,6 +75,7 @@ public class BoardActivity extends BaseGameActivity{
     private boolean keyboardState = true;
     private boolean solvedState = false;
     private boolean animationFinished = false;
+    private boolean solveClicked = false;
     private TextView scoreBoard;
     private Game mGame;
     private boolean smallNumPadState = false;
@@ -79,7 +90,12 @@ public class BoardActivity extends BaseGameActivity{
     private long timeWhenStopped;
     private Handler highlightHandler;
     private GameHelper gameHelper;
-
+    private LinearLayout mHintsLayout;
+    private LinearLayout mEndGameLayout;
+    private String gamerName;
+    private String gamerID;
+    ShareDialog shareDialog;
+    CallbackManager callbackManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +108,9 @@ public class BoardActivity extends BaseGameActivity{
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         this.setSupportActionBar(toolbar);
 
+        shareDialog = new ShareDialog(BoardActivity.this);
+
+
         gameHelper = new GameHelper(this, GameHelper.CLIENT_GAMES);
         //TODO Remove this for production
         gameHelper.enableDebugLog(true);
@@ -103,6 +122,8 @@ public class BoardActivity extends BaseGameActivity{
         mRedoButton = (ImageButton)findViewById(R.id.forwardButton);
         notepadIcon = (ImageButton) findViewById(R.id.scratch);
         scoreBoard = (TextView)findViewById(R.id.score);
+        mHintsLayout = (LinearLayout)findViewById(R.id.hints_layout);
+        mEndGameLayout = (LinearLayout)findViewById(R.id.end_game_layout);
         highlightHandler = new Handler();
 
 
@@ -128,63 +149,93 @@ public class BoardActivity extends BaseGameActivity{
             }
         });
 
+    }
 
+    private void updateUI(boolean isLoggedIn){
+        if(isLoggedIn){
+            loadPlayer();
+        }
+        else{
 
+        }
+    }
 
+    private void loadPlayer(){
+        if(gameHelper.getApiClient().isConnected()) {
+            gamerName = Games.Players.getCurrentPlayer(gameHelper.getApiClient()).getDisplayName();
+            gamerID = Games.Players.getCurrentPlayer(gameHelper.getApiClient()).getPlayerId();
 
-
-
-
-
+        }
     }
 
     /************************************
      * Handles the end of the game
      *********************************/
-    private void endOfGame(){
-        LinearLayout mHintsLayout = (LinearLayout)findViewById(R.id.hints_layout);
-        LinearLayout mEndGameLayout = (LinearLayout)findViewById(R.id.end_game_layout);
-        final RelativeLayout mStatsBox = (RelativeLayout) findViewById(R.id.game_stats_box);
-        final LinearLayout mLevelUpBox = (LinearLayout) findViewById(R.id.level_up_view);
-        final ImageButton mCloseLevelUp = (ImageButton) findViewById(R.id.close_levelup);
-        ImageButton mCloseStats = (ImageButton) findViewById(R.id.close_stats);
-        int sound;
-        mStatsBox.setVisibility(View.VISIBLE);
-        mCloseStats.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mStatsBox.setVisibility(GONE);
-            }
-        });
-        boolean levelUp = false;
-        if(!levelUp){
-            sound = 3;
+    private void endOfGame(boolean wasSolvedButtonClicked){
+        solvedState = true;
+        mGame.pauseTimer();
+        mChronometer.stop();
+        // If notepad selected, unselect
+        if (smallNumPadState)
+            notepadIcon.performClick();
+        //make board unclickable
+        allClickable(false);
+
+        if(wasSolvedButtonClicked){
+            solveClicked = true;
+            solvePuzzle();
+            scoreBoard.setText("0");
+            mHintsLayout.setVisibility(GONE);
+            mEndGameLayout.setVisibility(View.VISIBLE);
+
         }
-        else {
-            sound = 4;
-            mLevelUpBox.setVisibility(View.VISIBLE);
-            mCloseLevelUp.setOnClickListener(new View.OnClickListener() {
+        else{
+            final RelativeLayout mStatsBox = (RelativeLayout) findViewById(R.id.game_stats_box);
+            final LinearLayout mLevelUpBox = (LinearLayout) findViewById(R.id.level_up_view);
+            final ImageButton mCloseLevelUp = (ImageButton) findViewById(R.id.close_levelup);
+            ImageButton mCloseStats = (ImageButton) findViewById(R.id.close_stats);
+            int sound;
+
+            if(!solveClicked){
+                    closeKeyboard();
+            }
+            mStatsBox.setVisibility(View.VISIBLE);
+            mCloseStats.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mLevelUpBox.setVisibility(GONE);
+                    mStatsBox.setVisibility(GONE);
                 }
             });
+            boolean levelUp = false;
+            if(!levelUp){
+                sound = 3;
+            }
+            else {
+                sound = 4;
+                mLevelUpBox.setVisibility(View.VISIBLE);
+                mCloseLevelUp.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mLevelUpBox.setVisibility(GONE);
+                    }
+                });
+
+            }
+            if(!solveClicked) {
+                mPlaySounds.playSounds(this, sound);
+            }
 
         }
-        mPlaySounds.playSounds(this,sound);
 
-        mHintsLayout.setVisibility(GONE);
-        mEndGameLayout.setVisibility(View.VISIBLE);
-        if(!keyboardState){
-            closeKeyboard();
-        }
     }
     /************************************
      * Initialize undo redo buttons and sets
      *********************************/
 
     private void updateScore(){
-        scoreBoard.setText(""+mGame.getScore());
+        if(!solveClicked) {
+            scoreBoard.setText("" + mGame.getScore());
+        }
     }
     private void undoRedoListener() {
 
@@ -356,9 +407,66 @@ public class BoardActivity extends BaseGameActivity{
         clearButtonListener();
         solveButtonListener();
         undoRedoListener();
+        continueListener();
+        userBadgeListener();
+        leaderBoardsListener();
+        facebookListener();
+    }
 
+    private void continueListener(){
+        LinearLayout continueButton =(LinearLayout)findViewById(R.id.continue_button);
+        continueButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToMainMenu();
+            }
+        });
+    }
+    private void userBadgeListener(){
+        LinearLayout userBadgeButton =(LinearLayout)findViewById(R.id.user_button);
+        userBadgeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(gameHelper.getApiClient().isConnected()) {
+                    Intent intent = new Intent(BoardActivity.this, GamerProfileActivity.class);
+                    intent.putExtra("GAMERNAME", gamerName);
+                    intent.putExtra("GAMERID", gamerID);
+                    startActivity(intent);
+                }
+                else{
+                    Toast.makeText(BoardActivity.this,getString(R.string.login_toview_profile),Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+    private void leaderBoardsListener(){
+        LinearLayout leaderBoardButton =(LinearLayout)findViewById(R.id.leader_button);
+        leaderBoardButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (gameHelper.getApiClient() != null && gameHelper.getApiClient().isConnected()) {
+                    // Call a Play Games services API method, for example:
+                    startActivityForResult(Games.Leaderboards.getAllLeaderboardsIntent(gameHelper.getApiClient()), 5);;
+                } else {
+                    // Alternative implementation (or warn user that they must
+                    // sign in to use this feature)
+                    Toast.makeText(BoardActivity.this, R.string.login_tosee_leaderboards , Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+    private void facebookListener(){
+        LinearLayout facebookButton =(LinearLayout)findViewById(R.id.facebook_button);
+        facebookButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
-
+                ShareLinkContent content = new ShareLinkContent.Builder()
+                        .setContentUrl(Uri.parse(Tags.postScoreImagesColor[1]))
+                        .build();
+                shareDialog.show(content);
+            }
+        });
     }
     /************************************
      * Listener for toolbar icon
@@ -469,7 +577,7 @@ public class BoardActivity extends BaseGameActivity{
         solveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                solvePuzzle();
+               endOfGame(true);
             }
         });
     }
@@ -479,7 +587,12 @@ public class BoardActivity extends BaseGameActivity{
      *********************************/
     private void removeAllHighlights() {
         for (int i = 0; i < squareViews.length; i++) {
-            squareViews[i].setHighlighted(false);
+            if(!colorGame) {
+                squareViews[i].setHighlighted(false, true);
+            }
+            else{
+                squareViews[i].setHighlighted(false, false);
+            }
             squareViews[i].setFullAlpha();
         }
     }
@@ -510,9 +623,20 @@ public class BoardActivity extends BaseGameActivity{
                 }
             }
             else if (iRow == row || iCol == col || iCluster == cluster)
-                squareViews[i].setHighlighted(true); // Set true if current square is connected to selected
-            else
-                squareViews[i].setHighlighted(false);
+                if(!colorGame) {
+                    squareViews[i].setHighlighted(true, true); // Set true if current square is connected to selected
+                }
+                else{
+                    squareViews[i].setHighlighted(true, false); // Set true if current square is connected to selected
+                }
+            else {
+                if(!colorGame) {
+                    squareViews[i].setHighlighted(false, true);
+                }
+                else{
+                    squareViews[i].setHighlighted(false, false);
+                }
+            }
         }
     }
 
@@ -521,8 +645,9 @@ public class BoardActivity extends BaseGameActivity{
      *********************************/
     public void squareCommands(int squareNumber) {
 
-        if(!keyboardState){
+        if(!keyboardState && !solveClicked){
             openKeyboard();
+
         }
 
         selectedSquare = squareNumber;
@@ -552,9 +677,9 @@ public class BoardActivity extends BaseGameActivity{
             //Set highlights
             squareViews[squareNumber].setSelectedHighlight();
             if(rowColHighlights)
-                if(!colorGame) {
-                    highlightConnected();
-                }
+                highlightConnected();
+
+
 
             // Bold similar numbers
             if (mGame.getBoardValueAt(selectedSquare) != 0) {
@@ -632,14 +757,18 @@ public class BoardActivity extends BaseGameActivity{
 
             Set<Integer> conflicts = mGame.setBoardValueAt(selectedSquare, keypadNumber);  // Set board value to number
             if (conflicts.isEmpty()) {
-                mPlaySounds.playSounds(this,1);
+                if(!solveClicked) {
+                    mPlaySounds.playSounds(this, 1);
+                }
                 if (!colorGame)
                     currSquare.setBigNumber(keypadNumber,false);   // Display number
                 else
                     currSquare.setSquareColor(keypadNumber,false); // Display color
             }
             else {
-                mPlaySounds.playSounds(this,2);
+                if(!solveClicked) {
+                    mPlaySounds.playSounds(this, 2);
+                }
                 for (int conflict : conflicts) {
                     squareViews[conflict].setErrorHighlight();     // Display error highlight
                     highlightHandler.postDelayed(new Runnable() {  // Wait then remove error color
@@ -657,8 +786,8 @@ public class BoardActivity extends BaseGameActivity{
         }
         updateScore();
         updateUndoRedoButtons();
-        if(mGame.isGameFinish()){
-            endOfGame();
+        if(mGame.isGameFinished()){
+            endOfGame(false);
         }
 
     }
@@ -666,16 +795,31 @@ public class BoardActivity extends BaseGameActivity{
     /* Uses the BoardActivity UI to solve a puzzle given the solution steps */
     public void solvePuzzle() {
 
-        // If notepad selected, unselect
-        if (smallNumPadState)
-            notepadIcon.performClick();
+        Handler solutionHandler = new Handler();
 
         // Get solution steps
-        Queue<Square> steps = mGame.getSolutionSteps();
-        while (!steps.isEmpty()) {
-            Square square = steps.poll();
-            selectedSquare = square.getIdx();
-            numberCommands(square.getValue());
+
+        final ArrayList<Square> newSteps = new ArrayList(mGame.getSolutionSteps());
+
+        double regression = 1340100 * Math.pow(.88316, 81-mGame.getNumberOpenSquares());
+        int speedControl = (int) regression;
+        int speed = speedControl /newSteps.size();
+
+        for(int i = 0; i<newSteps.size();i++) {
+
+
+            final int finalI = i;
+            solutionHandler.postDelayed(new Runnable() {
+
+                @Override
+                public void run() {
+                    Square square = newSteps.get(finalI);
+                    selectedSquare = square.getIdx();
+                    numberCommands(square.getValue());
+
+
+                }
+            }, speed * i);
         }
     }
 
@@ -717,6 +861,8 @@ public class BoardActivity extends BaseGameActivity{
     }
 
     private void allClickable(boolean clickable){
+        mUndoButton.setClickable(clickable);
+        mRedoButton.setClickable(clickable);
 
         for (SquareView squareView : squareViews) {
             squareView.getSquareHolder().setClickable(clickable);
@@ -728,12 +874,17 @@ public class BoardActivity extends BaseGameActivity{
         keyboardDownButton.setClickable(clickable);
         notepadIcon.setClickable(clickable);
 
+
     }
 
     /************************************
      * Close keyboard animation
      *********************************/
     private void closeKeyboard() {
+        if(solvedState&&!solveClicked) {
+            mHintsLayout.setVisibility(GONE);
+            mEndGameLayout.setVisibility(View.VISIBLE);
+        }
         keyboardState=false;
         removeAllHighlights();
         LinearLayout mBottomLayout = (LinearLayout)findViewById(R.id.bottomLayout);
@@ -760,7 +911,7 @@ public class BoardActivity extends BaseGameActivity{
             keyboardState = true;
             LinearLayout mBottomLayout = (LinearLayout)findViewById(R.id.bottomLayout);
             RelativeLayout mKeypad = (RelativeLayout) findViewById(R.id.keypad);
-            mBottomLayout.setVisibility(View.GONE);
+
 
             mKeypad.setVisibility(View.VISIBLE);
             ObjectAnimator scalex = ObjectAnimator.ofFloat(mBottomLayout, "scaleY", 1, 0);
@@ -771,6 +922,7 @@ public class BoardActivity extends BaseGameActivity{
             AnimatorSet set2 = new AnimatorSet();
             set2.playSequentially(scalex, scaley);
             set2.start();
+            mBottomLayout.setVisibility(View.GONE);
 
 
 
@@ -907,12 +1059,12 @@ public class BoardActivity extends BaseGameActivity{
 
     @Override
     public void onSignInFailed() {
-
+        updateUI(false);
     }
 
     @Override
     public void onSignInSucceeded() {
-
+        updateUI(true);
     }
 
     @Override
