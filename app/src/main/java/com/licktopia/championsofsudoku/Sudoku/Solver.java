@@ -33,7 +33,7 @@ class Solver {
         solvingSteps = new LinkedList<Square>();
         int i = 0;
         curBoard.resetToStart();
-        updateAllNotepads();
+        updateAllNotepads(false);
 
         while(i < curBoard.totalBoardElements())
         {
@@ -79,19 +79,20 @@ class Solver {
     }
 
     //updates all squares' notepads so that only valid moves are true
-    private void updateAllNotepads()
+    private void updateAllNotepads(boolean removeOnly)
     {
         for(int i = 0; i < curBoard.totalBoardRows(); i++)
         {
             for(int j = 0; j < curBoard.totalBoardCols(); j++)
             {
-                updateNotepad(i, j);
+                updateNotepad(i, j, removeOnly);
             }
         }
     }
 
-    //updates notepad for square at row, col so that only valid moves are true
-    private void updateNotepad(int row, int col)
+    // updates notepad for square at row, col so that only valid moves are true
+    // if removeOnly is set, update will only remove notepad values, not add any
+    private void updateNotepad(int row, int col, boolean removeOnly)
     {
         if(!curBoard.isStartingValue(row, col))
         {
@@ -100,7 +101,7 @@ class Solver {
 
 
                 Set<Integer> testStk = curBoard.setValueAt(row, col, i);
-                if(testStk.isEmpty())
+                if(testStk.isEmpty() && !removeOnly)
                 {
                     curBoard.setNotepadAt(row, col, i, true);
 
