@@ -27,10 +27,10 @@ public class SquareView {
     private RelativeLayout selectedSquare;
     private ImageView number;
     private RelativeLayout color;
-    private ImageView art;
     private LinearLayout notepad;
     private ImageView[] notepadNums;
     private boolean colorMode;
+    private ImageView squareTexture;
 
 
     public RelativeLayout getSquareHolder() {
@@ -58,8 +58,8 @@ public class SquareView {
         selectedSquare = (RelativeLayout) v.findViewById(R.id.selected);
         number = (ImageView) v.findViewById(R.id.squareNumber);
         color = (RelativeLayout) v.findViewById(R.id.squareColor);
-        art = (ImageView) v.findViewById(R.id.squareArt);
         notepad = (LinearLayout) v.findViewById(R.id.squareNotepad);
+        squareTexture = (ImageView)v.findViewById(R.id.square_texture);
         notepadNums[0] = (ImageView) v.findViewById(R.id.squareNotepad1);
         notepadNums[1] = (ImageView) v.findViewById(R.id.squareNotepad2);
         notepadNums[2] = (ImageView) v.findViewById(R.id.squareNotepad3);
@@ -184,12 +184,22 @@ public class SquareView {
 
 
     /* Sets highlight state of current square */
-    public void setHighlighted(boolean highlighted) {
-        if (highlighted)
-            setHighlightColor(context.getColor(R.color.colorHighLight)); // Set to generic highlighted
-        else {
-            setHighlightColor(context.getColor(R.color.white)); // Remove highlight
-            selectedSquare.setBackground(null);
+    public void setHighlighted(boolean highlighted, boolean numberMode) {
+        if(numberMode) {
+            if (highlighted)
+                setHighlightColor(context.getColor(R.color.colorHighLight)); // Set to generic highlighted
+            else {
+                setHighlightColor(context.getColor(R.color.white)); // Remove highlight
+                selectedSquare.setBackground(null);
+            }
+        }
+        else{
+            if (highlighted)
+                squareTexture.setVisibility(View.VISIBLE); // Set to generic highlighted
+            else {
+                squareTexture.setVisibility(View.GONE); // Remove highlight
+                selectedSquare.setBackground(null);
+            }
         }
     }
 

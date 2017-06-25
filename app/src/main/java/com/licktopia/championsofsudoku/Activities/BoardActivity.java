@@ -587,7 +587,12 @@ public class BoardActivity extends BaseGameActivity{
      *********************************/
     private void removeAllHighlights() {
         for (int i = 0; i < squareViews.length; i++) {
-            squareViews[i].setHighlighted(false);
+            if(!colorGame) {
+                squareViews[i].setHighlighted(false, true);
+            }
+            else{
+                squareViews[i].setHighlighted(false, false);
+            }
             squareViews[i].setFullAlpha();
         }
     }
@@ -618,9 +623,20 @@ public class BoardActivity extends BaseGameActivity{
                 }
             }
             else if (iRow == row || iCol == col || iCluster == cluster)
-                squareViews[i].setHighlighted(true); // Set true if current square is connected to selected
-            else
-                squareViews[i].setHighlighted(false);
+                if(!colorGame) {
+                    squareViews[i].setHighlighted(true, true); // Set true if current square is connected to selected
+                }
+                else{
+                    squareViews[i].setHighlighted(true, false); // Set true if current square is connected to selected
+                }
+            else {
+                if(!colorGame) {
+                    squareViews[i].setHighlighted(false, true);
+                }
+                else{
+                    squareViews[i].setHighlighted(false, false);
+                }
+            }
         }
     }
 
@@ -661,9 +677,9 @@ public class BoardActivity extends BaseGameActivity{
             //Set highlights
             squareViews[squareNumber].setSelectedHighlight();
             if(rowColHighlights)
-                if(!colorGame) {
-                    highlightConnected();
-                }
+                highlightConnected();
+
+
 
             // Bold similar numbers
             if (mGame.getBoardValueAt(selectedSquare) != 0) {
@@ -782,13 +798,9 @@ public class BoardActivity extends BaseGameActivity{
         Handler solutionHandler = new Handler();
 
         // Get solution steps
-        Queue<Square> steps = mGame.getSolutionSteps();
-        final ArrayList<Square>newSteps = new ArrayList<>();
 
-        while(!steps.isEmpty()){
-            newSteps.add(steps.poll());
+        final ArrayList<Square> newSteps = new ArrayList(mGame.getSolutionSteps());
 
-        }
         double regression = 1340100 * Math.pow(.88316, 81-mGame.getNumberOpenSquares());
         int speedControl = (int) regression;
         int speed = speedControl /newSteps.size();
