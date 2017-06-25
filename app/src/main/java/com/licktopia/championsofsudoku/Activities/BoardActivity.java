@@ -770,7 +770,7 @@ public class BoardActivity extends BaseGameActivity{
         }
         updateScore();
         updateUndoRedoButtons();
-        if(mGame.isGameFinish()){
+        if(mGame.isGameFinished()){
             endOfGame(false);
         }
 

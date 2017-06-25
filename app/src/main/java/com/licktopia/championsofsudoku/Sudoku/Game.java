@@ -182,10 +182,22 @@ public class Game
     //gets the total score for the game
     public long getScore()
     {
-        return getLevelBonus() +
-                totalOneTimeGuesses() * getOneTimeGuessSquareBonus() -
-                (long)(getTimePenalty() * (double)getRunningTime()) -
-                (long)(getIncorrectGuessesPenalty() * (double)totalIncorrectGuesses());
+        if(!isGameFinished)
+        {
+            return getLevelBonus() +
+                    getTotalOneTimeGuesses() * getOneTimeGuessSquareBonus() -
+                    (getTimePenalty() * totalPenaltyTimeIntervals()) -
+                    (long)(getIncorrectGuessesPenalty() * (double)totalIncorrectGuesses());
+        }
+        else
+        {
+            return getLevelBonus() +
+                    getTotalOneTimeGuesses() * getOneTimeGuessSquareBonus() -
+                    (getTimePenalty() * totalPenaltyTimeIntervals()) -
+                    (long)(getIncorrectGuessesPenalty() * (double)totalIncorrectGuesses()) +
+                    getEarlyFinishBonus() * (getEarlyFinishTime() - getRunningTime());
+        }
+
     }
 
     private long getLevelBonus()
@@ -193,7 +205,7 @@ public class Game
         return scoreWeights.getBasePoints();
     }
 
-    private long totalOneTimeGuesses()
+    public long getTotalOneTimeGuesses()
     {
         long totalOneTimeGuesses = 0;
         for(int i = 0; i < curBoard.totalBoardElements(); i++)
@@ -209,28 +221,49 @@ public class Game
     }
 
 
-    private long getOneTimeGuessSquareBonus()
+    public long getOneTimeGuessSquareBonus()
     {
         return scoreWeights.getOneTimeGuessBonus();
     }
 
     //in points per seconds
-    private double getTimePenalty()
+    public long getTimePenalty() { return scoreWeights.getRunningTimePenalty(); }
+
+    //in points per seconds
+    public double getIncorrectGuessesPenalty()
     {
-        return scoreWeights.getRunningTimePenalty();
+        return scoreWeights.getIncorrectGuessPenalty();
     }
 
-    private long totalIncorrectGuesses()
+    public long getRunningTimeRemovalInterval() {return scoreWeights.getRunningTimeRemovalInterval();}
+
+    // Ensures that points are only removed when running time hit an interval set by
+    // getRunningTimeRemovalInterval
+    // Example: getRunningTimeRemovalInterval = 25 secs and getTimePenalty = 10 pts/secs
+    // At 25 secs total penalty is 10 pts and this function would return 1 intervals
+    // At 49 secs total penalty is 10 pts and this function would return 1 intervals
+    // At 50 secs total penalty is 20 pts and this function would return 2 intervals
+    public long totalPenaltyTimeIntervals()
+    {
+        long test = getRunningTime() / getRunningTimeRemovalInterval();
+
+        return getRunningTime() / getRunningTimeRemovalInterval();
+    }
+
+    public long totalIncorrectGuesses()
     {
         return curBoard.totalIncorrectGuesses();
     }
 
-
-    //in points per seconds
-    private double getIncorrectGuessesPenalty()
-    {
-        return scoreWeights.getIncorrectGuessPenalty();
+    public double getAccuracy() {
+        return (double)(curBoard.getStartingOpenSquares() - curBoard.totalIncorrectGuesses())
+                / (double)curBoard.getStartingOpenSquares();
     }
+
+    public long getEarlyFinishBonus() {return  scoreWeights.getEarlyFinishBonus();}
+
+    public long getEarlyFinishTime() {return  scoreWeights.getEarlyFinishTime();}
+
     //stores solution to game
     private Solver solutionSolver;
 
@@ -253,12 +286,24 @@ public class Game
     //returns the column/row size of a cluster
     public  int getClusterSize() {return curBoard.getClusterSize(); }
 
+    private boolean isGameFinished = false;
     //true if the board is complete
-    public boolean isGameFinish() {return curBoard.isBoardFull();}
+    public boolean isGameFinished()
+    {
+        if(curBoard.isBoardFull())
+        {
+            isGameFinished = true;
+        }
+        else
+        {
+            isGameFinished = false;
+        }
+        return isGameFinished;
+    }
 
     public void resetGame()
     {
-
+        curBoard.resetToStart();
     }
     public int getNumberOpenSquares(){
         int val = 0;

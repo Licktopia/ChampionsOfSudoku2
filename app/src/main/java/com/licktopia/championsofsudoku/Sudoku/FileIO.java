@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
+
 import android.content.Context;
 
 /**
@@ -58,9 +60,14 @@ class FileIO {
         //stores which column the level's score weight are
         int levelCol = -1;
         long basePoints = -1,
-                oneTimeGuessBonus = -1;
-        double runningTimePenalty = -1,
-                incorrectGuessPenalty = -1;
+                oneTimeGuessBonus = -1,
+                runningTimePenalty = -1,
+                //Time, in seconds, interval when time is penalty removes points
+                runningTimeRemovalInterval = -1,
+                earlyFinishBonus = -1,
+                //The user gets a bonus if they finished before this time, in seconds
+                earlyFinishTime = -1;
+        double incorrectGuessPenalty = -1;
 
 
         try {
@@ -102,11 +109,23 @@ class FileIO {
 
                     line = reader.readLine();
                     lineArr = line.split(cvsSplitBy);
-                    runningTimePenalty = Double.valueOf(lineArr[levelCol]);
+                    runningTimePenalty = Long.valueOf(lineArr[levelCol]);
+
+                    line = reader.readLine();
+                    lineArr = line.split(cvsSplitBy);
+                    runningTimeRemovalInterval = Long.valueOf(lineArr[levelCol]);
 
                     line = reader.readLine();
                     lineArr = line.split(cvsSplitBy);
                     incorrectGuessPenalty = Double.valueOf(lineArr[levelCol]);
+
+                    line = reader.readLine();
+                    lineArr = line.split(cvsSplitBy);
+                    earlyFinishBonus = Long.valueOf(lineArr[levelCol]);
+
+                    line = reader.readLine();
+                    lineArr = line.split(cvsSplitBy);
+                    earlyFinishTime = TimeUnit.MINUTES.toSeconds(Long.valueOf(lineArr[levelCol]));
                 }
             }
 
@@ -116,7 +135,13 @@ class FileIO {
             System.out.printf("Failed to open %s\n", filename);
             e.printStackTrace();
         }
-        return new ScoreWeights(basePoints, oneTimeGuessBonus, runningTimePenalty, incorrectGuessPenalty);
+        return new ScoreWeights(basePoints,
+                oneTimeGuessBonus,
+                runningTimePenalty,
+                runningTimeRemovalInterval,
+                incorrectGuessPenalty,
+                earlyFinishBonus,
+                earlyFinishTime);
 
     }
 }

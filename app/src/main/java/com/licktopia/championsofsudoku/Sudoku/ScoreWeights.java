@@ -6,18 +6,39 @@ package com.licktopia.championsofsudoku.Sudoku;
 
 class ScoreWeights {
     private long basePoints = -1,
-    oneTimeGuessBonus = -1;
-    private double runningTimePenalty = -1,
-    incorrectGuessPenalty = -1;
+            oneTimeGuessBonus = -1,
+            runningTimePenalty = -1,
+    //Time, in seconds, interval when time is penalty removes points
+            runningTimeRemovalInterval = -1,
+            earlyFinishBonus = -1,
+    //The user gets a bonus if they finished before this time, in seconds
+            earlyFinishTime = -1;
+    private double incorrectGuessPenalty = -1;
 
+    //all time must be in seconds
     protected ScoreWeights(long basePoints,
                            long oneTimeGuessBonus,
-                           double runningTimePenalty,
-                           double incorrectGuessPenalty)
+                           long runningTimePenalty,
+                           long runningTimeRemovalInterval,
+                           double incorrectGuessPenalty,
+                           long earlyFinishBonus,
+                           long earlyFinishTime)
     {
         this.basePoints = basePoints;
         this.oneTimeGuessBonus = oneTimeGuessBonus;
         this.runningTimePenalty = runningTimePenalty;
+
+        if(runningTimeRemovalInterval < 1)
+        {
+            this.runningTimeRemovalInterval = 1;
+        }
+        else
+        {
+            this.runningTimeRemovalInterval = runningTimeRemovalInterval;
+        }
+
+        this.earlyFinishBonus = earlyFinishBonus;
+        this.earlyFinishTime = earlyFinishTime;
         this.incorrectGuessPenalty = incorrectGuessPenalty;
     }
 
@@ -29,9 +50,15 @@ class ScoreWeights {
         return oneTimeGuessBonus;
     }
 
-    protected double getRunningTimePenalty() {
+    protected long getRunningTimePenalty() {
         return runningTimePenalty;
     }
+
+    protected long getRunningTimeRemovalInterval() {return runningTimeRemovalInterval;}
+
+    protected long getEarlyFinishBonus() {return  earlyFinishBonus;}
+
+    protected long getEarlyFinishTime() {return  earlyFinishTime;}
 
     protected double getIncorrectGuessPenalty() {
         return incorrectGuessPenalty;
