@@ -1,5 +1,6 @@
 package com.licktopia.championsofsudoku.Activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 
@@ -14,6 +15,7 @@ import android.widget.Toast;
 import com.google.android.gms.games.Games;
 import com.google.example.games.basegameutils.BaseGameActivity;
 import com.google.example.games.basegameutils.GameHelper;
+import com.licktopia.championsofsudoku.PlaySounds;
 import com.licktopia.championsofsudoku.R;
 import com.licktopia.championsofsudoku.SudokuFacts;
 
@@ -21,6 +23,7 @@ public class GamerProfileActivity extends BaseGameActivity {
 
     private SudokuFacts sudokuFacts;
     private GameHelper gameHelper;
+    PlaySounds mPlaySounds;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +34,8 @@ public class GamerProfileActivity extends BaseGameActivity {
         //TODO Remove this for production
         gameHelper.enableDebugLog(true);
         gameHelper.setup(this);
+        initializeSignOut();
+
 
 
 
@@ -39,6 +44,24 @@ public class GamerProfileActivity extends BaseGameActivity {
         listeners();
     }
 
+    private void initializeSignOut() {
+        mPlaySounds = new PlaySounds();
+        Button mSignOut = (Button)findViewById(R.id.sign_out_new);
+        mSignOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                gameHelper.signOut();
+                playDisconnect();
+                Intent intent = new Intent(GamerProfileActivity.this, MainMenuActivity.class);
+                startActivity(intent);
+
+            }
+        });
+    }
+
+    private void playDisconnect() {
+        mPlaySounds.playSounds(this, 8);
+    }
     private void listeners() {
         Button mLeaderButton = (Button)findViewById(R.id.leader);
         mLeaderButton.setOnClickListener(new View.OnClickListener() {

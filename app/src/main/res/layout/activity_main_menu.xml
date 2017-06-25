@@ -69,11 +69,6 @@
                 android:layout_weight="15"
                 android:orientation="vertical">
 
-                <Button
-                    android:id="@+id/resume"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Resume  Game" />
             </LinearLayout>
 
         </LinearLayout>
@@ -576,15 +571,51 @@
             android:layout_height="0dp"
             android:layout_above="@+id/share_bar"
             android:layout_marginBottom="20dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:layout_marginTop="30dp"
             android:layout_weight="17"
             android:orientation="horizontal"
-            android:weightSum="2">
+            android:weightSum="3">
+
+            <LinearLayout
+                android:id="@+id/resume"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:padding="5dp"
+                android:weightSum="100">
+
+                <ImageView
+                    android:id="@+id/imageView7"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginTop="5dp"
+                    android:layout_weight="70"
+                    android:alpha="1"
+                    android:scaleType="fitCenter"
+                    android:scaleX=".9"
+                    android:scaleY=".9"
+                    app:srcCompat="@drawable/star" />
+
+                <TextView
+                    android:id="@+id/textView50"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="30"
+                    android:gravity="top|center_horizontal"
+                    android:text="Resume"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"
+                android:layout_marginBottom="5dp"
                 android:layout_weight="1">
 
                 <LinearLayout
@@ -661,19 +692,35 @@
 
             </RelativeLayout>
 
-            <ImageView
+            <LinearLayout
                 android:id="@+id/lick"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_gravity="center_vertical"
-                android:layout_marginTop="5dp"
                 android:layout_weight="1"
-                android:alpha="1"
-                android:scaleType="fitCenter"
-                android:scaleX=".85"
-                android:scaleY=".85"
-                android:src="@drawable/licktopia_centered"
-                app:srcCompat="@drawable/licktopia_centered" />
+                android:orientation="vertical"
+                android:padding="5dp"
+                android:weightSum="100">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginTop="5dp"
+                    android:layout_weight="70"
+                    android:alpha="1"
+                    android:scaleType="fitCenter"
+                    android:scaleX=".9"
+                    android:scaleY=".9"
+                    app:srcCompat="@drawable/licktop" />
+
+                <ImageView
+                    android:id="@+id/imageView8"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="30"
+                    app:srcCompat="@drawable/lickbotton" />
+            </LinearLayout>
+
         </LinearLayout>
 
         <RelativeLayout

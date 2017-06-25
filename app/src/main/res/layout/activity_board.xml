@@ -1721,6 +1721,7 @@
             android:layout_weight="20"
             android:background="@android:color/transparent"
             android:orientation="horizontal"
+            android:scaleY="0"
             android:visibility="gone"
             android:weightSum="2"
             tools:visibility="gone">

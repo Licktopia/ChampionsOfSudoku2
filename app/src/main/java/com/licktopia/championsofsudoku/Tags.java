@@ -21,5 +21,23 @@ public class Tags {
     public static int[] colors = {R.color.color1, R.color.color2,R.color.color3,R.color.color4,R.color.color5,R.color.color6,R.color.color7,R.color.color8,R.color.color9};
     public static int[] leaderboards = {R.string.leaderboard_fastest_time_beginner,R.string.leaderboard_fastest_time_easy,R.string.leaderboard_fastest_time_medium,R.string.leaderboard_fastest_time_hard,R.string.leaderboard_fastest_time_expert,R.string.leaderboard_fastest_time_master,R.string.leaderboard_most_total_xp,R.string.leaderboard_highest_single_game_score};
     public static int[] achievements = {R.string.achievement_joy_giver, R.string.achievement_up_and_comer,R.string.achievement_sharp_shooter,R.string.achievement_speed_demon,R.string.achievement_big_time_scorer,R.string.achievement_up_and_comer_ii,R.string.achievement_sharp_shooter_ii,R.string.achievement_speed_demon_ii,R.string.achievement_big_time_scorer_ii,R.string.achievement_up_and_comer_iii,R.string.achievement_sharp_shooter_iii,R.string.achievement_speed_demon_iii,R.string.achievement_big_time_scorer_iii,R.string.achievement_braggart};
-
+    public static String[] postScoreImagesColor = {
+            "http://i.imgur.com/GvL6Foi.jpg","http://i.imgur.com/0DfTUBd.jpg","http://i.imgur.com/1VNzDEQ.jpg",
+            "http://i.imgur.com/afTJu49.jpg","http://i.imgur.com/qs0HxtQ.jpg","http://i.imgur.com/4vQjaij.jpg",
+            "http://i.imgur.com/o5GnoxB.jpg","http://i.imgur.com/lyl11zC.jpg","http://i.imgur.com/Qv9DyTl.jpg",
+            "http://i.imgur.com/DljF10l.jpg","http://i.imgur.com/ZATf42I.jpg","http://i.imgur.com/8pcTvYn.jpg",
+            "http://i.imgur.com/zHbnFX6.jpg","http://i.imgur.com/WO5wMLX.jpg","http://i.imgur.com/z5mlMxU.jpg",
+            "http://i.imgur.com/TmgGzvA.jpg","http://i.imgur.com/EJYqW4Z.jpg","http://i.imgur.com/uFrcsIi.jpg",
+            "http://i.imgur.com/WkDNOgT.jpg","http://i.imgur.com/LGtrx0S.jpg","http://i.imgur.com/fKiLkaO.jpg",
+            "http://i.imgur.com/qXxMm6e.jpg","http://i.imgur.com/wb5AkHS.jpg","http://i.imgur.com/sV9n3fI.jpg",
+            "http://i.imgur.com/yqO6Rwl.jpg","http://i.imgur.com/rmjQ2N2.jpg","http://i.imgur.com/SHf0mcN.jpg",
+            "http://i.imgur.com/ZYOa6hO.jpg","http://i.imgur.com/5PQ1XoX.jpg","http://i.imgur.com/HF0luCQ.jpg",
+            "http://i.imgur.com/bthja1M.jpg","http://i.imgur.com/aW3rwYk.jpg","http://i.imgur.com/VoIPTde.jpg",
+            "http://i.imgur.com/KF12LJ8.jpg","http://i.imgur.com/yYl0dU1.jpg","http://i.imgur.com/gb2Pmw5.jpg",
+            "http://i.imgur.com/s84afrN.jpg","http://i.imgur.com/thszQiI.jpg","http://i.imgur.com/rZMZIZ8.jpg",
+            "http://i.imgur.com/YQ2EdqB.jpg","http://i.imgur.com/kClOmw6.jpg","http://i.imgur.com/YYYdqo8.jpg",
+            "http://i.imgur.com/1j8zt18.jpg","http://i.imgur.com/U9Df3Z4.jpg","http://i.imgur.com/SXbUhrx.jpg",
+            "http://i.imgur.com/IdZ4x5U.jpg","http://i.imgur.com/otKttxi.jpg","http://i.imgur.com/XWi2uPy.jpg",
+            "http://i.imgur.com/Wh1eRM5.jpg","http://i.imgur.com/M2exdKg.jpg","http://i.imgur.com/4V6iT7q.jpg",
+            "http://i.imgur.com/Da0d3A6.jpg"};
 }

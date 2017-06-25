@@ -31,8 +31,7 @@ android:fitsSystemWindows="false">
             android:id="@+id/rel"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginBottom="5dp"
-            android:layout_weight="50"
+            android:layout_weight="43"
             android:background="#add100"
             android:paddingBottom="5dp">
 
@@ -91,10 +90,46 @@ android:fitsSystemWindows="false">
         </RelativeLayout>
 
         <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="7"
+            android:orientation="horizontal"
+            android:weightSum="100">
+
+            <Button
+                android:id="@+id/sign_out_new"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentBottom="false"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:layout_weight="50"
+                android:lines="2"
+                android:maxLines="2"
+                android:text="Sign Out"
+                android:textColor="@android:color/black"
+                android:textSize="12sp" />
+
+            <Button
+                android:id="@+id/history_button"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentBottom="false"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:layout_weight="50"
+                android:lines="2"
+                android:maxLines="2"
+                android:text="Game History"
+                android:textColor="@android:color/black"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/ll"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="50"
+            android:layout_weight="43"
             android:orientation="vertical">
 
             <LinearLayout
@@ -149,59 +184,44 @@ android:fitsSystemWindows="false">
 
                 </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="20"
-                    android:orientation="horizontal"
-                    android:weightSum="100">
-
-                    <Button
-                        android:id="@+id/go_history"
-                        style="@style/Widget.AppCompat.Button.Borderless"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_alignParentBottom="false"
-                        android:layout_gravity="center_vertical|center_horizontal"
-                        android:layout_margin="5dp"
-                        android:layout_weight="33"
-                        android:lineSpacingMultiplier=".8"
-                        android:lines="2"
-                        android:maxLines="2"
-                        android:text="History"
-                        android:textColor="@android:color/black"
-                        android:textSize="10sp" />
-
-                    <Button
-                        android:id="@+id/leader"
-                        style="@style/Widget.AppCompat.Button.Borderless"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_alignParentBottom="false"
-                        android:layout_gravity="center_vertical|center_horizontal"
-                        android:layout_weight="33"
-                        android:lines="2"
-                        android:maxLines="2"
-                        android:text="Leader Boards"
-                        android:textColor="@android:color/black"
-                        android:textSize="10sp" />
-
-                    <Button
-                        android:id="@+id/achievements"
-                        style="@style/Widget.AppCompat.Button.Borderless"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_alignParentBottom="false"
-                        android:layout_gravity="center_vertical|center_horizontal"
-                        android:layout_weight="33"
-                        android:lines="2"
-                        android:maxLines="2"
-                        android:text="Achievements"
-                        android:textColor="@android:color/black"
-                        android:textSize="9sp" />
-
-                </LinearLayout>
             </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="7"
+            android:orientation="horizontal"
+            android:weightSum="100">
+
+            <Button
+                android:id="@+id/leader"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentBottom="false"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:layout_weight="50"
+                android:lines="2"
+                android:maxLines="2"
+                android:text="Leader Boards"
+                android:textColor="@android:color/black"
+                android:textSize="12sp" />
+
+            <Button
+                android:id="@+id/achievements"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentBottom="false"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:layout_weight="50"
+                android:lines="2"
+                android:maxLines="2"
+                android:text="Achievements"
+                android:textColor="@android:color/black"
+                android:textSize="12sp" />
 
         </LinearLayout>
 
