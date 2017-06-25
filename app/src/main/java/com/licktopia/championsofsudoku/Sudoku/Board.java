@@ -348,6 +348,43 @@ class Board {
         return CLUSTER_SIZE;
     }
 
+    // Returns number of values set to true in notepad
+    protected int getTotalNotepadValues(int row, int col) {
+        int total = 0;
+        for (int i = 0; i < SIZE; i++) {
+            if (getNotepadAt(row, col, i)) total++;
+        }
+        return total;
+    }
+
+    // Returns number of values set to true in notepad
+    protected int getTotalNotepadValues(int idx) {
+        return getTotalNotepadValues(idxToRow(idx), idxToCol(idx));
+    }
+
+    // Compare notepad of one square to another
+    protected boolean hasSameNotepad(int idx1, int idx2) {
+        for (int i = 0; i < SIZE; i++) {
+            if (getNotepadAt(idx1, i) != getNotepadAt(idx2, i))
+                return false;
+        }
+
+        return true;
+    }
+
+    // Returns if two indices are in the same row
+    protected boolean isSameRow(int idx1, int idx2) { return idxToRow(idx1) == idxToRow(idx2); }
+
+    // Returns if two indices are in the same column
+    protected boolean isSameCol(int idx1, int idx2) { return idxToCol(idx1) == idxToCol(idx2); }
+
+    // Returns if two indices are in the same cluster
+    protected boolean isSameCluster(int idx1, int idx2) {
+        int cluster1 = ((idxToRow(idx1) / CLUSTER_SIZE) * CLUSTER_SIZE) + (idxToCol(idx1) / CLUSTER_SIZE);
+        int cluster2 = ((idxToRow(idx2) / CLUSTER_SIZE) * CLUSTER_SIZE) + (idxToCol(idx2) / CLUSTER_SIZE);
+        return cluster1 == cluster2;
+    }
+
     //returns the number of open squares in board
     protected  int getOpenSquares() { return openSquares; }
 
