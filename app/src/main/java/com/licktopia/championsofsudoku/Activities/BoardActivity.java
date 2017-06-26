@@ -220,10 +220,8 @@ public class BoardActivity extends BaseGameActivity{
                 handleAchievements(gameXP);
                 setStatsBox(gameXP);
                 mStatsBox.setVisibility(View.VISIBLE);
-            }
-            if(!solveClicked){
-                    closeKeyboard();
-            }
+                closeKeyboard();
+           }
 
             mCloseStats.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -340,9 +338,9 @@ public class BoardActivity extends BaseGameActivity{
         mTotalXpStats.setText(String.format("%,d",(int) gameXP)+ " XP");
         mRpStats.setText("Multiplier: " + String.format("%,d",(int) mGame.getScore())+" x " + String.format("%2.1f",Gamer.MULTIPLIER[Gamer.getLevel()]));
         mLevelBonusStats.setText("Level Bonus: " + String.format("%,d",(int) mGame.getLevelBonus()));
-        mTimeBonusStats.setText("Time Bonus: " + String.format("%,",(int) mGame.getEarlyFinishBonus()));
-        mGoodSquaresStats.setText("Square Points" + String.format("%,d",(int) mGame.getOneTimeGuessSquareBonus()));
-        mAccuracyStats.setText("Accuracy: " + String.format("%3.1f",mGame.getAccuracy()*100));
+        mTimeBonusStats.setText("Time Bonus: " + String.format("%,d",(int) mGame.getEarlyFinishBonus()));
+        mGoodSquaresStats.setText("Square Points: " + String.format("%,d",(int) mGame.getOneTimeGuessSquareBonus()));
+        mAccuracyStats.setText("Accuracy: " + String.format("%,d",(int)Math.round(mGame.getAccuracy()*100),2)+"%");
         mPenalty.setText("Penalty: " + String.format("%,d",(int) mGame.getTimePenalty()));
 
 
@@ -946,8 +944,8 @@ public class BoardActivity extends BaseGameActivity{
         }
         updateScore();
         updateUndoRedoButtons();
-        if(mGame.isGameFinished()){
-            endOfGame(false);
+        if(mGame.isGameFinished()&&!solveClicked){
+                endOfGame(false);
         }
 
     }
