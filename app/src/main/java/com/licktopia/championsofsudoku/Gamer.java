@@ -113,6 +113,7 @@ public class Gamer {
         Gamer.username = null;
         Gamer.id = null;
         Gamer.xp = 0;
+        Gamer.level = 0;
     }
 
 }

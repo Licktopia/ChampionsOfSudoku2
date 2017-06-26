@@ -197,7 +197,11 @@ public class MainMenuActivity  extends BaseGameActivity{
             mSignInButton.setVisibility(View.GONE);
             mBadge.setVisibility(View.VISIBLE);
             loadPlayer();
-            getHighestScoreFromLeaderBoard();
+            gameHelper.getApiClient().connect();
+            if(gameHelper.getApiClient().isConnected()) {
+                getHighestScoreFromLeaderBoard();
+                Toast.makeText(this, R.string.getting_profile_info, Toast.LENGTH_SHORT).show();
+            }
         }
         else{
             Gamer.setNullUser();

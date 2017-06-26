@@ -70,4 +70,5 @@
     <string name="scoretime_submitted">Score and time submitted to leaderboards.</string>
     <string name="nolonger_loggedin">You are no longer logged in</string>
     <string name="me">Me</string>
+    <string name="getting_profile_info">Getting profile information</string>
 </resources>
