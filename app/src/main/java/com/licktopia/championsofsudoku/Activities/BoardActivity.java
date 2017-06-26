@@ -40,11 +40,13 @@ import com.google.android.gms.games.Games;
 
 import com.google.android.gms.games.Player;
 import com.google.android.gms.games.snapshot.Snapshot;
+import com.google.android.gms.games.snapshot.SnapshotMetadata;
 import com.google.android.gms.games.snapshot.SnapshotMetadataChange;
 import com.google.android.gms.games.snapshot.Snapshots;
 import com.google.example.games.basegameutils.BaseGameActivity;
 import com.google.example.games.basegameutils.GameHelper;
 import com.licktopia.championsofsudoku.BackgroundImages;
+import com.licktopia.championsofsudoku.Gamer;
 import com.licktopia.championsofsudoku.PlaySounds;
 import com.licktopia.championsofsudoku.R;
 import com.licktopia.championsofsudoku.Settings.SudokuSettings;
@@ -54,8 +56,12 @@ import com.licktopia.championsofsudoku.Sudoku.Game;
 import com.licktopia.championsofsudoku.Sudoku.Square;
 import com.licktopia.championsofsudoku.Tags;
 
+import org.w3c.dom.Text;
+
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Queue;
+import java.util.Random;
 import java.util.Set;
 
 import static android.graphics.Color.WHITE;
@@ -64,6 +70,7 @@ import static android.view.View.GONE;
 public class BoardActivity extends BaseGameActivity{
 
     private static final float UNDOREDOALPHA = .45f;
+    private String mCurrentSaveName = "snapshotTemp";
     private PlaySounds mPlaySounds;
     private Chronometer mChronometer;
     private SudokuSettings settings;
@@ -94,8 +101,11 @@ public class BoardActivity extends BaseGameActivity{
     private GameHelper gameHelper;
     private LinearLayout mHintsLayout;
     private LinearLayout mEndGameLayout;
+    private ImageView userBadge;
+    private TextView userText;
     private String gamerName;
     private String gamerID;
+    private int level;
     ShareDialog shareDialog;
     CallbackManager callbackManager;
 
@@ -105,7 +115,7 @@ public class BoardActivity extends BaseGameActivity{
         setContentView(R.layout.activity_board);
         //pass in mode and level
         colorGame = getIntent().getExtras().getBoolean("COLOR_MODE");
-        int level = getIntent().getExtras().getInt("LEVEL");
+        level = getIntent().getExtras().getInt("LEVEL");
         //initialize actiion bar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         this.setSupportActionBar(toolbar);
@@ -126,6 +136,8 @@ public class BoardActivity extends BaseGameActivity{
         scoreBoard = (TextView)findViewById(R.id.score);
         mHintsLayout = (LinearLayout)findViewById(R.id.hints_layout);
         mEndGameLayout = (LinearLayout)findViewById(R.id.end_game_layout);
+        userBadge = (ImageView)findViewById(R.id.user_image);
+        userText = (TextView)findViewById(R.id.user_text);
         highlightHandler = new Handler();
 
 
@@ -158,7 +170,8 @@ public class BoardActivity extends BaseGameActivity{
             loadPlayer();
         }
         else{
-
+            userBadge.setImageDrawable(getResources().getDrawable(Gamer.BADGETAGS[0]));
+            userText.setText(R.string.me);
         }
     }
 
@@ -166,6 +179,8 @@ public class BoardActivity extends BaseGameActivity{
         if(gameHelper.getApiClient().isConnected()) {
             gamerName = Games.Players.getCurrentPlayer(gameHelper.getApiClient()).getDisplayName();
             gamerID = Games.Players.getCurrentPlayer(gameHelper.getApiClient()).getPlayerId();
+            userBadge.setImageDrawable(getResources().getDrawable(Gamer.BADGETAGS[Gamer.getLevel()]));
+            userText.setText(Gamer.getUsername());
 
         }
     }
@@ -197,23 +212,43 @@ public class BoardActivity extends BaseGameActivity{
             final ImageButton mCloseLevelUp = (ImageButton) findViewById(R.id.close_levelup);
             ImageButton mCloseStats = (ImageButton) findViewById(R.id.close_stats);
             int sound;
-
+            updateScore();
+            long gameXP = (long) (mGame.getScore()* Gamer.MULTIPLIER[Gamer.getLevel()]);
+            boolean levelUp = Gamer.addExperience(gameXP);
+            if(!solveClicked) {
+                sendToLeaderBoard();
+                handleAchievements(gameXP);
+                setStatsBox(gameXP);
+                mStatsBox.setVisibility(View.VISIBLE);
+            }
             if(!solveClicked){
                     closeKeyboard();
             }
-            mStatsBox.setVisibility(View.VISIBLE);
+
             mCloseStats.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     mStatsBox.setVisibility(GONE);
                 }
             });
-            boolean levelUp = false;
-            if(!levelUp){
+
+            if(!levelUp){//Not level up
                 sound = 3;
             }
-            else {
+            else {//Level Up
                 sound = 4;
+                ImageView levelUpBadge = (ImageView)findViewById(R.id.level_up_badge);
+                ImageButton shareLevelUp = (ImageButton) findViewById(R.id.share_levelup);
+                TextView newMultiplier = (TextView) findViewById(R.id.new_multiplier);
+                levelUpBadge.setImageDrawable(getResources().getDrawable(Gamer.BADGETAGS[Gamer.getLevel()]));
+                shareLevelUp.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        userBadge.setImageDrawable(getResources().getDrawable(Gamer.BADGETAGS[Gamer.getLevel()]));
+                        userText.setText(Gamer.getUsername());
+                    }
+                });
+                newMultiplier.setText("Multiplier " + String.format("%,d",Gamer.MULTIPLIER[Gamer.level])+"x");
                 mLevelUpBox.setVisibility(View.VISIBLE);
                 mCloseLevelUp.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -228,6 +263,87 @@ public class BoardActivity extends BaseGameActivity{
             }
 
         }
+
+    }
+    /************************************
+     * Send to leaderboard at end of game
+     *********************************/
+    private void sendToLeaderBoard(){
+        if(gameHelper.getApiClient().isConnected()) {
+            long score = mGame.getScore();
+            Games.Leaderboards.submitScore(gameHelper.getApiClient(), String.valueOf(R.string.leaderboard_highest_single_game_score), score);
+            Games.Leaderboards.submitScore(gameHelper.getApiClient(), String.valueOf(Tags.leaderboards[level]), mGame.getRunningTime() * 1000);
+            Games.Leaderboards.submitScore(gameHelper.getApiClient(), String.valueOf(R.string.leaderboard_most_total_xp), Gamer.getXp());
+            Toast.makeText(this, R.string.scoretime_submitted, Toast.LENGTH_SHORT).show();
+        }
+
+
+    }
+
+    /************************************
+     * Unlock achievements at end of game
+     *********************************/
+    private void handleAchievements(long gameXP){
+        if(gameHelper.getApiClient().isConnected()){
+            unlockAchievements(R.string.achievement_up_and_comer);
+            if(level>=2&&mGame.getAccuracy()>=1){
+                unlockAchievements(R.string.achievement_sharp_shooter);
+            }
+            if(level>=2&&mGame.getRunningTime()<12*60){
+                unlockAchievements(R.string.achievement_speed_demon);
+            }
+            if(gameXP>=10000){
+                unlockAchievements(R.string.achievement_big_time_scorer);
+            }
+            if(Gamer.getXp()>=100000){
+                unlockAchievements(R.string.achievement_up_and_comer_ii);
+            }
+            if(level>=3&&mGame.getAccuracy()>=1&&mGame.getRunningTime()<15*60){
+                unlockAchievements(R.string.achievement_sharp_shooter_ii);
+            }
+            if(level>=3&&mGame.getRunningTime()<10*60){
+                unlockAchievements(R.string.achievement_speed_demon_ii);
+            }
+            if(gameXP>=15000){
+                unlockAchievements(R.string.achievement_big_time_scorer_ii);
+            }
+            if(Gamer.getXp()>=1000000){
+                unlockAchievements(R.string.achievement_up_and_comer_iii);
+            }
+            if(level>=4&&mGame.getAccuracy()>=1&&mGame.getRunningTime()<10*60){
+                unlockAchievements(R.string.achievement_sharp_shooter_iii);
+            }
+            if(level>=5&&mGame.getRunningTime()<8*60){
+                unlockAchievements(R.string.achievement_speed_demon_iii);
+            }
+            if(gameXP>=20000){
+                unlockAchievements(R.string.achievement_big_time_scorer_iii);
+            }
+        }
+    }
+
+    /************************************
+     * Set stats box at end of game
+     *********************************/
+    private void setStatsBox(long gameXP){
+        TextView mTitleStats = (TextView)findViewById(R.id.title_stats);
+        TextView mTotalXpStats = (TextView)findViewById(R.id.totalxp_stats);
+        TextView mRpStats = (TextView)findViewById(R.id.regular_points);
+        TextView mLevelBonusStats = (TextView)findViewById(R.id.levelbonus_stats);
+        TextView mTimeBonusStats = (TextView)findViewById(R.id.timebonus_stats);
+        TextView mGoodSquaresStats = (TextView)findViewById(R.id.goodsquares_stats);
+        TextView mAccuracyStats = (TextView)findViewById(R.id.accurracy_stats);
+        TextView mPenalty = (TextView)findViewById(R.id.penalty_stats);
+        mTitleStats.setText(Gamer.getUsername());
+        mTotalXpStats.setText(String.format("%,d",(int) gameXP)+ " XP");
+        mRpStats.setText("Multiplier: " + String.format("%,d",(int) mGame.getScore())+" x " + String.format("%2.1f",Gamer.MULTIPLIER[Gamer.getLevel()]));
+        mLevelBonusStats.setText("Level Bonus: " + String.format("%,d",(int) mGame.getLevelBonus()));
+        mTimeBonusStats.setText("Time Bonus: " + String.format("%,",(int) mGame.getEarlyFinishBonus()));
+        mGoodSquaresStats.setText("Square Points" + String.format("%,d",(int) mGame.getOneTimeGuessSquareBonus()));
+        mAccuracyStats.setText("Accuracy: " + String.format("%3.1f",mGame.getAccuracy()*100));
+        mPenalty.setText("Penalty: " + String.format("%,d",(int) mGame.getTimePenalty()));
+
+
 
     }
     /************************************
@@ -316,8 +432,10 @@ public class BoardActivity extends BaseGameActivity{
         mPlaySounds.setMute(settings.getSoundPreference());
         if(animationFinished) {
             mChronometer.setBase(SystemClock.elapsedRealtime() + timeWhenStopped);
-            mChronometer.start();
-            mGame.unpauseTimer();
+            if(!solvedState) {
+                mChronometer.start();
+                mGame.unpauseTimer();
+            }
             mGame.getRunningTime();
         }
         super.onResume();
@@ -465,13 +583,18 @@ public class BoardActivity extends BaseGameActivity{
             @Override
             public void onClick(View v) {
 
-                ShareLinkContent content = new ShareLinkContent.Builder()
-                        .setContentUrl(Uri.parse(Tags.postScoreImagesColor[1]))
-                        .build();
-                shareDialog.show(content);
+                facebookShare();
             }
         });
     }
+
+    private void facebookShare() {
+        ShareLinkContent content = new ShareLinkContent.Builder()
+                .setContentUrl(Uri.parse(Tags.postScoreImagesColor[Gamer.getLevel()]))
+                .build();
+        shareDialog.show(content);
+    }
+
     /************************************
      * Listener for toolbar icon
      *********************************/
@@ -1103,11 +1226,28 @@ public class BoardActivity extends BaseGameActivity{
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
 
-        gameHelper.onActivityResult(requestCode, resultCode, data);
+        gameHelper.onActivityResult(requestCode, resultCode, intent);
+        if (intent != null) {
+            if (intent.hasExtra(Snapshots.EXTRA_SNAPSHOT_METADATA)) {
+                // Load a snapshot.
+                SnapshotMetadata snapshotMetadata = (SnapshotMetadata)
+                        intent.getParcelableExtra(Snapshots.EXTRA_SNAPSHOT_METADATA);
+                mCurrentSaveName = snapshotMetadata.getUniqueName();
 
+                // Load the game data from the Snapshot
+                // ...
+            } else if (intent.hasExtra(Snapshots.EXTRA_SNAPSHOT_NEW)) {
+                // Create a new snapshot named with a unique string
+                String unique = new BigInteger(281, new Random()).toString(13);
+                mCurrentSaveName = "snapshotTemp-" + unique;
+
+                // Create the new snapshot
+                // ...
+            }
+        }
     }
 
     private void unlockAchievements(int achievement){

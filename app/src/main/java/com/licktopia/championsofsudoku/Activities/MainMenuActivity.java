@@ -4,7 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -16,7 +18,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.games.Games;
+import com.google.android.gms.games.GamesStatusCodes;
+import com.google.android.gms.games.leaderboard.LeaderboardVariant;
+import com.google.android.gms.games.leaderboard.Leaderboards;
+import com.google.android.gms.games.snapshot.Snapshot;
 import com.google.android.gms.games.snapshot.SnapshotMetadata;
 import com.google.android.gms.games.snapshot.Snapshots;
 import com.google.example.games.basegameutils.BaseGameActivity;
@@ -24,19 +32,23 @@ import com.google.example.games.basegameutils.BaseGameActivity;
 
 
 import com.google.example.games.basegameutils.GameHelper;
+import com.licktopia.championsofsudoku.Gamer;
 import com.licktopia.championsofsudoku.PlaySounds;
 import com.licktopia.championsofsudoku.R;
 
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Random;
 
 public class MainMenuActivity  extends BaseGameActivity{
     private static final String PREF_FILE = "com.licktopia.championsofsudoku.preferences";
     private static final int RC_SAVED_GAMES = 9009;
+    private final static String TAG = "MainMenuActivity";
     private String mCurrentSaveName = "snapshotTemp";
 
     private int[] levelButtonTags = {R.id.beginnerButton,R.id.easyButton,R.id.mediumButton,R.id.hardButton,R.id.expertButton,R.id.masterButton};
     private int[] modeButtonTags = {R.id.topiaChoice,R.id.numberChoice};
+    private ImageView userBadge;
     private LinearLayout mLevelSelect;
     private LinearLayout mModeSelect;
     private LinearLayout mSignInButton;
@@ -52,6 +64,7 @@ public class MainMenuActivity  extends BaseGameActivity{
     private boolean userSignIn=false;
     private SharedPreferences.Editor ed;
     private GameHelper gameHelper;
+    private byte[] mSaveGameData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +77,7 @@ public class MainMenuActivity  extends BaseGameActivity{
         SharedPreferences mSharedPreferences = getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
         ed = mSharedPreferences.edit();
         ed.apply();
-
+        userBadge = (ImageView)findViewById(R.id.user_badge_level);
         gameHelper = new GameHelper(this, GameHelper.CLIENT_GAMES);
         //TODO Remove this for production
         gameHelper.enableDebugLog(true);
@@ -86,6 +99,43 @@ public class MainMenuActivity  extends BaseGameActivity{
                 showSavedGamesUI();
             }
         });
+    }
+
+    void loadFromSnapshot() {
+        // Display a progress dialog
+        // ...
+
+        AsyncTask<Void, Void, Integer> task = new AsyncTask<Void, Void, Integer>() {
+            @Override
+            protected Integer doInBackground(Void... params) {
+                // Open the saved game using its name.
+                Snapshots.OpenSnapshotResult result = Games.Snapshots.open(gameHelper.getApiClient(),
+                        mCurrentSaveName, true).await();
+
+                // Check the result of the open operation
+                if (result.getStatus().isSuccess()) {
+                    Snapshot snapshot = result.getSnapshot();
+                    // Read the byte content of the saved game.
+                    try {
+                        mSaveGameData = snapshot.getSnapshotContents().readFully();
+                    } catch (IOException e) {
+                        Log.e(TAG, "Error while reading Snapshot.", e);
+                    }
+                } else{
+                    Log.e(TAG, "Error while loading: " + result.getStatus().getStatusCode());
+                }
+
+                return result.getStatus().getStatusCode();
+            }
+
+            @Override
+            protected void onPostExecute(Integer status) {
+                // Dismiss progress dialog and reflect the changes in the UI.
+                // ...
+            }
+        };
+
+        task.execute();
     }
 
     /***************************************
@@ -130,11 +180,14 @@ public class MainMenuActivity  extends BaseGameActivity{
 
     private void loadPlayer(){
         if(gameHelper.getApiClient().isConnected()) {
-            String gamerName = Games.Players.getCurrentPlayer(gameHelper.getApiClient()).getDisplayName();
-            String gamerId = Games.Players.getCurrentPlayer(gameHelper.getApiClient()).getPlayerId();
-            mBadgeButtonInitialize(gamerName, gamerId);
+            Gamer.setUsername(Games.Players.getCurrentPlayer(gameHelper.getApiClient()).getDisplayName());
+            Gamer.setId(Games.Players.getCurrentPlayer(gameHelper.getApiClient()).getPlayerId());
+            mBadgeButtonInitialize(Gamer.getUsername(), Gamer.getId());
         }
     }
+    /***************************************
+    *Update UI when login or logout occurs
+    ***************************************/
     private void updateUI(boolean loggedIn){
         if(loggedIn){
             if(userSignIn) {
@@ -142,12 +195,12 @@ public class MainMenuActivity  extends BaseGameActivity{
                 userSignIn = false;
             }
             mSignInButton.setVisibility(View.GONE);
-            //mSignOutButton.setVisibility(View.VISIBLE);
             mBadge.setVisibility(View.VISIBLE);
             loadPlayer();
-            setMessage();
+            getHighestScoreFromLeaderBoard();
         }
         else{
+            Gamer.setNullUser();
             if(clickedOut) {
                 mPlaySounds.playSounds(this,8);
             }
@@ -155,9 +208,34 @@ public class MainMenuActivity  extends BaseGameActivity{
             mSignInButton.setVisibility(View.VISIBLE);
             mSignOutButton.setVisibility(View.INVISIBLE);
             mBadge.setVisibility(View.GONE);
-            setMessage();
+            userBadge.setImageDrawable(getResources().getDrawable(Gamer.BADGETAGS[Gamer.getLevel()]));
         }
+        setMessage();
+
     }
+
+    private void getHighestScoreFromLeaderBoard(){
+        PendingResult result = Games.Leaderboards.loadCurrentPlayerLeaderboardScore(gameHelper.getApiClient(),
+                String.valueOf(R.string.leaderboard_most_total_xp), LeaderboardVariant.TIME_SPAN_ALL_TIME,
+                LeaderboardVariant.COLLECTION_PUBLIC);
+
+        result.setResultCallback(new ResultCallback<Leaderboards.LoadPlayerScoreResult>() {
+            @Override
+            public void onResult(Leaderboards.LoadPlayerScoreResult result) {
+                // check if valid score
+                if (result != null
+                        && GamesStatusCodes.STATUS_OK == result.getStatus().getStatusCode()
+                        && result.getScore() != null) {
+                    long highestScore = result.getScore().getRawScore();
+                    Gamer.setXp(highestScore);
+                    userBadge.setImageDrawable(getResources().getDrawable(Gamer.BADGETAGS[Gamer.getLevel()]));
+                }
+
+            }
+
+        });
+    }
+
     // Call when the sign-in button is clicked
     private void signInClicked() {
         gameHelper.beginUserInitiatedSignIn();
@@ -281,7 +359,7 @@ public class MainMenuActivity  extends BaseGameActivity{
         if(gameHelper.getApiClient().isConnected()) {
             int maxNumberOfSavedGamesToShow = 5;
             Intent savedGamesIntent = Games.Snapshots.getSelectSnapshotIntent(gameHelper.getApiClient(),
-                    "See My Saves", true, true, maxNumberOfSavedGamesToShow);
+                    "See My Saves", false, true, maxNumberOfSavedGamesToShow);
             startActivityForResult(savedGamesIntent, RC_SAVED_GAMES);
         }
         else{

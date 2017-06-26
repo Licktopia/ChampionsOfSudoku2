@@ -664,7 +664,7 @@
                     tools:visibility="gone">
 
                     <ImageView
-                        android:id="@+id/user_stats"
+                        android:id="@+id/user_badge_level"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:layout_alignParentLeft="false"
