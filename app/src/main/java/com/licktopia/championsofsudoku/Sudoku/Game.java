@@ -200,7 +200,7 @@ public class Game
 
     }
 
-    private long getLevelBonus()
+    public long getLevelBonus()
     {
         return scoreWeights.getBasePoints();
     }

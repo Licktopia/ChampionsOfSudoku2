@@ -220,7 +220,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="10"
-            android:alpha=".35"
+            android:alpha=".3"
             android:scaleType="centerCrop"
             android:visibility="gone"
             app:srcCompat="@drawable/texture3"

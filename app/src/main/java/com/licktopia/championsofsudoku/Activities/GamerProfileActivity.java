@@ -9,21 +9,26 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.google.android.gms.games.Games;
 import com.google.example.games.basegameutils.BaseGameActivity;
 import com.google.example.games.basegameutils.GameHelper;
+import com.licktopia.championsofsudoku.Gamer;
 import com.licktopia.championsofsudoku.PlaySounds;
 import com.licktopia.championsofsudoku.R;
 import com.licktopia.championsofsudoku.SudokuFacts;
+import com.licktopia.championsofsudoku.Tags;
 
 public class GamerProfileActivity extends BaseGameActivity {
 
     private SudokuFacts sudokuFacts;
     private GameHelper gameHelper;
     PlaySounds mPlaySounds;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,7 +109,10 @@ public class GamerProfileActivity extends BaseGameActivity {
         TextView mTitleName = (TextView) findViewById(R.id.title_name);
         TextView mFactText = (TextView) findViewById(R.id.fact_text);
         TextView mDidYouKnow = (TextView) findViewById(R.id.did_you_know);
+        TextView xpDisplay = (TextView) findViewById(R.id.xp_display);
+        TextView nextPowerUpDisplay = (TextView) findViewById(R.id.powerup_display);
         LinearLayout mFactBackground = (LinearLayout) findViewById(R.id.fact_background);
+        ImageView mRankDisplay = (ImageView)findViewById(R.id.rank_display);
 
         sudokuFacts = new SudokuFacts();
         mFactText.setText(sudokuFacts.getFunFact());
@@ -112,7 +120,21 @@ public class GamerProfileActivity extends BaseGameActivity {
         mDidYouKnow.setBackgroundColor(Color.parseColor(color));
         mFactBackground.setBackgroundColor(Color.parseColor(color));
         mTitleName.setBackgroundColor(Color.parseColor(color));
-       // mTitleName.setText(gamerName);
+        mTitleName.setText(Gamer.getUsername());
+        xpDisplay.setText(String.format("%,d",Integer.parseInt(String.valueOf(Gamer.getXp()))) +" XP");
+        nextPowerUpDisplay.setText( "Next Level Up " + String.format("%,d",Gamer.CUTOFF[Gamer.getLevel()+1]-Gamer.CUTOFF[Gamer.getLevel()])+ " XP");
+        mRankDisplay.setImageDrawable(getResources().getDrawable(Gamer.BADGETAGS[Gamer.getLevel()]));
+        ImageView[] verticalBadges = new ImageView[52];
+        for(int i = 0; i< Tags.verticalBadges.length;i++){
+            verticalBadges[i]=(ImageView)findViewById(Tags.verticalBadges[i]);
+            if(i<=Gamer.getLevel()){
+                verticalBadges[i].setVisibility(View.VISIBLE);
+            }
+            else{
+                verticalBadges[i].setVisibility(View.INVISIBLE);
+            }
+        }
+
     }
 
 
@@ -134,7 +156,7 @@ public class GamerProfileActivity extends BaseGameActivity {
 
     @Override
     public void onSignInFailed() {
-        Toast.makeText(this,"You are no longer logged in",Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, R.string.nolonger_loggedin,Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(GamerProfileActivity.this, GamerProfileActivity.class);
         startActivity(intent);
     }

@@ -40,4 +40,10 @@ public class Tags {
             "http://i.imgur.com/IdZ4x5U.jpg","http://i.imgur.com/otKttxi.jpg","http://i.imgur.com/XWi2uPy.jpg",
             "http://i.imgur.com/Wh1eRM5.jpg","http://i.imgur.com/M2exdKg.jpg","http://i.imgur.com/4V6iT7q.jpg",
             "http://i.imgur.com/Da0d3A6.jpg"};
+    public static int[] verticalBadges = {R.id.badge0,R.id.badge1,R.id.badge2,R.id.badge3,R.id.badge4,R.id.badge5,R.id.badge6,R.id.badge7,
+            R.id.badge8,R.id.badge9,R.id.badge10,R.id.badge11,R.id.badge12,R.id.badge13,R.id.badge14,R.id.badge15,
+            R.id.badge16,R.id.badge17,R.id.badge18,R.id.badge19,R.id.badge20,R.id.badge21,R.id.badge22,R.id.badge23,
+            R.id.badge24,R.id.badge25,R.id.badge26,R.id.badge27,R.id.badge28,R.id.badge29,R.id.badge30,R.id.badge31,
+            R.id.badge32,R.id.badge33,R.id.badge34,R.id.badge35,R.id.badge36,R.id.badge37,R.id.badge38,R.id.badge39,
+            R.id.badge40,R.id.badge41,R.id.badge42,R.id.badge43,R.id.badge44,R.id.badge45,R.id.badge46,R.id.badge47,R.id.badge48,R.id.badge49,R.id.badge50,R.id.badge51};
 }

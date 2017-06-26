@@ -19,7 +19,7 @@ public class SquareView {
 
     private static final float COLOR_SQUARE_TRANSPARENCY = .8f;
     private static final float COLOR_SQUARE_SCALE_FACTOR = .9f;
-    private static final float COLOR_SQUARE_SAME_NUMBER_TRANSPARENCY = .3f;
+    private static final float COLOR_SQUARE_SAME_NUMBER_TRANSPARENCY = .2f;
 
     private Context context;
     private RelativeLayout squareHolder;
@@ -194,8 +194,15 @@ public class SquareView {
             }
         }
         else{
-            if (highlighted)
+            if (highlighted) {
+                if (color.getBackground() == context.getDrawable(R.color.white)) {
+                    squareTexture.setBackground(context.getDrawable(R.drawable.texture3));
+                }
+                else{
+                    squareTexture.setBackground(context.getDrawable(R.drawable.texture4));
+                }
                 squareTexture.setVisibility(View.VISIBLE); // Set to generic highlighted
+            }
             else {
                 squareTexture.setVisibility(View.GONE); // Remove highlight
                 selectedSquare.setBackground(null);
