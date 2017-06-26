@@ -271,8 +271,10 @@ public class BoardActivity extends BaseGameActivity{
     private void sendToLeaderBoard(){
         if(gameHelper.getApiClient().isConnected()) {
             long score = mGame.getScore();
-            Games.Leaderboards.submitScore(gameHelper.getApiClient(), String.valueOf(R.string.leaderboard_highest_single_game_score), score);
-            Games.Leaderboards.submitScore(gameHelper.getApiClient(), String.valueOf(Tags.leaderboards[level]), mGame.getRunningTime() * 1000);
+            if(mGame.getAccuracy()>=.8) {
+                Games.Leaderboards.submitScore(gameHelper.getApiClient(), String.valueOf(R.string.leaderboard_highest_single_game_score), score);
+                Games.Leaderboards.submitScore(gameHelper.getApiClient(), String.valueOf(Tags.leaderboards[level]), mGame.getRunningTime() * 1000);
+            }
             Games.Leaderboards.submitScore(gameHelper.getApiClient(), String.valueOf(R.string.leaderboard_most_total_xp), Gamer.getXp());
             Toast.makeText(this, R.string.scoretime_submitted, Toast.LENGTH_SHORT).show();
         }
