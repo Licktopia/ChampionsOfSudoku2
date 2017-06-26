@@ -56,10 +56,16 @@ public class Gamer {
     public static boolean setLevel(long totalXP) {
         // Upgrade level as much as necessary, stopping at last level
         int oldLevel = level;
-        while (xp < CUTOFF[level] && level < CUTOFF.length) {
+        int counter = 0;
+        boolean flag=false;
+        while (counter<CUTOFF.length && level < CUTOFF.length &&flag==false) {
             if (xp >= CUTOFF[level]) {
                 level++;
             }
+            else{
+                flag=true;
+            }
+            counter++;
         }
         if(level>oldLevel){
             return true;

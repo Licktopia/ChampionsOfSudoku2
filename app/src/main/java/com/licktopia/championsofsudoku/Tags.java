@@ -40,10 +40,40 @@ public class Tags {
             "http://i.imgur.com/IdZ4x5U.jpg","http://i.imgur.com/otKttxi.jpg","http://i.imgur.com/XWi2uPy.jpg",
             "http://i.imgur.com/Wh1eRM5.jpg","http://i.imgur.com/M2exdKg.jpg","http://i.imgur.com/4V6iT7q.jpg",
             "http://i.imgur.com/Da0d3A6.jpg"};
+
+    public static String[] postScoreImagesNumber = {
+            "http://i.imgur.com/wSont7j.jpg","http://i.imgur.com/vLzb0j7.jpg","http://i.imgur.com/qE3pYQh.jpg",
+            "http://i.imgur.com/7Zo89O4.jpg","http://i.imgur.com/J39X6FI.jpg","http://i.imgur.com/udO6Gal.jpg",
+            "http://i.imgur.com/x9ScYYq.jpg","http://i.imgur.com/mOoTY9c.jpg","http://i.imgur.com/y3HBy0c.jpg",
+            "http://i.imgur.com/IZFbcpy.jpg","http://i.imgur.com/UVPSx5V.jpg","http://i.imgur.com/lpX7IIp.jpg",
+            "http://i.imgur.com/0qAAzZf.jpg","http://i.imgur.com/vPvQF9X.jpg","http://i.imgur.com/wJXjW41.jpg",
+            "http://i.imgur.com/oFdF0Cp.jpg","http://i.imgur.com/31Yj9hW.jpg","http://i.imgur.com/0UtMTIf.jpg",
+            "http://i.imgur.com/uJxfdte.jpg","http://i.imgur.com/uu2Fj3E.jpg","http://i.imgur.com/GJlKPt4.jpg",
+            "http://i.imgur.com/PJ7exAg.jpg","http://i.imgur.com/NDm43BL.jpg","http://i.imgur.com/lu1bhq6.jpg",
+            "http://i.imgur.com/VsBFsfn.jpg","http://i.imgur.com/ursUgwB.jpg","http://i.imgur.com/51Uj6TG.jpg",
+            "http://i.imgur.com/oJBsvTJ.jpg","http://i.imgur.com/zt3DCAX.jpg","http://i.imgur.com/ZcgdfB4.jpg",
+            "http://i.imgur.com/p6cinxC.jpg","http://i.imgur.com/gVj0C0W.jpg","http://i.imgur.com/MveQWXV.jpg",
+            "http://i.imgur.com/hR7BcQf.jpg","http://i.imgur.com/dP7IaHF.jpg","http://i.imgur.com/UMD92XB.jpg",
+            "http://i.imgur.com/8CkGe0G.jpg","http://i.imgur.com/2AQZUVI.jpg","http://i.imgur.com/ekHyCqW.jpg",
+            "http://i.imgur.com/rFXtlkd.jpg","http://i.imgur.com/YN8aeK5.jpg","http://i.imgur.com/YdLOFdu.jpg",
+            "http://i.imgur.com/oISObRz.jpg","http://i.imgur.com/Rnu2PlI.jpg","http://i.imgur.com/gbTbb4L.jpg",
+            "http://i.imgur.com/PeogfsY.jpg","http://i.imgur.com/BdR38pl.jpg","http://i.imgur.com/JVZnF73.jpg",
+            "http://i.imgur.com/YBWbJxN.jpg","http://i.imgur.com/XBkQPZ2.jpg","http://i.imgur.com/4ybPj64.jpg",
+            "http://i.imgur.com/phIPbJY.jpg"};
+
+    public static String postScoreNum = "http://i.imgur.com/sRuVmHX.jpg";
+    public static String postScoreCol = "http://i.imgur.com/sRuVmHX.jpg";
+
     public static int[] verticalBadges = {R.id.badge0,R.id.badge1,R.id.badge2,R.id.badge3,R.id.badge4,R.id.badge5,R.id.badge6,R.id.badge7,
             R.id.badge8,R.id.badge9,R.id.badge10,R.id.badge11,R.id.badge12,R.id.badge13,R.id.badge14,R.id.badge15,
             R.id.badge16,R.id.badge17,R.id.badge18,R.id.badge19,R.id.badge20,R.id.badge21,R.id.badge22,R.id.badge23,
             R.id.badge24,R.id.badge25,R.id.badge26,R.id.badge27,R.id.badge28,R.id.badge29,R.id.badge30,R.id.badge31,
             R.id.badge32,R.id.badge33,R.id.badge34,R.id.badge35,R.id.badge36,R.id.badge37,R.id.badge38,R.id.badge39,
             R.id.badge40,R.id.badge41,R.id.badge42,R.id.badge43,R.id.badge44,R.id.badge45,R.id.badge46,R.id.badge47,R.id.badge48,R.id.badge49,R.id.badge50,R.id.badge51};
+    public static int[] badgeTags = {R.drawable.rank0,R.drawable.rank1,R.drawable.rank2,R.drawable.rank3,R.drawable.rank4,R.drawable.rank5,R.drawable.rank6,R.drawable.rank7,
+            R.drawable.rank8,R.drawable.rank9,R.drawable.rank10,R.drawable.rank11,R.drawable.rank12,R.drawable.rank13,R.drawable.rank14,R.drawable.rank15,
+            R.drawable.rank16,R.drawable.rank17,R.drawable.rank18,R.drawable.rank19,R.drawable.rank20,R.drawable.rank21,R.drawable.rank22,R.drawable.rank23,
+            R.drawable.rank24,R.drawable.rank25,R.drawable.rank26,R.drawable.rank27,R.drawable.rank28,R.drawable.rank29,R.drawable.rank30,R.drawable.rank31,
+            R.drawable.rank32,R.drawable.rank33,R.drawable.rank34,R.drawable.rank35,R.drawable.rank36,R.drawable.rank37,R.drawable.rank38,R.drawable.rank39,
+            R.drawable.rank40,R.drawable.rank41,R.drawable.rank42,R.drawable.rank43,R.drawable.rank44,R.drawable.rank45,R.drawable.rank46,R.drawable.rank47,R.drawable.rank48,R.drawable.rank49,R.drawable.rank50,R.drawable.rank51};
 }

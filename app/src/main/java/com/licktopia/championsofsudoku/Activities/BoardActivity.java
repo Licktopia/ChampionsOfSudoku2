@@ -10,7 +10,6 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.SystemClock;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
@@ -26,18 +25,11 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-
 import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
-import com.facebook.share.Sharer;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.games.Games;
-
 import com.google.android.gms.games.Player;
 import com.google.android.gms.games.snapshot.Snapshot;
 import com.google.android.gms.games.snapshot.SnapshotMetadata;
@@ -55,16 +47,10 @@ import com.licktopia.championsofsudoku.SquareView;
 import com.licktopia.championsofsudoku.Sudoku.Game;
 import com.licktopia.championsofsudoku.Sudoku.Square;
 import com.licktopia.championsofsudoku.Tags;
-
-import org.w3c.dom.Text;
-
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Queue;
 import java.util.Random;
 import java.util.Set;
-
-import static android.graphics.Color.WHITE;
 import static android.view.View.GONE;
 
 public class BoardActivity extends BaseGameActivity{
@@ -176,12 +162,14 @@ public class BoardActivity extends BaseGameActivity{
     }
 
     private void loadPlayer(){
+        gameHelper.getApiClient().connect();
         if(gameHelper.getApiClient().isConnected()) {
+            String name = Games.Players.getCurrentPlayer(gameHelper.getApiClient()).getDisplayName();
+            Toast.makeText(this,name,Toast.LENGTH_SHORT).show();
             gamerName = Games.Players.getCurrentPlayer(gameHelper.getApiClient()).getDisplayName();
             gamerID = Games.Players.getCurrentPlayer(gameHelper.getApiClient()).getPlayerId();
             userBadge.setImageDrawable(getResources().getDrawable(Gamer.BADGETAGS[Gamer.getLevel()]));
             userText.setText(Gamer.getUsername());
-
         }
     }
 
@@ -189,6 +177,7 @@ public class BoardActivity extends BaseGameActivity{
      * Handles the end of the game
      *********************************/
     private void endOfGame(boolean wasSolvedButtonClicked){
+        gameHelper.getApiClient().connect();
         solvedState = true;
         mGame.pauseTimer();
         mChronometer.stop();
@@ -216,12 +205,12 @@ public class BoardActivity extends BaseGameActivity{
             long gameXP = (long) (mGame.getScore()* Gamer.MULTIPLIER[Gamer.getLevel()]);
             boolean levelUp = Gamer.addExperience(gameXP);
             if(!solveClicked) {
-                sendToLeaderBoard();
+                sendToLeaderBoard(gameXP);
                 handleAchievements(gameXP);
                 setStatsBox(gameXP);
                 mStatsBox.setVisibility(View.VISIBLE);
                 closeKeyboard();
-           }
+            }
 
             mCloseStats.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -239,14 +228,15 @@ public class BoardActivity extends BaseGameActivity{
                 ImageButton shareLevelUp = (ImageButton) findViewById(R.id.share_levelup);
                 TextView newMultiplier = (TextView) findViewById(R.id.new_multiplier);
                 levelUpBadge.setImageDrawable(getResources().getDrawable(Gamer.BADGETAGS[Gamer.getLevel()]));
+                userBadge.setImageDrawable(getResources().getDrawable(Gamer.BADGETAGS[Gamer.getLevel()]));
+                userText.setText(Gamer.getUsername());
                 shareLevelUp.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        userBadge.setImageDrawable(getResources().getDrawable(Gamer.BADGETAGS[Gamer.getLevel()]));
-                        userText.setText(Gamer.getUsername());
+                        facebookShare();
                     }
                 });
-                newMultiplier.setText("Multiplier " + String.format("%,d",Gamer.MULTIPLIER[Gamer.level])+"x");
+                newMultiplier.setText("Multiplier " + String.format("%,2.1f",Gamer.MULTIPLIER[Gamer.level])+"x");
                 mLevelUpBox.setVisibility(View.VISIBLE);
                 mCloseLevelUp.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -266,14 +256,14 @@ public class BoardActivity extends BaseGameActivity{
     /************************************
      * Send to leaderboard at end of game
      *********************************/
-    private void sendToLeaderBoard(){
+    private void sendToLeaderBoard(long gameXP){
+        gameHelper.getApiClient().connect();
         if(gameHelper.getApiClient().isConnected()) {
-            long score = mGame.getScore();
             if(mGame.getAccuracy()>=.8) {
-                Games.Leaderboards.submitScore(gameHelper.getApiClient(), String.valueOf(R.string.leaderboard_highest_single_game_score), score);
-                Games.Leaderboards.submitScore(gameHelper.getApiClient(), String.valueOf(Tags.leaderboards[level]), mGame.getRunningTime() * 1000);
+                Games.Leaderboards.submitScore(gameHelper.getApiClient(), String.valueOf(R.string.leaderboard_highest_single_game_score), (int)gameXP,"1337");
+                Games.Leaderboards.submitScore(gameHelper.getApiClient(), String.valueOf(Tags.leaderboards[level]), (int)mGame.getRunningTime() * 1000,"1337");
             }
-            Games.Leaderboards.submitScore(gameHelper.getApiClient(), String.valueOf(R.string.leaderboard_most_total_xp), Gamer.getXp());
+            Games.Leaderboards.submitScore(gameHelper.getApiClient(), String.valueOf(R.string.leaderboard_most_total_xp), (int)Gamer.getXp(),"1337");
             Toast.makeText(this, R.string.scoretime_submitted, Toast.LENGTH_SHORT).show();
         }
 
@@ -284,6 +274,7 @@ public class BoardActivity extends BaseGameActivity{
      * Unlock achievements at end of game
      *********************************/
     private void handleAchievements(long gameXP){
+        gameHelper.getApiClient().connect();
         if(gameHelper.getApiClient().isConnected()){
             unlockAchievements(R.string.achievement_up_and_comer);
             if(level>=2&&mGame.getAccuracy()>=1){
@@ -549,6 +540,7 @@ public class BoardActivity extends BaseGameActivity{
         userBadgeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                gameHelper.getApiClient().connect();
                 if(gameHelper.getApiClient().isConnected()) {
                     Intent intent = new Intent(BoardActivity.this, GamerProfileActivity.class);
                     intent.putExtra("GAMERNAME", gamerName);
@@ -562,6 +554,7 @@ public class BoardActivity extends BaseGameActivity{
         });
     }
     private void leaderBoardsListener(){
+        gameHelper.getApiClient().connect();
         LinearLayout leaderBoardButton =(LinearLayout)findViewById(R.id.leader_button);
         leaderBoardButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -589,8 +582,27 @@ public class BoardActivity extends BaseGameActivity{
     }
 
     private void facebookShare() {
+        gameHelper.getApiClient().connect();
+        String imageTag;
+        if(gameHelper.getApiClient().isConnected()) {
+            if(!colorGame){
+                imageTag = Tags.postScoreImagesNumber[Gamer.getLevel()];
+            }
+            else{
+               imageTag = Tags.postScoreImagesColor[Gamer.getLevel()];
+            }
+
+        }
+        else{
+            if(!colorGame){
+                imageTag = Tags.postScoreNum;
+            }
+            else{
+                imageTag = Tags.postScoreCol;
+            }
+        }
         ShareLinkContent content = new ShareLinkContent.Builder()
-                .setContentUrl(Uri.parse(Tags.postScoreImagesColor[Gamer.getLevel()]))
+                .setContentUrl(Uri.parse(imageTag))
                 .build();
         shareDialog.show(content);
     }
@@ -864,6 +876,7 @@ public class BoardActivity extends BaseGameActivity{
      * end of game
      *********************************/
     private void numberCommands(int keypadNumber) {
+        gameHelper.getApiClient().connect();
 
         // Cancel any delayed highlighting
         highlightHandler.removeCallbacksAndMessages(null);
@@ -915,7 +928,7 @@ public class BoardActivity extends BaseGameActivity{
 
             Set<Integer> conflicts = mGame.setBoardValueAt(selectedSquare, keypadNumber);  // Set board value to number
             if (conflicts.isEmpty()) {
-                if(!solveClicked) {
+                if(!solveClicked&&!mGame.isGameFinished()) {
                     mPlaySounds.playSounds(this, 1);
                 }
                 if (!colorGame)
@@ -1198,6 +1211,7 @@ public class BoardActivity extends BaseGameActivity{
                 i,
 
                 "Share via"));
+        gameHelper.getApiClient().connect();
         unlockAchievements(R.string.achievement_joy_giver);
 
     }
@@ -1230,6 +1244,8 @@ public class BoardActivity extends BaseGameActivity{
         super.onActivityResult(requestCode, resultCode, intent);
 
         gameHelper.onActivityResult(requestCode, resultCode, intent);
+
+
         if (intent != null) {
             if (intent.hasExtra(Snapshots.EXTRA_SNAPSHOT_METADATA)) {
                 // Load a snapshot.

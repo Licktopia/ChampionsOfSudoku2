@@ -40,11 +40,6 @@ public class GamerProfileActivity extends BaseGameActivity {
         gameHelper.enableDebugLog(true);
         gameHelper.setup(this);
         initializeSignOut();
-
-
-
-
-
         updateUI();
         listeners();
     }
@@ -122,11 +117,12 @@ public class GamerProfileActivity extends BaseGameActivity {
         mTitleName.setBackgroundColor(Color.parseColor(color));
         mTitleName.setText(Gamer.getUsername());
         xpDisplay.setText(String.format("%,d",Integer.parseInt(String.valueOf(Gamer.getXp()))) +" XP");
-        nextPowerUpDisplay.setText( "Next Level Up " + String.format("%,d",Gamer.CUTOFF[Gamer.getLevel()+1]-Gamer.CUTOFF[Gamer.getLevel()])+ " XP");
+        nextPowerUpDisplay.setText( "Next Level Up " + String.format("%,d",Gamer.CUTOFF[Gamer.getLevel()]-Gamer.getXp())+ " XP");
         mRankDisplay.setImageDrawable(getResources().getDrawable(Gamer.BADGETAGS[Gamer.getLevel()]));
         ImageView[] verticalBadges = new ImageView[52];
         for(int i = 0; i< Tags.verticalBadges.length;i++){
             verticalBadges[i]=(ImageView)findViewById(Tags.verticalBadges[i]);
+            verticalBadges[i].setImageDrawable(getResources().getDrawable(Tags.badgeTags[i]));
             if(i<=Gamer.getLevel()){
                 verticalBadges[i].setVisibility(View.VISIBLE);
             }
