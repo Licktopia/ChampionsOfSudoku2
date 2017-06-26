@@ -2,7 +2,6 @@ package com.licktopia.championsofsudoku.Sudoku;
 
 import android.content.Context;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Stack;
 import java.util.Set;
@@ -353,7 +352,7 @@ class Board {
     // Returns number of values set to true in notepad
     protected int getTotalNotepadValues(int row, int col) {
         int total = 0;
-        for (int i = 0; i < SIZE; i++) {
+        for (int i = 1; i <= SIZE; i++) {
             if (getNotepadAt(row, col, i)) total++;
         }
         return total;
@@ -374,7 +373,7 @@ class Board {
 
     // Compare notepad of one square to another
     protected boolean hasSameNotepad(int idx1, int idx2) {
-        for (int i = 0; i < SIZE; i++) {
+        for (int i = 1; i <= SIZE; i++) {
             if (getNotepadAt(idx1, i) != getNotepadAt(idx2, i))
                 return false;
         }
@@ -405,30 +404,59 @@ class Board {
     }
 
     // Returns an array of indices of all squares in same row as idx
-    protected int[] getRowIndices(int idx) {
+    protected int[] getRowIndicesByIndex(int idx) {
+        return getRowIndices(idxToRow(idx));
+    }
+
+    // Returns an array of indices of all squares in row
+    protected int[] getRowIndices(int row) {
         int[] indices = new int[SIZE];
-        int rowStart = idx - idxToCol(idx);
+        int rowStart = row * SIZE;
         for (int i = 0; i < SIZE; i++) {
             indices[i] = rowStart + i;
         }
         return indices;
     }
 
+    // Returns a 2d array of indices in each row
+    protected int[][] getEveryRowIndices() {
+        int[][] rows = new int[SIZE][SIZE];
+        for (int i = 0; i < SIZE; i++)
+            rows[i] = getRowIndices(i);
+        return rows;
+    }
+
     // Returns an array of indices of all squares in same column as idx
-    protected int[] getColIndices(int idx) {
+    protected int[] getColIndicesByIndex(int idx) {
+        return getColIndices(idxToCol(idx));
+    }
+
+    // Returns an array of indices of all squares in column
+    protected int[] getColIndices(int col) {
         int[] indices = new int[SIZE];
-        int column = idxToCol(idx);
         for (int i = 0; i < SIZE; i++) {
-            indices[i] = column + (SIZE * i);
+            indices[i] = col + (SIZE * i);
         }
         return indices;
     }
 
-    // Returns an array of indices of all squares in same cluster as idx
-    protected int[] getClusterIndices(int idx) {
+    // Returns a 2d array of indices in each col
+    protected int[][] getEveryColIndices() {
+        int[][] cols = new int[SIZE][SIZE];
+        for (int i = 0; i < SIZE; i++)
+            cols[i] = getColIndices(i);
+        return cols;
+    }
 
-        // Get cluster number
+    // Returns an array of indices of all squares in same cluster as idx
+    protected int[] getClusterIndicesByIndex(int idx) {
+
         int cluster = ((idxToRow(idx) / CLUSTER_SIZE) * CLUSTER_SIZE) + (idxToCol(idx) / CLUSTER_SIZE);
+        return getClusterIndices(cluster);
+    }
+
+    // Returns an array of indices of all squares in cluster provided
+    protected int[] getClusterIndices(int cluster) {
 
         // Get cluster start indices based on board size
         int rowStart = (cluster / CLUSTER_SIZE) * CLUSTER_SIZE;
@@ -442,6 +470,26 @@ class Board {
         }
 
         return indices;
+    }
+
+    // Returns a 2d array of indices in each cluster
+    protected int[][] getEveryClusterIndices() {
+        int[][] clusters = new int[SIZE][SIZE];
+        for (int i = 0; i < SIZE; i++)
+            clusters[i] = getClusterIndices(i);
+        return clusters;
+    }
+
+    // Returns a 2d array where each outer array is one of the rows/cols/clusters of the board
+    protected int[][] getAllIndexGroups() {
+        int[][] groups = new int[SIZE * 3][SIZE];
+        for (int i = 0; i < SIZE; i++) {
+            groups[i] = getRowIndices(i);
+            groups[i + SIZE] = getColIndices(i);
+            groups[i + SIZE + SIZE] = getClusterIndices(i);
+        }
+
+        return groups;
     }
 
     //returns the number of open squares in board

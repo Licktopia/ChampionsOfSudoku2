@@ -1,10 +1,9 @@
 package com.licktopia.championsofsudoku.Sudoku;
 
+import android.support.v4.util.Pair;
+
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -13,16 +12,6 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 
 public class Strategies {
-
-    static class Pair {
-        final int idx1;
-        final int idx2;
-
-        Pair(int idx1, int idx2) {
-            this.idx1 = idx1;
-            this.idx2 = idx2;
-        }
-    }
 
     /* Returns a single random element of type <T> from a list */
     public static <T> T getRandomElement(List<T> list) {
@@ -70,24 +59,26 @@ public class Strategies {
     public static void removeNakedPairValues(Board board, Pair pair) {
 
         // Get the two notepad values in the naked pair
+        int idx1 = (int)pair.first;
+        int idx2 = (int)pair.second;
         int notepad1 = 0;
         int notepad2 = 0;
-        for (int i = 0; i < board.getSize(); i++) {
-            if (board.getNotepadAt(pair.idx1, i)) {
+        for (int i = 1; i <= board.getSize(); i++) {
+            if (board.getNotepadAt(idx1, i)) {
                 if (notepad1 == 0) notepad1 = i;
                 else notepad2 = i;
             }
         }
 
         int[] indices;
-        if (board.isSameRow(pair.idx1, pair.idx2)) indices = board.getRowIndices(pair.idx1);
-        else if (board.isSameCol(pair.idx1, pair.idx2)) indices = board.getColIndices(pair.idx1);
-        else indices = board.getClusterIndices(pair.idx1);
+        if (board.isSameRow(idx1, idx2)) indices = board.getRowIndicesByIndex(idx1);
+        else if (board.isSameCol(idx1, idx2)) indices = board.getColIndicesByIndex(idx1);
+        else indices = board.getClusterIndicesByIndex(idx1);
 
         // Remove notepad values from all squares in indices that are open and not part of the pair
         for (int i : indices) {
             // Skip over squares in pair
-            if (i == pair.idx1 || i == pair.idx2) continue;
+            if (i == idx1 || i == idx2) continue;
             // Remove values from open squares
             if (!board.isStartingValue(i) && board.getValueAt(i) == 0) {
                 board.setNotepadAt(i, notepad1, false);
@@ -113,21 +104,31 @@ public class Strategies {
 
     // Hidden pairs are pairs of squares within a row/col/cluster that both contain the only two
     // appearances of a notepad number within that row/col/cluster
-    public static List<Pair> findHiddenPairs(Board board) {
+    public static List<Pair> getHiddenPairs(Board board) {
 
         ArrayList<Pair> hiddenPairs = new ArrayList<>();
 
-        for (int i = 0; i < board.getSize(); i++) {
-            /* Iterate over each row */
-            int[] row = board.getRowIndices(i * board.getSize());
+        int numGroups = board.getSize() * 3;
+        int[][] groups = board.getAllIndexGroups();
+        for (int[] group: groups) {
+            // Iterate over each group
             List<Integer> twoSquareNotepadNums = new ArrayList<>();
-            /* Find notepad numbers in row that appear in only two squares */
-            for (int j = 0; j < board.getSize(); j++){
-                if (board.getTotalNotepadOccurrences(row, j) == 2) {
-                    /* Check number against previously found numbers */
+            // Find notepad numbers in group that appear in only two squares
+            for (int j = 1; j <= board.getSize(); j++){
+                if (board.getTotalNotepadOccurrences(group, j) == 2) {
+                    // Check number against previously found numbers
                     for (int k = 0; k < twoSquareNotepadNums.size(); k++) {
-                        if (board.hasSameNotepadPositions(row, twoSquareNotepadNums.get(k), j)) {
-
+                        if (board.hasSameNotepadPositions(group, twoSquareNotepadNums.get(k), j)) {
+                            // Found hidden pair
+                            int idx1 = -1;
+                            int idx2 = -1;
+                            for (int l = 0; l < board.getSize(); l++) {
+                                if (board.getNotepadAt(group[l], j)) {
+                                    if (idx1 == -1) idx1 = group[l];
+                                    else idx2 = group[l];
+                                }
+                            }
+                            hiddenPairs.add(new Pair(idx1, idx2));
                         }
                     }
                     twoSquareNotepadNums.add(j);
@@ -145,7 +146,7 @@ public class Strategies {
 
         // Iterate over each cluster to find possible restricted candidates
         for (int i = 0; i < board.getSize(); i++) {
-            int[] indices = board.getClusterIndices(i);
+            int[] indices = board.getClusterIndicesByIndex(i);
 
         }
     }
@@ -183,4 +184,39 @@ public class Strategies {
         return steps;
     }
     */
+
+
+    //updates all squares' notepads so that only valid moves are true
+    public static void updateAllNotepads(Board board, boolean removeOnly)
+    {
+        for(int i = 0; i < board.totalBoardRows(); i++)
+        {
+            for(int j = 0; j < board.totalBoardCols(); j++)
+            {
+                updateNotepad(board, i, j, removeOnly);
+            }
+        }
+    }
+
+    // updates notepad for square at row, col so that only valid moves are true
+    // if removeOnly is set, update will only remove notepad values, not add any
+    public static void updateNotepad(Board board, int row, int col, boolean removeOnly)
+    {
+        if(!board.isStartingValue(row, col) && board.getValueAt(row, col) == 0)
+        {
+            for(int i = 1; i <= board.getSize(); i++)
+            {
+                Set<Integer> testStk = board.setValueAt(row, col, i);
+                if(testStk.isEmpty())
+                {
+                    if (!removeOnly) board.setNotepadAt(row, col, i, true);
+                }
+                else
+                {
+                    board.setNotepadAt(row, col, i, false);
+                }
+                board.setValueAt(row, col, 0);
+            }
+        }
+    }
 }

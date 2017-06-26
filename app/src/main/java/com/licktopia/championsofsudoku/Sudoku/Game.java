@@ -1,9 +1,10 @@
 package com.licktopia.championsofsudoku.Sudoku;
 
 import android.content.Context;
+import android.support.v4.util.Pair;
 
+import java.util.List;
 import java.util.Queue;
-import java.util.Stack;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -273,6 +274,25 @@ public class Game
         return solutionSolver.getSolvingSteps();
     }
 
+    public void updateAllNotepads(boolean removeOnly) {
+        Strategies.updateAllNotepads(curBoard, removeOnly);
+    }
+
+    public List<Integer> getNakedSingles() {
+        return Strategies.getNakedSingles(curBoard);
+    }
+
+    public List<Pair> getNakedDoubles() {
+        return Strategies.getNakedPairs(curBoard);
+    }
+
+    public void removeNakedDoubles(Pair pair) {
+        Strategies.removeNakedPairValues(curBoard, pair);
+    }
+
+    public List<Pair> getHiddenPairs() {
+        return Strategies.getHiddenPairs(curBoard);
+    }
 
     //returns the total number of elements in the board
     public  int totalBoardElements() {return curBoard.totalBoardElements(); }

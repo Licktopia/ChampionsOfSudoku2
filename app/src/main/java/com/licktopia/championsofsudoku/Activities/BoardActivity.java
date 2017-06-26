@@ -10,8 +10,8 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.SystemClock;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v4.util.Pair;
 import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
@@ -29,16 +29,11 @@ import android.widget.Toast;
 
 
 import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
-import com.facebook.share.Sharer;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.games.Games;
 
-import com.google.android.gms.games.Player;
 import com.google.android.gms.games.snapshot.Snapshot;
 import com.google.android.gms.games.snapshot.SnapshotMetadataChange;
 import com.google.android.gms.games.snapshot.Snapshots;
@@ -52,13 +47,13 @@ import com.licktopia.championsofsudoku.Settings.SudokuSettingsActivity;
 import com.licktopia.championsofsudoku.SquareView;
 import com.licktopia.championsofsudoku.Sudoku.Game;
 import com.licktopia.championsofsudoku.Sudoku.Square;
+import com.licktopia.championsofsudoku.Sudoku.Strategies;
 import com.licktopia.championsofsudoku.Tags;
 
 import java.util.ArrayList;
-import java.util.Queue;
+import java.util.List;
 import java.util.Set;
 
-import static android.graphics.Color.WHITE;
 import static android.view.View.GONE;
 
 public class BoardActivity extends BaseGameActivity{
@@ -84,6 +79,8 @@ public class BoardActivity extends BaseGameActivity{
     private Button solveButton;
     private Button checkProgressButton;
     private Button nakedSingleButton;
+    private Button nakedDoubleButton;
+    private Button hiddenPairButton;
     private ImageButton mUndoButton;
     private ImageButton mRedoButton;
     private ImageButton notepadIcon;
@@ -150,7 +147,6 @@ public class BoardActivity extends BaseGameActivity{
                 updateScore();
             }
         });
-
     }
 
     private void updateUI(boolean isLoggedIn){
@@ -346,6 +342,8 @@ public class BoardActivity extends BaseGameActivity{
         solveButton = (Button) findViewById(R.id.solveButton);
         checkProgressButton = (Button) findViewById(R.id.progressButton);
         nakedSingleButton = (Button) findViewById(R.id.naked_single);
+        nakedDoubleButton = (Button) findViewById(R.id.naked_double);
+        hiddenPairButton = (Button) findViewById(R.id.hidden_pair);
         keyboardDownButton = (ImageButton) findViewById(R.id.down);
     }
 
@@ -409,6 +407,10 @@ public class BoardActivity extends BaseGameActivity{
         numberListeners();
         smallNumPadListener();
         clearButtonListener();
+        checkProgressButtonListener();
+        nakedSingleButtonListener();
+        nakedDoubleButtonListener();
+        hiddenPairButtonListener();
         solveButtonListener();
         undoRedoListener();
         continueListener();
@@ -605,7 +607,31 @@ public class BoardActivity extends BaseGameActivity{
         nakedSingleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                endOfGame(true);
+                showNakedSingle();
+            }
+        });
+    }
+
+    /************************************
+     * Listeners nakedDoubleButton
+     *********************************/
+    private void nakedDoubleButtonListener() {
+        nakedDoubleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showNakedDouble();
+            }
+        });
+    }
+
+    /************************************
+     * Listeners hiddenPairButton
+     *********************************/
+    private void hiddenPairButtonListener() {
+        hiddenPairButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showHiddenPair();
             }
         });
     }
@@ -613,8 +639,66 @@ public class BoardActivity extends BaseGameActivity{
     /************************************
      * Update board
      *********************************/
+    boolean removeOnly = false; // TODO test value, remove
     private void updateBoard() {
+        mGame.updateAllNotepads(removeOnly);
+        removeOnly = true;
+        for (int idx = 0; idx < mGame.totalBoardElements(); idx++) {
+            if (mGame.isStartingValue(idx) || mGame.getBoardValueAt(idx) != 0) continue;
+            for (int num = 1; num <= mGame.totalBoardRows(); num++) {
+                squareViews[idx].showNotepadNumber(num, mGame.getBoardNotepadAt(idx, num));
+            }
+        }
+    }
 
+    /************************************
+     * Show one instance of a naked single
+     *********************************/
+    private void showNakedSingle() {
+        List<Integer> singlesIndices = mGame.getNakedSingles();
+        if (!singlesIndices.isEmpty()) {
+            int idx = Strategies.getRandomElement(singlesIndices);
+            removeAllHighlights();
+            squareViews[idx].setHighlighted(true, true);
+        }
+        else {
+            // TODO None exist, display message?
+        }
+    }
+
+    /************************************
+     * Show one instance of a naked double
+     *********************************/
+    private void showNakedDouble() {
+        updateBoard();
+        List<Pair> nakedDoubles = mGame.getNakedDoubles();
+        if (!nakedDoubles.isEmpty()) {
+            Pair pair = Strategies.getRandomElement(nakedDoubles);
+            removeAllHighlights();
+            squareViews[(int) pair.first].setHighlighted(true, true);
+            squareViews[(int) pair.second].setHighlighted(true, true);
+            mGame.removeNakedDoubles(pair);
+        }
+        else {
+            // TODO None exist, display message?
+        }
+    }
+
+    /************************************
+     * Show one instance of a naked double
+     *********************************/
+    private void showHiddenPair() {
+        updateBoard();
+        List<Pair> hiddenPairs = mGame.getHiddenPairs();
+        if (!hiddenPairs.isEmpty()) {
+            Pair pair = Strategies.getRandomElement(hiddenPairs);
+            removeAllHighlights();
+            squareViews[(int) pair.first].setHighlighted(true, true);
+            squareViews[(int) pair.second].setHighlighted(true, true);
+        }
+        else {
+            // TODO None exist, display message?
+        }
     }
 
     /************************************
