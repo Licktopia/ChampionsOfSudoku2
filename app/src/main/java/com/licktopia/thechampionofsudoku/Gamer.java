@@ -60,13 +60,15 @@ public class Gamer {
         boolean flag=false;
         while (counter<CUTOFF.length && level < CUTOFF.length &&flag==false) {
             if (xp >= CUTOFF[level]) {
-                level++;
+                    level++;
             }
             else{
                 flag=true;
             }
-            counter++;
+
         }
+        level--;
+
         if(level>oldLevel){
             return true;
         }

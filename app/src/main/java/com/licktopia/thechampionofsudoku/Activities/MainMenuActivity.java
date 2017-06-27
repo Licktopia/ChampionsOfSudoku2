@@ -35,6 +35,7 @@ import com.google.example.games.basegameutils.GameHelper;
 import com.licktopia.thechampionofsudoku.Gamer;
 import com.licktopia.thechampionofsudoku.PlaySounds;
 import com.licktopia.thechampionofsudoku.R;
+import com.licktopia.thechampionofsudoku.Tags;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -97,6 +98,7 @@ public class MainMenuActivity  extends BaseGameActivity{
             @Override
             public void onClick(View v) {
                 showSavedGamesUI();
+
             }
         });
     }
@@ -200,7 +202,6 @@ public class MainMenuActivity  extends BaseGameActivity{
             gameHelper.getApiClient().connect();
             if(gameHelper.getApiClient().isConnected()) {
                 getHighestScoreFromLeaderBoard();
-                Toast.makeText(this, R.string.getting_profile_info, Toast.LENGTH_SHORT).show();
             }
         }
         else{
@@ -220,7 +221,7 @@ public class MainMenuActivity  extends BaseGameActivity{
 
     private void getHighestScoreFromLeaderBoard(){
         PendingResult result = Games.Leaderboards.loadCurrentPlayerLeaderboardScore(gameHelper.getApiClient(),
-                String.valueOf(R.string.leaderboard_most_total_xp), LeaderboardVariant.TIME_SPAN_ALL_TIME,
+               getString(R.string.leaderboard_most_total_xp), LeaderboardVariant.TIME_SPAN_ALL_TIME,
                 LeaderboardVariant.COLLECTION_PUBLIC);
 
         result.setResultCallback(new ResultCallback<Leaderboards.LoadPlayerScoreResult>() {
@@ -288,6 +289,7 @@ public class MainMenuActivity  extends BaseGameActivity{
     }
 
     private void mBadgeButtonInitialize(final String gamername, final String gamerID){
+        userBadge.setImageDrawable(getResources().getDrawable(Gamer.BADGETAGS[Gamer.getLevel()]));
         mBadge.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -435,6 +437,9 @@ public class MainMenuActivity  extends BaseGameActivity{
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
+
+
         gameHelper.onActivityResult(requestCode, resultCode, data);
         if (data != null) {
             if (data.hasExtra(Snapshots.EXTRA_SNAPSHOT_METADATA)) {

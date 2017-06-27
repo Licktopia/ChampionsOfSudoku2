@@ -163,8 +163,6 @@ public class BoardActivity extends BaseGameActivity{
     private void loadPlayer(){
         gameHelper.getApiClient().connect();
         if(gameHelper.getApiClient().isConnected()) {
-            String name = Games.Players.getCurrentPlayer(gameHelper.getApiClient()).getDisplayName();
-            Toast.makeText(this,name,Toast.LENGTH_SHORT).show();
             gamerName = Games.Players.getCurrentPlayer(gameHelper.getApiClient()).getDisplayName();
             gamerID = Games.Players.getCurrentPlayer(gameHelper.getApiClient()).getPlayerId();
             userBadge.setImageDrawable(getResources().getDrawable(Gamer.BADGETAGS[Gamer.getLevel()]));
@@ -259,10 +257,10 @@ public class BoardActivity extends BaseGameActivity{
         gameHelper.getApiClient().connect();
         if(gameHelper.getApiClient().isConnected()) {
             if(mGame.getAccuracy()>=.8) {
-                Games.Leaderboards.submitScore(gameHelper.getApiClient(), String.valueOf(R.string.leaderboard_highest_single_game_score), (int)gameXP,"1337");
-                Games.Leaderboards.submitScore(gameHelper.getApiClient(), String.valueOf(Tags.leaderboards[level]), (int)mGame.getRunningTime() * 1000,"1337");
+                Games.Leaderboards.submitScore(gameHelper.getApiClient(),getString(R.string.leaderboard_highest_single_game_score), (int)gameXP,"1337");
+                Games.Leaderboards.submitScore(gameHelper.getApiClient(), getString(Tags.leaderboards[level]), (int)mGame.getRunningTime() * 1000,"1337");
             }
-            Games.Leaderboards.submitScore(gameHelper.getApiClient(), String.valueOf(R.string.leaderboard_most_total_xp), (int)Gamer.getXp(),"1337");
+            Games.Leaderboards.submitScore(gameHelper.getApiClient(), getString(R.string.leaderboard_most_total_xp), (int)Gamer.getXp(),"1337");
             Toast.makeText(this, R.string.scoretime_submitted, Toast.LENGTH_SHORT).show();
         }
 
