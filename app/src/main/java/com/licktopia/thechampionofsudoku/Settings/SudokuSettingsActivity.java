@@ -1,10 +1,10 @@
-package com.licktopia.championsofsudoku.Settings;
+package com.licktopia.thechampionofsudoku.Settings;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.MenuItem;
 
-import com.licktopia.championsofsudoku.R;
+import com.licktopia.thechampionofsudoku.R;
 
 import static android.R.attr.id;
 

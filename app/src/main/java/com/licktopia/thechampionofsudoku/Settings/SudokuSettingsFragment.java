@@ -1,9 +1,9 @@
-package com.licktopia.championsofsudoku.Settings;
+package com.licktopia.thechampionofsudoku.Settings;
 
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
 
-import com.licktopia.championsofsudoku.R;
+import com.licktopia.thechampionofsudoku.R;
 
 /**
  * Created by jeff on 1/15/17.

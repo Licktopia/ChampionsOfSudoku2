@@ -1,4 +1,4 @@
-package com.licktopia.championsofsudoku.Settings;
+package com.licktopia.thechampionofsudoku.Settings;
 
 import android.content.Context;
 import android.content.SharedPreferences;

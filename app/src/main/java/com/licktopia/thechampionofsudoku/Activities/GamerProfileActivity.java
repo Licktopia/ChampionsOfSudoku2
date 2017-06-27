@@ -1,6 +1,5 @@
-package com.licktopia.championsofsudoku.Activities;
+package com.licktopia.thechampionofsudoku.Activities;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 
@@ -16,11 +15,11 @@ import android.widget.Toast;
 import com.google.android.gms.games.Games;
 import com.google.example.games.basegameutils.BaseGameActivity;
 import com.google.example.games.basegameutils.GameHelper;
-import com.licktopia.championsofsudoku.Gamer;
-import com.licktopia.championsofsudoku.PlaySounds;
-import com.licktopia.championsofsudoku.R;
-import com.licktopia.championsofsudoku.SudokuFacts;
-import com.licktopia.championsofsudoku.Tags;
+import com.licktopia.thechampionofsudoku.Gamer;
+import com.licktopia.thechampionofsudoku.PlaySounds;
+import com.licktopia.thechampionofsudoku.R;
+import com.licktopia.thechampionofsudoku.SudokuFacts;
+import com.licktopia.thechampionofsudoku.Tags;
 
 public class GamerProfileActivity extends BaseGameActivity {
 
@@ -116,6 +115,12 @@ public class GamerProfileActivity extends BaseGameActivity {
         mFactBackground.setBackgroundColor(Color.parseColor(color));
         mTitleName.setBackgroundColor(Color.parseColor(color));
         mTitleName.setText(Gamer.getUsername());
+        if(Gamer.getLevel()==Gamer.CUTOFF.length){
+            nextPowerUpDisplay.setText(Gamer.RANKNAMES[Gamer.getLevel()]);
+        }
+        else{
+            nextPowerUpDisplay.setText( "Next Level Up " + String.format("%,d",Gamer.CUTOFF[Gamer.getLevel()]-Gamer.getXp())+ " XP");
+        }
         xpDisplay.setText(String.format("%,d",Integer.parseInt(String.valueOf(Gamer.getXp()))) +" XP");
         nextPowerUpDisplay.setText( "Next Level Up " + String.format("%,d",Gamer.CUTOFF[Gamer.getLevel()]-Gamer.getXp())+ " XP");
         mRankDisplay.setImageDrawable(getResources().getDrawable(Gamer.BADGETAGS[Gamer.getLevel()]));

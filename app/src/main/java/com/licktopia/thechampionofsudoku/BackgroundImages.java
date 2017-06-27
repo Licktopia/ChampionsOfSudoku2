@@ -1,4 +1,4 @@
-package com.licktopia.championsofsudoku;
+package com.licktopia.thechampionofsudoku;
 
 import java.util.concurrent.ThreadLocalRandom;
 

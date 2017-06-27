@@ -1,9 +1,9 @@
-package com.licktopia.championsofsudoku;
+package com.licktopia.thechampionofsudoku;
 
 import android.content.Context;
 import android.media.MediaPlayer;
 
-import com.licktopia.championsofsudoku.Settings.SudokuSettings;
+import com.licktopia.thechampionofsudoku.Settings.SudokuSettings;
 
 import java.util.concurrent.ThreadLocalRandom;
 

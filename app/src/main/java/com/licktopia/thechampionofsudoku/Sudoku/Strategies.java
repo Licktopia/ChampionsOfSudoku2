@@ -1,11 +1,7 @@
-package com.licktopia.championsofsudoku.Sudoku;
+package com.licktopia.thechampionofsudoku.Sudoku;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
-import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**

@@ -1,9 +1,8 @@
-package com.licktopia.championsofsudoku.Sudoku;
+package com.licktopia.thechampionofsudoku.Sudoku;
 
 import android.content.Context;
 
 import java.util.Queue;
-import java.util.Stack;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 

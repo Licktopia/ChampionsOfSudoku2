@@ -1,8 +1,7 @@
-package com.licktopia.championsofsudoku.Sudoku;
+package com.licktopia.thechampionofsudoku.Sudoku;
 
 import android.content.Context;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Stack;
 import java.util.Set;

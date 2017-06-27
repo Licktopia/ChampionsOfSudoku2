@@ -1,4 +1,4 @@
-package com.licktopia.championsofsudoku.Activities;
+package com.licktopia.thechampionofsudoku.Activities;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
@@ -30,23 +30,22 @@ import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.games.Games;
-import com.google.android.gms.games.Player;
 import com.google.android.gms.games.snapshot.Snapshot;
 import com.google.android.gms.games.snapshot.SnapshotMetadata;
 import com.google.android.gms.games.snapshot.SnapshotMetadataChange;
 import com.google.android.gms.games.snapshot.Snapshots;
 import com.google.example.games.basegameutils.BaseGameActivity;
 import com.google.example.games.basegameutils.GameHelper;
-import com.licktopia.championsofsudoku.BackgroundImages;
-import com.licktopia.championsofsudoku.Gamer;
-import com.licktopia.championsofsudoku.PlaySounds;
-import com.licktopia.championsofsudoku.R;
-import com.licktopia.championsofsudoku.Settings.SudokuSettings;
-import com.licktopia.championsofsudoku.Settings.SudokuSettingsActivity;
-import com.licktopia.championsofsudoku.SquareView;
-import com.licktopia.championsofsudoku.Sudoku.Game;
-import com.licktopia.championsofsudoku.Sudoku.Square;
-import com.licktopia.championsofsudoku.Tags;
+import com.licktopia.thechampionofsudoku.BackgroundImages;
+import com.licktopia.thechampionofsudoku.Gamer;
+import com.licktopia.thechampionofsudoku.PlaySounds;
+import com.licktopia.thechampionofsudoku.R;
+import com.licktopia.thechampionofsudoku.Settings.SudokuSettings;
+import com.licktopia.thechampionofsudoku.Settings.SudokuSettingsActivity;
+import com.licktopia.thechampionofsudoku.SquareView;
+import com.licktopia.thechampionofsudoku.Sudoku.Game;
+import com.licktopia.thechampionofsudoku.Sudoku.Square;
+import com.licktopia.thechampionofsudoku.Tags;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Random;
@@ -115,7 +114,7 @@ public class BoardActivity extends BaseGameActivity{
         gameHelper.setup(this);
 
         //bindings
-        mChronometer = (Chronometer)findViewById(com.licktopia.championsofsudoku.R.id.chronometer);
+        mChronometer = (Chronometer)findViewById(com.licktopia.thechampionofsudoku.R.id.chronometer);
         mUndoButton = (ImageButton)findViewById(R.id.backButton);
         mRedoButton = (ImageButton)findViewById(R.id.forwardButton);
         notepadIcon = (ImageButton) findViewById(R.id.scratch);
@@ -1104,7 +1103,7 @@ public class BoardActivity extends BaseGameActivity{
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(com.licktopia.championsofsudoku.R.menu.menu_main, menu);
+        getMenuInflater().inflate(com.licktopia.thechampionofsudoku.R.menu.menu_main, menu);
 
         return true;
     }

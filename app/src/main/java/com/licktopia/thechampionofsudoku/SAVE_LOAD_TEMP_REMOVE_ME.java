@@ -1,5 +1,5 @@
-package com.licktopia.championsofsudoku;
-import com.licktopia.championsofsudoku.Sudoku.Game;
+package com.licktopia.thechampionofsudoku;
+import com.licktopia.thechampionofsudoku.Sudoku.Game;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;

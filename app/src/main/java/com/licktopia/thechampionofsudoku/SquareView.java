@@ -1,10 +1,7 @@
-package com.licktopia.championsofsudoku;
+package com.licktopia.thechampionofsudoku;
 
-import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.content.Context;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;

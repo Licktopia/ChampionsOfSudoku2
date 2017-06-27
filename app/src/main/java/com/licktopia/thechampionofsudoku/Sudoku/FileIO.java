@@ -1,4 +1,4 @@
-package com.licktopia.championsofsudoku.Sudoku;
+package com.licktopia.thechampionofsudoku.Sudoku;
 
 import java.io.BufferedReader;
 import java.io.IOException;

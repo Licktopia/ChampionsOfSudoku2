@@ -1,4 +1,4 @@
-package com.licktopia.championsofsudoku.Activities;
+package com.licktopia.thechampionofsudoku.Activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -32,16 +32,16 @@ import com.google.example.games.basegameutils.BaseGameActivity;
 
 
 import com.google.example.games.basegameutils.GameHelper;
-import com.licktopia.championsofsudoku.Gamer;
-import com.licktopia.championsofsudoku.PlaySounds;
-import com.licktopia.championsofsudoku.R;
+import com.licktopia.thechampionofsudoku.Gamer;
+import com.licktopia.thechampionofsudoku.PlaySounds;
+import com.licktopia.thechampionofsudoku.R;
 
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Random;
 
 public class MainMenuActivity  extends BaseGameActivity{
-    private static final String PREF_FILE = "com.licktopia.championsofsudoku.preferences";
+    private static final String PREF_FILE = "com.licktopia.com.licktopia.championofsudoku.preferences";
     private static final int RC_SAVED_GAMES = 9009;
     private final static String TAG = "MainMenuActivity";
     private String mCurrentSaveName = "snapshotTemp";

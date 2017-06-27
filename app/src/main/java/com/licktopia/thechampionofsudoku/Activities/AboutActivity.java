@@ -1,9 +1,9 @@
-package com.licktopia.championsofsudoku.Activities;
+package com.licktopia.thechampionofsudoku.Activities;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
-import com.licktopia.championsofsudoku.R;
+import com.licktopia.thechampionofsudoku.R;
 
 public class AboutActivity extends AppCompatActivity {
 

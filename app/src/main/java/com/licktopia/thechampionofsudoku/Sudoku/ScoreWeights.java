@@ -1,4 +1,4 @@
-package com.licktopia.championsofsudoku.Sudoku;
+package com.licktopia.thechampionofsudoku.Sudoku;
 
 /**
  * Created by John Konecny on 6/23/2017.
