@@ -925,7 +925,7 @@ public class BoardActivity extends BaseGameActivity{
 
             Set<Integer> conflicts = mGame.setBoardValueAt(selectedSquare, keypadNumber);  // Set board value to number
             if (conflicts.isEmpty()) {
-                if(!solveClicked&&!mGame.isGameFinished()) {
+                if(!solveClicked&&!mGame.isGameFinished()&&mGame.getBoardValueAt(selectedSquare)!=0) {
                     mPlaySounds.playSounds(this, 1);
                 }
                 if (!colorGame)
@@ -938,7 +938,7 @@ public class BoardActivity extends BaseGameActivity{
                     mPlaySounds.playSounds(this, 2);
                 }
                 for (int conflict : conflicts) {
-                    squareViews[conflict].setErrorHighlight();     // Display error highlight
+                    squareViews[conflict].setErrorHighlight(colorGame);     // Display error highlight
                     highlightHandler.postDelayed(new Runnable() {  // Wait then remove error color
                         @Override
                         public void run() {

@@ -220,11 +220,21 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="10"
-            android:alpha=".3"
-            android:scaleType="centerCrop"
+            android:alpha=".4"
+            android:padding="5dp"
+            android:scaleType="fitCenter"
             android:visibility="gone"
-            app:srcCompat="@drawable/texture3"
-            tools:visibility="visible" />
+            app:srcCompat="@android:color/transparent"
+            tools:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/white_x"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:alpha=".5"
+            android:scaleType="fitXY"
+            android:visibility="gone"
+            app:srcCompat="@drawable/whitex" />
 
     </RelativeLayout>
 </RelativeLayout>

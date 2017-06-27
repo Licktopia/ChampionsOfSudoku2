@@ -28,6 +28,7 @@ public class SquareView {
     private ImageView[] notepadNums;
     private boolean colorMode;
     private ImageView squareTexture;
+    private ImageView whiteX;
 
 
     public RelativeLayout getSquareHolder() {
@@ -56,6 +57,7 @@ public class SquareView {
         number = (ImageView) v.findViewById(R.id.squareNumber);
         color = (RelativeLayout) v.findViewById(R.id.squareColor);
         notepad = (LinearLayout) v.findViewById(R.id.squareNotepad);
+        whiteX = (ImageView) v.findViewById(R.id.white_x);
         squareTexture = (ImageView)v.findViewById(R.id.square_texture);
         notepadNums[0] = (ImageView) v.findViewById(R.id.squareNotepad1);
         notepadNums[1] = (ImageView) v.findViewById(R.id.squareNotepad2);
@@ -192,11 +194,12 @@ public class SquareView {
         }
         else{
             if (highlighted) {
-                if (color.getBackground() == context.getDrawable(R.color.white)) {
-                    squareTexture.setBackground(context.getDrawable(R.drawable.texture3));
+                if (color.getBackground() == null) {
+                    squareTexture.setImageDrawable(context.getDrawable(R.drawable.grey_highlight));
                 }
                 else{
-                    squareTexture.setBackground(context.getDrawable(R.drawable.texture4));
+                    squareTexture.setImageDrawable(context.getDrawable(R.drawable.white_highlight));
+
                 }
                 squareTexture.setVisibility(View.VISIBLE); // Set to generic highlighted
             }
@@ -204,14 +207,20 @@ public class SquareView {
                 squareTexture.setVisibility(View.GONE); // Remove highlight
                 selectedSquare.setBackground(null);
             }
+            whiteX.setVisibility(View.GONE);
         }
     }
 
 
 
     /* Sets highlight state to error color */
-    public void setErrorHighlight() {
-        setHighlightColor(context.getColor(R.color.highlightred));
+    public void setErrorHighlight(boolean colorGame) {
+        if(!colorGame) {
+            setHighlightColor(context.getColor(R.color.highlightred));
+        }
+        else{
+            whiteX.setVisibility(View.VISIBLE);
+        }
     }
 
     /* Sets selected square to individual highlight color */
