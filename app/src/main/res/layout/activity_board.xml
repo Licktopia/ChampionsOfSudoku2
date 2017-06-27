@@ -1517,71 +1517,163 @@
                     android:orientation="horizontal"
                     android:weightSum="60">
 
-                    <Button
-                        android:id="@+id/one"
-                        style="@style/Widget.AppCompat.Button.Borderless"
+                    <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginLeft="0dp"
-                        android:layout_weight="10"
-                        android:background="@color/colorKeypad"
-                        android:text="1"
-                        android:textColor="@android:color/white"
-                        android:textSize="24sp"
-                        android:textStyle="normal|bold" />
+                        android:layout_weight="10">
 
-                    <Button
-                        android:id="@+id/two"
-                        style="@style/Widget.AppCompat.Button.Borderless"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginLeft="0dp"
-                        android:layout_weight="10"
-                        android:background="@color/colorKeypad"
-                        android:text="2"
-                        android:textColor="@android:color/white"
-                        android:textSize="24sp"
-                        android:textStyle="normal|bold" />
+                        <Button
+                            android:id="@+id/one"
+                            style="@style/Widget.AppCompat.Button.Borderless"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="0dp"
+                            android:layout_weight="10"
+                            android:background="@color/colorKeypad"
+                            android:text="1"
+                            android:textColor="@android:color/white"
+                            android:textSize="24sp"
+                            android:textStyle="normal|bold" />
 
-                    <Button
-                        android:id="@+id/three"
-                        style="@style/Widget.AppCompat.Button.Borderless"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginLeft="0dp"
-                        android:layout_weight="10"
-                        android:background="@color/colorKeypad"
-                        android:text="3"
-                        android:textColor="@android:color/white"
-                        android:textSize="24sp"
-                        android:textStyle="normal|bold" />
+                        <TextView
+                            android:id="@+id/lil_num1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignEnd="@+id/one"
+                            android:layout_alignParentBottom="true"
+                            android:layout_alignParentEnd="false"
+                            android:layout_alignParentRight="false"
+                            android:layout_alignRight="@+id/one"
+                            android:layout_marginBottom="5dp"
+                            android:layout_marginRight="10dp"
+                            android:textColor="@color/white"
+                            android:textSize="11sp" />
+                    </RelativeLayout>
 
-                    <Button
-                        android:id="@+id/four"
-                        style="@style/Widget.AppCompat.Button.Borderless"
+                    <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginLeft="0dp"
-                        android:layout_weight="10"
-                        android:background="@color/colorKeypad"
-                        android:text="4"
-                        android:textColor="@android:color/white"
-                        android:textSize="24sp"
-                        android:textStyle="normal|bold" />
+                        android:layout_weight="10">
 
-                    <Button
-                        android:id="@+id/five"
-                        style="@style/Widget.AppCompat.Button.Borderless"
+                        <Button
+                            android:id="@+id/two"
+                            style="@style/Widget.AppCompat.Button.Borderless"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="0dp"
+                            android:layout_weight="10"
+                            android:background="@color/colorKeypad"
+                            android:text="2"
+                            android:textColor="@android:color/white"
+                            android:textSize="24sp"
+                            android:textStyle="normal|bold" />
+
+                        <TextView
+                            android:id="@+id/lil_num2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentBottom="true"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_marginBottom="5dp"
+                            android:layout_marginRight="10dp"
+                            android:textColor="@color/white"
+                            android:textSize="11sp" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginLeft="0dp"
-                        android:layout_weight="10"
-                        android:background="@color/colorKeypad"
-                        android:lines="3"
-                        android:text="5"
-                        android:textColor="@android:color/white"
-                        android:textSize="24sp"
-                        android:textStyle="normal|bold" />
+                        android:layout_weight="10">
+
+                        <Button
+                            android:id="@+id/three"
+                            style="@style/Widget.AppCompat.Button.Borderless"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="0dp"
+                            android:layout_weight="10"
+                            android:background="@color/colorKeypad"
+                            android:text="3"
+                            android:textColor="@android:color/white"
+                            android:textSize="24sp"
+                            android:textStyle="normal|bold" />
+
+                        <TextView
+                            android:id="@+id/lil_num3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentBottom="true"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_marginBottom="5dp"
+                            android:layout_marginRight="10dp"
+                            android:textColor="@color/white"
+                            android:textSize="11sp" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="10">
+
+                        <Button
+                            android:id="@+id/four"
+                            style="@style/Widget.AppCompat.Button.Borderless"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="0dp"
+                            android:layout_weight="10"
+                            android:background="@color/colorKeypad"
+                            android:text="4"
+                            android:textColor="@android:color/white"
+                            android:textSize="24sp"
+                            android:textStyle="normal|bold" />
+
+                        <TextView
+                            android:id="@+id/lil_num4"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentBottom="true"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_marginBottom="5dp"
+                            android:layout_marginRight="10dp"
+                            android:textColor="@color/white"
+                            android:textSize="11sp" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="10">
+
+                        <Button
+                            android:id="@+id/five"
+                            style="@style/Widget.AppCompat.Button.Borderless"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="0dp"
+                            android:layout_weight="10"
+                            android:background="@color/colorKeypad"
+                            android:lines="3"
+                            android:text="5"
+                            android:textColor="@android:color/white"
+                            android:textSize="24sp"
+                            android:textStyle="normal|bold" />
+
+                        <TextView
+                            android:id="@+id/lil_num5"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentBottom="true"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_marginBottom="5dp"
+                            android:layout_marginRight="10dp"
+                            android:textColor="@color/white"
+                            android:textSize="11sp" />
+                    </RelativeLayout>
 
                     <RelativeLayout
                         android:id="@+id/scratch_bg"
@@ -1617,58 +1709,131 @@
                     android:weightSum="60">
 
 
-                    <Button
-                        android:id="@+id/six"
-                        style="@style/Widget.AppCompat.Button.Borderless"
+                    <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginLeft="0dp"
-                        android:layout_weight="10"
-                        android:background="@color/colorKeypad"
-                        android:text="6"
-                        android:textColor="@android:color/white"
-                        android:textSize="24sp"
-                        android:textStyle="normal|bold" />
+                        android:layout_weight="10">
 
-                    <Button
-                        android:id="@+id/seven"
-                        style="@style/Widget.AppCompat.Button.Borderless"
+                        <Button
+                            android:id="@+id/six"
+                            style="@style/Widget.AppCompat.Button.Borderless"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="0dp"
+                            android:layout_weight="10"
+                            android:background="@color/colorKeypad"
+                            android:text="6"
+                            android:textColor="@android:color/white"
+                            android:textSize="24sp"
+                            android:textStyle="normal|bold" />
+
+                        <TextView
+                            android:id="@+id/lil_num6"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentBottom="true"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_marginBottom="5dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_weight="10"
+                            android:textColor="@color/white"
+                            android:textSize="11sp" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginLeft="0dp"
-                        android:layout_weight="10"
-                        android:background="@color/colorKeypad"
-                        android:text="7"
-                        android:textColor="@android:color/white"
-                        android:textSize="24sp"
-                        android:textStyle="normal|bold" />
+                        android:layout_weight="10">
 
-                    <Button
-                        android:id="@+id/eight"
-                        style="@style/Widget.AppCompat.Button.Borderless"
+                        <Button
+                            android:id="@+id/seven"
+                            style="@style/Widget.AppCompat.Button.Borderless"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="0dp"
+                            android:layout_weight="10"
+                            android:background="@color/colorKeypad"
+                            android:text="7"
+                            android:textColor="@android:color/white"
+                            android:textSize="24sp"
+                            android:textStyle="normal|bold" />
+
+                        <TextView
+                            android:id="@+id/lil_num7"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentBottom="true"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_marginBottom="5dp"
+                            android:layout_marginRight="10dp"
+                            android:textColor="@color/white"
+                            android:textSize="11sp" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginLeft="0dp"
-                        android:layout_weight="10"
-                        android:background="@color/colorKeypad"
-                        android:text="8"
-                        android:textColor="@android:color/white"
-                        android:textSize="24sp"
-                        android:textStyle="normal|bold" />
+                        android:layout_weight="10">
 
-                    <Button
+                        <Button
+                            android:id="@+id/eight"
+                            style="@style/Widget.AppCompat.Button.Borderless"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="0dp"
+                            android:layout_weight="10"
+                            android:background="@color/colorKeypad"
+                            android:text="8"
+                            android:textColor="@android:color/white"
+                            android:textSize="24sp"
+                            android:textStyle="normal|bold" />
 
-                        android:id="@+id/nine"
-                        style="@style/Widget.AppCompat.Button.Borderless"
+                        <TextView
+                            android:id="@+id/lil_num8"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentBottom="true"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_marginBottom="5dp"
+                            android:layout_marginRight="10dp"
+                            android:textColor="@color/white"
+                            android:textSize="11sp" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginLeft="0dp"
-                        android:layout_weight="10"
-                        android:background="@color/colorKeypad"
-                        android:text="9"
-                        android:textColor="@android:color/white"
-                        android:textSize="24sp"
-                        android:textStyle="normal|bold" />
+                        android:layout_weight="10">
+
+                        <Button
+
+                            android:id="@+id/nine"
+                            style="@style/Widget.AppCompat.Button.Borderless"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="0dp"
+                            android:layout_weight="10"
+                            android:background="@color/colorKeypad"
+                            android:text="9"
+                            android:textColor="@android:color/white"
+                            android:textSize="24sp"
+                            android:textStyle="normal|bold" />
+
+                        <TextView
+                            android:id="@+id/lil_num9"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentBottom="true"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_marginBottom="5dp"
+                            android:layout_marginRight="10dp"
+                            android:textColor="@color/white"
+                            android:textSize="11sp" />
+                    </RelativeLayout>
 
                     <Button
                         android:id="@+id/clear"

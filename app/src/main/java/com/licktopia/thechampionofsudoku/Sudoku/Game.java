@@ -2,6 +2,7 @@ package com.licktopia.thechampionofsudoku.Sudoku;
 
 import android.content.Context;
 
+import java.util.Arrays;
 import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -63,6 +64,19 @@ public class Game
     //gets value of square given the index
     public int getBoardValueAt(int idx) {
         return curBoard.getValueAt(idx);
+    }
+
+    //gets number of 1's, 2's, etc
+    public int[] getValueTotals(){
+        int[] values = new int[9];
+        Arrays.fill(values,0);
+        for(int i = 0; i<Math.pow(curBoard.getSize(),2); i++){
+            int val = getBoardValueAt(i);
+            if(val!=0){
+                values[val-1]++;
+            }
+        }
+        return values;
     }
 
     //return if a square at the index is a starting value

@@ -122,7 +122,7 @@ public class GamerProfileActivity extends BaseGameActivity {
             nextPowerUpDisplay.setText( "Next Level Up " + String.format("%,d",Gamer.CUTOFF[Gamer.getLevel()]-Gamer.getXp())+ " XP");
         }
         xpDisplay.setText(String.format("%,d",Integer.parseInt(String.valueOf(Gamer.getXp()))) +" XP");
-        nextPowerUpDisplay.setText( "Next Level Up " + String.format("%,d",Gamer.CUTOFF[Gamer.getLevel()]-Gamer.getXp())+ " XP");
+        nextPowerUpDisplay.setText( "Next Level Up " + String.format("%,d",Gamer.CUTOFF[Gamer.getLevel()+1]-Gamer.getXp())+ " XP");
         mRankDisplay.setImageDrawable(getResources().getDrawable(Gamer.BADGETAGS[Gamer.getLevel()]));
         ImageView[] verticalBadges = new ImageView[52];
         for(int i = 0; i< Tags.verticalBadges.length;i++){

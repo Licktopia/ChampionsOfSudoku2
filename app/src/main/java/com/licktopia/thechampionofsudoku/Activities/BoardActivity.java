@@ -72,6 +72,7 @@ public class BoardActivity extends BaseGameActivity{
     private Game mGame;
     private boolean smallNumPadState = false;
     private Button[] numberButtons;
+    private TextView[] lilNums;
     private Button clearButton;
     private Button solveButton;
     private Button checkProgressButton;
@@ -132,6 +133,7 @@ public class BoardActivity extends BaseGameActivity{
         startAnimationHandler = new Handler();
         squareViews = new SquareView[size * size];//array of 81 squareViews
         numberButtons = new Button[size];//keypad 1-9
+        lilNums = new TextView[size];
 
 
 
@@ -250,6 +252,19 @@ public class BoardActivity extends BaseGameActivity{
         }
 
     }
+
+    /********************************
+    * Updates Little numbers on keyboard that track number of values on board
+     * ***************************************/
+    private void updateLilNums(){
+        int[] array = mGame.getValueTotals();
+        for(int i=0; i< array.length;i++){
+             lilNums[i]=(TextView)findViewById(Tags.lilNumTags[i]);
+             lilNums[i].setText(String.valueOf(array[i]));
+        }
+
+    }
+
     /************************************
      * Send to leaderboard at end of game
      *********************************/
@@ -470,7 +485,7 @@ public class BoardActivity extends BaseGameActivity{
             if(value == 0){
                 timer = 0;
             }else {
-                timer = value * 250 + 700;
+                timer = value * 250 + 200;
             }
 
             final int finalI = i;
@@ -498,6 +513,7 @@ public class BoardActivity extends BaseGameActivity{
                 animationFinished = true;
                 ///Make board clickable
                 allClickable(true);
+                updateLilNums();
 
 
             }
@@ -954,6 +970,7 @@ public class BoardActivity extends BaseGameActivity{
         }
         updateScore();
         updateUndoRedoButtons();
+        updateLilNums();
         if(mGame.isGameFinished()&&!solveClicked){
                 endOfGame(false);
         }
