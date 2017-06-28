@@ -32,6 +32,24 @@ public class Strategies {
         return nakedSquares;
     }
 
+    /* Returns a list of indices of squares that have the sole occurrence of a notepad number in a group */
+    public static List<Integer> getHiddenSingles(Board board) {
+
+        ArrayList<Integer> hiddenSingles = new ArrayList<>();
+        for (int[] group : board.getAllIndexGroups()) {
+            for (int i = 1; i <= board.getSize(); i++) {
+                // Find notepad values that only appear once in a group
+                if (board.getTotalNotepadOccurrences(group, i) == 1) {
+                    // Find square in group that has single appearance of value
+                    for (int j = 0; j < group.length; j++) {
+                        if (board.getNotepadAt(group[j], i)) hiddenSingles.add(group[j]);
+                    }
+                }
+            }
+        }
+        return hiddenSingles;
+    }
+
 
     /****** NAKED PAIRS *******/
 
