@@ -340,12 +340,12 @@ public class BoardActivity extends BaseGameActivity{
         TextView mPenalty = (TextView)findViewById(R.id.penalty_stats);
         mTitleStats.setText(Gamer.getUsername());
         mTotalXpStats.setText(String.format("%,d",(int) gameXP)+ " XP");
-        mRpStats.setText("Multiplier: " + String.format("%,d",(int) mGame.getScore())+" x " + String.format("%2.1f",Gamer.MULTIPLIER[Gamer.getLevel()]));
+        mRpStats.setText("Multiplier: " + String.format("%,d",(int) mGame.getScore())+ " x " + String.format("%2.1f",Gamer.MULTIPLIER[Gamer.getLevel()]));
         mLevelBonusStats.setText("Level Bonus: " + String.format("%,d",(int) mGame.getLevelBonus()));
-        mTimeBonusStats.setText("Time Bonus: " + String.format("%,d",(int) mGame.getEarlyFinishBonus()));
-        mGoodSquaresStats.setText("Square Points: " + String.format("%,d",(int) mGame.getOneTimeGuessSquareBonus()));
+        mTimeBonusStats.setText("Time Bonus: " + String.format("%,d",(int) (mGame.getEarlyFinishTime() - mGame.getRunningTime())) + " x " + String.format("%,d",(int) mGame.getEarlyFinishBonus()) );
+        mGoodSquaresStats.setText("Square Points: " + String.format("%,d",(int) mGame.getTotalOneTimeGuesses())+ " x " + String.format("%,d",(int) mGame.getOneTimeGuessSquareBonus()));
         mAccuracyStats.setText("Accuracy: " + String.format("%,d",(int)Math.round(mGame.getAccuracy()*100),2)+"%");
-        mPenalty.setText("Penalty: " + String.format("%,d",(int) mGame.getTimePenalty()));
+        mPenalty.setText("Penalty: " + String.format("%,d",(int) mGame.totalPenaltyTimeIntervals()) + " x " + String.format("%,d",(int) mGame.getTimePenalty()));
 
 
 
