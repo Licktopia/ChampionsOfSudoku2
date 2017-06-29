@@ -29,6 +29,9 @@ public class SudokuSettings {
     public boolean getSoundPreference(){
         return mSharedPreferences.getBoolean("Sounds", false);
     }
+    public boolean getLilNumPreference(){
+        return mSharedPreferences.getBoolean("LilNumbers", false);
+    }
 
     public void setSoundPreference(boolean sound){
         mSharedPreferences

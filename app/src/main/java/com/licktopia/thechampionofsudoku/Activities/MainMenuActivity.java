@@ -97,48 +97,17 @@ public class MainMenuActivity  extends BaseGameActivity{
         mResumeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showSavedGamesUI();
+                //showSavedGamesUI();
+
+                        Intent intent = new Intent(MainMenuActivity.this, DynamoDbTestActivity.class);
+
+                        startActivity(intent);
 
             }
         });
     }
 
-    void loadFromSnapshot() {
-        // Display a progress dialog
-        // ...
 
-        AsyncTask<Void, Void, Integer> task = new AsyncTask<Void, Void, Integer>() {
-            @Override
-            protected Integer doInBackground(Void... params) {
-                // Open the saved game using its name.
-                Snapshots.OpenSnapshotResult result = Games.Snapshots.open(gameHelper.getApiClient(),
-                        mCurrentSaveName, true).await();
-
-                // Check the result of the open operation
-                if (result.getStatus().isSuccess()) {
-                    Snapshot snapshot = result.getSnapshot();
-                    // Read the byte content of the saved game.
-                    try {
-                        mSaveGameData = snapshot.getSnapshotContents().readFully();
-                    } catch (IOException e) {
-                        Log.e(TAG, "Error while reading Snapshot.", e);
-                    }
-                } else{
-                    Log.e(TAG, "Error while loading: " + result.getStatus().getStatusCode());
-                }
-
-                return result.getStatus().getStatusCode();
-            }
-
-            @Override
-            protected void onPostExecute(Integer status) {
-                // Dismiss progress dialog and reflect the changes in the UI.
-                // ...
-            }
-        };
-
-        task.execute();
-    }
 
     /***************************************
      * Creates mGoogleApi Client and sets listeners

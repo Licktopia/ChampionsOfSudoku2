@@ -10,6 +10,11 @@
         android:key="@string/sounds_key"
         android:title="@string/Sounds"
         android:defaultValue="false"/>
+    <CheckBoxPreference
+        android:key="@string/lilnumber_key"
+        android:title="@string/LilNumbers"
+        android:summary="@string/show_the_total"
+        android:defaultValue="false"/>
 
 
 </PreferenceScreen>

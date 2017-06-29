@@ -257,6 +257,7 @@ public class BoardActivity extends BaseGameActivity{
     * Updates Little numbers on keyboard that track number of values on board
      * ***************************************/
     private void updateLilNums(){
+
         int[] array = mGame.getValueTotals();
         for(int i=0; i< array.length;i++){
              lilNums[i]=(TextView)findViewById(Tags.lilNumTags[i]);
@@ -433,6 +434,16 @@ public class BoardActivity extends BaseGameActivity{
         settings = new SudokuSettings(this);
         rowColHighlights= settings.getHighlightPreference();
         mPlaySounds.setMute(settings.getSoundPreference());
+
+        for (int i=0;i<lilNums.length;i++) {
+            lilNums[i]=(TextView)findViewById(Tags.lilNumTags[i]);
+            if (settings.getLilNumPreference()) {
+                lilNums[i].setVisibility(View.VISIBLE);
+            } else {
+                lilNums[i].setVisibility(View.INVISIBLE);
+            }
+        }
+
         if(animationFinished) {
             mChronometer.setBase(SystemClock.elapsedRealtime() + timeWhenStopped);
             if(!solvedState) {
