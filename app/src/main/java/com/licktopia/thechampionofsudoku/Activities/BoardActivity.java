@@ -3,14 +3,18 @@ package com.licktopia.thechampionofsudoku.Activities;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
@@ -25,6 +29,13 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.amazonaws.auth.CognitoCachingCredentialsProvider;
+import com.amazonaws.mobileconnectors.cognito.CognitoSyncManager;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
+import com.amazonaws.regions.Region;
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.facebook.CallbackManager;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
@@ -43,11 +54,14 @@ import com.licktopia.thechampionofsudoku.R;
 import com.licktopia.thechampionofsudoku.Settings.SudokuSettings;
 import com.licktopia.thechampionofsudoku.Settings.SudokuSettingsActivity;
 import com.licktopia.thechampionofsudoku.SquareView;
+import com.licktopia.thechampionofsudoku.Sudoku.CompletedGame;
 import com.licktopia.thechampionofsudoku.Sudoku.Game;
 import com.licktopia.thechampionofsudoku.Sudoku.Square;
 import com.licktopia.thechampionofsudoku.Tags;
 import java.math.BigInteger;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Random;
 import java.util.Set;
 import static android.view.View.GONE;
@@ -93,7 +107,12 @@ public class BoardActivity extends BaseGameActivity{
     private String gamerID;
     private int level;
     ShareDialog shareDialog;
-    CallbackManager callbackManager;
+
+    CognitoCachingCredentialsProvider credentialsProvider;
+    CognitoSyncManager syncClient;
+    AmazonDynamoDBClient ddbClient;
+    DynamoDBMapper mapper;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,6 +132,26 @@ public class BoardActivity extends BaseGameActivity{
         //TODO Remove this for production
         gameHelper.enableDebugLog(true);
         gameHelper.setup(this);
+
+        // Initialize the Amazon Cognito credentials provider
+        credentialsProvider = new CognitoCachingCredentialsProvider(
+                getApplicationContext(),
+                "us-east-2:40802ef0-7537-4910-8442-31e2b30c5a7d", // Identity Pool ID
+                Regions.US_EAST_2 // Region
+        );
+
+        // Initialize the Cognito Sync client
+        syncClient = new CognitoSyncManager(
+                getApplicationContext(),
+                Regions.US_EAST_2, // Region
+                credentialsProvider);
+
+
+        ddbClient = new AmazonDynamoDBClient(credentialsProvider);
+        mapper = new DynamoDBMapper(ddbClient);
+
+        ddbClient.setRegion(Region.getRegion(Regions.US_EAST_2));
+
 
         //bindings
         mChronometer = (Chronometer)findViewById(com.licktopia.thechampionofsudoku.R.id.chronometer);
@@ -150,6 +189,52 @@ public class BoardActivity extends BaseGameActivity{
             }
         });
 
+    }
+
+    private boolean isInternet(){
+        boolean isConnected;
+        ConnectivityManager cm =
+                (ConnectivityManager)this.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return isConnected = activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
+
+    }
+
+    private void uploadCompletedGame(int xp){
+        if(isInternet()&&gameHelper.getApiClient().isConnected()) {
+            Date dt = new Date();
+            SimpleDateFormat dateFormat = new SimpleDateFormat("MMM d, yyyy");
+            String today = dateFormat.format(dt);
+            final CompletedGame obj = new CompletedGame();
+            obj.setGamerID(Gamer.getId());
+            obj.setRealScore((int) mGame.getScore());
+            obj.setXp(xp);
+            obj.setTime((int) mGame.getRunningTime());
+            obj.setDate(today);
+            obj.setColor(colorGame);
+            obj.setPuzzleNumber(8534);
+            obj.setLevel(level);
+            obj.setAccuracy(mGame.getAccuracy());
+
+
+            // id field is null at this point
+            Runnable runnable = new Runnable() {
+                public void run() {
+                    //DynamoDB calls go here
+                    mapper.save(obj);
+                }
+            };
+            Thread mythread = new Thread(runnable);
+            mythread.start();
+
+
+            System.out.println("Object was saved with id " + obj.getGameID());
+        }
+        else{
+            Toast.makeText(this, R.string.not_upload,Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void updateUI(boolean isLoggedIn){
@@ -204,6 +289,7 @@ public class BoardActivity extends BaseGameActivity{
             long gameXP = (long) (mGame.getScore()* Gamer.MULTIPLIER[Gamer.getLevel()]);
             boolean levelUp = Gamer.addExperience(gameXP);
             if(!solveClicked) {
+                uploadCompletedGame((int) gameXP);
                 sendToLeaderBoard(gameXP);
                 handleAchievements(gameXP);
                 setStatsBox(gameXP);

@@ -74,4 +74,5 @@
     <string name="lilnumber_key">LilNumbers</string>
     <string name="LilNumbers">Show number/color amounts</string>
     <string name="show_the_total">Show the total amount of each number/color on the board</string>
+    <string name="not_upload">Could not upload game to database</string>
 </resources>

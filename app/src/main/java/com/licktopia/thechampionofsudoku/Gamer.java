@@ -1,5 +1,7 @@
 package com.licktopia.thechampionofsudoku;
 
+import java.util.List;
+
 /**
  * Created by Matt on 6/22/2017.
  */
@@ -28,6 +30,10 @@ public class Gamer {
     public static String id;
     public static int level=0;
     public static long xp;
+
+
+
+    public static List<ListItem> listItems;
 
     /* Constructor */
     /*
@@ -118,4 +124,7 @@ public class Gamer {
         Gamer.level = 0;
     }
 
+    public static List<ListItem> getListItems() {
+        return listItems;
+    }
 }
