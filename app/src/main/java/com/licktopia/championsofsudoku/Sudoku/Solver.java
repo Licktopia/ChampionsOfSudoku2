@@ -90,6 +90,7 @@ class Solver {
         boolean cannotSolve = false;
         // Level of strategy to try
         int strategyNumber = 1;
+        Strategies.updateAllNotepads(curBoard, false);
         // Iterate while there are still squares to fill or we can't solve any more
         while (squaresToComplete > 0 && !cannotSolve) {
             switch(strategyNumber) {
@@ -113,10 +114,10 @@ class Solver {
                     else {
                         solvingStepsStrategies.add(curBoard.getSquare(index));
                         squaresToComplete--;
+                        Strategies.updateAllNotepads(curBoard, true);
                     }
                     break;
             }
-            strategyNumber++;
         }
     }
 

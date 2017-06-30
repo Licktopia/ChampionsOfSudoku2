@@ -276,7 +276,9 @@ public class Game
     //returns the steps required to solve from a blank board
     public Queue<Square> getSolutionSteps()
     {
-        return solutionSolver.getSolvingSteps();
+        updateSolver();
+        solutionSolver.solveWithStrategies();
+        return solutionSolver.getExactSolution();
     }
 
     public void updateAllNotepads(boolean removeOnly) {
