@@ -268,6 +268,11 @@ public class Game
     //stores solution to game
     private Solver solutionSolver;
 
+    //passes current state of game to new solver
+    public void updateSolver() {
+        solutionSolver = new Solver(curBoard);
+    }
+
     //returns the steps required to solve from a blank board
     public Queue<Square> getSolutionSteps()
     {

@@ -19,6 +19,14 @@ public class Strategies {
         return list.get(rand);
     }
 
+    private static int[] getGroup(Board board, int idx1, int idx2) {
+        int group[];
+        if (board.isSameRow(idx1, idx2)) group = board.getRowIndicesByIndex(idx1);
+        else if (board.isSameCol(idx1, idx2)) group = board.getColIndicesByIndex(idx1);
+        else group = board.getClusterIndicesByIndex(idx1);
+        return group;
+    }
+
     /****** NAKED SINGLES *******/
 
     /* Return a list of square indices that have only one possible value */
@@ -32,22 +40,45 @@ public class Strategies {
         return nakedSquares;
     }
 
-    /* Returns a list of indices of squares that have the sole occurrence of a notepad number in a group */
-    public static List<Integer> getHiddenSingles(Board board) {
+    /* Removes a random instance of a single */
+    public static int removeRandomNakedSingle(Board board) {
+        List<Integer> singles = getNakedSingles(board);
+        if (!singles.isEmpty()) {
+            int index = getRandomElement(singles);
+            board.setOnlyPossibleValueAt(index);
+            return index;
+        }
+        // No singles to remove
+        return -1;
+    }
 
-        ArrayList<Integer> hiddenSingles = new ArrayList<>();
+    /****** HIDDEN SINGLES *******/
+
+    /* Returns a list of Pairs (index - notepad num) of squares that have the sole occurrence of num in a group */
+    public static List<Pair> getHiddenSingles(Board board) {
+
+        ArrayList<Pair> hiddenSingles = new ArrayList<>();
         for (int[] group : board.getAllIndexGroups()) {
             for (int i = 1; i <= board.getSize(); i++) {
                 // Find notepad values that only appear once in a group
                 if (board.getTotalNotepadOccurrences(group, i) == 1) {
                     // Find square in group that has single appearance of value
                     for (int j = 0; j < group.length; j++) {
-                        if (board.getNotepadAt(group[j], i)) hiddenSingles.add(group[j]);
+                        if (board.getNotepadAt(group[j], i)) hiddenSingles.add(new Pair(group[j], i));
                     }
                 }
             }
         }
         return hiddenSingles;
+    }
+
+    // Updates the notepad of a random hidden single, if one exists
+    public static void removeRandomHiddenSingle(Board board) {
+        List<Pair> hiddenSingles = getHiddenSingles(board);
+        if (!hiddenSingles.isEmpty()) {
+            Pair indexNumPair = getRandomElement(hiddenSingles);
+            board.setOnlyNotepadValue((int)indexNumPair.first, (int)indexNumPair.second);
+        }
     }
 
 
@@ -65,8 +96,14 @@ public class Strategies {
             for (int j = i + 1; j < board.totalBoardElements(); j++) {
                 if (board.getValueAt(j) != 0) continue; // Skip non-empty squares
                 // Only check pairs that are connected
-                if ((board.isSameRow(i, j) || board.isSameCol(i, j) || board.isSameCluster(i, j)) && board.hasSameNotepad(i, j))
-                    nakedPairs.add(new Pair(i, j));
+                if ((board.isSameRow(i, j) || board.isSameCol(i, j) || board.isSameCluster(i, j)) && board.hasSameNotepad(i, j)) {
+                    // Check to make sure there are values to be removed in other squares
+                    List<Integer> values = board.getNotepadValues(i);
+                    int[] group = getGroup(board, i, j);
+                    if (board.getTotalNotepadOccurrences(group, values.get(0)) > 2 ||
+                            board.getTotalNotepadOccurrences(group, values.get(1)) > 2)
+                        nakedPairs.add(new Pair(i, j));
+                }
             }
         }
 
@@ -79,22 +116,14 @@ public class Strategies {
         // Get the two notepad values in the naked pair
         int idx1 = (int)pair.first;
         int idx2 = (int)pair.second;
-        int notepad1 = 0;
-        int notepad2 = 0;
-        for (int i = 1; i <= board.getSize(); i++) {
-            if (board.getNotepadAt(idx1, i)) {
-                if (notepad1 == 0) notepad1 = i;
-                else notepad2 = i;
-            }
-        }
+        List<Integer> values = board.getNotepadValues(idx1);
+        int notepad1 = values.get(0);
+        int notepad2 = values.get(1);
 
-        int[] indices;
-        if (board.isSameRow(idx1, idx2)) indices = board.getRowIndicesByIndex(idx1);
-        else if (board.isSameCol(idx1, idx2)) indices = board.getColIndicesByIndex(idx1);
-        else indices = board.getClusterIndicesByIndex(idx1);
+        int[] group = getGroup(board, idx1, idx2);
 
         // Remove notepad values from all squares in indices that are open and not part of the pair
-        for (int i : indices) {
+        for (int i : group) {
             // Skip over squares in pair
             if (i == idx1 || i == idx2) continue;
             // Remove values from open squares
@@ -106,17 +135,13 @@ public class Strategies {
     }
 
     /* Finds, selects, and executes naked pair strategy on one random existing naked pair */
-    public static boolean removeRandomNakedPairValues(Board board) {
+    public static void removeRandomNakedPairValues(Board board) {
         List<Pair> pairs = getNakedPairs(board);
         if (!pairs.isEmpty()) {
             Pair pair = getRandomElement(pairs);
             removeNakedPairValues(board, pair);
-            return true;
         }
-        return false;
     }
-
-
 
     /****** HIDDEN PAIRS ********/
 
@@ -146,7 +171,9 @@ public class Strategies {
                                     else idx2 = group[l];
                                 }
                             }
-                            hiddenPairs.add(new Pair(idx1, idx2));
+                            // Check there are other notepad numbers to remove
+                            if (board.getTotalNotepadValues(idx1) > 2 || board.getTotalNotepadValues(idx2) > 2)
+                                hiddenPairs.add(new Pair(idx1, idx2));
                         }
                     }
                     twoSquareNotepadNums.add(j);
@@ -156,6 +183,34 @@ public class Strategies {
 
         return hiddenPairs;
     }
+
+    public static void removeHiddenPairValues(Board board, Pair pair) {
+
+        // Get the notepad values in the naked pair
+        int idx1 = (int)pair.first;
+        int idx2 = (int)pair.second;
+
+        // Get the indices of the squares in the group
+        int group[] = getGroup(board, idx1, idx2);
+
+        // Set all notepad nums in the two squares that are not exclusive to false
+        for (int i = 1; i <= board.getSize(); i++) {
+            if (!(board.getTotalNotepadOccurrences(group, i) == 2) || !board.getNotepadAt(idx1, i) || !board.getNotepadAt(idx2, i)) {
+                board.setNotepadAt(idx1, i, false);
+                board.setNotepadAt(idx2, i, false);
+            }
+        }
+    }
+
+    /* Finds, selects, and executes hidden pair strategy on one random existing hidden pair */
+    public static void removeRandomHiddenPairValues(Board board) {
+        List<Pair> pairs = getNakedPairs(board);
+        if (!pairs.isEmpty()) {
+            Pair pair = getRandomElement(pairs);
+            removeNakedPairValues(board, pair);
+        }
+    }
+
 
     /****** LOCKED CANDIDATE *******/
 
@@ -179,29 +234,6 @@ public class Strategies {
         //  Eliminate that candidate from the other squares in that column (or row) since it must appear
         //  in one of the two spots in that column
     }
-
-
-    /*
-    public static Queue<Square> solveWithStrategies(Board board) {
-
-        int numSteps = board.getOpenSquares();   // Number of squares to be filled
-        int totalStrategiesUsed = 0;                // Track how many strategies performed to measure difficulty
-        Queue<Square> steps = new LinkedList<>();   // To store steps taken
-
-        while (steps.size() < numSteps) {
-            updateAllNotepads();
-            List<Square> singles = getNakedSingles(board);
-            Square square = getRandomFromSet(singles);
-            if (square != null)
-                steps.add(square);
-            else {
-                // TODO Try next hardest strategy, and so on
-            }
-        }
-
-        return steps;
-    }
-    */
 
 
     //updates all squares' notepads so that only valid moves are true

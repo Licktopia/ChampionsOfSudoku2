@@ -2,7 +2,9 @@ package com.licktopia.championsofsudoku.Sudoku;
 
 import android.content.Context;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Stack;
 import java.util.Set;
 
@@ -128,6 +130,18 @@ class Board {
         return this.setValueAt(idxToRow(idx), idxToCol(idx), value);
     }
 
+    // sets square at idx to it's only possible value
+    protected Set<Integer> setOnlyPossibleValueAt(int idx) {
+        if (getTotalNotepadValues(idx) != 1)
+            return null;
+        int value = 1;
+        for (int i = 1; i <= SIZE; i++) {
+            if (getNotepadAt(idx, i))
+                value = i;
+        }
+        return setValueAt(idx, value);
+    }
+
 
     /* Get value at given row/column */
     protected int getValueAt(int row, int col) {
@@ -149,6 +163,14 @@ class Board {
         this.setNotepadAt(idxToRow(idx), idxToCol(idx), num, value);
     }
 
+    //sets notepad value num of square idx to true, all others to false
+    protected void setOnlyNotepadValue(int idx, int num) {
+        for (int i = 1; i <= SIZE; i++) {
+            if (i == num) setNotepadAt(idx, i, true);
+            else setNotepadAt(idx, i, false);
+        }
+    }
+
     protected boolean getNotepadAt(int row, int col, int num) {
         return contents[row][col].getNotepad(num);
     }
@@ -156,6 +178,15 @@ class Board {
     //get cell notepad value for given num
     protected boolean getNotepadAt(int idx, int num) {
         return this.getNotepadAt(idxToRow(idx), idxToCol(idx), num);
+    }
+
+    //returns a list of all the values in the notepad of idx
+    protected List<Integer> getNotepadValues(int idx) {
+        List<Integer> values = new ArrayList<>();
+        for (int i = 1; i <= SIZE; i++) {
+            if (getNotepadAt(idx, i)) values.add(i);
+        }
+        return values;
     }
 
     //return if a square at row, col is a starting value

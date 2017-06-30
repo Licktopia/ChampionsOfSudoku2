@@ -1,7 +1,10 @@
 package com.licktopia.championsofsudoku.Sudoku;
 
+import android.support.v4.util.Pair;
+
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Queue;
 import java.util.Stack;
 import java.util.Set;
@@ -17,11 +20,13 @@ class Solver {
 
     Board curBoard;
     Queue<Square> solvingSteps;
+    Queue<Square> solvingStepsStrategies;
 
     protected Solver(Board curBoard)
     {
         this.curBoard = new Board(curBoard);
-        Queue<Square> solvingSteps = new LinkedList<Square>();
+        solvingSteps = new LinkedList<Square>();
+        solvingStepsStrategies = new LinkedList<>();
     }
 
     //solves board using backtracking method and returns solved board
@@ -78,6 +83,43 @@ class Solver {
         return curBoard;
     }
 
+    // Returns a queue of squares that is an exact set of steps to solve the puzzle
+    protected void solveWithStrategies() {
+        // Number of steps
+        int squaresToComplete = curBoard.getOpenSquares();
+        boolean cannotSolve = false;
+        // Level of strategy to try
+        int strategyNumber = 1;
+        // Iterate while there are still squares to fill or we can't solve any more
+        while (squaresToComplete > 0 && !cannotSolve) {
+            switch(strategyNumber) {
+                case 4:
+                    Strategies.removeRandomHiddenPairValues(curBoard);
+                case 3:
+                    Strategies.removeRandomNakedPairValues(curBoard);
+                case 2:
+                    Strategies.removeRandomHiddenSingle(curBoard);
+                case 1:
+                    int index = Strategies.removeRandomNakedSingle(curBoard);
+                    // If no squares are found
+                    if (index == -1) {
+                        // Exhausted all strategies, we cannot solve at this point (YET)
+                        if (strategyNumber == 4)
+                            cannotSolve = true;
+                        else // Try next strategy
+                            strategyNumber++;
+                    }
+                    // Add step to queue, and repeat
+                    else {
+                        solvingStepsStrategies.add(curBoard.getSquare(index));
+                        squaresToComplete--;
+                    }
+                    break;
+            }
+            strategyNumber++;
+        }
+    }
+
     //updates all squares' notepads so that only valid moves are true
     private void updateAllNotepads(boolean removeOnly)
     {
@@ -122,6 +164,9 @@ class Solver {
     protected Queue<Square> getSolvingSteps()
     {
         return  solvingSteps;
+    }
+    protected Queue<Square> getExactSolution() {
+        return solvingStepsStrategies;
     }
 
 }
