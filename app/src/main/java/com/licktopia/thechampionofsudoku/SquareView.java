@@ -2,6 +2,7 @@ package com.licktopia.thechampionofsudoku;
 
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -186,9 +187,9 @@ public class SquareView {
     public void setHighlighted(boolean highlighted, boolean numberMode) {
         if(numberMode) {
             if (highlighted)
-                setHighlightColor(context.getColor(R.color.colorHighLight)); // Set to generic highlighted
+                setHighlightColor(ContextCompat.getColor(context, R.color.colorHighLight)); // Set to generic highlighted
             else {
-                setHighlightColor(context.getColor(R.color.white)); // Remove highlight
+                setHighlightColor(ContextCompat.getColor(context, R.color.white)); // Remove highlight
                 selectedSquare.setBackground(null);
             }
         }
@@ -216,7 +217,7 @@ public class SquareView {
     /* Sets highlight state to error color */
     public void setErrorHighlight(boolean colorGame) {
         if(!colorGame) {
-            setHighlightColor(context.getColor(R.color.highlightred));
+            setHighlightColor(ContextCompat.getColor(context, R.color.highlightred));
         }
         else{
             whiteX.setVisibility(View.VISIBLE);
@@ -229,7 +230,7 @@ public class SquareView {
     }
 
     public void setSameNumberHighlight() {
-        setHighlightColor(context.getColor(R.color.samecolorhiglight));
+        setHighlightColor(ContextCompat.getColor(context, R.color.samecolorhiglight));
     }
 
     public void setSameColorHighlight() {

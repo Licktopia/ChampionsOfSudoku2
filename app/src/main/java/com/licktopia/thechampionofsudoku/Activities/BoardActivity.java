@@ -15,6 +15,7 @@ import android.os.Handler;
 import android.os.SystemClock;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
@@ -787,14 +788,14 @@ public class BoardActivity extends BaseGameActivity{
                     RelativeLayout notepadBackground = (RelativeLayout) findViewById(R.id.scratch_bg);
                     if (smallNumPadState) {
                         smallNumPadState = false;
-                        notepadBackground.setBackgroundColor(getColor(R.color.colorKeypad));
+                        notepadBackground.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorKeypad));
 
                     } else {
                         smallNumPadState = true;
                         if (!colorGame) {
-                            notepadBackground.setBackgroundColor(getColor(R.color.notepadNumberHighlight));
+                            notepadBackground.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.notepadNumberHighlight));
                         } else {
-                            notepadBackground.setBackgroundColor(getColor(R.color.notepadColorHighlight));
+                            notepadBackground.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.notepadColorHighlight));
                         }
                     }
                 }
