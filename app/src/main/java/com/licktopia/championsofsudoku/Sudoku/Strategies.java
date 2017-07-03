@@ -52,6 +52,7 @@ public class Strategies {
         return -1;
     }
 
+
     /****** HIDDEN SINGLES *******/
 
     /* Returns a list of Pairs (index - notepad num) of squares that have the sole occurrence of num in a group */
@@ -83,7 +84,6 @@ public class Strategies {
 
 
     /****** NAKED PAIRS *******/
-
 
     /* Find all instances of naked pairs */
     public static List<Pair> getNakedPairs(Board board) {
@@ -142,6 +142,7 @@ public class Strategies {
             removeNakedPairValues(board, pair);
         }
     }
+
 
     /****** HIDDEN PAIRS ********/
 
@@ -204,10 +205,10 @@ public class Strategies {
 
     /* Finds, selects, and executes hidden pair strategy on one random existing hidden pair */
     public static void removeRandomHiddenPairValues(Board board) {
-        List<Pair> pairs = getNakedPairs(board);
+        List<Pair> pairs = getHiddenPairs(board);
         if (!pairs.isEmpty()) {
             Pair pair = getRandomElement(pairs);
-            removeNakedPairValues(board, pair);
+            removeHiddenPairValues(board, pair);
         }
     }
 
@@ -215,15 +216,89 @@ public class Strategies {
     /****** LOCKED CANDIDATE *******/
 
     // Search CLUSTERS for notepad candidates that are restricted to single row or column
-    public static void lockedCandidate(Board board) {
+    // Returns a Pair object containing the cluster number and the locked notepad number
+    public static List<Pair> getLockedCandidates(Board board) {
+
+        ArrayList<Pair> lockedCandidates = new ArrayList<>();
 
         // Iterate over each cluster to find possible restricted candidates
         for (int i = 0; i < board.getSize(); i++) {
+            // Get cluster indices
             int[] indices = board.getClusterIndicesByIndex(i);
+            // Iterate through each notepad number
+            for (int np = 1; np <= board.getSize(); np++) {
+                // Check if a number appears only two or three times in a cluster
+                int occurrences = board.getTotalNotepadOccurrences(indices, np);
+                if (occurrences == 2 || occurrences == 3) {
+                    int first, second, third;
+                    first = second = third = -1;
+                    // Get indices of occurrences
+                    for (int index : indices) {
+                        if (board.getNotepadAt(index, np)) {
+                            if (first == -1) first = index;
+                            else if (second == - 1) second = index;
+                            else third = index;
+                        }
+                    }
+                    // See if occurrences are all in same row or col
+                    if (board.isSameRow(first, second) && (third == -1 || board.isSameRow(first, third))) {
+                        // If there are values in the row to be removed, add to list
+                        int[] rowIndices = board.getRowIndicesByIndex(first);
+                        int rowOccurrences = board.getTotalNotepadOccurrences(rowIndices, np);
+                        if (rowOccurrences > occurrences) lockedCandidates.add(new Pair(i, np));
+                    }
+                    else if (board.isSameCol(first, second) && (third == -1 || board.isSameCol(first, third))) {
+                        // If there are values in the column to be removed, add to list
+                        int[] colIndices = board.getColIndicesByIndex(first);
+                        int colOccurrences = board.getTotalNotepadOccurrences(colIndices, np);
+                        if (colOccurrences > occurrences) lockedCandidates.add(new Pair(i, np));
+                    }
+                }
+            }
+        }
 
+        return lockedCandidates;
+    }
+
+    public static void removeLockedCandidateValues(Board board, Pair pair) {
+
+        int cluster = (int)pair.first;
+        int np = (int)pair.second;
+        int[] indices = board.getClusterIndices(cluster);
+
+        // Get indices containing np
+        int idx1 = -1;
+        int idx2 = -1;
+        int idx3 = -1;
+        for (int i = 0; i < indices.length; i++) {
+            if (board.getNotepadAt(indices[i], np)) {
+                if (idx1 == -1) idx1 = indices[i];
+                else if (idx2 == -1) idx2 = indices[i];
+                else idx3 = indices[i];
+            }
+        }
+
+        // Get indices of row or column to be edited
+        int[] indicesToEdit;
+        if (board.isSameRow(idx1, idx2))
+            indicesToEdit = board.getRowIndicesByIndex(idx1);
+        else
+            indicesToEdit = board.getColIndicesByIndex(idx1);
+
+        // Set notepad for other indices in row/col to false
+        for (int i : indicesToEdit) {
+            if (i != idx1 && i != idx2 && i != idx3)
+                board.setNotepadAt(i, np, false);
         }
     }
 
+    public static void removeRandomLockedCandidateValues(Board board) {
+        List<Pair> pairs = getLockedCandidates(board);
+        if (!pairs.isEmpty()) {
+            Pair pair = getRandomElement(pairs);
+            removeLockedCandidateValues(board, pair);
+        }
+    }
 
 
     /****** X WING *******/
