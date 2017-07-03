@@ -94,6 +94,8 @@ class Solver {
         // Iterate while there are still squares to fill or we can't solve any more
         while (squaresToComplete > 0 && !cannotSolve) {
             switch(strategyNumber) {
+                case 5:
+                    Strategies.removeRandomLockedCandidateValues(curBoard);
                 case 4:
                     Strategies.removeRandomHiddenPairValues(curBoard);
                 case 3:
@@ -105,7 +107,7 @@ class Solver {
                     // If no squares are found
                     if (index == -1) {
                         // Exhausted all strategies, we cannot solve at this point (YET)
-                        if (strategyNumber == 4)
+                        if (strategyNumber == 5)
                             cannotSolve = true;
                         else // Try next strategy
                             strategyNumber++;
