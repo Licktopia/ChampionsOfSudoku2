@@ -935,7 +935,7 @@ public class BoardActivity extends BaseGameActivity{
                     Square square = newSteps.get(finalI);
                     selectedSquare = square.getIdx();
                     numberCommands(square.getValue());
-
+                    updateBoard();
 
                 }
             }, speed * i);
