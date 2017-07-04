@@ -61,6 +61,9 @@ public class Game
         return curBoard.getValueAt(row, col);
     }
 
+    //gets board number
+    public int getBoardNumber(){return curBoard.getBoardNumber();}
+
     //gets value of square given the index
     public int getBoardValueAt(int idx) {
         return curBoard.getValueAt(idx);

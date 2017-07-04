@@ -11,10 +11,12 @@ import android.widget.TextView;
 
 import com.licktopia.thechampionofsudoku.CompletedGameListAdapter;
 
-import com.licktopia.thechampionofsudoku.ListItem;
+import com.licktopia.thechampionofsudoku.CompletedGameListItem;
+import com.licktopia.thechampionofsudoku.Gamer;
 import com.licktopia.thechampionofsudoku.R;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -28,8 +30,7 @@ public class CompletedGameActivity extends AppCompatActivity {
     private Button tvSortHigh;
     private Button tvSortTime;
     private TextView tvGpDisplay;
-    private String gamerName;
-    public static List<ListItem> listItems;
+    public static List<CompletedGameListItem> completedGameListItems;
 
 
 
@@ -37,12 +38,7 @@ public class CompletedGameActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
-
         setContentView(R.layout.activity_completedgame);
-
-
 
         tvSortRecent = (Button)findViewById(R.id.sort_recent);
         tvSortBest = (Button)findViewById(R.id.sort_best);
@@ -51,17 +47,17 @@ public class CompletedGameActivity extends AppCompatActivity {
         recyclerView = (RecyclerView)findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new CompletedGameListAdapter(listItems, this);
+        fillListItems();
         tvGpDisplay = (TextView)findViewById(R.id.user_name);
         recyclerView.addItemDecoration(
                 new HorizontalDividerItemDecoration.Builder(this).size(12).build());
 
-        tvGpDisplay.setText(gamerName +"'s Game History");
-        recyclerView.setAdapter(adapter);
+        tvGpDisplay.setText(new StringBuilder().append(Gamer.getUsername()).append(getString(R.string.game_history)).toString());
+
         tvSortRecent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Collections.sort(listItems,new RecentSorter());
+                Collections.sort(completedGameListItems,new RecentSorter());
                 adapter.notifyDataSetChanged();
                 //recyclerView.setAdapter(adapter);
             }
@@ -70,7 +66,7 @@ public class CompletedGameActivity extends AppCompatActivity {
         tvSortBest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Collections.sort(listItems,new BestSorter());
+                Collections.sort(completedGameListItems,new BestSorter());
                 adapter.notifyDataSetChanged();
                 //recyclerView.setAdapter(adapter);
             }
@@ -79,7 +75,7 @@ public class CompletedGameActivity extends AppCompatActivity {
         tvSortHigh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Collections.sort(listItems,new HighSorter());
+                Collections.sort(completedGameListItems,new HighSorter());
                 adapter.notifyDataSetChanged();
                // recyclerView.setAdapter(adapter);
             }
@@ -88,35 +84,58 @@ public class CompletedGameActivity extends AppCompatActivity {
         tvSortTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Collections.sort(listItems,new TimeSorter());
+                Collections.sort(completedGameListItems,new TimeSorter());
                 adapter.notifyDataSetChanged();
                 //recyclerView.setAdapter(adapter);
             }
         });
 
+        adapter = new CompletedGameListAdapter(completedGameListItems, this);
+        recyclerView.setAdapter(adapter);
     }
 
-    public class RecentSorter implements Comparator<ListItem> {
+    private void fillListItems(){
+        completedGameListItems = new ArrayList<>();
+        for(int i = 0; i < Gamer.getCompletedGames().size(); i++){
+            CompletedGameListItem cGLI= new CompletedGameListItem(
+                    Gamer.getCompletedGames().get(i).getAccuracy(),
+                    Gamer.getCompletedGames().get(i).getDate(),
+                    Gamer.getCompletedGames().get(i).getLevel(),
+                    Gamer.getCompletedGames().get(i).getPuzzleNumber(),
+                    Gamer.getCompletedGames().get(i).getRealScore(),
+                    Gamer.getCompletedGames().get(i).getTime(),
+                    Gamer.getCompletedGames().get(i).getXp(),
+                    Gamer.getCompletedGames().get(i).getGamerID(),
+                    Gamer.getCompletedGames().get(i).isColor(),
+                    Gamer.getCompletedGames().get(i).getExactTime());
+            completedGameListItems.add(cGLI);
 
-        public int compare(ListItem one, ListItem another){
+        }
+        Collections.sort(completedGameListItems,new RecentSorter());
+    }
+
+
+    public class RecentSorter implements Comparator<CompletedGameListItem> {
+
+        public int compare(CompletedGameListItem one, CompletedGameListItem another){
             int returnVal = 0;
-/*
-            if(one.getId() < another.getId()){
+
+            if(formatExactTime(one.getExactTime()) < formatExactTime(another.getExactTime())){
                 returnVal =  1;
-            }else if(one.getId() > another.getId()){
+            }else if(formatExactTime(one.getExactTime()) > formatExactTime(another.getExactTime())){
                 returnVal =  -1;
-            }else if(one.getId() == another.getId()){
+            }else if(formatExactTime(one.getExactTime()) == formatExactTime(another.getExactTime())){
                 returnVal =  0;
             }
-            */
+
             return returnVal;
 
         }
     }
 
-    public class BestSorter implements Comparator<ListItem> {
+    public class BestSorter implements Comparator<CompletedGameListItem> {
 
-        public int compare(ListItem one, ListItem another){
+        public int compare(CompletedGameListItem one, CompletedGameListItem another){
             int returnVal = 0;
 
             if(one.getRealScore() < another.getRealScore()){
@@ -131,26 +150,28 @@ public class CompletedGameActivity extends AppCompatActivity {
         }
     }
 
-    public class HighSorter implements Comparator<ListItem> {
+    public class HighSorter implements Comparator<CompletedGameListItem> {
 
-        public int compare(ListItem one, ListItem another){
+        public int compare(CompletedGameListItem one, CompletedGameListItem another){
+
             int returnVal = 0;
 
-            if(one.getScore() < another.getScore()){
+            if(one.getRealScore() < another.getRealScore()){
                 returnVal =  1;
-            }else if(one.getScore() > another.getScore()){
+            }else if(one.getXp() > another.getXp()){
                 returnVal =  -1;
-            }else if(one.getScore() == another.getScore()){
+            }else if(one.getXp() == another.getXp()){
                 returnVal =  0;
             }
-            return returnVal;
 
+            return returnVal;
         }
+
     }
 
-    public class TimeSorter implements Comparator<ListItem> {
+    public class TimeSorter implements Comparator<CompletedGameListItem> {
 
-        public int compare(ListItem one, ListItem another){
+        public int compare(CompletedGameListItem one, CompletedGameListItem another){
             int returnVal = 0;
 
             if(uFT(one.getTime()) < uFT(another.getTime())){
@@ -175,6 +196,19 @@ public class CompletedGameActivity extends AppCompatActivity {
 
         }
         timeNumber = Integer.valueOf(str.toString());
+        return timeNumber;
+    }
+
+    public Long formatExactTime(String time) {
+        Long timeNumber;
+        StringBuilder str = new StringBuilder();
+        for(char c : time.toCharArray()){
+            if(c != ','){
+                str.append(c);
+            }
+
+        }
+        timeNumber = Long.valueOf(str.toString());
         return timeNumber;
     }
 }

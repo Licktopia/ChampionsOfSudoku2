@@ -1,9 +1,12 @@
 package com.licktopia.thechampionofsudoku.Activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 
 
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -12,20 +15,37 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.amazonaws.auth.CognitoCachingCredentialsProvider;
+import com.amazonaws.mobileconnectors.cognito.CognitoSyncManager;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBQueryExpression;
+import com.amazonaws.regions.Region;
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.google.android.gms.games.Games;
 import com.google.example.games.basegameutils.BaseGameActivity;
 import com.google.example.games.basegameutils.GameHelper;
 import com.licktopia.thechampionofsudoku.Gamer;
 import com.licktopia.thechampionofsudoku.PlaySounds;
 import com.licktopia.thechampionofsudoku.R;
+import com.licktopia.thechampionofsudoku.Sudoku.CompletedGame;
 import com.licktopia.thechampionofsudoku.SudokuFacts;
 import com.licktopia.thechampionofsudoku.Tags;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GamerProfileActivity extends BaseGameActivity {
 
     private SudokuFacts sudokuFacts;
     private GameHelper gameHelper;
-    PlaySounds mPlaySounds;
+    private PlaySounds mPlaySounds;
+    private CognitoCachingCredentialsProvider credentialsProvider;
+    private CognitoSyncManager syncClient;
+    private AmazonDynamoDBClient ddbClient;
+    private DynamoDBMapper mapper;
+    private Button mHistoryButton;
 
 
 
@@ -33,14 +53,32 @@ public class GamerProfileActivity extends BaseGameActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gamer_profile);
+        mHistoryButton = (Button) findViewById(R.id.history_button);
+        credentialsProvider = new CognitoCachingCredentialsProvider(
+                getApplicationContext(),
+                "us-east-2:40802ef0-7537-4910-8442-31e2b30c5a7d", // Identity Pool ID
+                Regions.US_EAST_2 // Region
+        );
+        ddbClient = new AmazonDynamoDBClient(credentialsProvider);
+        mapper = new DynamoDBMapper(ddbClient);
 
+        ddbClient.setRegion(Region.getRegion(Regions.US_EAST_2));
         gameHelper = new GameHelper(this, GameHelper.CLIENT_GAMES);
         //TODO Remove this for production
         gameHelper.enableDebugLog(true);
         gameHelper.setup(this);
+        queryCompletedGameDb();
         initializeSignOut();
         updateUI();
         listeners();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateUI();
+
+
     }
 
     private void initializeSignOut() {
@@ -95,11 +133,17 @@ public class GamerProfileActivity extends BaseGameActivity {
 
             }
         });
+
+        mHistoryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(GamerProfileActivity.this, CompletedGameActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     private void updateUI() {
-        String gamerName = getIntent().getExtras().getString("GAMERNAME");
-        String gamerId = getIntent().getExtras().getString("GAMERID");
         TextView mTitleName = (TextView) findViewById(R.id.title_name);
         TextView mFactText = (TextView) findViewById(R.id.fact_text);
         TextView mDidYouKnow = (TextView) findViewById(R.id.did_you_know);
@@ -107,6 +151,7 @@ public class GamerProfileActivity extends BaseGameActivity {
         TextView nextPowerUpDisplay = (TextView) findViewById(R.id.powerup_display);
         LinearLayout mFactBackground = (LinearLayout) findViewById(R.id.fact_background);
         ImageView mRankDisplay = (ImageView)findViewById(R.id.rank_display);
+        Button mHistoryButton = (Button) findViewById(R.id.history_button);
 
         sudokuFacts = new SudokuFacts();
         mFactText.setText(sudokuFacts.getFunFact());
@@ -115,14 +160,21 @@ public class GamerProfileActivity extends BaseGameActivity {
         mFactBackground.setBackgroundColor(Color.parseColor(color));
         mTitleName.setBackgroundColor(Color.parseColor(color));
         mTitleName.setText(Gamer.getUsername());
+
+        if(Gamer.completedGames!= null && Gamer.completedGames.isEmpty()){
+            mHistoryButton.setAlpha(.5f);
+        }
+        else{
+            mHistoryButton.setAlpha(1);
+        }
         if(Gamer.getLevel()==Gamer.CUTOFF.length){
             nextPowerUpDisplay.setText(Gamer.RANKNAMES[Gamer.getLevel()]);
         }
         else{
-            nextPowerUpDisplay.setText( "Next Level Up " + String.format("%,d",Gamer.CUTOFF[Gamer.getLevel()]-Gamer.getXp())+ " XP");
+            nextPowerUpDisplay.setText(new StringBuilder().append(getString(R.string.next_levelup)).append(String.format("%,d", Gamer.CUTOFF[Gamer.getLevel()] - Gamer.getXp())).append(" XP").toString());
         }
-        xpDisplay.setText(String.format("%,d",Integer.parseInt(String.valueOf(Gamer.getXp()))) +" XP");
-        nextPowerUpDisplay.setText( "Next Level Up " + String.format("%,d",Gamer.CUTOFF[Gamer.getLevel()+1]-Gamer.getXp())+ " XP");
+        xpDisplay.setText(new StringBuilder().append(String.format("%,d", Integer.parseInt(String.valueOf(Gamer.getXp())))).append(" XP").toString());
+        nextPowerUpDisplay.setText(new StringBuilder().append(getString(R.string.next_levelup)).append(String.format("%,d", Gamer.CUTOFF[Gamer.getLevel() + 1] - Gamer.getXp())).append(" XP").toString());
         mRankDisplay.setImageDrawable(getResources().getDrawable(Gamer.BADGETAGS[Gamer.getLevel()]));
         ImageView[] verticalBadges = new ImageView[52];
         for(int i = 0; i< Tags.verticalBadges.length;i++){
@@ -138,7 +190,55 @@ public class GamerProfileActivity extends BaseGameActivity {
 
     }
 
+    private void queryCompletedGameDb(){
+        if(isInternet()) {
+            String partitionKey = Gamer.getId();
+            CompletedGame cg = new CompletedGame();
+            cg.setGamerID(partitionKey);
 
+            final DynamoDBQueryExpression<CompletedGame> queryExpression = new DynamoDBQueryExpression<CompletedGame>()
+                    .withHashKeyValues(cg)
+                    .withConsistentRead(false);
+
+            final List<CompletedGame>[] list = new List[]{new ArrayList<CompletedGame>()};
+
+            // id field is null at this point
+            Runnable runnable = new Runnable() {
+                public void run() {
+                    //DynamoDB calls go here
+                    list[0] = mapper.query(CompletedGame.class, queryExpression);
+                    ArrayList<CompletedGame> cGames = new ArrayList<CompletedGame>();
+                    for (int i = 0; i < list[0].size(); i++) {
+                        cGames.add(list[0].get(i));
+                    }
+                    Gamer.setCompletedGames(cGames);
+                    if(Gamer.completedGames!= null && Gamer.completedGames.isEmpty()){
+                        mHistoryButton.setAlpha(.5f);
+                    }
+                    else{
+                        mHistoryButton.setAlpha(1);
+                    }
+                }
+            };
+            Thread mythread = new Thread(runnable);
+            mythread.start();
+
+
+        }
+
+    }
+
+    private boolean isInternet(){
+        boolean isConnected;
+        ConnectivityManager cm =
+                (ConnectivityManager)this.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        isConnected = activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
+        return isConnected;
+
+    }
 
     @Override
     protected void onStart() {

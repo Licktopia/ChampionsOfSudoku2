@@ -15,6 +15,11 @@ import android.content.Context;
 class FileIO {
     private static ThreadLocalRandom _Rand = ThreadLocalRandom.current();
 
+    public static int getRandomNum() {
+        return randomNum;
+    }
+
+    private static int randomNum;
     //loads a game
     protected static int[] loadBoard(int level, Context ctx, int totalBoardElements) {
         String filename = "boards/" + String.valueOf(level) +".txt";
@@ -28,7 +33,7 @@ class FileIO {
                     ctx.getAssets().open(filename)));
             String line;
             int p=0;
-            int randomNum = _Rand.nextInt(0, 9999 + 1);
+            randomNum = _Rand.nextInt(0, 9999 + 1);
             while ((line = reader.readLine())!= null){
                 if(p==randomNum) {
                     builder.append(line);

@@ -1,5 +1,8 @@
 package com.licktopia.thechampionofsudoku;
 
+import com.licktopia.thechampionofsudoku.Sudoku.CompletedGame;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,13 +30,17 @@ public class Gamer {
             "Super Legend","Ace","Genius","Wizard","Champion","Super Champion","Grand Champion"};
 
     public static  String username;
-    public static String id;
+    public static String id = "0";
     public static int level=0;
     public static long xp;
 
 
 
-    public static List<ListItem> listItems;
+    public static ArrayList<CompletedGame> completedGames;
+
+
+
+    public static List<CompletedGameListItem> completedGameListItems;
 
     /* Constructor */
     /*
@@ -50,6 +57,15 @@ public class Gamer {
 */
 
     /* Add experience to current total */
+
+    public static ArrayList<CompletedGame> getCompletedGames() {
+        return completedGames;
+    }
+
+    public static void setCompletedGames(ArrayList<CompletedGame> completedGames) {
+        Gamer.completedGames = completedGames;
+
+    }
 
     public static boolean addExperience(long xp) {
         Gamer.xp += xp;
@@ -122,9 +138,12 @@ public class Gamer {
         Gamer.id = null;
         Gamer.xp = 0;
         Gamer.level = 0;
+        if(completedGames!=null) {
+            Gamer.completedGames.clear();
+        }
     }
 
-    public static List<ListItem> getListItems() {
-        return listItems;
+    public static List<CompletedGameListItem> getCompletedGameListItems() {
+        return completedGameListItems;
     }
 }

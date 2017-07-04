@@ -19,11 +19,16 @@ class Board {
     private int openSquares;            // Tracks how many squares are empty
     private int incorrectGuesses = 0; //total number of incorrect guesses
 
+
+
+    private int boardNumber;
+
     /* Constructor*/
     protected Board(int level, Context ctx) {
 
 
         int[] values = FileIO.loadBoard(level, ctx, SIZE * SIZE);
+        boardNumber = FileIO.getRandomNum();
         // Check parameter has correct number of values
         if (values.length != SIZE * SIZE) {
             System.out.printf("The loaded game contains %d elements but needs to have %d elements\n", values.length, SIZE * SIZE);
@@ -128,7 +133,9 @@ class Board {
         return this.setValueAt(idxToRow(idx), idxToCol(idx), value);
     }
 
-
+    public int getBoardNumber() {
+        return boardNumber;
+    }
     /* Get value at given row/column */
     protected int getValueAt(int row, int col) {
         return contents[row][col].getValue();

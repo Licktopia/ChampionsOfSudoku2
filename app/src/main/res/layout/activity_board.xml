@@ -2262,8 +2262,8 @@
                 android:layout_weight="70"
                 android:background="#f0abd03a"
                 android:elevation="10dp"
-                android:visibility="gone"
-                tools:visibility="visible">
+                android:visibility="invisible"
+                tools:visibility="gone">
 
                 <TextView
                     android:id="@+id/title_stats"

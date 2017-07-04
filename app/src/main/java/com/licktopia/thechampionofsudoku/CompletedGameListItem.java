@@ -6,25 +6,27 @@ package com.licktopia.thechampionofsudoku;
  * Created by do_de on 3/30/2017.
  */
 
-public class ListItem {
+public class CompletedGameListItem {
     private double accuracy;
-    private int score;
+
     private String date;
     private int level;
     private int puzzleNumber;
     private int realScore;
     private String time;
     private int xp;
-    private long GamerId;
-    private long GameId;
+    private String GamerId;
+
+
+
+    private String exactTime;
 
 
 
     private boolean color;
 
-    public ListItem(double accuracy, int score, String date, int level, int puzzleNumber, int realScore, String time, int xp, long gamerId, long gameId,boolean color) {
+    public CompletedGameListItem(double accuracy, String date, int level, int puzzleNumber, int realScore, String time, int xp, String gamerId, boolean color, String exactTime) {
         this.accuracy = accuracy;
-        this.score = score;
         this.date = date;
         this.level = level;
         this.puzzleNumber = puzzleNumber;
@@ -32,7 +34,8 @@ public class ListItem {
         this.time = time;
         this.xp = xp;
         this.GamerId = gamerId;
-        this.GameId = gameId;
+        this.exactTime = exactTime;
+        this.color = color;
 
     }
 
@@ -42,9 +45,7 @@ public class ListItem {
         return accuracy;
     }
 
-    public int getScore() {
-        return score;
-    }
+
 
     public String getDate() {
         return date;
@@ -63,23 +64,38 @@ public class ListItem {
     }
 
     public String getTime() {
-        return time;
+
+        return formatTime(Integer.valueOf(time));
     }
 
     public int getXp() {
         return xp;
     }
 
-    public long getGamerId() {
+    public String getGamerId() {
         return GamerId;
-    }
-
-    public long getGameId() {
-        return GameId;
     }
 
     public boolean isColor() {
         return color;
+    }
+
+    public String getExactTime() {
+        return exactTime;
+    }
+
+    private String formatTime(int seconds){
+        String formattedTime;
+        int minutes = seconds/60;
+        int secs = seconds%60;
+        String minutos = String.format("%d",minutes);
+        String segundos = String.format("%d",secs);
+        if(segundos.length()==1){
+            segundos = "0" + segundos;
+        }
+        formattedTime = minutos +  ":" +segundos;
+
+        return formattedTime;
     }
 
 

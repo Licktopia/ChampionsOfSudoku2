@@ -198,8 +198,9 @@ public class BoardActivity extends BaseGameActivity{
                 (ConnectivityManager)this.getSystemService(Context.CONNECTIVITY_SERVICE);
 
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        return isConnected = activeNetwork != null &&
+        isConnected = activeNetwork != null &&
                 activeNetwork.isConnectedOrConnecting();
+        return isConnected;
 
     }
 
@@ -212,12 +213,13 @@ public class BoardActivity extends BaseGameActivity{
             obj.setGamerID(Gamer.getId());
             obj.setRealScore((int) mGame.getScore());
             obj.setXp(xp);
-            obj.setTime((int) mGame.getRunningTime());
+            obj.setTime(String.format("%,d",(int) mGame.getRunningTime()));
             obj.setDate(today);
             obj.setColor(colorGame);
-            obj.setPuzzleNumber(8534);
+            obj.setPuzzleNumber(mGame.getBoardNumber()+1+level*10000);
             obj.setLevel(level);
             obj.setAccuracy(mGame.getAccuracy());
+            obj.setExactTime(String.format("%,d",System.currentTimeMillis()));
 
 
             // id field is null at this point
@@ -231,7 +233,7 @@ public class BoardActivity extends BaseGameActivity{
             mythread.start();
 
 
-            System.out.println("Object was saved with id " + obj.getGameID());
+
         }
         else{
             Toast.makeText(this, R.string.not_upload,Toast.LENGTH_SHORT).show();

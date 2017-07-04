@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,7 +17,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.amazonaws.auth.CognitoCachingCredentialsProvider;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBQueryExpression;
+import com.amazonaws.regions.Region;
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
+import com.licktopia.thechampionofsudoku.Sudoku.CompletedGame;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,14 +34,17 @@ import java.util.List;
 
 public class CompletedGameListAdapter extends RecyclerView.Adapter<CompletedGameListAdapter.ViewHolder> {
 
-    private List<ListItem> listItems;
+    private List<CompletedGameListItem> completedGameListItems;
     private Context context;
     private String[] mColors = {"#1E91D6","#ea3f6a","#7D1538","#7c8597","#E18335","#4A2772","#F2CA08","#329d53"};
+    private CognitoCachingCredentialsProvider credentialsProvider;
+    private AmazonDynamoDBClient ddbClient;
+    private DynamoDBMapper mapper;
 
 
 
-    public CompletedGameListAdapter(List<ListItem> listItem, Context context) {
-        this.listItems = listItem;
+    public CompletedGameListAdapter(List<CompletedGameListItem> completedGameListItem, Context context) {
+        this.completedGameListItems = completedGameListItem;
         this.context = context;
     }
 
@@ -50,9 +63,10 @@ public class CompletedGameListAdapter extends RecyclerView.Adapter<CompletedGame
 
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
-        ListItem listItem = listItems.get(position);
-        final int boardNumber = listItem.getPuzzleNumber();
-        final long idNumber = listItem.getGamerId();
+        CompletedGameListItem completedGameListItem = completedGameListItems.get(position);
+        final int boardNumber = completedGameListItem.getPuzzleNumber();
+        final String exactTime = completedGameListItem.getExactTime();
+        final String gamerId = completedGameListItem.getGamerId();
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -63,9 +77,10 @@ public class CompletedGameListAdapter extends RecyclerView.Adapter<CompletedGame
                         .setPositiveButton("Delete Record", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 //delete from database here
+                                deleteRecord(exactTime, gamerId);
                                 boolean deleted = true;
                                 if(deleted){
-                                    listItems.remove(position);
+                                    completedGameListItems.remove(position);
                                     notifyDataSetChanged();
                                     Toast.makeText(context,"Item successfully deleted.", Toast.LENGTH_SHORT).show();
                                 }
@@ -82,84 +97,68 @@ public class CompletedGameListAdapter extends RecyclerView.Adapter<CompletedGame
 
 
 
-        holder.tvGameScore.setText(String.format("%1$d",listItem.getScore()) + "XP");
-        holder.tvGameTime.setText(listItem.getTime());
-        holder.tvGameDate.setText(listItem.getDate());
-        holder.tvGameSquares.setText(String.format("%,s",listItem.getAccuracy()));
+        holder.tvGameScore.setText(String.format("%1$d", completedGameListItem.getRealScore()) + "XP");
+        holder.tvGameTime.setText(completedGameListItem.getTime());
+        holder.tvGameDate.setText(completedGameListItem.getDate());
+        holder.tvGameSquares.setText(new StringBuilder().append(String.format("%,2.1f",completedGameListItem.getAccuracy() * 100)).append("%").toString());
 
 
-        if(!listItem.isColor()) {
+        if(!completedGameListItem.isColor()) {
             String name = "rocket";
-            int id = context.getResources().getIdentifier(name, "drawable",
-                    context.getPackageName());
-            //Drawable drawable = context.getResources().getDrawable(id, null);
+
             Drawable drawable = ContextCompat.getDrawable(context,R.drawable.rocket);
             holder.tvGameType.setImageDrawable(drawable);
 
         }
         else{
             String name = "peacock";
-            int id = context.getResources().getIdentifier(name, "drawable",
-                    context.getPackageName());
+
             Drawable drawable = ContextCompat.getDrawable(context,R.drawable.peacock);
-            //Drawable drawable = context.getResources().getDrawable(id, null);
             holder.tvGameType.setImageDrawable(drawable);
 
         }
 
 
-        if(listItem.getLevel()==0) {
+        if(completedGameListItem.getLevel()==0) {
             String name = "beginnericon";
-            int id = context.getResources().getIdentifier(name, "drawable",
-                    context.getPackageName());
-            //Drawable drawable = context.getResources().getDrawable(id, null);
+
             Drawable drawable = ContextCompat.getDrawable(context,R.drawable.beginnericon);
             holder.tvGameLevel.setImageDrawable(drawable);
             holder.itemView.setBackgroundColor(Color.parseColor(mColors[0]));
 
         }
-        else if(listItem.getLevel()==1) {
+        else if(completedGameListItem.getLevel()==1) {
             String name = "easyicon";
-            int id = context.getResources().getIdentifier(name, "drawable",
-                    context.getPackageName());
-            //Drawable drawable = context.getResources().getDrawable(id, null);
+
             Drawable drawable = ContextCompat.getDrawable(context,R.drawable.easyicon);
             holder.tvGameLevel.setImageDrawable(drawable);
             holder.itemView.setBackgroundColor(Color.parseColor(mColors[6]));
         }
-        else if(listItem.getLevel()==2) {
+        else if(completedGameListItem.getLevel()==2) {
             String name = "mediumicon";
-            int id = context.getResources().getIdentifier(name, "drawable",
-                    context.getPackageName());
-            //Drawable drawable = context.getResources().getDrawable(id, null);
+
             Drawable drawable = ContextCompat.getDrawable(context,R.drawable.mediumicon);
             holder.tvGameLevel.setImageDrawable(drawable);
             holder.itemView.setBackgroundColor(Color.parseColor(mColors[1]));
         }
-        else if(listItem.getLevel()==3) {
+        else if(completedGameListItem.getLevel()==3) {
             String name = "hardicon";
-            int id = context.getResources().getIdentifier(name, "drawable",
-                    context.getPackageName());
-            //Drawable drawable = context.getResources().getDrawable(id, null);
+
             Drawable drawable = ContextCompat.getDrawable(context,R.drawable.hardicon);
             holder.tvGameLevel.setImageDrawable(drawable);
             holder.itemView.setBackgroundColor(Color.parseColor(mColors[5]));
         }
-        else if(listItem.getLevel()==4) {
+        else if(completedGameListItem.getLevel()==4) {
             String name = "experticon";
-            int id = context.getResources().getIdentifier(name, "drawable",
-                    context.getPackageName());
-            //Drawable drawable = context.getResources().getDrawable(id, null);
+
             Drawable drawable = ContextCompat.getDrawable(context,R.drawable.experticon);
             holder.tvGameLevel.setImageDrawable(drawable);
             holder.itemView.setBackgroundColor(Color.parseColor(mColors[2]));
         }
-        else //if(listItem.getLevel()==5) {
+        else //if(completedGameListItem.getLevel()==5) {
         {
             String name = "mastericon";
-            int id = context.getResources().getIdentifier(name, "drawable",
-                    context.getPackageName());
-            //Drawable drawable = context.getResources().getDrawable(id, null);
+
             Drawable drawable = ContextCompat.getDrawable(context,R.drawable.mastericon);
             holder.tvGameLevel.setImageDrawable(drawable);
             holder.itemView.setBackgroundColor(Color.parseColor(mColors[4]));
@@ -169,9 +168,51 @@ public class CompletedGameListAdapter extends RecyclerView.Adapter<CompletedGame
 
     }
 
+    private void deleteRecord(String eTime, String gID){
+        credentialsProvider = new CognitoCachingCredentialsProvider(
+                context,
+                "us-east-2:40802ef0-7537-4910-8442-31e2b30c5a7d", // Identity Pool ID
+                Regions.US_EAST_2 // Region
+        );
+
+        ddbClient = new AmazonDynamoDBClient(credentialsProvider);
+        mapper = new DynamoDBMapper(ddbClient);
+        ddbClient.setRegion(Region.getRegion(Regions.US_EAST_2));
+
+        if(isInternet()) {
+            final CompletedGame cg = new CompletedGame();
+            cg.setGamerID(gID);
+            cg.setExactTime(eTime);
+
+
+
+            // id field is null at this point
+            Runnable runnable = new Runnable() {
+                public void run() {
+                    //DynamoDB calls go here
+                    mapper.delete(cg);
+
+                }
+            };
+            Thread mythread = new Thread(runnable);
+            mythread.start();
+        }
+    }
+
+    private boolean isInternet(){
+        boolean isConnected;
+        ConnectivityManager cm =
+                (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        isConnected = activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
+        return isConnected;
+
+    }
     @Override
     public int getItemCount() {
-        return listItems.size();
+        return completedGameListItems.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{

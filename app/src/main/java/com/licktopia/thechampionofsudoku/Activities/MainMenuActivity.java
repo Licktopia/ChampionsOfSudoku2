@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,6 +20,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.amazonaws.auth.CognitoCachingCredentialsProvider;
+import com.amazonaws.mobileconnectors.cognito.CognitoSyncManager;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBQueryExpression;
+import com.amazonaws.regions.Region;
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.games.Games;
@@ -35,10 +44,13 @@ import com.google.example.games.basegameutils.GameHelper;
 import com.licktopia.thechampionofsudoku.Gamer;
 import com.licktopia.thechampionofsudoku.PlaySounds;
 import com.licktopia.thechampionofsudoku.R;
+import com.licktopia.thechampionofsudoku.Sudoku.CompletedGame;
 import com.licktopia.thechampionofsudoku.Tags;
 
 import java.io.IOException;
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class MainMenuActivity  extends BaseGameActivity{
@@ -66,6 +78,9 @@ public class MainMenuActivity  extends BaseGameActivity{
     private SharedPreferences.Editor ed;
     private GameHelper gameHelper;
     private byte[] mSaveGameData;
+    private CognitoCachingCredentialsProvider credentialsProvider;
+    private AmazonDynamoDBClient ddbClient;
+    private DynamoDBMapper mapper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,7 +98,17 @@ public class MainMenuActivity  extends BaseGameActivity{
         //TODO Remove this for production
         gameHelper.enableDebugLog(true);
         gameHelper.setup(this);
+        // Initialize the Amazon Cognito credentials provider
+        credentialsProvider = new CognitoCachingCredentialsProvider(
+                getApplicationContext(),
+                "us-east-2:40802ef0-7537-4910-8442-31e2b30c5a7d", // Identity Pool ID
+                Regions.US_EAST_2 // Region
+        );
 
+
+        ddbClient = new AmazonDynamoDBClient(credentialsProvider);
+        mapper = new DynamoDBMapper(ddbClient);
+        ddbClient.setRegion(Region.getRegion(Regions.US_EAST_2));
 
         signInInitialization();
         initAnimation();
@@ -94,19 +119,21 @@ public class MainMenuActivity  extends BaseGameActivity{
         initializeLick();
         initializeShareBar();
         LinearLayout mResumeButton = (LinearLayout) findViewById(R.id.resume);
+        initializeResumeButton(mResumeButton);
+    }
+
+    private void initializeResumeButton(LinearLayout mResumeButton) {
         mResumeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //showSavedGamesUI();
 
                         Intent intent = new Intent(MainMenuActivity.this, DynamoDbTestActivity.class);
-
                         startActivity(intent);
 
             }
         });
     }
-
 
 
     /***************************************
@@ -148,6 +175,11 @@ public class MainMenuActivity  extends BaseGameActivity{
 
     }
 
+    @Override
+    protected void onResume(){
+        super.onResume();
+        userBadge.setImageDrawable(getResources().getDrawable(Gamer.BADGETAGS[Gamer.getLevel()]));
+    }
 
     private void loadPlayer(){
         if(gameHelper.getApiClient().isConnected()) {
@@ -155,6 +187,48 @@ public class MainMenuActivity  extends BaseGameActivity{
             Gamer.setId(Games.Players.getCurrentPlayer(gameHelper.getApiClient()).getPlayerId());
             mBadgeButtonInitialize(Gamer.getUsername(), Gamer.getId());
         }
+    }
+
+    private boolean isInternet(){
+        boolean isConnected;
+        ConnectivityManager cm =
+                (ConnectivityManager)this.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        isConnected = activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
+        return isConnected;
+
+    }
+
+    private void queryCompletedGameDb(){
+        if(isInternet()) {
+            String partitionKey = Gamer.getId();
+            CompletedGame cg = new CompletedGame();
+            cg.setGamerID(partitionKey);
+
+            final DynamoDBQueryExpression<CompletedGame> queryExpression = new DynamoDBQueryExpression<CompletedGame>()
+                    .withHashKeyValues(cg)
+                    .withConsistentRead(false);
+
+            final List<CompletedGame>[] list = new List[]{new ArrayList<CompletedGame>()};
+
+            // id field is null at this point
+            Runnable runnable = new Runnable() {
+                public void run() {
+                    //DynamoDB calls go here
+                    list[0] = mapper.query(CompletedGame.class, queryExpression);
+                    ArrayList<CompletedGame> cGames = new ArrayList<CompletedGame>();
+                    for (int i = 0; i < list[0].size(); i++) {
+                        cGames.add(list[0].get(i));
+                    }
+                    Gamer.setCompletedGames(cGames);
+                }
+            };
+            Thread mythread = new Thread(runnable);
+            mythread.start();
+        }
+
     }
     /***************************************
     *Update UI when login or logout occurs
@@ -172,6 +246,7 @@ public class MainMenuActivity  extends BaseGameActivity{
             if(gameHelper.getApiClient().isConnected()) {
                 getHighestScoreFromLeaderBoard();
             }
+            queryCompletedGameDb();
         }
         else{
             Gamer.setNullUser();

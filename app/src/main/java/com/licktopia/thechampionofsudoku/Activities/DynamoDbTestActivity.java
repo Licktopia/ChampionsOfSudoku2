@@ -10,17 +10,19 @@ import com.amazonaws.auth.CognitoCachingCredentialsProvider;
 import com.amazonaws.mobileconnectors.cognito.CognitoSyncManager;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBQueryExpression;
-import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBScanExpression;
-import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.PaginatedQueryList;
 import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
-import com.amazonaws.services.dynamodbv2.model.GetItemRequest;
+import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.licktopia.thechampionofsudoku.Gamer;
 import com.licktopia.thechampionofsudoku.R;
 import com.licktopia.thechampionofsudoku.Sudoku.CompletedGame;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 
 public class DynamoDbTestActivity extends AppCompatActivity {
@@ -60,12 +62,13 @@ public class DynamoDbTestActivity extends AppCompatActivity {
                 obj.setGamerID(Gamer.getId());
                 obj.setRealScore(1000);
                 obj.setXp(1200);
-                obj.setTime(560);
+                obj.setTime("5:40");
                 obj.setDate("June 29");
                 obj.setColor(false);
                 obj.setPuzzleNumber(8534);
                 obj.setLevel(3);
                 obj.setAccuracy(.95);
+                obj.setExactTime(String.format("%,d",System.currentTimeMillis()));
 
 
 
@@ -80,13 +83,51 @@ public class DynamoDbTestActivity extends AppCompatActivity {
                 mythread.start();
 
 
-                System.out.println("Object was saved with id " + obj.getGameID());
+
             }
         });
 
         queryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                String partitionKey = "g07411554930192965639";
+                CompletedGame cg = new CompletedGame();
+                cg.setGamerID(partitionKey);
+
+
+                HashMap<String, AttributeValue> eav = new HashMap<String, AttributeValue>();
+                eav.put(":v1",  new AttributeValue().withS("g07411554930192965639"));
+
+                final DynamoDBQueryExpression<CompletedGame> queryExpression = new DynamoDBQueryExpression<CompletedGame>()
+                        .withHashKeyValues(cg)
+                        .withConsistentRead(false);
+
+                final List<CompletedGame>[] list = new List[]{new ArrayList<CompletedGame>()};
+
+                // id field is null at this point
+                Runnable runnable = new Runnable() {
+                    public void run() {
+                        //DynamoDB calls go here
+                        list[0] = mapper.query(CompletedGame.class, queryExpression);
+                        ArrayList<CompletedGame> cGames = new ArrayList<CompletedGame>();
+                        for(int i = 0; i<list[0].size();i++){
+                            cGames.add(list[0].get(i));
+                        }
+
+
+                    }
+                };
+                Thread mythread = new Thread(runnable);
+                mythread.start();
+
+                processList(list[0]);
+
+
+
+
+/*
+
                 CompletedGame it = new CompletedGame();
                 it.setGamerID("g07411554930192965639");
 
@@ -105,21 +146,17 @@ public class DynamoDbTestActivity extends AppCompatActivity {
                 };
                 Thread mythread = new Thread(runnable);
                 mythread.start();
-
-
-
-
-
-
-
-                int a = 5;
-                int b = 6;
-                int c=a+b;
+*/
 // Do something with result.
             }
         });
 
 
+    }
+    private void processList(List<CompletedGame> list){
+        for(int i = 0; i < list.size(); i++){
+            Toast.makeText(this,list.get(i).getExactTime(),Toast.LENGTH_SHORT).show();
+        }
     }
     private void processItemList(List<CompletedGame>list){
         for(int i = 0; i< list.size();i++){
