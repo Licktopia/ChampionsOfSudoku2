@@ -36,7 +36,7 @@
     <item
         android:id="@+id/save_and_exit"
         android:orderInCategory="100"
-        android:title="@string/save_exit"
+        android:title="@string/save_game"
         android:visible="true"
         app:showAsAction="never" />
 

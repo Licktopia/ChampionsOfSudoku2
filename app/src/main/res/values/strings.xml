@@ -19,7 +19,6 @@
     <string name="Score">Always Hide Score</string>
     <string name="sign_in_button">Sign in</string>
     <string name="Scoresummary">The score will always be hidden until the puzzle is solved. It cannot be toggled by clicking on it.</string>
-    <string name="save_exit">Save Game</string>
     <string name="harder_puzzle_message">Harder puzzles will earn more XP</string>
     <string name="app_url">https://play.google.com/apps/testing/com.licktopia.thechampionofsudoku</string>
     <string name="quit_to_menu">Quit to main menu?</string>
@@ -77,4 +76,5 @@
     <string name="not_upload">Could not upload game to database</string>
     <string name="next_levelup">Next Level Up</string>
     <string name="game_history">\'s Game History</string>
+    <string name="save_game">Save game</string>
 </resources>

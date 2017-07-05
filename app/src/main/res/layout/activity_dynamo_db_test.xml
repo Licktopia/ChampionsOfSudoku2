@@ -7,12 +7,6 @@
     tools:context="com.licktopia.thechampionofsudoku.Activities.DynamoDbTestActivity">
 
     <Button
-        android:id="@+id/save_game"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Save" />
-
-    <Button
         android:id="@+id/query"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -17,6 +17,7 @@ import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.licktopia.thechampionofsudoku.Gamer;
 import com.licktopia.thechampionofsudoku.R;
 import com.licktopia.thechampionofsudoku.Sudoku.CompletedGame;
+import com.licktopia.thechampionofsudoku.Sudoku.SavedGame;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -52,65 +53,34 @@ public class DynamoDbTestActivity extends AppCompatActivity {
 
         ddbClient.setRegion(Region.getRegion(Regions.US_EAST_2));
 
-        Button saveButton = (Button)findViewById(R.id.save_game);
+
         Button queryButton = (Button)findViewById(R.id.query);
 
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final CompletedGame obj = new CompletedGame();
-                obj.setGamerID(Gamer.getId());
-                obj.setRealScore(1000);
-                obj.setXp(1200);
-                obj.setTime("5:40");
-                obj.setDate("June 29");
-                obj.setColor(false);
-                obj.setPuzzleNumber(8534);
-                obj.setLevel(3);
-                obj.setAccuracy(.95);
-                obj.setExactTime(String.format("%,d",System.currentTimeMillis()));
 
-
-
-                // id field is null at this point
-                Runnable runnable = new Runnable() {
-                    public void run() {
-                        //DynamoDB calls go here
-                        mapper.save(obj);
-                    }
-                };
-                Thread mythread = new Thread(runnable);
-                mythread.start();
-
-
-
-            }
-        });
 
         queryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                String partitionKey = "g07411554930192965639";
-                CompletedGame cg = new CompletedGame();
-                cg.setGamerID(partitionKey);
+                String partitionKey = Gamer.getId();
+                SavedGame sg = new SavedGame();
+                sg.setGamerID(partitionKey);
 
 
-                HashMap<String, AttributeValue> eav = new HashMap<String, AttributeValue>();
-                eav.put(":v1",  new AttributeValue().withS("g07411554930192965639"));
 
-                final DynamoDBQueryExpression<CompletedGame> queryExpression = new DynamoDBQueryExpression<CompletedGame>()
-                        .withHashKeyValues(cg)
+
+                final DynamoDBQueryExpression<SavedGame> queryExpression = new DynamoDBQueryExpression<SavedGame>()
+                        .withHashKeyValues(sg)
                         .withConsistentRead(false);
 
-                final List<CompletedGame>[] list = new List[]{new ArrayList<CompletedGame>()};
+                final List<SavedGame>[] list = new List[]{new ArrayList<SavedGame>()};
 
                 // id field is null at this point
                 Runnable runnable = new Runnable() {
                     public void run() {
                         //DynamoDB calls go here
-                        list[0] = mapper.query(CompletedGame.class, queryExpression);
-                        ArrayList<CompletedGame> cGames = new ArrayList<CompletedGame>();
+                        list[0] = mapper.query(SavedGame.class, queryExpression);
+                        ArrayList<SavedGame> cGames = new ArrayList<SavedGame>();
                         for(int i = 0; i<list[0].size();i++){
                             cGames.add(list[0].get(i));
                         }
@@ -121,47 +91,13 @@ public class DynamoDbTestActivity extends AppCompatActivity {
                 Thread mythread = new Thread(runnable);
                 mythread.start();
 
-                processList(list[0]);
 
-
-
-
-/*
-
-                CompletedGame it = new CompletedGame();
-                it.setGamerID("g07411554930192965639");
-
-                final DynamoDBQueryExpression<CompletedGame> queryExpression = new DynamoDBQueryExpression<CompletedGame>()
-                        .withHashKeyValues(it);
-
-
-                Runnable runnable = new Runnable() {
-                    public void run() {
-                        //DynamoDB calls go here
-                        List<CompletedGame> itemList = mapper.query(CompletedGame.class, queryExpression);
-                        processItemList(itemList);
-
-
-                    }
-                };
-                Thread mythread = new Thread(runnable);
-                mythread.start();
-*/
-// Do something with result.
             }
         });
 
 
     }
-    private void processList(List<CompletedGame> list){
-        for(int i = 0; i < list.size(); i++){
-            Toast.makeText(this,list.get(i).getExactTime(),Toast.LENGTH_SHORT).show();
-        }
-    }
-    private void processItemList(List<CompletedGame>list){
-        for(int i = 0; i< list.size();i++){
-            Toast.makeText(this,list.get(i).getDate(),Toast.LENGTH_SHORT).show();
-        }
 
-    }
+
+
 }

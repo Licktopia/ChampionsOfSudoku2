@@ -57,6 +57,7 @@ import com.licktopia.thechampionofsudoku.Settings.SudokuSettingsActivity;
 import com.licktopia.thechampionofsudoku.SquareView;
 import com.licktopia.thechampionofsudoku.Sudoku.CompletedGame;
 import com.licktopia.thechampionofsudoku.Sudoku.Game;
+import com.licktopia.thechampionofsudoku.Sudoku.SavedGame;
 import com.licktopia.thechampionofsudoku.Sudoku.Square;
 import com.licktopia.thechampionofsudoku.Tags;
 import java.math.BigInteger;
@@ -204,6 +205,34 @@ public class BoardActivity extends BaseGameActivity{
 
     }
 
+    private void uploadSavedGame(){
+        if(isInternet()&&gameHelper.getApiClient().isConnected()) {
+            Date dt = new Date();
+            SimpleDateFormat dateFormat = new SimpleDateFormat("MMM d, yyyy");
+            String today = dateFormat.format(dt);
+            final SavedGame obj = new SavedGame();
+            obj.setGamerID(Gamer.getId());
+            obj.setExactTime(String.format("%,d",System.currentTimeMillis()));
+
+
+            // id field is null at this point
+            Runnable runnable = new Runnable() {
+                public void run() {
+                    //DynamoDB calls go here
+                    mapper.save(obj);
+                }
+            };
+            Thread mythread = new Thread(runnable);
+            mythread.start();
+
+
+
+        }
+        else{
+            Toast.makeText(this, R.string.not_upload,Toast.LENGTH_SHORT).show();
+        }
+    }
+
     private void uploadCompletedGame(int xp){
         if(isInternet()&&gameHelper.getApiClient().isConnected()) {
             Date dt = new Date();
@@ -231,9 +260,6 @@ public class BoardActivity extends BaseGameActivity{
             };
             Thread mythread = new Thread(runnable);
             mythread.start();
-
-
-
         }
         else{
             Toast.makeText(this, R.string.not_upload,Toast.LENGTH_SHORT).show();
@@ -1224,10 +1250,15 @@ public class BoardActivity extends BaseGameActivity{
     }
 
     public boolean onPrepareOptionsMenu(Menu menu){
-        SpannableString s = new SpannableString("Save and Exit");
-        s.setSpan(new ForegroundColorSpan(Color.LTGRAY), 0, s.length(), 0);
-        menu.getItem(5).setTitle(s);
+        /*
+        if(solvedState) {
+            SpannableString s = new SpannableString("Save game");
+            s.setSpan(new ForegroundColorSpan(Color.LTGRAY), 0, s.length(), 0);
+            menu.getItem(5).setTitle(s);
+        }
+        */
         return true;
+
     }
 
     @Override
@@ -1254,6 +1285,7 @@ public class BoardActivity extends BaseGameActivity{
         }
 
         if (id == R.id.save_and_exit) {
+            uploadSavedGame();
 
         }
         if (id == R.id.main_menu) {

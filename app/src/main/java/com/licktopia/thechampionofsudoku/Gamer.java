@@ -33,30 +33,20 @@ public class Gamer {
     public static String id = "0";
     public static int level=0;
     public static long xp;
-
-
-
     public static ArrayList<CompletedGame> completedGames;
+    public static ArrayList<CompletedGame> savedGames;
 
 
 
-    public static List<CompletedGameListItem> completedGameListItems;
 
-    /* Constructor */
-    /*
-    public Gamer(int id, String username) {
-        this(id, username, 1, 0);
+
+    public static ArrayList<CompletedGame> getSavedGames() {
+        return savedGames;
     }
 
-    public Gamer(int id, String username, int level, int xp) {
-        this.id = id;
-        this.username = username;
-        this.level = level;
-        this.xp = xp;
+    public static void setSavedGames(ArrayList<CompletedGame> savedGames) {
+        Gamer.savedGames = savedGames;
     }
-*/
-
-    /* Add experience to current total */
 
     public static ArrayList<CompletedGame> getCompletedGames() {
         return completedGames;
@@ -141,9 +131,10 @@ public class Gamer {
         if(completedGames!=null) {
             Gamer.completedGames.clear();
         }
+        if(savedGames!=null) {
+            Gamer.savedGames.clear();
+        }
     }
 
-    public static List<CompletedGameListItem> getCompletedGameListItems() {
-        return completedGameListItems;
-    }
+
 }
