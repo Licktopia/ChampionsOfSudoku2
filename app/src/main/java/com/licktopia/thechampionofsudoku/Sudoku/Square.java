@@ -6,7 +6,7 @@ package com.licktopia.thechampionofsudoku.Sudoku;
 
 
 //Represents a single cell on a Sudoku board
-public class Square
+public class Square implements java.io.Serializable
 {
     private int row = -1;
     private int col = -1;

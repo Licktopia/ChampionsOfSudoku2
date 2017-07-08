@@ -1,7 +1,9 @@
 package com.licktopia.thechampionofsudoku.Activities;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -88,8 +90,26 @@ public class DynamoDbTestActivity extends AppCompatActivity {
 
                     }
                 };
+
+
                 Thread mythread = new Thread(runnable);
                 mythread.start();
+                try
+                {
+                    /***** Maybe we should tell the user that the game is loading... *****/
+                    mythread.join();
+                    /******* FOR THE PURPOSE OF DEBUGGING THE FIRST GAME ON THE LIST GETS PICKED******************/
+                    Intent intent = new Intent(DynamoDbTestActivity.this, BoardActivity.class);
+                    //Make level less than zero so that activity knows to load a game
+                    intent.putExtra("LEVEL", -5);
+                    intent.putExtra("COLOR_MODE", list[0].get(0).getColorMode());
+                    intent.putExtra("SAVE_FILE", list[0].get(0).getSaveFile());
+                    startActivity(intent);
+                }
+                catch(InterruptedException e)
+                {
+                    Log.d("Load Interrupted", "That was rude");
+                }
 
 
             }

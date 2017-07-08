@@ -10,7 +10,7 @@ import java.util.Set;
  * Board class represents a single instance of a Sudoku puzzle
  */
 
-class Board {
+class Board implements java.io.Serializable {
 
     private static int SIZE = 9;         // Board size
     private static int CLUSTER_SIZE = 3; // Size of N x N cluster

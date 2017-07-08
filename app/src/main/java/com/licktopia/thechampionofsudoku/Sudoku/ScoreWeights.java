@@ -4,7 +4,7 @@ package com.licktopia.thechampionofsudoku.Sudoku;
  * Created by John Konecny on 6/23/2017.
  */
 
-class ScoreWeights {
+class ScoreWeights implements java.io.Serializable {
     private long basePoints = -1,
             oneTimeGuessBonus = -1,
             runningTimePenalty = -1,

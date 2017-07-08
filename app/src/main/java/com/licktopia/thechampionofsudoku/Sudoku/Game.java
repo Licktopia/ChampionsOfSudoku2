@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 
 //Runs a game of Sudoku
 //UI uses only this class to interact with the game
-public class Game
+public class Game implements java.io.Serializable
 {
     //time in seconds
     private long runningTime = 0;

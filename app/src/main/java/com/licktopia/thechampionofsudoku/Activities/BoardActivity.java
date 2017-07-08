@@ -66,6 +66,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Random;
 import java.util.Set;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import android.util.Log;
 import static android.view.View.GONE;
 
 public class BoardActivity extends BaseGameActivity{
@@ -169,7 +175,34 @@ public class BoardActivity extends BaseGameActivity{
 
 
         mPlaySounds = new PlaySounds();
-        mGame = new Game(level, this);//Game instance
+
+        //Game instance
+        //LOAD GAME STUFF IS HERE
+        if(level < 0)
+        {
+            byte[] temp = getIntent().getExtras().getByteArray("SAVE_FILE");
+            try(ByteArrayInputStream b = new ByteArrayInputStream(getIntent().getExtras().getByteArray("SAVE_FILE"))){
+
+
+                ObjectInputStream o = new ObjectInputStream(b);
+                mGame = (Game)o.readObject();
+            }
+            catch(IOException e)
+            {
+                Log.d("IOException", "Failed to load the game!");
+                mGame = new Game(0, this);
+            }
+            catch(ClassNotFoundException e)
+            {
+                Log.d("ClassNotFoundException", "What class are you talking about?");
+            }
+        }
+        //START NEW GAME HERE
+        else
+        {
+            mGame = new Game(level, this);
+        }
+
         size = mGame.totalBoardRows();
         startAnimationHandler = new Handler();
         squareViews = new SquareView[size * size];//array of 81 squareViews
@@ -213,7 +246,17 @@ public class BoardActivity extends BaseGameActivity{
             final SavedGame obj = new SavedGame();
             obj.setGamerID(Gamer.getId());
             obj.setExactTime(String.format("%,d",System.currentTimeMillis()));
-
+            obj.setColorMode(colorGame);
+            //game object to byte array
+            try(ByteArrayOutputStream b = new ByteArrayOutputStream()){
+                ObjectOutputStream o = new ObjectOutputStream(b);
+                o.writeObject(mGame);
+                obj.setSaveFile(b.toByteArray());
+            }
+            catch(IOException e)
+            {
+                Log.d("IOException", "Failed to save the game!");
+            }
 
             // id field is null at this point
             Runnable runnable = new Runnable() {

@@ -9,12 +9,15 @@ import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBHashKey;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBRangeKey;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBTable;
 
+import java.io.File;
+
 
 @DynamoDBTable(tableName = "SavedGame")
 public class SavedGame {
     private String gamerID;
     private String exactTime;
-
+    private byte[] saveFile;
+    private boolean colorMode;
 
     @DynamoDBRangeKey(attributeName = "ExactTime")
     public String getExactTime() {
@@ -32,7 +35,23 @@ public class SavedGame {
         this.gamerID = gamerID;
     }
 
+    //must be a binary file type
+    @DynamoDBAttribute(attributeName = "saveFile")
+    public byte[] getSaveFile() {
+        return saveFile;
+    }
+    public void setSaveFile(byte[] saveFile) {
+        this.saveFile = saveFile;
+    }
 
+    //must be a binary file type
+    @DynamoDBAttribute(attributeName = "colorMode")
+    public boolean getColorMode() {
+        return colorMode;
+    }
+    public void setColorMode(boolean colorMode) {
+        this.colorMode = colorMode;
+    }
 
 
 
