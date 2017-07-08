@@ -26,6 +26,7 @@ import com.google.example.games.basegameutils.BaseGameActivity;
 import com.google.example.games.basegameutils.GameHelper;
 import com.licktopia.championsofsudoku.PlaySounds;
 import com.licktopia.championsofsudoku.R;
+import com.licktopia.championsofsudoku.Sudoku.DifficultyClassifier;
 
 import java.math.BigInteger;
 import java.util.Random;
@@ -183,11 +184,12 @@ public class MainMenuActivity  extends BaseGameActivity{
 
     private void initializeLick() {
         LinearLayout mLick = (LinearLayout)findViewById(R.id.lick);
+        final Context context = this;
         mLick.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 playLickSound();
-
+                DifficultyClassifier.determineBoardDifficulties(context);
             }
         });
     }

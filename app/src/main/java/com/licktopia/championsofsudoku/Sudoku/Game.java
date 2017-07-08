@@ -32,7 +32,7 @@ public class Game
     public Game(int level, Context ctx)
     {
         this.level = level;
-        curBoard = new Board(level, ctx);
+        curBoard = new Board(level, ctx, -1);
         solutionSolver = new Solver(curBoard);
         scoreWeights = FileIO.loadScoreWeights(level, ctx);
         if(solutionSolver.solve() == null)
@@ -285,20 +285,43 @@ public class Game
         Strategies.updateAllNotepads(curBoard, removeOnly);
     }
 
-    public List<Integer> getNakedSingles() {
-        return Strategies.getNakedSingles(curBoard);
+    public int getNakedSingle() {
+        List<Integer> nakedSingles = Strategies.getNakedSingles(curBoard);
+        if (nakedSingles.isEmpty()) return -1;
+        Integer i = Strategies.getRandomElement(nakedSingles);
+        return i;
     }
 
-    public List<Pair> getNakedDoubles() {
-        return Strategies.getNakedPairs(curBoard);
+    public Strategies.Hint getNakedDouble() {
+        List<Strategies.Hint> nakedPairs = Strategies.getNakedPairs(curBoard);
+        if (nakedPairs.isEmpty()) return null;
+        Strategies.Hint hint = Strategies.getRandomElement(nakedPairs);
+        return hint;
     }
 
-    public void removeNakedDoubles(Pair pair) {
-        Strategies.removeNakedPairValues(curBoard, pair);
+    public Strategies.Hint getHiddenSingle() {
+        List<Strategies.Hint> hiddenSingles = Strategies.getHiddenSingles(curBoard);
+        if (hiddenSingles.isEmpty()) return null;
+        Strategies.Hint hint = Strategies.getRandomElement(hiddenSingles);
+        return hint;
     }
 
-    public List<Pair> getHiddenPairs() {
-        return Strategies.getHiddenPairs(curBoard);
+    public Strategies.Hint getHiddenPair() {
+        List<Strategies.Hint> hiddenPairs = Strategies.getHiddenPairs(curBoard);
+        if (hiddenPairs.isEmpty()) return null;
+        Strategies.Hint hint = Strategies.getRandomElement(hiddenPairs);
+        return hint;
+    }
+
+    public Strategies.Hint getLockedCandidate() {
+        List<Strategies.Hint> lockedCandidates = Strategies.getLockedCandidates(curBoard);
+        if (lockedCandidates.isEmpty()) return null;
+        Strategies.Hint hint = Strategies.getRandomElement(lockedCandidates);
+        return hint;
+    }
+
+    public void removeNakedDoubles(Strategies.Hint hint) {
+        //Strategies.removeNakedPairValues(curBoard, hint);
     }
 
     //returns the total number of elements in the board

@@ -80,7 +80,9 @@ public class BoardActivity extends BaseGameActivity{
     private Button checkProgressButton;
     private Button nakedSingleButton;
     private Button nakedDoubleButton;
+    private Button hiddenSingleButton;
     private Button hiddenPairButton;
+    private Button lockedCandidateButton;
     private ImageButton mUndoButton;
     private ImageButton mRedoButton;
     private ImageButton notepadIcon;
@@ -343,7 +345,9 @@ public class BoardActivity extends BaseGameActivity{
         checkProgressButton = (Button) findViewById(R.id.progressButton);
         nakedSingleButton = (Button) findViewById(R.id.naked_single);
         nakedDoubleButton = (Button) findViewById(R.id.naked_double);
+        hiddenSingleButton = (Button) findViewById(R.id.hidden_single);
         hiddenPairButton = (Button) findViewById(R.id.hidden_pair);
+        lockedCandidateButton = (Button) findViewById(R.id.locked_candidate);
         keyboardDownButton = (ImageButton) findViewById(R.id.down);
     }
 
@@ -410,7 +414,9 @@ public class BoardActivity extends BaseGameActivity{
         checkProgressButtonListener();
         nakedSingleButtonListener();
         nakedDoubleButtonListener();
+        hiddenSingleButtonListener();
         hiddenPairButtonListener();
+        lockedCandidateListener();
         solveButtonListener();
         undoRedoListener();
         continueListener();
@@ -625,6 +631,18 @@ public class BoardActivity extends BaseGameActivity{
     }
 
     /************************************
+     * Listeners hiddenSingleButton
+     *********************************/
+    private void hiddenSingleButtonListener() {
+        hiddenSingleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showHiddenSingle();
+            }
+        });
+    }
+
+    /************************************
      * Listeners hiddenPairButton
      *********************************/
     private void hiddenPairButtonListener() {
@@ -632,6 +650,18 @@ public class BoardActivity extends BaseGameActivity{
             @Override
             public void onClick(View v) {
                 showHiddenPair();
+            }
+        });
+    }
+
+    /************************************
+     * Listeners lockedCandidateButton
+     *********************************/
+    private void lockedCandidateListener() {
+        lockedCandidateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showLockedCandidate();
             }
         });
     }
@@ -655,11 +685,10 @@ public class BoardActivity extends BaseGameActivity{
      * Show one instance of a naked single
      *********************************/
     private void showNakedSingle() {
-        List<Integer> singlesIndices = mGame.getNakedSingles();
-        if (!singlesIndices.isEmpty()) {
-            int idx = Strategies.getRandomElement(singlesIndices);
+        int index = mGame.getNakedSingle();
+        if (index != -1) {
             removeAllHighlights();
-            squareViews[idx].setHighlighted(true, true);
+            squareViews[index].setDarkHighlight();
         }
         else {
             // TODO None exist, display message?
@@ -671,13 +700,10 @@ public class BoardActivity extends BaseGameActivity{
      *********************************/
     private void showNakedDouble() {
         updateBoard();
-        List<Pair> nakedDoubles = mGame.getNakedDoubles();
-        if (!nakedDoubles.isEmpty()) {
-            Pair pair = Strategies.getRandomElement(nakedDoubles);
-            removeAllHighlights();
-            squareViews[(int) pair.first].setHighlighted(true, true);
-            squareViews[(int) pair.second].setHighlighted(true, true);
-            mGame.removeNakedDoubles(pair);
+        Strategies.Hint hint = mGame.getNakedDouble();
+        if (hint != null) {
+            hintDisplay(hint);
+            mGame.removeNakedDoubles(hint);
         }
         else {
             // TODO None exist, display message?
@@ -685,19 +711,81 @@ public class BoardActivity extends BaseGameActivity{
     }
 
     /************************************
-     * Show one instance of a naked double
+     * Show one instance of a hidden double
      *********************************/
-    private void showHiddenPair() {
+    private void showHiddenSingle() {
         updateBoard();
-        List<Pair> hiddenPairs = mGame.getHiddenPairs();
-        if (!hiddenPairs.isEmpty()) {
-            Pair pair = Strategies.getRandomElement(hiddenPairs);
-            removeAllHighlights();
-            squareViews[(int) pair.first].setHighlighted(true, true);
-            squareViews[(int) pair.second].setHighlighted(true, true);
+        Strategies.Hint hint = mGame.getHiddenSingle();
+        if (hint != null) {
+            hintDisplay(hint);
         }
         else {
             // TODO None exist, display message?
+        }
+    }
+
+    /************************************
+     * Show one instance of a hidden double
+     *********************************/
+    private void showHiddenPair() {
+        updateBoard();
+        Strategies.Hint hint = mGame.getHiddenPair();
+        if (hint != null) {
+            hintDisplay(hint);
+        }
+        else {
+            // TODO None exist, display message?
+        }
+    }
+
+
+    /************************************
+     * Show one instance of a hidden double
+     *********************************/
+    private void showLockedCandidate() {
+        updateBoard();
+        Strategies.Hint hint = mGame.getLockedCandidate();
+        if (hint != null) {
+            hintDisplay(hint);
+        }
+        else {
+            // TODO None exist, display message?
+        }
+    }
+
+    /************************************
+     * Handles highlighting for hint display
+     *********************************/
+    private void hintDisplay(Strategies.Hint hint) {
+        removeAllHighlights();
+        for (int i : hint.hintInfo[Strategies.CONNECTED]) {
+            squareViews[i].setHighlighted(true, true);
+        }
+        for (int i : hint.hintInfo[Strategies.SELECTED]) {
+            squareViews[i].setDarkHighlight();
+        }
+        if (hint.getRemoveFrom() == Strategies.SELECTED) {
+            for (int i : hint.hintInfo[Strategies.SELECTED]) {
+                boolean[] colors = new boolean[9];
+                for (int num : hint.hintInfo[Strategies.NOTEPAD])
+                    colors[num - 1] = true;
+                for (int j = 1; j <= colors.length; j++) {
+                    if (colors[j - 1])
+                        squareViews[i].setNotepadHighlightRed(j);
+                    else
+                        squareViews[i].setNotepadHighlightGreen(j);
+                }
+            }
+        }
+        else {
+            for (int i : hint.hintInfo[Strategies.CONNECTED]) {
+                for (int num : hint.hintInfo[Strategies.NOTEPAD])
+                    squareViews[i].setNotepadHighlightRed(num);
+            }
+            for (int i : hint.hintInfo[Strategies.SELECTED]) {
+                for (int num : hint.hintInfo[Strategies.NOTEPAD])
+                    squareViews[i].setNotepadHighlightGreen(num);
+            }
         }
     }
 
@@ -708,6 +796,7 @@ public class BoardActivity extends BaseGameActivity{
         for (int i = 0; i < squareViews.length; i++) {
             if(!colorGame) {
                 squareViews[i].setHighlighted(false, true);
+                squareViews[i].clearNotepadHighlights();
             }
             else{
                 squareViews[i].setHighlighted(false, false);

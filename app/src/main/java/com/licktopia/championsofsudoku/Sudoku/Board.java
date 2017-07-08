@@ -21,11 +21,13 @@ class Board {
     private int openSquares;            // Tracks how many squares are empty
     private int incorrectGuesses = 0; //total number of incorrect guesses
 
-    /* Constructor*/
-    protected Board(int level, Context ctx) {
+     /* Constructor*/
+    protected Board(int level, Context ctx, int index) {
 
-
-        int[] values = FileIO.loadBoard(level, ctx, SIZE * SIZE);
+        int[] values;
+        if (index == -1) values = FileIO.loadBoard(level, ctx, SIZE * SIZE);
+        else
+            values = FileIO.loadSpecificBoard(level, ctx, SIZE * SIZE, index);
         // Check parameter has correct number of values
         if (values.length != SIZE * SIZE) {
             System.out.printf("The loaded game contains %d elements but needs to have %d elements\n", values.length, SIZE * SIZE);

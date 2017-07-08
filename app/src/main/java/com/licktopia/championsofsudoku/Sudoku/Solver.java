@@ -84,7 +84,8 @@ class Solver {
     }
 
     // Returns a queue of squares that is an exact set of steps to solve the puzzle
-    protected void solveWithStrategies() {
+    protected int solveWithStrategies() {
+        int strategiesUsed = 0;
         // Number of steps
         int squaresToComplete = curBoard.getOpenSquares();
         boolean cannotSolve = false;
@@ -103,6 +104,7 @@ class Solver {
                 case 2:
                     Strategies.removeRandomHiddenSingle(curBoard);
                 case 1:
+                    strategiesUsed++;
                     int index = Strategies.removeRandomNakedSingle(curBoard);
                     // If no squares are found
                     if (index == -1) {
@@ -121,6 +123,11 @@ class Solver {
                     break;
             }
         }
+
+        if (cannotSolve)
+            return -1;
+        else
+            return strategiesUsed;
     }
 
     //updates all squares' notepads so that only valid moves are true

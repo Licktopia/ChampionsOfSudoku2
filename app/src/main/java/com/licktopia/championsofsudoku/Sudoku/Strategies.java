@@ -13,6 +13,26 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class Strategies {
 
+    public static class Hint {
+        public int[][] hintInfo;
+
+        public Hint(int[][] hintInfo) {
+            this.hintInfo = hintInfo;
+        }
+
+        public int getRemoveFrom() {
+            return hintInfo[REMOVE_FROM][0];
+        }
+
+    }
+
+    public static final int REMOVE_FROM = 0;
+    public static final int SELECTED = 1;
+    public static final int CONNECTED = 2;
+    public static final int NOTEPAD = 3;
+    
+    public static final int NUM_CATEGORIES = 4;
+
     /* Returns a single random element of type <T> from a list */
     public static <T> T getRandomElement(List<T> list) {
         int rand = ThreadLocalRandom.current().nextInt(0, list.size());
@@ -52,20 +72,52 @@ public class Strategies {
         return -1;
     }
 
+    /* Executes the strategy provided by the given Hint object */
+    public static void executeStrategy(Board board, Hint hint) {
+        // Get indices to remove notepad values from
+        ArrayList<Integer> indicesToEdit = new ArrayList<>();
+        if (hint.getRemoveFrom() == CONNECTED) {
+            for (int idx : hint.hintInfo[CONNECTED])
+                indicesToEdit.add(idx);
+            for (int idx : hint.hintInfo[SELECTED])
+                indicesToEdit.remove(idx);
+        }
+        else
+            for (int idx : hint.hintInfo[SELECTED])
+                indicesToEdit.add(idx);
+
+        for (int idx : indicesToEdit) {
+            for (int np : hint.hintInfo[NOTEPAD])
+                board.getSquare(idx).setNotepad(np, false);
+        }
+    }
+
 
     /****** HIDDEN SINGLES *******/
 
     /* Returns a list of Pairs (index - notepad num) of squares that have the sole occurrence of num in a group */
-    public static List<Pair> getHiddenSingles(Board board) {
+    public static List<Hint> getHiddenSingles(Board board) {
 
-        ArrayList<Pair> hiddenSingles = new ArrayList<>();
+        ArrayList<Hint> hiddenSingles = new ArrayList<>();
         for (int[] group : board.getAllIndexGroups()) {
             for (int i = 1; i <= board.getSize(); i++) {
                 // Find notepad values that only appear once in a group
                 if (board.getTotalNotepadOccurrences(group, i) == 1) {
                     // Find square in group that has single appearance of value
                     for (int j = 0; j < group.length; j++) {
-                        if (board.getNotepadAt(group[j], i)) hiddenSingles.add(new Pair(group[j], i));
+                        if (board.getNotepadAt(group[j], i)) {
+                            int[][] hintInfo = new int[NUM_CATEGORIES][];
+                            hintInfo[REMOVE_FROM] = new int[] {SELECTED};
+                            hintInfo[SELECTED] = new int[] {group[j]};
+                            hintInfo[CONNECTED] = group;
+                            int[] notepad = new int[board.getSize() - 1];
+                            for (int x = 0, y = 1; x < notepad.length; x++, y++) {
+                                if (y == i) y++;
+                                notepad[x] = y;
+                            }
+                            hintInfo[NOTEPAD] = notepad;
+                            hiddenSingles.add(new Hint(hintInfo));
+                        }
                     }
                 }
             }
@@ -73,22 +125,12 @@ public class Strategies {
         return hiddenSingles;
     }
 
-    // Updates the notepad of a random hidden single, if one exists
-    public static void removeRandomHiddenSingle(Board board) {
-        List<Pair> hiddenSingles = getHiddenSingles(board);
-        if (!hiddenSingles.isEmpty()) {
-            Pair indexNumPair = getRandomElement(hiddenSingles);
-            board.setOnlyNotepadValue((int)indexNumPair.first, (int)indexNumPair.second);
-        }
-    }
-
-
     /****** NAKED PAIRS *******/
 
     /* Find all instances of naked pairs */
-    public static List<Pair> getNakedPairs(Board board) {
+    public static List<Hint> getNakedPairs(Board board) {
 
-        ArrayList<Pair> nakedPairs = new ArrayList<>();
+        ArrayList<Hint> nakedPairs = new ArrayList<>();
 
         // Loop over every pair of squares
         for (int i = 0; i < board.totalBoardElements(); i++) {
@@ -101,8 +143,16 @@ public class Strategies {
                     List<Integer> values = board.getNotepadValues(i);
                     int[] group = getGroup(board, i, j);
                     if (board.getTotalNotepadOccurrences(group, values.get(0)) > 2 ||
-                            board.getTotalNotepadOccurrences(group, values.get(1)) > 2)
-                        nakedPairs.add(new Pair(i, j));
+                        board.getTotalNotepadOccurrences(group, values.get(1)) > 2) {
+
+                        // Create hint object
+                        int[][] hintInfo = new int[NUM_CATEGORIES][];
+                        hintInfo[REMOVE_FROM] = new int[] {CONNECTED};
+                        hintInfo[SELECTED] = new int[] {i, j};
+                        hintInfo[CONNECTED] = group;
+                        hintInfo[NOTEPAD] = new int[] {values.get(0), values.get(1)};
+                        nakedPairs.add(new Hint(hintInfo));
+                    }
                 }
             }
         }
@@ -110,47 +160,13 @@ public class Strategies {
         return nakedPairs;
     }
 
-    /* Execute naked pair strategy on board given a Pair instance */
-    public static void removeNakedPairValues(Board board, Pair pair) {
-
-        // Get the two notepad values in the naked pair
-        int idx1 = (int)pair.first;
-        int idx2 = (int)pair.second;
-        List<Integer> values = board.getNotepadValues(idx1);
-        int notepad1 = values.get(0);
-        int notepad2 = values.get(1);
-
-        int[] group = getGroup(board, idx1, idx2);
-
-        // Remove notepad values from all squares in indices that are open and not part of the pair
-        for (int i : group) {
-            // Skip over squares in pair
-            if (i == idx1 || i == idx2) continue;
-            // Remove values from open squares
-            if (!board.isStartingValue(i) && board.getValueAt(i) == 0) {
-                board.setNotepadAt(i, notepad1, false);
-                board.setNotepadAt(i, notepad2, false);
-            }
-        }
-    }
-
-    /* Finds, selects, and executes naked pair strategy on one random existing naked pair */
-    public static void removeRandomNakedPairValues(Board board) {
-        List<Pair> pairs = getNakedPairs(board);
-        if (!pairs.isEmpty()) {
-            Pair pair = getRandomElement(pairs);
-            removeNakedPairValues(board, pair);
-        }
-    }
-
-
     /****** HIDDEN PAIRS ********/
 
     // Hidden pairs are pairs of squares within a row/col/cluster that both contain the only two
     // appearances of a notepad number within that row/col/cluster
-    public static List<Pair> getHiddenPairs(Board board) {
+    public static List<Hint> getHiddenPairs(Board board) {
 
-        ArrayList<Pair> hiddenPairs = new ArrayList<>();
+        ArrayList<Hint> hiddenPairs = new ArrayList<>();
 
         int numGroups = board.getSize() * 3;
         int[][] groups = board.getAllIndexGroups();
@@ -173,8 +189,21 @@ public class Strategies {
                                 }
                             }
                             // Check there are other notepad numbers to remove
-                            if (board.getTotalNotepadValues(idx1) > 2 || board.getTotalNotepadValues(idx2) > 2)
-                                hiddenPairs.add(new Pair(idx1, idx2));
+                            if (board.getTotalNotepadValues(idx1) > 2 || board.getTotalNotepadValues(idx2) > 2) {
+
+                                // Create hint object
+                                int[][] hintInfo = new int[NUM_CATEGORIES][];
+                                hintInfo[REMOVE_FROM] = new int[] {SELECTED};
+                                hintInfo[SELECTED] = new int[] {idx1, idx2};
+                                hintInfo[CONNECTED] = group;
+                                int[] notepad = new int[board.getSize() - 2];
+                                for (int x = 0, y = 1; x < notepad.length; x++, y++) {
+                                    if (y == j || y == twoSquareNotepadNums.get(k)) y++;
+                                    notepad[x] = y;
+                                }
+                                hintInfo[NOTEPAD] = notepad;
+                                hiddenPairs.add(new Hint(hintInfo));
+                            }
                         }
                     }
                     twoSquareNotepadNums.add(j);
@@ -185,41 +214,13 @@ public class Strategies {
         return hiddenPairs;
     }
 
-    public static void removeHiddenPairValues(Board board, Pair pair) {
-
-        // Get the notepad values in the naked pair
-        int idx1 = (int)pair.first;
-        int idx2 = (int)pair.second;
-
-        // Get the indices of the squares in the group
-        int group[] = getGroup(board, idx1, idx2);
-
-        // Set all notepad nums in the two squares that are not exclusive to false
-        for (int i = 1; i <= board.getSize(); i++) {
-            if (!(board.getTotalNotepadOccurrences(group, i) == 2) || !board.getNotepadAt(idx1, i) || !board.getNotepadAt(idx2, i)) {
-                board.setNotepadAt(idx1, i, false);
-                board.setNotepadAt(idx2, i, false);
-            }
-        }
-    }
-
-    /* Finds, selects, and executes hidden pair strategy on one random existing hidden pair */
-    public static void removeRandomHiddenPairValues(Board board) {
-        List<Pair> pairs = getHiddenPairs(board);
-        if (!pairs.isEmpty()) {
-            Pair pair = getRandomElement(pairs);
-            removeHiddenPairValues(board, pair);
-        }
-    }
-
-
     /****** LOCKED CANDIDATE *******/
 
     // Search CLUSTERS for notepad candidates that are restricted to single row or column
     // Returns a Pair object containing the cluster number and the locked notepad number
-    public static List<Pair> getLockedCandidates(Board board) {
+    public static List<Hint> getLockedCandidates(Board board) {
 
-        ArrayList<Pair> lockedCandidates = new ArrayList<>();
+        ArrayList<Hint> lockedCandidates = new ArrayList<>();
 
         // Iterate over each cluster to find possible restricted candidates
         for (int i = 0; i < board.getSize(); i++) {
@@ -245,13 +246,42 @@ public class Strategies {
                         // If there are values in the row to be removed, add to list
                         int[] rowIndices = board.getRowIndicesByIndex(first);
                         int rowOccurrences = board.getTotalNotepadOccurrences(rowIndices, np);
-                        if (rowOccurrences > occurrences) lockedCandidates.add(new Pair(i, np));
+                        if (rowOccurrences > occurrences) {
+
+                            // Create hint object
+                            int[][] hintInfo = new int[NUM_CATEGORIES][];
+                            hintInfo[REMOVE_FROM] = new int[] {CONNECTED};
+                            int[] selected;
+                            if (board.isSameCluster(first, first - 1)) selected = new int[] {first - 1, first, second};
+                            else if  (board.isSameCluster(second, second + 1)) selected = new int[] {first, second, second + 1};
+                            else selected = new int[] {first, first + 1, second};
+                            hintInfo[SELECTED] = selected;
+                            hintInfo[CONNECTED] = board.getRowIndicesByIndex(first);
+                            hintInfo[NOTEPAD] = new int[] {np};
+                            lockedCandidates.add(new Hint(hintInfo));
+                        }
                     }
                     else if (board.isSameCol(first, second) && (third == -1 || board.isSameCol(first, third))) {
                         // If there are values in the column to be removed, add to list
                         int[] colIndices = board.getColIndicesByIndex(first);
                         int colOccurrences = board.getTotalNotepadOccurrences(colIndices, np);
-                        if (colOccurrences > occurrences) lockedCandidates.add(new Pair(i, np));
+                        if (colOccurrences > occurrences) {
+
+                            // Create hint object
+                            int[][] hintInfo = new int[NUM_CATEGORIES][];
+                            hintInfo[REMOVE_FROM] = new int[] {CONNECTED};
+                            int[] selected;
+                            int size = board.getSize();
+                            if (board.isSameCluster(first, first - board.getSize()) && first >= size)
+                                selected = new int[] {first - board.getSize(), first, second};
+                            else if (board.isSameCluster(second, second + board.getSize()) && second < (size * size) - size)
+                                selected = new int[] {first, second, second + board.getSize()};
+                            else selected = new int[] {first, first + board.getSize(), second};
+                            hintInfo[SELECTED] = selected;
+                            hintInfo[CONNECTED] = board.getColIndicesByIndex(first);
+                            hintInfo[NOTEPAD] = new int[] {np};
+                            lockedCandidates.add(new Hint(hintInfo));
+                        }
                     }
                 }
             }
@@ -259,47 +289,6 @@ public class Strategies {
 
         return lockedCandidates;
     }
-
-    public static void removeLockedCandidateValues(Board board, Pair pair) {
-
-        int cluster = (int)pair.first;
-        int np = (int)pair.second;
-        int[] indices = board.getClusterIndices(cluster);
-
-        // Get indices containing np
-        int idx1 = -1;
-        int idx2 = -1;
-        int idx3 = -1;
-        for (int i = 0; i < indices.length; i++) {
-            if (board.getNotepadAt(indices[i], np)) {
-                if (idx1 == -1) idx1 = indices[i];
-                else if (idx2 == -1) idx2 = indices[i];
-                else idx3 = indices[i];
-            }
-        }
-
-        // Get indices of row or column to be edited
-        int[] indicesToEdit;
-        if (board.isSameRow(idx1, idx2))
-            indicesToEdit = board.getRowIndicesByIndex(idx1);
-        else
-            indicesToEdit = board.getColIndicesByIndex(idx1);
-
-        // Set notepad for other indices in row/col to false
-        for (int i : indicesToEdit) {
-            if (i != idx1 && i != idx2 && i != idx3)
-                board.setNotepadAt(i, np, false);
-        }
-    }
-
-    public static void removeRandomLockedCandidateValues(Board board) {
-        List<Pair> pairs = getLockedCandidates(board);
-        if (!pairs.isEmpty()) {
-            Pair pair = getRandomElement(pairs);
-            removeLockedCandidateValues(board, pair);
-        }
-    }
-
 
     /****** X WING *******/
 
@@ -310,6 +299,30 @@ public class Strategies {
         //  in one of the two spots in that column
     }
 
+    public static void executeStrategyFromList(Board board, List<Hint> hints) {
+        if (!hints.isEmpty()) {
+            Hint hint = getRandomElement(hints);
+            executeStrategy(board, hint);
+        }
+    }
+
+    /* Finds, selects, and executes naked pair strategy on one random existing hidden single */
+    public static void removeRandomHiddenSingle(Board board) {
+        executeStrategyFromList(board, getHiddenSingles(board));
+    }
+    /* Finds, selects, and executes naked pair strategy on one random existing naked pair */
+    public static void removeRandomNakedPairValues(Board board) {
+        executeStrategyFromList(board, getNakedPairs(board));
+    }
+
+    /* Finds, selects, and executes hidden pair strategy on one random existing hidden pair */
+    public static void removeRandomHiddenPairValues(Board board) {
+        executeStrategyFromList(board, getHiddenPairs(board));
+    }
+
+    public static void removeRandomLockedCandidateValues(Board board) {
+        executeStrategyFromList(board, getLockedCandidates(board));
+    }
 
     //updates all squares' notepads so that only valid moves are true
     public static void updateAllNotepads(Board board, boolean removeOnly)
