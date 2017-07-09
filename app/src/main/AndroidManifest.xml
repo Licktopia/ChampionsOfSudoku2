@@ -29,6 +29,7 @@
         <activity android:name=".Activities.InstructionsActivity" />
         <activity android:name=".Activities.AboutActivity" />
         <activity android:name=".Activities.CompletedGameActivity" />
+        <activity android:name=".Activities.SavedGameActivity" />
         <activity android:name=".Activities.MainMenuActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

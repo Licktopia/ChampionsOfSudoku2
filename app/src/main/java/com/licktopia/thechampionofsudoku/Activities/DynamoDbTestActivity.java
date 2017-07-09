@@ -82,9 +82,9 @@ public class DynamoDbTestActivity extends AppCompatActivity {
                     public void run() {
                         //DynamoDB calls go here
                         list[0] = mapper.query(SavedGame.class, queryExpression);
-                        ArrayList<SavedGame> cGames = new ArrayList<SavedGame>();
+                        ArrayList<SavedGame> sGames = new ArrayList<SavedGame>();
                         for(int i = 0; i<list[0].size();i++){
-                            cGames.add(list[0].get(i));
+                            sGames.add(list[0].get(i));
                         }
 
 

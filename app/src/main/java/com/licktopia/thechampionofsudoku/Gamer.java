@@ -1,8 +1,12 @@
 package com.licktopia.thechampionofsudoku;
 
+import com.licktopia.thechampionofsudoku.Activities.SavedGameActivity;
 import com.licktopia.thechampionofsudoku.Sudoku.CompletedGame;
+import com.licktopia.thechampionofsudoku.Sudoku.SavedGame;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -34,17 +38,18 @@ public class Gamer {
     public static int level=0;
     public static long xp;
     public static ArrayList<CompletedGame> completedGames;
-    public static ArrayList<CompletedGame> savedGames;
+    public static ArrayList<SavedGame> savedGames;
 
 
 
 
 
-    public static ArrayList<CompletedGame> getSavedGames() {
+    public static ArrayList<SavedGame> getSavedGames() {
         return savedGames;
     }
 
-    public static void setSavedGames(ArrayList<CompletedGame> savedGames) {
+    public static void setSavedGames(ArrayList<SavedGame> savedGames) {
+        Collections.sort(savedGames, new Gamer.RecentSorter());
         Gamer.savedGames = savedGames;
     }
 
@@ -134,6 +139,37 @@ public class Gamer {
         if(savedGames!=null) {
             Gamer.savedGames.clear();
         }
+    }
+
+    public static class RecentSorter implements Comparator<SavedGame> {
+
+        public int compare(SavedGame one, SavedGame another){
+            int returnVal = 0;
+
+            if(formatExactTime(one.getExactTime()) < formatExactTime(another.getExactTime())){
+                returnVal =  1;
+            }else if(formatExactTime(one.getExactTime()) > formatExactTime(another.getExactTime())){
+                returnVal =  -1;
+            }else if(formatExactTime(one.getExactTime()) == formatExactTime(another.getExactTime())){
+                returnVal =  0;
+            }
+
+            return returnVal;
+
+        }
+    }
+
+    public static Long formatExactTime(String time) {
+        Long timeNumber;
+        StringBuilder str = new StringBuilder();
+        for(char c : time.toCharArray()){
+            if(c != ','){
+                str.append(c);
+            }
+
+        }
+        timeNumber = Long.valueOf(str.toString());
+        return timeNumber;
     }
 
 

@@ -20,6 +20,12 @@ public class BackgroundImages {
         pictureNumber = randomNum;
         return backImages[randomNum];
     }
+
+    public int getImage(int pos){
+        int randomNum = ThreadLocalRandom.current().nextInt(0, backImages.length);
+        pictureNumber = randomNum;
+        return backImages[randomNum];
+    }
     public int getPictureNumber() {
         return pictureNumber;
     }

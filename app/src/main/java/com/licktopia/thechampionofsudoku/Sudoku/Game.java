@@ -15,6 +15,17 @@ import java.util.concurrent.TimeUnit;
 //UI uses only this class to interact with the game
 public class Game implements java.io.Serializable
 {
+
+    public int getImageNumber() {
+        return imageNumber;
+    }
+
+    public void setImageNumber(int imageNumber) {
+        this.imageNumber = imageNumber;
+    }
+
+    //imageNumber
+    private int imageNumber;
     //time in seconds
     private long runningTime = 0;
 

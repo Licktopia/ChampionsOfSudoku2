@@ -76,5 +76,12 @@
     <string name="not_upload">Could not upload game to database</string>
     <string name="next_levelup">Next Level Up</string>
     <string name="game_history">\'s Game History</string>
-    <string name="save_game">Save game</string>
+    <string name="save_game">Save Game</string>
+    <string name="saved_game_succ_deleted">Saved game successfully deleted.</string>
+    <string name="delete_saved">Delete Saved Game</string>
+    <string name="puzzle_number">Puzzle number #</string>
+    <string name="resume_game">Resume Game?</string>
+    <string name="cancel">Cancel</string>
+    <string name="your_saved_games">\'s Saved Games</string>
+    <string name="game_saved">Game Saved</string>
 </resources>

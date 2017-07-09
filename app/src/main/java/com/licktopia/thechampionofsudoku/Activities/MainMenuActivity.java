@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -45,6 +46,7 @@ import com.licktopia.thechampionofsudoku.Gamer;
 import com.licktopia.thechampionofsudoku.PlaySounds;
 import com.licktopia.thechampionofsudoku.R;
 import com.licktopia.thechampionofsudoku.Sudoku.CompletedGame;
+import com.licktopia.thechampionofsudoku.Sudoku.SavedGame;
 import com.licktopia.thechampionofsudoku.Tags;
 
 import java.io.IOException;
@@ -56,6 +58,7 @@ import java.util.Random;
 public class MainMenuActivity  extends BaseGameActivity{
     private static final String PREF_FILE = "com.licktopia.com.licktopia.championofsudoku.preferences";
     private static final int RC_SAVED_GAMES = 9009;
+    private static final float RESUME_ALPHA = .3f;
     private final static String TAG = "MainMenuActivity";
     private String mCurrentSaveName = "snapshotTemp";
 
@@ -67,6 +70,7 @@ public class MainMenuActivity  extends BaseGameActivity{
     private LinearLayout mSignInButton;
     private LinearLayout mBadge;
     private Button mSignOutButton;
+    private LinearLayout mResumeButton;
 
     private int level = 3;
     private boolean colorMode = false;
@@ -81,6 +85,7 @@ public class MainMenuActivity  extends BaseGameActivity{
     private CognitoCachingCredentialsProvider credentialsProvider;
     private AmazonDynamoDBClient ddbClient;
     private DynamoDBMapper mapper;
+    private ProgressBar mProgressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +99,8 @@ public class MainMenuActivity  extends BaseGameActivity{
         ed = mSharedPreferences.edit();
         ed.apply();
         userBadge = (ImageView)findViewById(R.id.user_badge_level);
+        mProgressBar = (ProgressBar)findViewById(R.id.progressBar);
+        mResumeButton = (LinearLayout) findViewById(R.id.resume);
         gameHelper = new GameHelper(this, GameHelper.CLIENT_GAMES);
         //TODO Remove this for production
         gameHelper.enableDebugLog(true);
@@ -109,7 +116,7 @@ public class MainMenuActivity  extends BaseGameActivity{
         ddbClient = new AmazonDynamoDBClient(credentialsProvider);
         mapper = new DynamoDBMapper(ddbClient);
         ddbClient.setRegion(Region.getRegion(Regions.US_EAST_2));
-
+        mResumeButton.setClickable(false);
         signInInitialization();
         initAnimation();
         levelButtonInitialize();
@@ -118,18 +125,16 @@ public class MainMenuActivity  extends BaseGameActivity{
         setMessage();
         initializeLick();
         initializeShareBar();
-        LinearLayout mResumeButton = (LinearLayout) findViewById(R.id.resume);
-        initializeResumeButton(mResumeButton);
+
+
     }
 
     private void initializeResumeButton(LinearLayout mResumeButton) {
         mResumeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //showSavedGamesUI();
-
-                        Intent intent = new Intent(MainMenuActivity.this, DynamoDbTestActivity.class);
-                        startActivity(intent);
+                Intent intent = new Intent(MainMenuActivity.this, SavedGameActivity.class);
+                startActivity(intent);
 
             }
         });
@@ -230,6 +235,57 @@ public class MainMenuActivity  extends BaseGameActivity{
         }
 
     }
+
+    private void querySavedGameDb() {
+        if (isInternet()) {
+            String partitionKey = Gamer.getId();
+            SavedGame sg = new SavedGame();
+            sg.setGamerID(partitionKey);
+
+
+            final DynamoDBQueryExpression<SavedGame> queryExpression = new DynamoDBQueryExpression<SavedGame>()
+                    .withHashKeyValues(sg)
+                    .withConsistentRead(false);
+
+            final List<SavedGame>[] list = new List[]{new ArrayList<SavedGame>()};
+
+            // id field is null at this point
+            Runnable runnable = new Runnable() {
+                public void run() {
+                    //DynamoDB calls go here
+                    list[0] = mapper.query(SavedGame.class, queryExpression);
+                    ArrayList<SavedGame> sGames = new ArrayList<SavedGame>();
+                    for (int i = 0; i < list[0].size(); i++) {
+                        sGames.add(list[0].get(i));
+                    }
+                    Gamer.setSavedGames(sGames);
+
+
+                }
+            };
+            Thread mythread = new Thread(runnable);
+            mythread.start();
+            try {
+                mythread.join();
+                if (!Gamer.getSavedGames().isEmpty()) {
+                    initializeResumeButton(mResumeButton);
+                    mProgressBar.setVisibility(View.GONE);
+                    mResumeButton.setVisibility(View.VISIBLE);
+                    mResumeButton.setAlpha(1f);
+                    mResumeButton.setClickable(true);
+                } else {
+                    mProgressBar.setVisibility(View.GONE);
+                    mResumeButton.setVisibility(View.VISIBLE);
+                    mResumeButton.setAlpha(RESUME_ALPHA);
+                    mResumeButton.setClickable(false);
+                }
+            }
+            catch(InterruptedException e)
+            {
+                Log.d("Load Interrupted", "That was rude");
+            }
+        }
+    }
     /***************************************
     *Update UI when login or logout occurs
     ***************************************/
@@ -247,12 +303,15 @@ public class MainMenuActivity  extends BaseGameActivity{
                 getHighestScoreFromLeaderBoard();
             }
             queryCompletedGameDb();
+            querySavedGameDb();
         }
         else{
             Gamer.setNullUser();
             if(clickedOut) {
                 mPlaySounds.playSounds(this,8);
             }
+            mProgressBar.setVisibility(View.GONE);
+            mResumeButton.setVisibility(View.VISIBLE);
             clickedOut = false;
             mSignInButton.setVisibility(View.VISIBLE);
             mSignOutButton.setVisibility(View.INVISIBLE);
@@ -360,6 +419,8 @@ public class MainMenuActivity  extends BaseGameActivity{
                         colorMode=false;
                     }
                     Intent intent = new Intent(MainMenuActivity.this, BoardActivity.class);
+                    boolean resume = false;
+                    intent.putExtra("RESUME", resume);
                     intent.putExtra("LEVEL", level);
                     intent.putExtra("COLOR_MODE", colorMode);
                     startActivity(intent);

@@ -18,6 +18,10 @@ public class SavedGame {
     private String exactTime;
     private byte[] saveFile;
     private boolean colorMode;
+    private String date;
+    private String time;
+    private int level;
+    private int puzzleNumber;
 
     @DynamoDBRangeKey(attributeName = "ExactTime")
     public String getExactTime() {
@@ -53,6 +57,36 @@ public class SavedGame {
         this.colorMode = colorMode;
     }
 
+    @DynamoDBAttribute(attributeName = "Date")
+    public String getDate() {
+        return date;
+    }
+    public void setDate(String date) {
+        this.date = date;
+    }
+    @DynamoDBAttribute(attributeName = "Time")
+    public String getTime() {
+        return time;
+    }
+    public void setTime(String time) {
+        this.time = time;
+    }
+    @DynamoDBAttribute(attributeName = "PuzzleNo")
+    public int getPuzzleNumber() {
+        return puzzleNumber;
+    }
+
+    public void setPuzzleNumber(int puzzleNumber) {
+        this.puzzleNumber = puzzleNumber;
+    }
+
+    @DynamoDBAttribute(attributeName = "Level")
+    public int getLevel() {
+        return level;
+    }
+    public void setLevel(int level) {
+        this.level = level;
+    }
 
 
 

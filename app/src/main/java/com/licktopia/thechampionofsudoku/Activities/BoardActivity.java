@@ -114,6 +114,8 @@ public class BoardActivity extends BaseGameActivity{
     private String gamerName;
     private String gamerID;
     private int level;
+    private boolean resume;
+
     ShareDialog shareDialog;
 
     CognitoCachingCredentialsProvider credentialsProvider;
@@ -128,6 +130,7 @@ public class BoardActivity extends BaseGameActivity{
         setContentView(R.layout.activity_board);
         //pass in mode and level
         colorGame = getIntent().getExtras().getBoolean("COLOR_MODE");
+        resume = getIntent().getExtras().getBoolean("RESUME");
         level = getIntent().getExtras().getInt("LEVEL");
         //initialize actiion bar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -178,7 +181,7 @@ public class BoardActivity extends BaseGameActivity{
 
         //Game instance
         //LOAD GAME STUFF IS HERE
-        if(level < 0)
+        if(resume)
         {
             byte[] temp = getIntent().getExtras().getByteArray("SAVE_FILE");
             try(ByteArrayInputStream b = new ByteArrayInputStream(getIntent().getExtras().getByteArray("SAVE_FILE"))){
@@ -213,8 +216,13 @@ public class BoardActivity extends BaseGameActivity{
 
         updateUndoRedoButtons();
         initializeButtons();
-        initializeBoard();//get starting board
-        customizeLayout();
+        if(resume){
+            initializeBoardFromResume();
+        }
+        else {
+            initializeBoard();//get starting board
+        }
+        customizeLayout(resume);
         listeners(toolbar);//set all listeners for BoardActivity layout
         updateScore();
         mChronometer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
@@ -242,11 +250,17 @@ public class BoardActivity extends BaseGameActivity{
         if(isInternet()&&gameHelper.getApiClient().isConnected()) {
             Date dt = new Date();
             SimpleDateFormat dateFormat = new SimpleDateFormat("MMM d, yyyy");
+            SimpleDateFormat sdf = new SimpleDateFormat("hh:mm aaa");
             String today = dateFormat.format(dt);
+            String now = sdf.format(dt);
             final SavedGame obj = new SavedGame();
             obj.setGamerID(Gamer.getId());
             obj.setExactTime(String.format("%,d",System.currentTimeMillis()));
             obj.setColorMode(colorGame);
+            obj.setDate(today);
+            obj.setTime(now);
+            obj.setPuzzleNumber(mGame.getBoardNumber()+1+level*10000);
+            obj.setLevel(level);
             //game object to byte array
             try(ByteArrayOutputStream b = new ByteArrayOutputStream()){
                 ObjectOutputStream o = new ObjectOutputStream(b);
@@ -267,6 +281,7 @@ public class BoardActivity extends BaseGameActivity{
             };
             Thread mythread = new Thread(runnable);
             mythread.start();
+            Toast.makeText(this, R.string.game_saved,Toast.LENGTH_SHORT).show();
 
 
 
@@ -688,6 +703,38 @@ public class BoardActivity extends BaseGameActivity{
             }
         },2950);
     }
+    private void initializeBoardFromResume() {
+        for (int i = 0; i < squareViews.length; i++){
+            RelativeLayout rl = (RelativeLayout) findViewById(Tags.squareTags[i]); // get Relative layout
+            squareViews[i] = new SquareView(this, rl,colorGame);
+            for (int j = 0; j < 9; j++){
+                squareViews[i].showNotepadNumber(j+1,mGame.getBoardNotepadAt(i,j+1));
+
+            }
+        }
+        for (int i = 0; i < squareViews.length; i++) {//set up starting board
+
+            int value = mGame.getBoardValueAt(i);
+            if(colorGame){
+                squareViews[i].setSquareColor(value, mGame.isStartingValue(i));
+            }
+            else {
+                squareViews[i].setBigNumber(value, mGame.isStartingValue(i));
+            }
+        }
+
+        mGame.unpauseTimer();
+
+        mChronometer.setBase(SystemClock.elapsedRealtime()-mGame.getRunningTime()*1000);
+        mChronometer.start();
+
+        updateScore();
+        animationFinished = true;
+        ///Make board clickable
+        allClickable(true);
+        updateLilNums();
+    }
+
 
 
     /************************************
@@ -1180,7 +1227,7 @@ public class BoardActivity extends BaseGameActivity{
     /************************************
      * Number vs Color initial setup
      *********************************/
-    private void customizeLayout() {
+    private void customizeLayout(boolean resume) {
         /////make board unclickable, made clickable after start animation
         allClickable(false);
         /////set keypad colors
@@ -1209,7 +1256,13 @@ public class BoardActivity extends BaseGameActivity{
         } else {
             notepadIcon.setImageDrawable(getResources().getDrawable(R.drawable.colors));
             BackgroundImages mBackgroundImages = new BackgroundImages();
-            artHolder.setImageDrawable(getResources().getDrawable(mBackgroundImages.getImage()));
+            mGame.setImageNumber(mBackgroundImages.getPictureNumber());
+            if(resume){
+                artHolder.setImageDrawable(getResources().getDrawable(mBackgroundImages.getImage(mGame.getImageNumber())));
+            }
+            else {
+                artHolder.setImageDrawable(getResources().getDrawable(mBackgroundImages.getImage()));
+            }
             //int imageNumber = mBackgroundImages.getPictureNumber();
         }
     }

@@ -578,14 +578,28 @@
             android:orientation="horizontal"
             android:weightSum="3">
 
+            <ProgressBar
+                android:id="@+id/progressBar"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:scaleX=".7"
+                android:scaleY=".7"
+                android:visibility="visible" />
+
             <LinearLayout
                 android:id="@+id/resume"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:alpha=".3"
+                android:clickable="false"
                 android:orientation="vertical"
                 android:padding="5dp"
-                android:weightSum="100">
+                android:visibility="gone"
+                android:weightSum="100"
+                tools:visibility="gone">
 
                 <ImageView
                     android:id="@+id/imageView7"
@@ -598,7 +612,8 @@
                     android:scaleType="fitCenter"
                     android:scaleX=".9"
                     android:scaleY=".9"
-                    app:srcCompat="@drawable/star" />
+                    app:srcCompat="@drawable/star"
+                    tools:visibility="visible" />
 
                 <TextView
                     android:id="@+id/textView50"
@@ -608,7 +623,8 @@
                     android:gravity="top|center_horizontal"
                     android:text="Resume"
                     android:textSize="13sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    tools:visibility="visible" />
             </LinearLayout>
 
             <RelativeLayout
