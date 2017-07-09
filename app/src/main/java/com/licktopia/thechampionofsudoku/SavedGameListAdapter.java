@@ -115,6 +115,7 @@ public class SavedGameListAdapter extends RecyclerView.Adapter<SavedGameListAdap
                                     intent.putExtra("RESUME", resume);
                                     intent.putExtra("COLOR_MODE", Gamer.getSavedGames().get(position).getColorMode());
                                     intent.putExtra("SAVE_FILE", Gamer.getSavedGames().get(position).getSaveFile());
+                                    intent.putExtra("STOPPED_TIME", Gamer.getSavedGames().get(position).getStoppedTime());
                                     context.startActivity(intent);
 
 

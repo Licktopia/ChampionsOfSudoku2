@@ -22,6 +22,7 @@ public class SavedGame {
     private String time;
     private int level;
     private int puzzleNumber;
+    private long stoppedTime;
 
     @DynamoDBRangeKey(attributeName = "ExactTime")
     public String getExactTime() {
@@ -86,6 +87,13 @@ public class SavedGame {
     }
     public void setLevel(int level) {
         this.level = level;
+    }
+    @DynamoDBAttribute(attributeName = "StoppedTime")
+    public long getStoppedTime() {
+        return stoppedTime;
+    }
+    public void setStoppedTime(long stoppedTime) {
+        this.stoppedTime = stoppedTime;
     }
 
 

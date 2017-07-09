@@ -115,6 +115,7 @@ public class BoardActivity extends BaseGameActivity{
     private String gamerID;
     private int level;
     private boolean resume;
+    private boolean fromResume;
 
     ShareDialog shareDialog;
 
@@ -132,6 +133,7 @@ public class BoardActivity extends BaseGameActivity{
         colorGame = getIntent().getExtras().getBoolean("COLOR_MODE");
         resume = getIntent().getExtras().getBoolean("RESUME");
         level = getIntent().getExtras().getInt("LEVEL");
+        long sTime = getIntent().getExtras().getLong("STOPPED_TIME");
         //initialize actiion bar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         this.setSupportActionBar(toolbar);
@@ -217,7 +219,7 @@ public class BoardActivity extends BaseGameActivity{
         updateUndoRedoButtons();
         initializeButtons();
         if(resume){
-            initializeBoardFromResume();
+            initializeBoardFromResume(sTime);
         }
         else {
             initializeBoard();//get starting board
@@ -248,6 +250,7 @@ public class BoardActivity extends BaseGameActivity{
 
     private void uploadSavedGame(){
         if(isInternet()&&gameHelper.getApiClient().isConnected()) {
+            long stoppedTime = mChronometer.getBase() - SystemClock.elapsedRealtime();
             Date dt = new Date();
             SimpleDateFormat dateFormat = new SimpleDateFormat("MMM d, yyyy");
             SimpleDateFormat sdf = new SimpleDateFormat("hh:mm aaa");
@@ -261,6 +264,7 @@ public class BoardActivity extends BaseGameActivity{
             obj.setTime(now);
             obj.setPuzzleNumber(mGame.getBoardNumber()+1+level*10000);
             obj.setLevel(level);
+            obj.setStoppedTime(stoppedTime);
             //game object to byte array
             try(ByteArrayOutputStream b = new ByteArrayOutputStream()){
                 ObjectOutputStream o = new ObjectOutputStream(b);
@@ -618,13 +622,16 @@ public class BoardActivity extends BaseGameActivity{
         }
 
         if(animationFinished) {
-            mChronometer.setBase(SystemClock.elapsedRealtime() + timeWhenStopped);
+            if(!fromResume) {
+                mChronometer.setBase(SystemClock.elapsedRealtime() + timeWhenStopped);
+            }
             if(!solvedState) {
                 mChronometer.start();
                 mGame.unpauseTimer();
             }
             mGame.getRunningTime();
         }
+        fromResume = false;
         super.onResume();
     }
 
@@ -660,6 +667,7 @@ public class BoardActivity extends BaseGameActivity{
      * Then sets starts the clock
      *********************************/
     private void initializeBoard() {
+        fromResume = false;
         for (int i = 0; i < squareViews.length; i++) {//set up starting board
             RelativeLayout rl = (RelativeLayout) findViewById(Tags.squareTags[i]); // get Relative layout
             squareViews[i] = new SquareView(this, rl,colorGame);
@@ -703,7 +711,8 @@ public class BoardActivity extends BaseGameActivity{
             }
         },2950);
     }
-    private void initializeBoardFromResume() {
+    private void initializeBoardFromResume(Long stoppedTime) {
+        fromResume = true;
         for (int i = 0; i < squareViews.length; i++){
             RelativeLayout rl = (RelativeLayout) findViewById(Tags.squareTags[i]); // get Relative layout
             squareViews[i] = new SquareView(this, rl,colorGame);
@@ -725,11 +734,12 @@ public class BoardActivity extends BaseGameActivity{
 
         mGame.unpauseTimer();
 
-        mChronometer.setBase(SystemClock.elapsedRealtime()-mGame.getRunningTime()*1000);
+        mChronometer.setBase(SystemClock.elapsedRealtime() + stoppedTime);
         mChronometer.start();
 
         updateScore();
         animationFinished = true;
+
         ///Make board clickable
         allClickable(true);
         updateLilNums();
