@@ -64,17 +64,16 @@
                 android:layout_marginRight="5dp"
                 android:layout_weight="40"
                 android:orientation="horizontal"
-                android:padding="5dp"
                 android:weightSum="2">
 
                 <TextView
                     android:id="@+id/savedgame_date"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_gravity="center"
                     android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="Apr,12 2017"
+                    android:gravity="center|clip_vertical"
+                    android:text="Jul, 12 2017"
                     android:textColor="@color/white"
                     android:textSize="14sp"
                     android:typeface="monospace" />
@@ -82,14 +81,12 @@
                 <TextView
                     android:id="@+id/savedgame_time"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
+                    android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="9:45 pm"
+                    android:gravity="center|clip_vertical"
+                    android:text="09:45 PM -autosave"
                     android:textColor="@color/white"
-                    android:textStyle="italic"
-                    android:typeface="monospace" />
+                    android:textSize="12sp" />
 
             </LinearLayout>
 

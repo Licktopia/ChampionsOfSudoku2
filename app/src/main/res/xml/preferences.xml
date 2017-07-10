@@ -15,6 +15,11 @@
         android:title="@string/LilNumbers"
         android:summary="@string/show_the_total"
         android:defaultValue="false"/>
+    <CheckBoxPreference
+        android:key="@string/autosave"
+        android:title="@string/autosave"
+        android:summary="@string/saves_inprogress"
+        android:defaultValue="true"/>
 
 
 </PreferenceScreen>

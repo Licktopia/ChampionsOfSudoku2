@@ -84,4 +84,6 @@
     <string name="cancel">Cancel</string>
     <string name="your_saved_games">\'s Saved Games</string>
     <string name="game_saved">Game Saved</string>
+    <string name="autosave">Autosave</string>
+    <string name="saves_inprogress">Saves game in progress when app is closed</string>
 </resources>

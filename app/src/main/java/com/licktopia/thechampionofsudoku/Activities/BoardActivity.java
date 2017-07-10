@@ -116,6 +116,7 @@ public class BoardActivity extends BaseGameActivity{
     private int level;
     private boolean resume;
     private boolean fromResume;
+    private boolean mAutoSave;
 
     ShareDialog shareDialog;
 
@@ -248,7 +249,7 @@ public class BoardActivity extends BaseGameActivity{
 
     }
 
-    private void uploadSavedGame(){
+    private void uploadSavedGame(boolean autosave){
         if(isInternet()&&gameHelper.getApiClient().isConnected()) {
             long stoppedTime = mChronometer.getBase() - SystemClock.elapsedRealtime();
             Date dt = new Date();
@@ -261,7 +262,12 @@ public class BoardActivity extends BaseGameActivity{
             obj.setExactTime(String.format("%,d",System.currentTimeMillis()));
             obj.setColorMode(colorGame);
             obj.setDate(today);
-            obj.setTime(now);
+            if(!autosave) {
+                obj.setTime(now);
+            }
+            else{
+                obj.setTime(new StringBuilder().append(now).append(" -autosave").toString());
+            }
             obj.setPuzzleNumber(mGame.getBoardNumber()+1+level*10000);
             obj.setLevel(level);
             obj.setStoppedTime(stoppedTime);
@@ -611,6 +617,7 @@ public class BoardActivity extends BaseGameActivity{
         settings = new SudokuSettings(this);
         rowColHighlights= settings.getHighlightPreference();
         mPlaySounds.setMute(settings.getSoundPreference());
+        mAutoSave = settings.getAutoSavePreference();
 
         for (int i=0;i<lilNums.length;i++) {
             lilNums[i]=(TextView)findViewById(Tags.lilNumTags[i]);
@@ -647,6 +654,7 @@ public class BoardActivity extends BaseGameActivity{
         mChronometer.stop();
         super.onPause();
     }
+
     /************************************
      * Initialize all keypad buttons
      *********************************/
@@ -1391,7 +1399,7 @@ public class BoardActivity extends BaseGameActivity{
         }
 
         if (id == R.id.save_and_exit) {
-            uploadSavedGame();
+            uploadSavedGame(false);
 
         }
         if (id == R.id.main_menu) {
@@ -1477,6 +1485,9 @@ public class BoardActivity extends BaseGameActivity{
     @Override
     protected void onStop() {
         super.onStop();
+        if(mAutoSave && isInternet() && gameHelper.getApiClient().isConnected()){
+            uploadSavedGame(true);
+        }
         gameHelper.onStop();
     }
 

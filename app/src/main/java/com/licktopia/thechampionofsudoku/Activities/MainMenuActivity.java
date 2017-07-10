@@ -263,29 +263,40 @@ public class MainMenuActivity  extends BaseGameActivity{
 
                 }
             };
+
             Thread mythread = new Thread(runnable);
+
             mythread.start();
-            try {
-                mythread.join();
-                if (!Gamer.getSavedGames().isEmpty()) {
-                    initializeResumeButton(mResumeButton);
-                    mProgressBar.setVisibility(View.GONE);
-                    mResumeButton.setVisibility(View.VISIBLE);
-                    mResumeButton.setAlpha(1f);
-                    mResumeButton.setClickable(true);
-                } else {
-                    mProgressBar.setVisibility(View.GONE);
-                    mResumeButton.setVisibility(View.VISIBLE);
-                    mResumeButton.setAlpha(RESUME_ALPHA);
-                    mResumeButton.setClickable(false);
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+
+                        if (Gamer.getSavedGames() != null) {
+                            if (!Gamer.getSavedGames().isEmpty()) {
+                                initializeResumeButton(mResumeButton);
+                                mProgressBar.setVisibility(View.GONE);
+                                mResumeButton.setVisibility(View.VISIBLE);
+                                mResumeButton.setAlpha(1f);
+                                mResumeButton.setClickable(true);
+                            }
+                        } else {
+                            mProgressBar.setVisibility(View.GONE);
+                            mResumeButton.setVisibility(View.VISIBLE);
+                            mResumeButton.setAlpha(RESUME_ALPHA);
+                            mResumeButton.setClickable(false);
+                        }
+
+
                 }
-            }
-            catch(InterruptedException e)
-            {
-                Log.d("Load Interrupted", "That was rude");
-            }
+            });
+
+
+
         }
     }
+
+
     /***************************************
     *Update UI when login or logout occurs
     ***************************************/
