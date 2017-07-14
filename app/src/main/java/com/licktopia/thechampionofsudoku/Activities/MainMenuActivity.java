@@ -260,40 +260,52 @@ public class MainMenuActivity  extends BaseGameActivity{
                     }
                     Gamer.setSavedGames(sGames);
 
+                    updateActivity();
 
                 }
             };
 
             Thread mythread = new Thread(runnable);
-
+            updateActivity();
             mythread.start();
 
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
 
-                        if (Gamer.getSavedGames() != null) {
-                            if (!Gamer.getSavedGames().isEmpty()) {
-                                initializeResumeButton(mResumeButton);
-                                mProgressBar.setVisibility(View.GONE);
-                                mResumeButton.setVisibility(View.VISIBLE);
-                                mResumeButton.setAlpha(1f);
-                                mResumeButton.setClickable(true);
-                            }
-                        } else {
-                            mProgressBar.setVisibility(View.GONE);
-                            mResumeButton.setVisibility(View.VISIBLE);
-                            mResumeButton.setAlpha(RESUME_ALPHA);
-                            mResumeButton.setClickable(false);
-                        }
-
-
-                }
-            });
 
 
 
         }
+    }
+
+    //Updates the save game button based on the current state of the loading the saved game
+    void updateActivity()
+    {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+
+
+                if (Gamer.getSavedGames() != null) {
+                    mProgressBar.setVisibility(View.GONE);
+                    mResumeButton.setVisibility(View.VISIBLE);
+                    if (!Gamer.getSavedGames().isEmpty()) {
+                        initializeResumeButton(mResumeButton);
+                        mResumeButton.setAlpha(1f);
+                        mResumeButton.setClickable(true);
+                    }
+                    else
+                    {
+                        mResumeButton.setAlpha(RESUME_ALPHA);
+                        mResumeButton.setClickable(false);
+                    }
+                } else {
+                    mProgressBar.setVisibility(View.VISIBLE);
+                    mResumeButton.setVisibility(View.GONE);
+
+                }
+
+
+            }
+        });
     }
 
 
