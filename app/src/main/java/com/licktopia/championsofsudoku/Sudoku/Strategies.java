@@ -1,7 +1,5 @@
 package com.licktopia.championsofsudoku.Sudoku;
 
-import android.support.v4.util.Pair;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -32,6 +30,13 @@ public class Strategies {
     public static final int NOTEPAD = 3;
     
     public static final int NUM_CATEGORIES = 4;
+
+    public static final int NAKED_SINGLE = 1;
+    public static final int NAKED_DOUBLE = 2;
+    public static final int HIDDEN_SINGLE = 3;
+    public static final int HIDDEN_PAIR = 4;
+    public static final int LOCKED_CANDIDATE = 5;
+    public static final int XWING = 6;
 
     /* Returns a single random element of type <T> from a list */
     public static <T> T getRandomElement(List<T> list) {
@@ -178,7 +183,7 @@ public class Strategies {
                 if (board.getTotalNotepadOccurrences(group, j) == 2) {
                     // Check number against previously found numbers
                     for (int k = 0; k < twoSquareNotepadNums.size(); k++) {
-                        if (board.hasSameNotepadPositions(group, twoSquareNotepadNums.get(k), j)) {
+                        if (board.hasTwoNumbersInSamePositions(group, twoSquareNotepadNums.get(k), j)) {
                             // Found hidden pair
                             int idx1 = -1;
                             int idx2 = -1;
@@ -291,12 +296,68 @@ public class Strategies {
     }
 
     /****** X WING *******/
+    //  Two rows (or two columns) each contain only two squares with a given candidate
+    //  Same candidate in both rows (or columns) and share the same two columns (or rows)
+    //  Eliminate that candidate from the other squares in that column (or row) since it must appear
+    //  in one of the two spots in that column
+    public static List<Hint> getXWings(Board board) {
 
-    public static void xWing(Board board) {
-        //  Two rows (or two columns) each contain only two squares with a given candidate
-        //  Same candidate in both rows (or columns) and share the same two columns (or rows)
-        //  Eliminate that candidate from the other squares in that column (or row) since it must appear
-        //  in one of the two spots in that column
+        ArrayList<Hint> xWings = new ArrayList<>();
+
+        // Get all index groups of rows and columns
+        int[][] rows = board.getEveryRowIndices();
+        int[][] cols = board.getEveryColIndices();
+        int[][] groups = new int[rows.length + cols.length][];
+        for (int i = 0; i < groups.length; i++) {
+            if (i < rows.length) groups[i] = rows[i];
+            else groups[i] = cols[i % cols.length];
+        }
+        // Iterate through every notepad number
+        for (int num = 1; num <= board.getSize(); num++) {
+            // Iterate through each group
+            for (int i = 0; i < groups.length; i++) {
+                // If group has exactly two occurrences of current notepad num
+                if (board.getTotalNotepadOccurrences(groups[i], num) == 2) {
+                    // Iterate through remaining rows if row or remaining columns if column
+                    int iterateTo = i < rows.length ?  rows.length : groups.length;
+                    for (int j = i + 1; j < iterateTo; j++) {
+                        // If second group has matching position as first group
+                        if (board.hasNumberInSamePositions(groups[i], groups[j], num)) {
+                            int idx1 = board.getFirstOccurrence(groups[i], num);
+                            int idx2 = board.getLastOccurrence(groups[i], num);
+                            // Create hint object
+                            int[][] hintInfo = new int[NUM_CATEGORIES][];
+                            hintInfo[REMOVE_FROM] = new int[] {CONNECTED};
+                            hintInfo[SELECTED] = new int[] {groups[i][idx1], groups[i][idx2], groups[j][idx1], groups[j][idx2]};
+                            int[] conn1, conn2;
+                            if (i < rows.length) {
+                                // If instance found in two rows, get corresponding columns
+                                conn1 = board.getColIndices(idx1);
+                                conn2 = board.getColIndices(idx2);
+                            }
+                            else { // Get corresponding rows
+                                conn1 = board.getRowIndices(idx1);
+                                conn2 = board.getRowIndices(idx2);
+                            }
+                            // Check if xWing instance would remove any notepad numbers
+                            if (board.getTotalNotepadOccurrences(conn1, num) > 2 || board.getTotalNotepadOccurrences(conn2, num) > 2) {
+                                // Merge groups and add to Hint
+                                int[] connected = new int[conn1.length + conn2.length];
+                                for (int k = 0; k < connected.length; k++) {
+                                    if (k < conn1.length) connected[k] = conn1[k];
+                                    else connected[k] = conn2[k % conn2.length];
+                                }
+                                hintInfo[CONNECTED] = connected;
+                                hintInfo[NOTEPAD] = new int[]{num};
+                                xWings.add(new Hint(hintInfo));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return xWings;
     }
 
     public static void executeStrategyFromList(Board board, List<Hint> hints) {

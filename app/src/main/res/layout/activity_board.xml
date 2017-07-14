@@ -1684,16 +1684,19 @@
                         android:textSize="13sp"
                         android:visibility="visible" />
 
-                    <ImageButton
-                        android:id="@+id/down"
+                    <Button
+                        android:id="@+id/hints"
+                        style="@style/Widget.AppCompat.Button.Borderless"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_marginLeft="0dp"
                         android:layout_marginRight="0dp"
                         android:layout_weight="10"
                         android:background="@color/colorKeypad"
-                        android:src="@android:drawable/arrow_down_float"
-                        android:textSize="22sp" />
+                        android:text="Hints"
+                        android:textColor="#d3d3d3"
+                        android:textSize="13sp"
+                        android:visibility="visible" />
 
 
                 </LinearLayout>
@@ -2038,17 +2041,17 @@
                         tools:visibility="visible" />
 
                     <Button
-                        android:id="@+id/xy_wing"
+                        android:id="@+id/x_wing"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_marginTop="5dp"
                         android:layout_weight="1"
-                        android:alpha=".5"
+                        android:alpha="1"
                         android:background="@drawable/hint_rounded_button"
                         android:clickable="false"
                         android:padding="5dp"
-                        android:text="XY-Wing"
+                        android:text="X-Wing"
                         android:textColor="@color/white"
                         android:textSize="9sp"
                         tools:visibility="visible" />

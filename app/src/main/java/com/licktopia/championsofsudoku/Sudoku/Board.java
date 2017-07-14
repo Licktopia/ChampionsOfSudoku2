@@ -415,12 +415,37 @@ class Board {
     }
 
     // Compares a list of squares to see if two notepad numbers appear in the same positions
-    protected boolean hasSameNotepadPositions(int[] indices, int num1, int num2) {
+    protected boolean hasTwoNumbersInSamePositions(int[] indices, int num1, int num2) {
         for (int i : indices) {
             if (getNotepadAt(i, num1) != getNotepadAt(i, num2))
                 return false;
         }
         return true;
+    }
+
+    // Compare two groups of indices to see if they have the same positions of a notepad number
+    protected boolean hasNumberInSamePositions(int[] indices1, int[] indices2, int num) {
+        for (int i = 0; i < indices1.length; i++) {
+            if (getNotepadAt(indices1[i], num) != getNotepadAt(indices2[i], num))
+                return false;
+        }
+        return true;
+    }
+
+    // Get index of first occurrence of a notepad number in a group
+    protected int getFirstOccurrence(int[] indices, int num) {
+        for (int i = 0; i < indices.length; i++) {
+            if (getNotepadAt(indices[i], num)) return i;
+        }
+        return -1;
+    }
+
+    // Get index of last occurrence of a notepad number in a group
+    protected int getLastOccurrence(int[] indices, int num) {
+        for (int i = indices.length - 1; i >= 0; i--) {
+            if (getNotepadAt(indices[i], num)) return i;
+        }
+        return -1;
     }
 
     // Returns if two indices are in the same row

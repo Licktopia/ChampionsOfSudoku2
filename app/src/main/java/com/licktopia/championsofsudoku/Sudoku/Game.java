@@ -292,31 +292,18 @@ public class Game
         return i;
     }
 
-    public Strategies.Hint getNakedDouble() {
-        List<Strategies.Hint> nakedPairs = Strategies.getNakedPairs(curBoard);
-        if (nakedPairs.isEmpty()) return null;
-        Strategies.Hint hint = Strategies.getRandomElement(nakedPairs);
-        return hint;
-    }
-
-    public Strategies.Hint getHiddenSingle() {
-        List<Strategies.Hint> hiddenSingles = Strategies.getHiddenSingles(curBoard);
-        if (hiddenSingles.isEmpty()) return null;
-        Strategies.Hint hint = Strategies.getRandomElement(hiddenSingles);
-        return hint;
-    }
-
-    public Strategies.Hint getHiddenPair() {
-        List<Strategies.Hint> hiddenPairs = Strategies.getHiddenPairs(curBoard);
-        if (hiddenPairs.isEmpty()) return null;
-        Strategies.Hint hint = Strategies.getRandomElement(hiddenPairs);
-        return hint;
-    }
-
-    public Strategies.Hint getLockedCandidate() {
-        List<Strategies.Hint> lockedCandidates = Strategies.getLockedCandidates(curBoard);
-        if (lockedCandidates.isEmpty()) return null;
-        Strategies.Hint hint = Strategies.getRandomElement(lockedCandidates);
+    public Strategies.Hint getHint(int hintType) {
+        List<Strategies.Hint> hints;
+        switch(hintType) {
+            case Strategies.NAKED_DOUBLE: hints = Strategies.getNakedPairs(curBoard); break;
+            case Strategies.HIDDEN_SINGLE: hints = Strategies.getHiddenSingles(curBoard); break;
+            case Strategies.HIDDEN_PAIR: hints = Strategies.getHiddenPairs(curBoard); break;
+            case Strategies.LOCKED_CANDIDATE: hints = Strategies.getLockedCandidates(curBoard); break;
+            case Strategies.XWING: hints = Strategies.getXWings(curBoard); break;
+            default: hints = Strategies.getHiddenSingles(curBoard); break;
+        }
+        if (hints.isEmpty()) return null;
+        Strategies.Hint hint = Strategies.getRandomElement(hints);
         return hint;
     }
 

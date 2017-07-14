@@ -15,8 +15,10 @@ import android.support.v4.util.Pair;
 import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Chronometer;
@@ -83,10 +85,11 @@ public class BoardActivity extends BaseGameActivity{
     private Button hiddenSingleButton;
     private Button hiddenPairButton;
     private Button lockedCandidateButton;
+    private Button xWingButton;
     private ImageButton mUndoButton;
     private ImageButton mRedoButton;
     private ImageButton notepadIcon;
-    private ImageButton keyboardDownButton;
+    private Button hintButton;
     private int size;
     private long timeWhenStopped;
     private Handler highlightHandler;
@@ -348,7 +351,8 @@ public class BoardActivity extends BaseGameActivity{
         hiddenSingleButton = (Button) findViewById(R.id.hidden_single);
         hiddenPairButton = (Button) findViewById(R.id.hidden_pair);
         lockedCandidateButton = (Button) findViewById(R.id.locked_candidate);
-        keyboardDownButton = (ImageButton) findViewById(R.id.down);
+        xWingButton = (Button) findViewById(R.id.x_wing);
+        hintButton = (Button) findViewById(R.id.hints);
     }
 
     /************************************
@@ -406,7 +410,7 @@ public class BoardActivity extends BaseGameActivity{
      *********************************/
     public void listeners(Toolbar toolbar) {
         squareListeners();
-        keyboardDownButtonListener();
+        hintButtonListener();
         toolbarButtonsListener(toolbar);
         numberListeners();
         smallNumPadListener();
@@ -417,6 +421,7 @@ public class BoardActivity extends BaseGameActivity{
         hiddenSingleButtonListener();
         hiddenPairButtonListener();
         lockedCandidateListener();
+        xWingListener();
         solveButtonListener();
         undoRedoListener();
         continueListener();
@@ -569,13 +574,14 @@ public class BoardActivity extends BaseGameActivity{
     /************************************
      * Listener keboardDownButton
      *********************************/
-    private void keyboardDownButtonListener() {
-        keyboardDownButton.setOnClickListener(new View.OnClickListener() {
+    private void hintButtonListener() {
+        hintButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 selectedSquare = -1;
                 closeKeyboard();
                 highlightHandler.removeCallbacksAndMessages(null);
+                mGame.updateSolver();
                 removeAllHighlights();
             }
         });
@@ -610,10 +616,16 @@ public class BoardActivity extends BaseGameActivity{
      * Listeners nakedSingleButton
      *********************************/
     private void nakedSingleButtonListener() {
-        nakedSingleButton.setOnClickListener(new View.OnClickListener() {
+        nakedSingleButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onClick(View v) {
-                showNakedSingle();
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    showNakedSingle();
+                }
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    removeAllHighlights();
+                }
+                return true;
             }
         });
     }
@@ -622,10 +634,16 @@ public class BoardActivity extends BaseGameActivity{
      * Listeners nakedDoubleButton
      *********************************/
     private void nakedDoubleButtonListener() {
-        nakedDoubleButton.setOnClickListener(new View.OnClickListener() {
+        nakedDoubleButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onClick(View v) {
-                showNakedDouble();
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    showHint(Strategies.NAKED_DOUBLE);
+                }
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    removeAllHighlights();
+                }
+                return true;
             }
         });
     }
@@ -634,10 +652,16 @@ public class BoardActivity extends BaseGameActivity{
      * Listeners hiddenSingleButton
      *********************************/
     private void hiddenSingleButtonListener() {
-        hiddenSingleButton.setOnClickListener(new View.OnClickListener() {
+        hiddenSingleButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onClick(View v) {
-                showHiddenSingle();
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    showHint(Strategies.HIDDEN_SINGLE);
+                }
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    removeAllHighlights();
+                }
+                return true;
             }
         });
     }
@@ -646,10 +670,16 @@ public class BoardActivity extends BaseGameActivity{
      * Listeners hiddenPairButton
      *********************************/
     private void hiddenPairButtonListener() {
-        hiddenPairButton.setOnClickListener(new View.OnClickListener() {
+        hiddenPairButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onClick(View v) {
-                showHiddenPair();
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    showHint(Strategies.HIDDEN_PAIR);
+                }
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    removeAllHighlights();
+                }
+                return true;
             }
         });
     }
@@ -658,10 +688,34 @@ public class BoardActivity extends BaseGameActivity{
      * Listeners lockedCandidateButton
      *********************************/
     private void lockedCandidateListener() {
-        lockedCandidateButton.setOnClickListener(new View.OnClickListener() {
+        lockedCandidateButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onClick(View v) {
-                showLockedCandidate();
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    showHint(Strategies.LOCKED_CANDIDATE);
+                }
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    removeAllHighlights();
+                }
+                return true;
+            }
+        });
+    }
+
+    /************************************
+     * Listeners xWingButton
+     *********************************/
+    private void xWingListener() {
+        xWingButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    showHint(Strategies.XWING);
+                }
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    removeAllHighlights();
+                }
+                return true;
             }
         });
     }
@@ -682,6 +736,20 @@ public class BoardActivity extends BaseGameActivity{
     }
 
     /************************************
+     * Show one instance of a given hint
+     ***********************************/
+    private void showHint(int hintType) {
+        updateBoard();
+        Strategies.Hint hint = mGame.getHint(hintType);
+        if (hint != null) {
+            hintDisplay(hint);
+        }
+        else {
+            // TODO None exist, display message?
+        }
+    }
+
+    /************************************
      * Show one instance of a naked single
      *********************************/
     private void showNakedSingle() {
@@ -689,64 +757,10 @@ public class BoardActivity extends BaseGameActivity{
         if (index != -1) {
             removeAllHighlights();
             squareViews[index].setDarkHighlight();
-        }
-        else {
-            // TODO None exist, display message?
-        }
-    }
-
-    /************************************
-     * Show one instance of a naked double
-     *********************************/
-    private void showNakedDouble() {
-        updateBoard();
-        Strategies.Hint hint = mGame.getNakedDouble();
-        if (hint != null) {
-            hintDisplay(hint);
-            mGame.removeNakedDoubles(hint);
-        }
-        else {
-            // TODO None exist, display message?
-        }
-    }
-
-    /************************************
-     * Show one instance of a hidden double
-     *********************************/
-    private void showHiddenSingle() {
-        updateBoard();
-        Strategies.Hint hint = mGame.getHiddenSingle();
-        if (hint != null) {
-            hintDisplay(hint);
-        }
-        else {
-            // TODO None exist, display message?
-        }
-    }
-
-    /************************************
-     * Show one instance of a hidden double
-     *********************************/
-    private void showHiddenPair() {
-        updateBoard();
-        Strategies.Hint hint = mGame.getHiddenPair();
-        if (hint != null) {
-            hintDisplay(hint);
-        }
-        else {
-            // TODO None exist, display message?
-        }
-    }
-
-
-    /************************************
-     * Show one instance of a hidden double
-     *********************************/
-    private void showLockedCandidate() {
-        updateBoard();
-        Strategies.Hint hint = mGame.getLockedCandidate();
-        if (hint != null) {
-            hintDisplay(hint);
+            for (int i = 1; i <= 9; i++) {
+                if (mGame.getBoardNotepadAt(index, i))
+                    squareViews[index].setNotepadHighlightGreen(i);
+            }
         }
         else {
             // TODO None exist, display message?
@@ -1051,7 +1065,7 @@ public class BoardActivity extends BaseGameActivity{
         RelativeLayout notepadBackground = (RelativeLayout) findViewById(R.id.scratch_bg);
         notepadBackground.setBackgroundColor(getResources().getColor(R.color.colorKeypad));
         clearButton.setBackgroundColor(getResources().getColor(R.color.colorKeypad));
-        keyboardDownButton.setBackgroundColor(getResources().getColor(R.color.colorKeypad));
+        hintButton.setBackgroundColor(getResources().getColor(R.color.colorKeypad));
 
         /////////set notepadbutton with correct image, color or number
 
@@ -1079,7 +1093,7 @@ public class BoardActivity extends BaseGameActivity{
             numberButton.setClickable(clickable);
         }
         clearButton.setClickable(clickable);
-        keyboardDownButton.setClickable(clickable);
+        hintButton.setClickable(clickable);
         notepadIcon.setClickable(clickable);
 
 
