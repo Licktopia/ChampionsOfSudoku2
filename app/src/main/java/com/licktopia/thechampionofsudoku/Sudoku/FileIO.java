@@ -1,4 +1,4 @@
-package com.licktopia.thechampionofsudoku.Sudoku;
+package com.licktopia.championsofsudoku.Sudoku;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,13 +15,14 @@ import android.content.Context;
 class FileIO {
     private static ThreadLocalRandom _Rand = ThreadLocalRandom.current();
 
-    public static int getRandomNum() {
-        return randomNum;
+    //loads a random board from the given level
+    protected static int[] loadBoard(int level, Context ctx, int totalBoardElements) {
+        int randomNum = _Rand.nextInt(0, 9999 + 1);
+        return loadSpecificBoard(level, ctx, totalBoardElements, randomNum);
     }
 
-    private static int randomNum;
-    //loads a game
-    protected static int[] loadBoard(int level, Context ctx, int totalBoardElements) {
+    //loads a board from row 'boardIndex' from the given level
+    protected static int[] loadSpecificBoard(int level, Context ctx, int totalBoardElements, int boardIndex) {
         String filename = "boards/" + String.valueOf(level) +".txt";
 
         BufferedReader reader = null;
@@ -33,9 +34,8 @@ class FileIO {
                     ctx.getAssets().open(filename)));
             String line;
             int p=0;
-            randomNum = _Rand.nextInt(0, 9999 + 1);
             while ((line = reader.readLine())!= null){
-                if(p==randomNum) {
+                if(p==boardIndex) {
                     builder.append(line);
                 }
 

@@ -1,22 +1,32 @@
-package com.licktopia.thechampionofsudoku.Sudoku;
+package com.licktopia.championsofsudoku.Sudoku;
 
+import android.support.v4.util.Pair;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Queue;
+import java.util.Stack;
 import java.util.Set;
 import java.util.LinkedList;
+import java.util.concurrent.Phaser;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Created by John Konecny on 6/19/2017.
  */
 
-class Solver implements java.io.Serializable{
+class Solver {
 
     Board curBoard;
     Queue<Square> solvingSteps;
+    Queue<Square> solvingStepsStrategies;
 
     protected Solver(Board curBoard)
     {
         this.curBoard = new Board(curBoard);
-        Queue<Square> solvingSteps = new LinkedList<Square>();
+        solvingSteps = new LinkedList<Square>();
+        solvingStepsStrategies = new LinkedList<>();
     }
 
     //solves board using backtracking method and returns solved board
@@ -73,6 +83,53 @@ class Solver implements java.io.Serializable{
         return curBoard;
     }
 
+    // Returns a queue of squares that is an exact set of steps to solve the puzzle
+    protected int solveWithStrategies() {
+        int strategiesUsed = 0;
+        // Number of steps
+        int squaresToComplete = curBoard.getOpenSquares();
+        boolean cannotSolve = false;
+        // Level of strategy to try
+        int strategyNumber = 1;
+        Strategies.updateAllNotepads(curBoard, false);
+        // Iterate while there are still squares to fill or we can't solve any more
+        while (squaresToComplete > 0 && !cannotSolve) {
+            switch(strategyNumber) {
+                case 5:
+                    Strategies.removeRandomLockedCandidateValues(curBoard);
+                case 4:
+                    Strategies.removeRandomHiddenPairValues(curBoard);
+                case 3:
+                    Strategies.removeRandomNakedPairValues(curBoard);
+                case 2:
+                    Strategies.removeRandomHiddenSingle(curBoard);
+                case 1:
+                    strategiesUsed++;
+                    int index = Strategies.removeRandomNakedSingle(curBoard);
+                    // If no squares are found
+                    if (index == -1) {
+                        // Exhausted all strategies, we cannot solve at this point (YET)
+                        if (strategyNumber == 5)
+                            cannotSolve = true;
+                        else // Try next strategy
+                            strategyNumber++;
+                    }
+                    // Add step to queue, and repeat
+                    else {
+                        solvingStepsStrategies.add(curBoard.getSquare(index));
+                        squaresToComplete--;
+                        Strategies.updateAllNotepads(curBoard, true);
+                    }
+                    break;
+            }
+        }
+
+        if (cannotSolve)
+            return -1;
+        else
+            return strategiesUsed;
+    }
+
     //updates all squares' notepads so that only valid moves are true
     private void updateAllNotepads(boolean removeOnly)
     {
@@ -117,6 +174,9 @@ class Solver implements java.io.Serializable{
     protected Queue<Square> getSolvingSteps()
     {
         return  solvingSteps;
+    }
+    protected Queue<Square> getExactSolution() {
+        return solvingStepsStrategies;
     }
 
 }

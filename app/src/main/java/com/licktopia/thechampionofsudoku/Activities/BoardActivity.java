@@ -19,8 +19,10 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Chronometer;
@@ -63,6 +65,7 @@ import com.licktopia.thechampionofsudoku.Tags;
 import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Date;
 import java.util.Random;
 import java.util.Set;
@@ -99,10 +102,15 @@ public class BoardActivity extends BaseGameActivity{
     private Button solveButton;
     private Button checkProgressButton;
     private Button nakedSingleButton;
+    private Button nakedDoubleButton;
+    private Button hiddenSingleButton;
+    private Button hiddenPairButton;
+    private Button lockedCandidateButton;
+    private Button xWingButton;
     private ImageButton mUndoButton;
     private ImageButton mRedoButton;
     private ImageButton notepadIcon;
-    private ImageButton keyboardDownButton;
+    private Button hintButton;
     private int size;
     private long timeWhenStopped;
     private Handler highlightHandler;
@@ -666,7 +674,12 @@ public class BoardActivity extends BaseGameActivity{
         solveButton = (Button) findViewById(R.id.solveButton);
         checkProgressButton = (Button) findViewById(R.id.progressButton);
         nakedSingleButton = (Button) findViewById(R.id.naked_single);
-        keyboardDownButton = (ImageButton) findViewById(R.id.down);
+        nakedDoubleButton = (Button) findViewById(R.id.naked_double);
+        hiddenSingleButton = (Button) findViewById(R.id.hidden_single);
+        hiddenPairButton = (Button) findViewById(R.id.hidden_pair);
+        lockedCandidateButton = (Button) findViewById(R.id.locked_candidate);
+        xWingButton = (Button) findViewById(R.id.x_wing);
+        hintButton = (Button) findViewById(R.id.hints);
     }
 
     /************************************
@@ -760,11 +773,18 @@ public class BoardActivity extends BaseGameActivity{
      *********************************/
     public void listeners(Toolbar toolbar) {
         squareListeners();
-        keyboardDownButtonListener();
+        hintButtonListener();
         toolbarButtonsListener(toolbar);
         numberListeners();
         smallNumPadListener();
         clearButtonListener();
+        checkProgressButtonListener();
+        nakedSingleButtonListener();
+        nakedDoubleButtonListener();
+        hiddenSingleButtonListener();
+        hiddenPairButtonListener();
+        lockedCandidateListener();
+        xWingListener();
         solveButtonListener();
         undoRedoListener();
         continueListener();
@@ -943,13 +963,14 @@ public class BoardActivity extends BaseGameActivity{
     /************************************
      * Listener keboardDownButton
      *********************************/
-    private void keyboardDownButtonListener() {
-        keyboardDownButton.setOnClickListener(new View.OnClickListener() {
+    private void hintButtonListener() {
+        hintButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 selectedSquare = -1;
                 closeKeyboard();
                 highlightHandler.removeCallbacksAndMessages(null);
+                mGame.updateSolver();
                 removeAllHighlights();
             }
         });
@@ -984,10 +1005,106 @@ public class BoardActivity extends BaseGameActivity{
      * Listeners nakedSingleButton
      *********************************/
     private void nakedSingleButtonListener() {
-        nakedSingleButton.setOnClickListener(new View.OnClickListener() {
+        nakedSingleButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onClick(View v) {
-                endOfGame(true);
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    showNakedSingle();
+                }
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    removeAllHighlights();
+                }
+                return true;
+            }
+        });
+    }
+
+    /************************************
+     * Listeners nakedDoubleButton
+     *********************************/
+    private void nakedDoubleButtonListener() {
+        nakedDoubleButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    showHint(Strategies.NAKED_DOUBLE);
+                }
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    removeAllHighlights();
+                }
+                return true;
+            }
+        });
+    }
+
+    /************************************
+     * Listeners hiddenSingleButton
+     *********************************/
+    private void hiddenSingleButtonListener() {
+        hiddenSingleButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    showHint(Strategies.HIDDEN_SINGLE);
+                }
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    removeAllHighlights();
+                }
+                return true;
+            }
+        });
+    }
+
+    /************************************
+     * Listeners hiddenPairButton
+     *********************************/
+    private void hiddenPairButtonListener() {
+        hiddenPairButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    showHint(Strategies.HIDDEN_PAIR);
+                }
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    removeAllHighlights();
+                }
+                return true;
+            }
+        });
+    }
+
+    /************************************
+     * Listeners lockedCandidateButton
+     *********************************/
+    private void lockedCandidateListener() {
+        lockedCandidateButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    showHint(Strategies.LOCKED_CANDIDATE);
+                }
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    removeAllHighlights();
+                }
+                return true;
+            }
+        });
+    }
+
+    /************************************
+     * Listeners xWingButton
+     *********************************/
+    private void xWingListener() {
+        xWingButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    showHint(Strategies.XWING);
+                }
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    removeAllHighlights();
+                }
+                return true;
             }
         });
     }
@@ -995,8 +1112,84 @@ public class BoardActivity extends BaseGameActivity{
     /************************************
      * Update board
      *********************************/
+    boolean removeOnly = false; // TODO test value, remove
     private void updateBoard() {
+        mGame.updateAllNotepads(removeOnly);
+        removeOnly = true;
+        for (int idx = 0; idx < mGame.totalBoardElements(); idx++) {
+            if (mGame.isStartingValue(idx) || mGame.getBoardValueAt(idx) != 0) continue;
+            for (int num = 1; num <= mGame.totalBoardRows(); num++) {
+                squareViews[idx].showNotepadNumber(num, mGame.getBoardNotepadAt(idx, num));
+            }
+        }
+    }
 
+    /************************************
+     * Show one instance of a given hint
+     ***********************************/
+    private void showHint(int hintType) {
+        updateBoard();
+        Strategies.Hint hint = mGame.getHint(hintType);
+        if (hint != null) {
+            hintDisplay(hint);
+        }
+        else {
+            // TODO None exist, display message?
+        }
+    }
+
+    /************************************
+     * Show one instance of a naked single
+     *********************************/
+    private void showNakedSingle() {
+        int index = mGame.getNakedSingle();
+        if (index != -1) {
+            removeAllHighlights();
+            squareViews[index].setDarkHighlight();
+            for (int i = 1; i <= 9; i++) {
+                if (mGame.getBoardNotepadAt(index, i))
+                    squareViews[index].setNotepadHighlightGreen(i);
+            }
+        }
+        else {
+            // TODO None exist, display message?
+        }
+    }
+
+    /************************************
+     * Handles highlighting for hint display
+     *********************************/
+    private void hintDisplay(Strategies.Hint hint) {
+        removeAllHighlights();
+        for (int i : hint.hintInfo[Strategies.CONNECTED]) {
+            squareViews[i].setHighlighted(true, true);
+        }
+        for (int i : hint.hintInfo[Strategies.SELECTED]) {
+            squareViews[i].setDarkHighlight();
+        }
+        if (hint.getRemoveFrom() == Strategies.SELECTED) {
+            for (int i : hint.hintInfo[Strategies.SELECTED]) {
+                boolean[] colors = new boolean[9];
+                for (int num : hint.hintInfo[Strategies.NOTEPAD])
+                    colors[num - 1] = true;
+                for (int j = 1; j <= colors.length; j++) {
+                    if (colors[j - 1])
+                        squareViews[i].setNotepadHighlightRed(j);
+                    else
+                        squareViews[i].setNotepadHighlightGreen(j);
+                }
+            }
+        }
+        else {
+            for (int i : hint.hintInfo[Strategies.CONNECTED]) {
+                for (int num : hint.hintInfo[Strategies.NOTEPAD])
+                    squareViews[i].setNotepadHighlightRed(num);
+            }
+            for (int i : hint.hintInfo[Strategies.SELECTED]) {
+                for (int num : hint.hintInfo[Strategies.NOTEPAD])
+                    squareViews[i].setNotepadHighlightGreen(num);
+            }
+        }
     }
 
     /************************************
@@ -1006,6 +1199,7 @@ public class BoardActivity extends BaseGameActivity{
         for (int i = 0; i < squareViews.length; i++) {
             if(!colorGame) {
                 squareViews[i].setHighlighted(false, true);
+                squareViews[i].clearNotepadHighlights();
             }
             else{
                 squareViews[i].setHighlighted(false, false);
@@ -1235,7 +1429,7 @@ public class BoardActivity extends BaseGameActivity{
                     Square square = newSteps.get(finalI);
                     selectedSquare = square.getIdx();
                     numberCommands(square.getValue());
-
+                    updateBoard();
 
                 }
             }, speed * i);
@@ -1262,7 +1456,7 @@ public class BoardActivity extends BaseGameActivity{
         RelativeLayout notepadBackground = (RelativeLayout) findViewById(R.id.scratch_bg);
         notepadBackground.setBackgroundColor(getResources().getColor(R.color.colorKeypad));
         clearButton.setBackgroundColor(getResources().getColor(R.color.colorKeypad));
-        keyboardDownButton.setBackgroundColor(getResources().getColor(R.color.colorKeypad));
+        hintButton.setBackgroundColor(getResources().getColor(R.color.colorKeypad));
 
         /////////set notepadbutton with correct image, color or number
 
@@ -1296,7 +1490,7 @@ public class BoardActivity extends BaseGameActivity{
             numberButton.setClickable(clickable);
         }
         clearButton.setClickable(clickable);
-        keyboardDownButton.setClickable(clickable);
+        hintButton.setClickable(clickable);
         notepadIcon.setClickable(clickable);
 
 

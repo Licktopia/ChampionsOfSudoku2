@@ -2,7 +2,9 @@ package com.licktopia.thechampionofsudoku.Sudoku;
 
 import android.content.Context;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Stack;
 import java.util.Set;
 
@@ -23,11 +25,14 @@ class Board implements java.io.Serializable {
 
     private int boardNumber;
 
-    /* Constructor*/
-    protected Board(int level, Context ctx) {
+     /* Constructor*/
+    protected Board(int level, Context ctx, int index) {
 
+        int[] values;
+        if (index == -1) values = FileIO.loadBoard(level, ctx, SIZE * SIZE);
+        else
+            values = FileIO.loadSpecificBoard(level, ctx, SIZE * SIZE, index);
 
-        int[] values = FileIO.loadBoard(level, ctx, SIZE * SIZE);
         boardNumber = FileIO.getRandomNum();
         // Check parameter has correct number of values
         if (values.length != SIZE * SIZE) {
@@ -136,6 +141,20 @@ class Board implements java.io.Serializable {
     public int getBoardNumber() {
         return boardNumber;
     }
+
+    // sets square at idx to it's only possible value
+    protected Set<Integer> setOnlyPossibleValueAt(int idx) {
+        if (getTotalNotepadValues(idx) != 1)
+            return null;
+        int value = 1;
+        for (int i = 1; i <= SIZE; i++) {
+            if (getNotepadAt(idx, i))
+                value = i;
+        }
+        return setValueAt(idx, value);
+    }
+
+
     /* Get value at given row/column */
     protected int getValueAt(int row, int col) {
         return contents[row][col].getValue();
@@ -156,6 +175,14 @@ class Board implements java.io.Serializable {
         this.setNotepadAt(idxToRow(idx), idxToCol(idx), num, value);
     }
 
+    //sets notepad value num of square idx to true, all others to false
+    protected void setOnlyNotepadValue(int idx, int num) {
+        for (int i = 1; i <= SIZE; i++) {
+            if (i == num) setNotepadAt(idx, i, true);
+            else setNotepadAt(idx, i, false);
+        }
+    }
+
     protected boolean getNotepadAt(int row, int col, int num) {
         return contents[row][col].getNotepad(num);
     }
@@ -163,6 +190,15 @@ class Board implements java.io.Serializable {
     //get cell notepad value for given num
     protected boolean getNotepadAt(int idx, int num) {
         return this.getNotepadAt(idxToRow(idx), idxToCol(idx), num);
+    }
+
+    //returns a list of all the values in the notepad of idx
+    protected List<Integer> getNotepadValues(int idx) {
+        List<Integer> values = new ArrayList<>();
+        for (int i = 1; i <= SIZE; i++) {
+            if (getNotepadAt(idx, i)) values.add(i);
+        }
+        return values;
     }
 
     //return if a square at row, col is a starting value
@@ -359,7 +395,7 @@ class Board implements java.io.Serializable {
     // Returns number of values set to true in notepad
     protected int getTotalNotepadValues(int row, int col) {
         int total = 0;
-        for (int i = 0; i < SIZE; i++) {
+        for (int i = 1; i <= SIZE; i++) {
             if (getNotepadAt(row, col, i)) total++;
         }
         return total;
@@ -380,7 +416,7 @@ class Board implements java.io.Serializable {
 
     // Compare notepad of one square to another
     protected boolean hasSameNotepad(int idx1, int idx2) {
-        for (int i = 0; i < SIZE; i++) {
+        for (int i = 1; i <= SIZE; i++) {
             if (getNotepadAt(idx1, i) != getNotepadAt(idx2, i))
                 return false;
         }
@@ -389,12 +425,37 @@ class Board implements java.io.Serializable {
     }
 
     // Compares a list of squares to see if two notepad numbers appear in the same positions
-    protected boolean hasSameNotepadPositions(int[] indices, int num1, int num2) {
+    protected boolean hasTwoNumbersInSamePositions(int[] indices, int num1, int num2) {
         for (int i : indices) {
             if (getNotepadAt(i, num1) != getNotepadAt(i, num2))
                 return false;
         }
         return true;
+    }
+
+    // Compare two groups of indices to see if they have the same positions of a notepad number
+    protected boolean hasNumberInSamePositions(int[] indices1, int[] indices2, int num) {
+        for (int i = 0; i < indices1.length; i++) {
+            if (getNotepadAt(indices1[i], num) != getNotepadAt(indices2[i], num))
+                return false;
+        }
+        return true;
+    }
+
+    // Get index of first occurrence of a notepad number in a group
+    protected int getFirstOccurrence(int[] indices, int num) {
+        for (int i = 0; i < indices.length; i++) {
+            if (getNotepadAt(indices[i], num)) return i;
+        }
+        return -1;
+    }
+
+    // Get index of last occurrence of a notepad number in a group
+    protected int getLastOccurrence(int[] indices, int num) {
+        for (int i = indices.length - 1; i >= 0; i--) {
+            if (getNotepadAt(indices[i], num)) return i;
+        }
+        return -1;
     }
 
     // Returns if two indices are in the same row
@@ -411,30 +472,59 @@ class Board implements java.io.Serializable {
     }
 
     // Returns an array of indices of all squares in same row as idx
-    protected int[] getRowIndices(int idx) {
+    protected int[] getRowIndicesByIndex(int idx) {
+        return getRowIndices(idxToRow(idx));
+    }
+
+    // Returns an array of indices of all squares in row
+    protected int[] getRowIndices(int row) {
         int[] indices = new int[SIZE];
-        int rowStart = idx - idxToCol(idx);
+        int rowStart = row * SIZE;
         for (int i = 0; i < SIZE; i++) {
             indices[i] = rowStart + i;
         }
         return indices;
     }
 
+    // Returns a 2d array of indices in each row
+    protected int[][] getEveryRowIndices() {
+        int[][] rows = new int[SIZE][SIZE];
+        for (int i = 0; i < SIZE; i++)
+            rows[i] = getRowIndices(i);
+        return rows;
+    }
+
     // Returns an array of indices of all squares in same column as idx
-    protected int[] getColIndices(int idx) {
+    protected int[] getColIndicesByIndex(int idx) {
+        return getColIndices(idxToCol(idx));
+    }
+
+    // Returns an array of indices of all squares in column
+    protected int[] getColIndices(int col) {
         int[] indices = new int[SIZE];
-        int column = idxToCol(idx);
         for (int i = 0; i < SIZE; i++) {
-            indices[i] = column + (SIZE * i);
+            indices[i] = col + (SIZE * i);
         }
         return indices;
     }
 
-    // Returns an array of indices of all squares in same cluster as idx
-    protected int[] getClusterIndices(int idx) {
+    // Returns a 2d array of indices in each col
+    protected int[][] getEveryColIndices() {
+        int[][] cols = new int[SIZE][SIZE];
+        for (int i = 0; i < SIZE; i++)
+            cols[i] = getColIndices(i);
+        return cols;
+    }
 
-        // Get cluster number
+    // Returns an array of indices of all squares in same cluster as idx
+    protected int[] getClusterIndicesByIndex(int idx) {
+
         int cluster = ((idxToRow(idx) / CLUSTER_SIZE) * CLUSTER_SIZE) + (idxToCol(idx) / CLUSTER_SIZE);
+        return getClusterIndices(cluster);
+    }
+
+    // Returns an array of indices of all squares in cluster provided
+    protected int[] getClusterIndices(int cluster) {
 
         // Get cluster start indices based on board size
         int rowStart = (cluster / CLUSTER_SIZE) * CLUSTER_SIZE;
@@ -448,6 +538,26 @@ class Board implements java.io.Serializable {
         }
 
         return indices;
+    }
+
+    // Returns a 2d array of indices in each cluster
+    protected int[][] getEveryClusterIndices() {
+        int[][] clusters = new int[SIZE][SIZE];
+        for (int i = 0; i < SIZE; i++)
+            clusters[i] = getClusterIndices(i);
+        return clusters;
+    }
+
+    // Returns a 2d array where each outer array is one of the rows/cols/clusters of the board
+    protected int[][] getAllIndexGroups() {
+        int[][] groups = new int[SIZE * 3][SIZE];
+        for (int i = 0; i < SIZE; i++) {
+            groups[i] = getRowIndices(i);
+            groups[i + SIZE] = getColIndices(i);
+            groups[i + SIZE + SIZE] = getClusterIndices(i);
+        }
+
+        return groups;
     }
 
     //returns the number of open squares in board

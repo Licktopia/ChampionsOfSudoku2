@@ -212,7 +212,19 @@ public class SquareView {
         }
     }
 
+    public void setNotepadHighlightRed(int num) {
+        notepadNums[num - 1].setBackgroundColor(context.getColor(R.color.red));
+    }
 
+    public void setNotepadHighlightGreen(int num) {
+        notepadNums[num - 1].setBackgroundColor(context.getColor(R.color.color1));
+    }
+
+    public void clearNotepadHighlights() {
+        for (ImageView np : notepadNums) {
+            np.setBackgroundColor(context.getColor(R.color.white));
+        }
+    }
 
     /* Sets highlight state to error color */
     public void setErrorHighlight(boolean colorGame) {
@@ -224,7 +236,10 @@ public class SquareView {
         }
     }
 
-    /* Sets selected square to individual highlight color */
+    public void setDarkHighlight() {
+        setHighlightColor(context.getColor(R.color.silver));
+    }
+
     public void setSelectedHighlight() {
         setHighlightMarker();
     }
@@ -240,8 +255,6 @@ public class SquareView {
     /* Sets highlight layout to given color */
     private void setHighlightColor(int color) {
         highlight.setBackgroundColor(color);
-
-
     }
 
     /* Sets highlight layout to given selected marker */

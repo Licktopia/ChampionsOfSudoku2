@@ -1,8 +1,9 @@
-package com.licktopia.thechampionofsudoku.Sudoku;
+package com.licktopia.championsofsudoku.Sudoku;
 
 import android.content.Context;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -42,7 +43,7 @@ public class Game implements java.io.Serializable
     public Game(int level, Context ctx)
     {
         this.level = level;
-        curBoard = new Board(level, ctx);
+        curBoard = new Board(level, ctx, -1);
         solutionSolver = new Solver(curBoard);
         scoreWeights = FileIO.loadScoreWeights(level, ctx);
         if(solutionSolver.solve() == null)
@@ -294,12 +295,48 @@ public class Game implements java.io.Serializable
     //stores solution to game
     private Solver solutionSolver;
 
+    //passes current state of game to new solver
+    public void updateSolver() {
+        solutionSolver = new Solver(curBoard);
+    }
+
     //returns the steps required to solve from a blank board
     public Queue<Square> getSolutionSteps()
     {
-        return solutionSolver.getSolvingSteps();
+        updateSolver();
+        solutionSolver.solveWithStrategies();
+        return solutionSolver.getExactSolution();
     }
 
+    public void updateAllNotepads(boolean removeOnly) {
+        Strategies.updateAllNotepads(curBoard, removeOnly);
+    }
+
+    public int getNakedSingle() {
+        List<Integer> nakedSingles = Strategies.getNakedSingles(curBoard);
+        if (nakedSingles.isEmpty()) return -1;
+        Integer i = Strategies.getRandomElement(nakedSingles);
+        return i;
+    }
+
+    public Strategies.Hint getHint(int hintType) {
+        List<Strategies.Hint> hints;
+        switch(hintType) {
+            case Strategies.NAKED_DOUBLE: hints = Strategies.getNakedPairs(curBoard); break;
+            case Strategies.HIDDEN_SINGLE: hints = Strategies.getHiddenSingles(curBoard); break;
+            case Strategies.HIDDEN_PAIR: hints = Strategies.getHiddenPairs(curBoard); break;
+            case Strategies.LOCKED_CANDIDATE: hints = Strategies.getLockedCandidates(curBoard); break;
+            case Strategies.XWING: hints = Strategies.getXWings(curBoard); break;
+            default: hints = Strategies.getHiddenSingles(curBoard); break;
+        }
+        if (hints.isEmpty()) return null;
+        Strategies.Hint hint = Strategies.getRandomElement(hints);
+        return hint;
+    }
+
+    public void removeNakedDoubles(Strategies.Hint hint) {
+        //Strategies.removeNakedPairValues(curBoard, hint);
+    }
 
     //returns the total number of elements in the board
     public  int totalBoardElements() {return curBoard.totalBoardElements(); }
