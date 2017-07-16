@@ -29,11 +29,15 @@ class Board implements java.io.Serializable {
     protected Board(int level, Context ctx, int index) {
 
         int[] values;
-        if (index == -1) values = FileIO.loadBoard(level, ctx, SIZE * SIZE);
-        else
+        if (index == -1) {
+            values = FileIO.loadBoard(level, ctx, SIZE * SIZE);
+            boardNumber = FileIO.getRandomNum();
+        }
+        else {
             values = FileIO.loadSpecificBoard(level, ctx, SIZE * SIZE, index);
+            boardNumber = index;
+        }
 
-        boardNumber = FileIO.getRandomNum();
         // Check parameter has correct number of values
         if (values.length != SIZE * SIZE) {
             System.out.printf("The loaded game contains %d elements but needs to have %d elements\n", values.length, SIZE * SIZE);

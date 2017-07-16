@@ -1,4 +1,4 @@
-package com.licktopia.championsofsudoku.Sudoku;
+package com.licktopia.thechampionofsudoku.Sudoku;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,9 +15,14 @@ import android.content.Context;
 class FileIO {
     private static ThreadLocalRandom _Rand = ThreadLocalRandom.current();
 
+    public static int getRandomNum() {
+        return randomNum;
+    }
+
+    private static int randomNum;
     //loads a random board from the given level
     protected static int[] loadBoard(int level, Context ctx, int totalBoardElements) {
-        int randomNum = _Rand.nextInt(0, 9999 + 1);
+        randomNum = _Rand.nextInt(0, 9999 + 1);
         return loadSpecificBoard(level, ctx, totalBoardElements, randomNum);
     }
 

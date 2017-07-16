@@ -61,6 +61,7 @@ import com.licktopia.thechampionofsudoku.Sudoku.CompletedGame;
 import com.licktopia.thechampionofsudoku.Sudoku.Game;
 import com.licktopia.thechampionofsudoku.Sudoku.SavedGame;
 import com.licktopia.thechampionofsudoku.Sudoku.Square;
+import com.licktopia.thechampionofsudoku.Sudoku.Strategies;
 import com.licktopia.thechampionofsudoku.Tags;
 import java.math.BigInteger;
 import java.text.SimpleDateFormat;
@@ -1162,7 +1163,7 @@ public class BoardActivity extends BaseGameActivity{
     private void hintDisplay(Strategies.Hint hint) {
         removeAllHighlights();
         for (int i : hint.hintInfo[Strategies.CONNECTED]) {
-            squareViews[i].setHighlighted(true, true);
+            squareViews[i].setHighlighted(true, !colorGame);
         }
         for (int i : hint.hintInfo[Strategies.SELECTED]) {
             squareViews[i].setDarkHighlight();

@@ -1,7 +1,10 @@
-package com.licktopia.championsofsudoku.Sudoku;
+package com.licktopia.thechampionofsudoku.Sudoku;
 
 import android.support.v4.util.Pair;
 
+import com.licktopia.thechampionofsudoku.Sudoku.Square;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -16,7 +19,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * Created by John Konecny on 6/19/2017.
  */
 
-class Solver {
+class Solver implements java.io.Serializable {
 
     Board curBoard;
     Queue<Square> solvingSteps;
