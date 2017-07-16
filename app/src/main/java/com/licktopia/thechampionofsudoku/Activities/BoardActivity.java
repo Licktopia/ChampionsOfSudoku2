@@ -58,6 +58,7 @@ import com.licktopia.thechampionofsudoku.Settings.SudokuSettings;
 import com.licktopia.thechampionofsudoku.Settings.SudokuSettingsActivity;
 import com.licktopia.thechampionofsudoku.SquareView;
 import com.licktopia.thechampionofsudoku.Sudoku.CompletedGame;
+
 import com.licktopia.thechampionofsudoku.Sudoku.Game;
 import com.licktopia.thechampionofsudoku.Sudoku.SavedGame;
 import com.licktopia.thechampionofsudoku.Sudoku.Square;
@@ -95,7 +96,7 @@ public class BoardActivity extends BaseGameActivity{
     private boolean animationFinished = false;
     private boolean solveClicked = false;
     private TextView scoreBoard;
-    private Game mGame;
+    private com.licktopia.thechampionofsudoku.Sudoku.Game mGame;
     private boolean smallNumPadState = false;
     private Button[] numberButtons;
     private TextView[] lilNums;
@@ -1010,9 +1011,11 @@ public class BoardActivity extends BaseGameActivity{
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    nakedSingleButton.setBackground(getResources().getDrawable(R.drawable.hint_button_pressed));
                     showNakedSingle();
                 }
                 if (event.getAction() == MotionEvent.ACTION_UP) {
+                    nakedSingleButton.setBackground(getResources().getDrawable(R.drawable.hint_rounded_button));
                     removeAllHighlights();
                 }
                 return true;
@@ -1028,9 +1031,11 @@ public class BoardActivity extends BaseGameActivity{
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    nakedDoubleButton.setBackground(getResources().getDrawable(R.drawable.hint_button_pressed));
                     showHint(Strategies.NAKED_DOUBLE);
                 }
                 if (event.getAction() == MotionEvent.ACTION_UP) {
+                    nakedDoubleButton.setBackground(getResources().getDrawable(R.drawable.hint_rounded_button));
                     removeAllHighlights();
                 }
                 return true;
@@ -1046,9 +1051,11 @@ public class BoardActivity extends BaseGameActivity{
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    hiddenSingleButton.setBackground(getResources().getDrawable(R.drawable.hint_button_pressed));
                     showHint(Strategies.HIDDEN_SINGLE);
                 }
                 if (event.getAction() == MotionEvent.ACTION_UP) {
+                    hiddenSingleButton.setBackground(getResources().getDrawable(R.drawable.hint_rounded_button));
                     removeAllHighlights();
                 }
                 return true;
@@ -1064,9 +1071,11 @@ public class BoardActivity extends BaseGameActivity{
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    hiddenPairButton.setBackground(getResources().getDrawable(R.drawable.hint_button_pressed));
                     showHint(Strategies.HIDDEN_PAIR);
                 }
                 if (event.getAction() == MotionEvent.ACTION_UP) {
+                    hiddenPairButton.setBackground(getResources().getDrawable(R.drawable.hint_rounded_button));
                     removeAllHighlights();
                 }
                 return true;
@@ -1082,9 +1091,11 @@ public class BoardActivity extends BaseGameActivity{
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    lockedCandidateButton.setBackground(getResources().getDrawable(R.drawable.hint_button_pressed));
                     showHint(Strategies.LOCKED_CANDIDATE);
                 }
                 if (event.getAction() == MotionEvent.ACTION_UP) {
+                    lockedCandidateButton.setBackground(getResources().getDrawable(R.drawable.hint_rounded_button));
                     removeAllHighlights();
                 }
                 return true;
@@ -1100,9 +1111,11 @@ public class BoardActivity extends BaseGameActivity{
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    xWingButton.setBackground(getResources().getDrawable(R.drawable.hint_button_pressed));
                     showHint(Strategies.XWING);
                 }
                 if (event.getAction() == MotionEvent.ACTION_UP) {
+                    xWingButton.setBackground(getResources().getDrawable(R.drawable.hint_rounded_button));
                     removeAllHighlights();
                 }
                 return true;
@@ -1680,7 +1693,7 @@ public class BoardActivity extends BaseGameActivity{
     @Override
     protected void onStop() {
         super.onStop();
-        if(mAutoSave && isInternet() && gameHelper.getApiClient().isConnected()){
+        if(mAutoSave && isInternet() && gameHelper.getApiClient().isConnected()&&!solvedState){
             uploadSavedGame(true);
         }
         gameHelper.onStop();

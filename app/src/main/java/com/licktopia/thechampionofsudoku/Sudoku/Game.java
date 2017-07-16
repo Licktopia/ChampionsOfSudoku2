@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import com.licktopia.thechampionofsudoku.Sudoku.Solver;
 
 /**
  * Created by John Konecny on 6/19/2017.
@@ -284,7 +285,7 @@ public class Game implements java.io.Serializable
     }
 
     public double getAccuracy() {
-        return (double)(curBoard.getStartingOpenSquares() - curBoard.totalIncorrectGuesses())
+        return (double)(getTotalOneTimeGuesses())
                 / (double)curBoard.getStartingOpenSquares();
     }
 

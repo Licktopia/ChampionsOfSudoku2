@@ -20,6 +20,7 @@ class FileIO {
     }
 
     private static int randomNum;
+
     //loads a random board from the given level
     protected static int[] loadBoard(int level, Context ctx, int totalBoardElements) {
         randomNum = _Rand.nextInt(0, 9999 + 1);
