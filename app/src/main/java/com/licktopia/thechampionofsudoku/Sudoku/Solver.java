@@ -1,6 +1,8 @@
-package com.licktopia.championsofsudoku.Sudoku;
+package com.licktopia.thechampionofsudoku.Sudoku;
 
 import android.support.v4.util.Pair;
+
+import com.licktopia.thechampionofsudoku.Sudoku.Square;
 
 import java.util.ArrayList;
 import java.util.HashSet;

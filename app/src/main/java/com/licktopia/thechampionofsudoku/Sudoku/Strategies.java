@@ -1,4 +1,4 @@
-package com.licktopia.championsofsudoku.Sudoku;
+package com.licktopia.thechampionofsudoku.Sudoku;
 
 import java.util.ArrayList;
 import java.util.List;

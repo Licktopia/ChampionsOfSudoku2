@@ -58,9 +58,11 @@ import com.licktopia.thechampionofsudoku.Settings.SudokuSettings;
 import com.licktopia.thechampionofsudoku.Settings.SudokuSettingsActivity;
 import com.licktopia.thechampionofsudoku.SquareView;
 import com.licktopia.thechampionofsudoku.Sudoku.CompletedGame;
+
 import com.licktopia.thechampionofsudoku.Sudoku.Game;
 import com.licktopia.thechampionofsudoku.Sudoku.SavedGame;
 import com.licktopia.thechampionofsudoku.Sudoku.Square;
+import com.licktopia.thechampionofsudoku.Sudoku.Strategies;
 import com.licktopia.thechampionofsudoku.Tags;
 import java.math.BigInteger;
 import java.text.SimpleDateFormat;
@@ -94,7 +96,7 @@ public class BoardActivity extends BaseGameActivity{
     private boolean animationFinished = false;
     private boolean solveClicked = false;
     private TextView scoreBoard;
-    private Game mGame;
+    private com.licktopia.thechampionofsudoku.Sudoku.Game mGame;
     private boolean smallNumPadState = false;
     private Button[] numberButtons;
     private TextView[] lilNums;
@@ -1679,7 +1681,7 @@ public class BoardActivity extends BaseGameActivity{
     @Override
     protected void onStop() {
         super.onStop();
-        if(mAutoSave && isInternet() && gameHelper.getApiClient().isConnected()){
+        if(mAutoSave && isInternet() && gameHelper.getApiClient().isConnected()&&!solvedState){
             uploadSavedGame(true);
         }
         gameHelper.onStop();
