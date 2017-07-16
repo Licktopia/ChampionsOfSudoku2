@@ -1011,9 +1011,11 @@ public class BoardActivity extends BaseGameActivity{
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    nakedSingleButton.setBackground(getResources().getDrawable(R.drawable.hint_button_pressed));
                     showNakedSingle();
                 }
                 if (event.getAction() == MotionEvent.ACTION_UP) {
+                    nakedSingleButton.setBackground(getResources().getDrawable(R.drawable.hint_rounded_button));
                     removeAllHighlights();
                 }
                 return true;
@@ -1029,9 +1031,11 @@ public class BoardActivity extends BaseGameActivity{
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    nakedDoubleButton.setBackground(getResources().getDrawable(R.drawable.hint_button_pressed));
                     showHint(Strategies.NAKED_DOUBLE);
                 }
                 if (event.getAction() == MotionEvent.ACTION_UP) {
+                    nakedDoubleButton.setBackground(getResources().getDrawable(R.drawable.hint_rounded_button));
                     removeAllHighlights();
                 }
                 return true;
@@ -1047,9 +1051,11 @@ public class BoardActivity extends BaseGameActivity{
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    hiddenSingleButton.setBackground(getResources().getDrawable(R.drawable.hint_button_pressed));
                     showHint(Strategies.HIDDEN_SINGLE);
                 }
                 if (event.getAction() == MotionEvent.ACTION_UP) {
+                    hiddenSingleButton.setBackground(getResources().getDrawable(R.drawable.hint_rounded_button));
                     removeAllHighlights();
                 }
                 return true;
@@ -1065,9 +1071,11 @@ public class BoardActivity extends BaseGameActivity{
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    hiddenPairButton.setBackground(getResources().getDrawable(R.drawable.hint_button_pressed));
                     showHint(Strategies.HIDDEN_PAIR);
                 }
                 if (event.getAction() == MotionEvent.ACTION_UP) {
+                    hiddenPairButton.setBackground(getResources().getDrawable(R.drawable.hint_rounded_button));
                     removeAllHighlights();
                 }
                 return true;
@@ -1083,9 +1091,11 @@ public class BoardActivity extends BaseGameActivity{
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    lockedCandidateButton.setBackground(getResources().getDrawable(R.drawable.hint_button_pressed));
                     showHint(Strategies.LOCKED_CANDIDATE);
                 }
                 if (event.getAction() == MotionEvent.ACTION_UP) {
+                    lockedCandidateButton.setBackground(getResources().getDrawable(R.drawable.hint_rounded_button));
                     removeAllHighlights();
                 }
                 return true;
@@ -1101,9 +1111,11 @@ public class BoardActivity extends BaseGameActivity{
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    xWingButton.setBackground(getResources().getDrawable(R.drawable.hint_button_pressed));
                     showHint(Strategies.XWING);
                 }
                 if (event.getAction() == MotionEvent.ACTION_UP) {
+                    xWingButton.setBackground(getResources().getDrawable(R.drawable.hint_rounded_button));
                     removeAllHighlights();
                 }
                 return true;
