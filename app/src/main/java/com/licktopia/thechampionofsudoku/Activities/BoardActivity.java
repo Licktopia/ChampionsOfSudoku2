@@ -586,7 +586,13 @@ public class BoardActivity extends BaseGameActivity{
                 if(mGame.canRedo()) {
                     int square = mGame.redo();
                     int value = mGame.getBoardValueAt(square);
-                    squareViews[square].setBigNumber(value, false);
+                    if (!colorGame) {
+                        squareViews[square].setBigNumber(value, false);
+                    }
+                    else{
+                        squareViews[square].setSquareColor(value, false);
+                    }
+
                 }
                 updateUndoRedoButtons();
             }
