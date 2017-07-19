@@ -285,7 +285,7 @@ public class Game implements java.io.Serializable
     }
 
     public double getAccuracy() {
-        return (double)(curBoard.getStartingOpenSquares() - curBoard.totalIncorrectGuesses())
+        return (double)(getTotalOneTimeGuesses())
                 / (double)curBoard.getStartingOpenSquares();
     }
 
