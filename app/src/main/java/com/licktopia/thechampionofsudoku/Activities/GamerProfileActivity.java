@@ -36,7 +36,7 @@ import com.licktopia.thechampionofsudoku.Tags;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GamerProfileActivity extends BaseGameActivity {
+public class GamerProfileActivity extends Gamer {
 
     private SudokuFacts sudokuFacts;
     private GameHelper gameHelper;
@@ -159,28 +159,28 @@ public class GamerProfileActivity extends BaseGameActivity {
         mDidYouKnow.setBackgroundColor(Color.parseColor(color));
         mFactBackground.setBackgroundColor(Color.parseColor(color));
         mTitleName.setBackgroundColor(Color.parseColor(color));
-        mTitleName.setText(Gamer.getUsername());
+        mTitleName.setText(getUsername());
 
-        if(Gamer.completedGames!= null && Gamer.completedGames.isEmpty()){
+        if(completedGames!= null && completedGames.isEmpty()){
             mHistoryButton.setAlpha(.5f);
         }
         else{
             mHistoryButton.setAlpha(1);
         }
-        if(Gamer.getLevel()==Gamer.CUTOFF.length){
-            nextPowerUpDisplay.setText(Gamer.RANKNAMES[Gamer.getLevel()]);
+        if(getLevel()==CUTOFF.length){
+            nextPowerUpDisplay.setText(RANKNAMES[getLevel()]);
         }
         else{
-            nextPowerUpDisplay.setText(new StringBuilder().append(getString(R.string.next_levelup)).append(" ").append(String.format("%,d", Gamer.CUTOFF[Gamer.getLevel()] - Gamer.getXp())).append(" XP").toString());
+            nextPowerUpDisplay.setText(new StringBuilder().append(getString(R.string.next_levelup)).append(" ").append(String.format("%,d", CUTOFF[getLevel()] - getXp())).append(" XP").toString());
         }
-        xpDisplay.setText(new StringBuilder().append(String.format("%,d", Integer.parseInt(String.valueOf(Gamer.getXp())))).append(" XP").toString());
-        nextPowerUpDisplay.setText(new StringBuilder().append(getString(R.string.next_levelup)).append(" ").append(String.format("%,d", Gamer.CUTOFF[Gamer.getLevel() + 1] - Gamer.getXp())).append(" XP").toString());
-        mRankDisplay.setImageDrawable(getResources().getDrawable(Gamer.BADGETAGS[Gamer.getLevel()]));
+        xpDisplay.setText(new StringBuilder().append(String.format("%,d", Integer.parseInt(String.valueOf(getXp())))).append(" XP").toString());
+        nextPowerUpDisplay.setText(new StringBuilder().append(getString(R.string.next_levelup)).append(" ").append(String.format("%,d", CUTOFF[getLevel() + 1] - getXp())).append(" XP").toString());
+        mRankDisplay.setImageDrawable(getResources().getDrawable(BADGETAGS[getLevel()]));
         ImageView[] verticalBadges = new ImageView[52];
         for(int i = 0; i< Tags.verticalBadges.length;i++){
             verticalBadges[i]=(ImageView)findViewById(Tags.verticalBadges[i]);
             verticalBadges[i].setImageDrawable(getResources().getDrawable(Tags.badgeTags[i]));
-            if(i<=Gamer.getLevel()){
+            if(i<=getLevel()){
                 verticalBadges[i].setVisibility(View.VISIBLE);
             }
             else{
@@ -192,7 +192,7 @@ public class GamerProfileActivity extends BaseGameActivity {
 
     private void queryCompletedGameDb(){
         if(isInternet()) {
-            String partitionKey = Gamer.getId();
+            String partitionKey = getId();
             CompletedGame cg = new CompletedGame();
             cg.setGamerID(partitionKey);
 
@@ -211,8 +211,8 @@ public class GamerProfileActivity extends BaseGameActivity {
                     for (int i = 0; i < list[0].size(); i++) {
                         cGames.add(list[0].get(i));
                     }
-                    Gamer.setCompletedGames(cGames);
-                    if(Gamer.completedGames!= null && Gamer.completedGames.isEmpty()){
+                    setCompletedGames(cGames);
+                    if(completedGames!= null && completedGames.isEmpty()){
                         mHistoryButton.setAlpha(.5f);
                     }
                     else{

@@ -55,7 +55,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class MainMenuActivity  extends BaseGameActivity{
+public class MainMenuActivity  extends Gamer{
     private static final String PREF_FILE = "com.licktopia.com.licktopia.championofsudoku.preferences";
     private static final int RC_SAVED_GAMES = 9009;
     private static final float RESUME_ALPHA = .3f;
@@ -183,14 +183,14 @@ public class MainMenuActivity  extends BaseGameActivity{
     @Override
     protected void onResume(){
         super.onResume();
-        userBadge.setImageDrawable(getResources().getDrawable(Gamer.BADGETAGS[Gamer.getLevel()]));
+        userBadge.setImageDrawable(getResources().getDrawable(BADGETAGS[getLevel()]));
     }
 
     private void loadPlayer(){
         if(gameHelper.getApiClient().isConnected()) {
-            Gamer.setUsername(Games.Players.getCurrentPlayer(gameHelper.getApiClient()).getDisplayName());
-            Gamer.setId(Games.Players.getCurrentPlayer(gameHelper.getApiClient()).getPlayerId());
-            mBadgeButtonInitialize(Gamer.getUsername(), Gamer.getId());
+            setUsername(Games.Players.getCurrentPlayer(gameHelper.getApiClient()).getDisplayName());
+            setId(Games.Players.getCurrentPlayer(gameHelper.getApiClient()).getPlayerId());
+            mBadgeButtonInitialize(getUsername(), getId());
         }
     }
 
@@ -208,7 +208,7 @@ public class MainMenuActivity  extends BaseGameActivity{
 
     private void queryCompletedGameDb(){
         if(isInternet()) {
-            String partitionKey = Gamer.getId();
+            String partitionKey = getId();
             CompletedGame cg = new CompletedGame();
             cg.setGamerID(partitionKey);
 
@@ -227,7 +227,7 @@ public class MainMenuActivity  extends BaseGameActivity{
                     for (int i = 0; i < list[0].size(); i++) {
                         cGames.add(list[0].get(i));
                     }
-                    Gamer.setCompletedGames(cGames);
+                    setCompletedGames(cGames);
                 }
             };
             Thread mythread = new Thread(runnable);
@@ -238,7 +238,7 @@ public class MainMenuActivity  extends BaseGameActivity{
 
     private void querySavedGameDb() {
         if (isInternet()) {
-            String partitionKey = Gamer.getId();
+            String partitionKey = getId();
             SavedGame sg = new SavedGame();
             sg.setGamerID(partitionKey);
 
@@ -258,7 +258,7 @@ public class MainMenuActivity  extends BaseGameActivity{
                     for (int i = 0; i < list[0].size(); i++) {
                         sGames.add(list[0].get(i));
                     }
-                    Gamer.setSavedGames(sGames);
+                    setSavedGames(sGames);
 
                     updateActivity();
 
@@ -284,10 +284,10 @@ public class MainMenuActivity  extends BaseGameActivity{
             public void run() {
 
 
-                if (Gamer.getSavedGames() != null) {
+                if (getSavedGames() != null) {
                     mProgressBar.setVisibility(View.GONE);
                     mResumeButton.setVisibility(View.VISIBLE);
-                    if (!Gamer.getSavedGames().isEmpty()) {
+                    if (!getSavedGames().isEmpty()) {
                         initializeResumeButton(mResumeButton);
                         mResumeButton.setAlpha(1f);
                         mResumeButton.setClickable(true);
@@ -329,7 +329,7 @@ public class MainMenuActivity  extends BaseGameActivity{
             querySavedGameDb();
         }
         else{
-            Gamer.setNullUser();
+            setNullUser();
             if(clickedOut) {
                 mPlaySounds.playSounds(this,8);
             }
@@ -339,7 +339,7 @@ public class MainMenuActivity  extends BaseGameActivity{
             mSignInButton.setVisibility(View.VISIBLE);
             mSignOutButton.setVisibility(View.INVISIBLE);
             mBadge.setVisibility(View.GONE);
-            userBadge.setImageDrawable(getResources().getDrawable(Gamer.BADGETAGS[Gamer.getLevel()]));
+            userBadge.setImageDrawable(getResources().getDrawable(BADGETAGS[getLevel()]));
         }
         setMessage();
 
@@ -358,8 +358,8 @@ public class MainMenuActivity  extends BaseGameActivity{
                         && GamesStatusCodes.STATUS_OK == result.getStatus().getStatusCode()
                         && result.getScore() != null) {
                     long highestScore = result.getScore().getRawScore();
-                    Gamer.setXp(highestScore);
-                    userBadge.setImageDrawable(getResources().getDrawable(Gamer.BADGETAGS[Gamer.getLevel()]));
+                    setXp(highestScore);
+                    userBadge.setImageDrawable(getResources().getDrawable(BADGETAGS[getLevel()]));
                 }
 
             }
@@ -415,7 +415,7 @@ public class MainMenuActivity  extends BaseGameActivity{
     }
 
     private void mBadgeButtonInitialize(final String gamername, final String gamerID){
-        userBadge.setImageDrawable(getResources().getDrawable(Gamer.BADGETAGS[Gamer.getLevel()]));
+        userBadge.setImageDrawable(getResources().getDrawable(BADGETAGS[getLevel()]));
         mBadge.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

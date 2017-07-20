@@ -24,7 +24,7 @@ import java.util.List;
 import static com.licktopia.thechampionofsudoku.Activities.CompletedGameActivity.completedGameListItems;
 
 
-public class SavedGameActivity extends AppCompatActivity {
+public class SavedGameActivity extends Gamer {
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
 
@@ -47,7 +47,7 @@ public class SavedGameActivity extends AppCompatActivity {
         recyclerView.addItemDecoration(
                 new HorizontalDividerItemDecoration.Builder(this).size(12).build());
 
-        savedUser.setText(new StringBuilder().append(Gamer.getUsername()).append(getString(R.string.your_saved_games)).toString());
+        savedUser.setText(new StringBuilder().append(getUsername()).append(getString(R.string.your_saved_games)).toString());
 
 
 
@@ -57,20 +57,30 @@ public class SavedGameActivity extends AppCompatActivity {
 
     private void fillListItems(){
         savedGameListItems = new ArrayList<>();
-        for(int i = 0; i < Gamer.getSavedGames().size(); i++){
+        for(int i = 0; i < getSavedGames().size(); i++){
             SavedGameListItem sGLI= new SavedGameListItem(
-                    Gamer.getSavedGames().get(i).getDate(),
-                    Gamer.getSavedGames().get(i).getTime(),
-                    Gamer.getSavedGames().get(i).getColorMode(),
-                    Gamer.getSavedGames().get(i).getExactTime(),
-                    Gamer.getSavedGames().get(i).getLevel(),
-                    Gamer.getSavedGames().get(i).getPuzzleNumber(),
-                    Gamer.getSavedGames().get(i).getGamerID()
+                    getSavedGames().get(i).getDate(),
+                    getSavedGames().get(i).getTime(),
+                    getSavedGames().get(i).getColorMode(),
+                    getSavedGames().get(i).getExactTime(),
+                    getSavedGames().get(i).getLevel(),
+                    getSavedGames().get(i).getPuzzleNumber(),
+                    getSavedGames().get(i).getGamerID()
                     );
             savedGameListItems.add(sGLI);
 
         }
         Collections.sort(savedGameListItems, new RecentSorter());
+    }
+
+    @Override
+    public void onSignInFailed() {
+
+    }
+
+    @Override
+    public void onSignInSucceeded() {
+
     }
 
 
@@ -90,19 +100,6 @@ public class SavedGameActivity extends AppCompatActivity {
             return returnVal;
 
         }
-    }
-
-    public Long formatExactTime(String time) {
-        Long timeNumber;
-        StringBuilder str = new StringBuilder();
-        for(char c : time.toCharArray()){
-            if(c != ','){
-                str.append(c);
-            }
-
-        }
-        timeNumber = Long.valueOf(str.toString());
-        return timeNumber;
     }
 
 

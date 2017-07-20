@@ -1,9 +1,21 @@
 package com.licktopia.thechampionofsudoku;
 
+import android.content.SharedPreferences;
+import android.os.SystemClock;
+import android.preference.PreferenceManager;
+import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.TextView;
+
+import com.google.example.games.basegameutils.BaseGameActivity;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.licktopia.thechampionofsudoku.Activities.SavedGameActivity;
+import com.licktopia.thechampionofsudoku.Settings.SudokuSettings;
 import com.licktopia.thechampionofsudoku.Sudoku.CompletedGame;
 import com.licktopia.thechampionofsudoku.Sudoku.SavedGame;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -13,8 +25,8 @@ import java.util.List;
  * Created by Matt on 6/22/2017.
  */
 
-public class Gamer {
-
+public abstract class Gamer extends BaseGameActivity {
+    public static final String KEY = "SAVED_KEY";
 
 
     public static int[] CUTOFF = {0,250,5000,11000,18000,30000,42000,55000,70000,90000,115000,140000,167000,195000,225000,262000,305000,355000,413000,480000,560000,650000,
@@ -171,6 +183,36 @@ public class Gamer {
         timeNumber = Long.valueOf(str.toString());
         return timeNumber;
     }
+    @Override
+    protected void onStart() {
+       completedGames = new ArrayList<>();
+        savedGames = new ArrayList<>();
+        super.onStart();
+    }
 
 
+    @Override
+    protected void onResume() {
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        Gson gson = new Gson();
+        String json = sharedPrefs.getString(KEY, null);
+        Type type = new TypeToken<ArrayList<SavedGame>>() {}.getType();
+
+        savedGames = gson.fromJson(json, type);
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+
+
+
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(savedGames);
+        editor.putString(KEY, json);
+        editor.commit();
+        super.onPause();
+    }
 }
