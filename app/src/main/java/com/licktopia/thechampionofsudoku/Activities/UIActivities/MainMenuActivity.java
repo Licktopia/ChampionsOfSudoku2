@@ -252,13 +252,16 @@ public class MainMenuActivity  extends BaseActivity {
                     }
                     setSavedGames(sGames);
 
-                    updateActivity(false);
+
+                    updateActivity(true);
+
 
                 }
             };
 
             Thread mythread = new Thread(runnable);
-            updateActivity(true);
+
+            updateActivity(false);
             mythread.start();
 
 
@@ -280,16 +283,21 @@ public class MainMenuActivity  extends BaseActivity {
                     if(finishedrunning) {
                         mProgressBar.setVisibility(View.GONE);
                         mResumeButton.setVisibility(View.VISIBLE);
+                        mResumeButton.setAlpha(RESUME_ALPHA);
+                        mResumeButton.setClickable(false);
                     }
-                    mResumeButton.setAlpha(RESUME_ALPHA);
-                    mResumeButton.setClickable(false);
 
-                } else {
-                    initializeResumeButton(mResumeButton);
-                    mResumeButton.setAlpha(1f);
-                    mResumeButton.setClickable(true);
-                    mProgressBar.setVisibility(View.GONE);
-                    mResumeButton.setVisibility(View.VISIBLE);
+
+                }
+                 else {
+                    if(finishedrunning) {
+                        initializeResumeButton(mResumeButton);
+                        mResumeButton.setAlpha(1f);
+                        mResumeButton.setClickable(true);
+                        mProgressBar.setVisibility(View.GONE);
+                        mResumeButton.setVisibility(View.VISIBLE);
+                    }
+
                 }
             }
         });
@@ -305,8 +313,16 @@ public class MainMenuActivity  extends BaseActivity {
                 mPlaySounds.playSounds(this,7);
                 userSignIn = false;
             }
+
             mProgressBar.setVisibility(View.VISIBLE);
             mResumeButton.setVisibility(View.GONE);
+
+
+            mProgressBar.setVisibility(View.VISIBLE);
+            mResumeButton.setVisibility(View.GONE);
+
+
+
             mSignInButton.setVisibility(View.GONE);
             mBadge.setVisibility(View.VISIBLE);
             loadPlayer();
@@ -323,6 +339,7 @@ public class MainMenuActivity  extends BaseActivity {
                 mPlaySounds.playSounds(this,8);
             }
             mProgressBar.setVisibility(View.GONE);
+            mResumeButton.setAlpha(RESUME_ALPHA);
             mResumeButton.setVisibility(View.VISIBLE);
             clickedOut = false;
             mSignInButton.setVisibility(View.VISIBLE);
