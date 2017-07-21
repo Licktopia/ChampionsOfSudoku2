@@ -269,6 +269,7 @@ public class MainMenuActivity  extends BaseActivity {
 
 
         }
+        updateActivity(true);
     }
 
     //Updates the save game button based on the current state of the loading the saved game
