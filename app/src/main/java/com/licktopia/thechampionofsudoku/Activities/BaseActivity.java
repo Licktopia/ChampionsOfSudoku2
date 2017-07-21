@@ -1,19 +1,27 @@
-package com.licktopia.thechampionofsudoku;
+package com.licktopia.thechampionofsudoku.Activities;
 
-import com.licktopia.thechampionofsudoku.Activities.SavedGameActivity;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+
+import com.google.example.games.basegameutils.BaseGameActivity;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.licktopia.thechampionofsudoku.R;
 import com.licktopia.thechampionofsudoku.Sudoku.CompletedGame;
 import com.licktopia.thechampionofsudoku.Sudoku.SavedGame;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
 
 /**
  * Created by Matt on 6/22/2017.
  */
 
-public class Gamer {
+public abstract class BaseActivity extends BaseGameActivity {
+    public static final String KEY = "SAVED_KEY";
+    public static final String KEY2 = "COMPLETED_KEY";
 
 
 
@@ -49,8 +57,8 @@ public class Gamer {
     }
 
     public static void setSavedGames(ArrayList<SavedGame> savedGames) {
-        Collections.sort(savedGames, new Gamer.RecentSorter());
-        Gamer.savedGames = savedGames;
+        Collections.sort(savedGames, new BaseActivity.RecentSorter());
+        BaseActivity.savedGames = savedGames;
     }
 
     public static ArrayList<CompletedGame> getCompletedGames() {
@@ -58,12 +66,12 @@ public class Gamer {
     }
 
     public static void setCompletedGames(ArrayList<CompletedGame> completedGames) {
-        Gamer.completedGames = completedGames;
+        BaseActivity.completedGames = completedGames;
 
     }
 
     public static boolean addExperience(long xp) {
-        Gamer.xp += xp;
+        BaseActivity.xp += xp;
         return setLevel(xp);
 
     }
@@ -101,7 +109,7 @@ public class Gamer {
     }
 
     public static void setUsername(String username) {
-        Gamer.username = username;
+        BaseActivity.username = username;
     }
 
     public static int getLevel() {
@@ -116,7 +124,7 @@ public class Gamer {
 
     public static void setXp(long xp) {
 
-        Gamer.xp = xp;
+        BaseActivity.xp = xp;
         setLevel(xp);
     }
 
@@ -125,19 +133,19 @@ public class Gamer {
     }
 
     public static void setId(String id) {
-        Gamer.id = id;
+        BaseActivity.id = id;
     }
 
     public static void setNullUser(){
-        Gamer.username = null;
-        Gamer.id = null;
-        Gamer.xp = 0;
-        Gamer.level = 0;
+        BaseActivity.username = null;
+        BaseActivity.id = null;
+        BaseActivity.xp = 0;
+        BaseActivity.level = 0;
         if(completedGames!=null) {
-            Gamer.completedGames.clear();
+            BaseActivity.completedGames.clear();
         }
         if(savedGames!=null) {
-            Gamer.savedGames.clear();
+            BaseActivity.savedGames.clear();
         }
     }
 
@@ -171,6 +179,40 @@ public class Gamer {
         timeNumber = Long.valueOf(str.toString());
         return timeNumber;
     }
+    @Override
+    protected void onStart() {
+       completedGames = new ArrayList<>();
+        savedGames = new ArrayList<>();
+        super.onStart();
+    }
 
 
+    @Override
+    protected void onResume() {
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        Gson gson = new Gson();
+        String json = sharedPrefs.getString(KEY, null);
+        Type type = new TypeToken<ArrayList<SavedGame>>() {}.getType();
+        savedGames = gson.fromJson(json, type);
+
+        json = sharedPrefs.getString(KEY2, null);
+        type = new TypeToken<ArrayList<CompletedGame>>() {}.getType();
+        completedGames = gson.fromJson(json, type);
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(savedGames);
+        editor.putString(KEY, json);
+        editor.apply();
+
+        json = gson.toJson(completedGames);
+        editor.putString(KEY2, json);
+        editor.apply();
+        super.onPause();
+    }
 }

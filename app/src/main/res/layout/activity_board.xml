@@ -10,7 +10,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/backgroundcroppedsmall"
     android:visibility="visible"
-    tools:context="com.licktopia.thechampionofsudoku.Activities.BoardActivity"
+    tools:context="com.licktopia.thechampionofsudoku.Activities.UIActivities.BoardActivity"
     tools:visibility="visible">
 
     <RelativeLayout

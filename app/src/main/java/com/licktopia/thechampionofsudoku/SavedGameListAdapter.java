@@ -10,7 +10,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,9 +23,8 @@ import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
 import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
-import com.licktopia.thechampionofsudoku.Activities.BoardActivity;
-import com.licktopia.thechampionofsudoku.Activities.DynamoDbTestActivity;
-import com.licktopia.thechampionofsudoku.Sudoku.CompletedGame;
+import com.licktopia.thechampionofsudoku.Activities.BaseActivity;
+import com.licktopia.thechampionofsudoku.Activities.UIActivities.BoardActivity;
 import com.licktopia.thechampionofsudoku.Sudoku.SavedGame;
 
 import java.util.List;
@@ -113,9 +111,9 @@ public class SavedGameListAdapter extends RecyclerView.Adapter<SavedGameListAdap
                                     //Make level less than zero so that activity knows to load a game
                                     boolean resume = true;
                                     intent.putExtra("RESUME", resume);
-                                    intent.putExtra("COLOR_MODE", Gamer.getSavedGames().get(position).getColorMode());
-                                    intent.putExtra("SAVE_FILE", Gamer.getSavedGames().get(position).getSaveFile());
-                                    intent.putExtra("STOPPED_TIME", Gamer.getSavedGames().get(position).getStoppedTime());
+                                    intent.putExtra("COLOR_MODE", BaseActivity.getSavedGames().get(position).getColorMode());
+                                    intent.putExtra("SAVE_FILE", BaseActivity.getSavedGames().get(position).getSaveFile());
+                                    intent.putExtra("STOPPED_TIME", BaseActivity.getSavedGames().get(position).getStoppedTime());
                                     context.startActivity(intent);
 
 
