@@ -1,4 +1,4 @@
-package com.licktopia.thechampionofsudoku.Activities;
+package com.licktopia.thechampionofsudoku.Activities.UIActivities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -24,9 +24,8 @@ import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.google.android.gms.games.Games;
-import com.google.example.games.basegameutils.BaseGameActivity;
 import com.google.example.games.basegameutils.GameHelper;
-import com.licktopia.thechampionofsudoku.Gamer;
+import com.licktopia.thechampionofsudoku.Activities.BaseActivity;
 import com.licktopia.thechampionofsudoku.PlaySounds;
 import com.licktopia.thechampionofsudoku.R;
 import com.licktopia.thechampionofsudoku.Sudoku.CompletedGame;
@@ -36,7 +35,7 @@ import com.licktopia.thechampionofsudoku.Tags;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GamerProfileActivity extends Gamer {
+public class GamerProfileActivity extends BaseActivity {
 
     private SudokuFacts sudokuFacts;
     private GameHelper gameHelper;

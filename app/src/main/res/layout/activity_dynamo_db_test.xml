@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.licktopia.thechampionofsudoku.Activities.DynamoDbTestActivity">
+    tools:context="com.licktopia.thechampionofsudoku.Activities.UIActivities.DynamoDbTestActivity">
 
     <Button
         android:id="@+id/query"

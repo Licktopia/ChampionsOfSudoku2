@@ -1,4 +1,4 @@
-package com.licktopia.thechampionofsudoku.Activities;
+package com.licktopia.thechampionofsudoku.Activities.UIActivities;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
 import com.amazonaws.mobileconnectors.cognito.CognitoSyncManager;
@@ -15,17 +14,12 @@ import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBQueryExp
 import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
-import com.amazonaws.services.dynamodbv2.model.AttributeValue;
-import com.licktopia.thechampionofsudoku.Gamer;
+import com.licktopia.thechampionofsudoku.Activities.BaseActivity;
 import com.licktopia.thechampionofsudoku.R;
-import com.licktopia.thechampionofsudoku.Sudoku.CompletedGame;
 import com.licktopia.thechampionofsudoku.Sudoku.SavedGame;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 
 public class DynamoDbTestActivity extends AppCompatActivity {
@@ -64,7 +58,7 @@ public class DynamoDbTestActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                String partitionKey = Gamer.getId();
+                String partitionKey = BaseActivity.getId();
                 SavedGame sg = new SavedGame();
                 sg.setGamerID(partitionKey);
 

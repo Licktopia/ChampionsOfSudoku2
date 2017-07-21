@@ -1,16 +1,13 @@
-package com.licktopia.thechampionofsudoku.Activities;
+package com.licktopia.thechampionofsudoku.Activities.UIActivities;
 
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import android.widget.TextView;
 
-import com.licktopia.thechampionofsudoku.CompletedGameListAdapter;
-import com.licktopia.thechampionofsudoku.CompletedGameListItem;
-import com.licktopia.thechampionofsudoku.Gamer;
+import com.licktopia.thechampionofsudoku.Activities.BaseActivity;
 import com.licktopia.thechampionofsudoku.R;
 import com.licktopia.thechampionofsudoku.SavedGameListAdapter;
 import com.licktopia.thechampionofsudoku.SavedGameListItem;
@@ -21,10 +18,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import static com.licktopia.thechampionofsudoku.Activities.CompletedGameActivity.completedGameListItems;
 
-
-public class SavedGameActivity extends Gamer {
+public class SavedGameActivity extends BaseActivity {
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
 

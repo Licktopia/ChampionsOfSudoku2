@@ -1,18 +1,17 @@
-package com.licktopia.thechampionofsudoku.Activities;
+package com.licktopia.thechampionofsudoku.Activities.UIActivities;
 
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.licktopia.thechampionofsudoku.Activities.BaseActivity;
 import com.licktopia.thechampionofsudoku.CompletedGameListAdapter;
 
 import com.licktopia.thechampionofsudoku.CompletedGameListItem;
-import com.licktopia.thechampionofsudoku.Gamer;
 import com.licktopia.thechampionofsudoku.R;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
@@ -22,7 +21,7 @@ import java.util.Comparator;
 import java.util.List;
 
 
-public class CompletedGameActivity extends Gamer {
+public class CompletedGameActivity extends BaseActivity {
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
     private Button tvSortRecent;
