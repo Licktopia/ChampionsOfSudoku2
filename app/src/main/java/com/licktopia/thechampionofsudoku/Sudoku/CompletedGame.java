@@ -4,7 +4,6 @@ package com.licktopia.thechampionofsudoku.Sudoku;
  * Created by do_de on 6/29/2017.
  */
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.*;
-import com.licktopia.thechampionofsudoku.Gamer;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBHashKey;
 
 

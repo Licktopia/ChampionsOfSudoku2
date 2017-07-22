@@ -25,12 +25,12 @@
             android:authorities="com.facebook.app.FacebookContentProvider1040720769395510"
             android:exported="true" />
 
-        <activity android:name=".Activities.BoardActivity" />
-        <activity android:name=".Activities.InstructionsActivity" />
-        <activity android:name=".Activities.AboutActivity" />
-        <activity android:name=".Activities.CompletedGameActivity" />
-        <activity android:name=".Activities.SavedGameActivity" />
-        <activity android:name=".Activities.MainMenuActivity">
+        <activity android:name=".Activities.UIActivities.BoardActivity" />
+        <activity android:name=".Activities.UIActivities.InstructionsActivity" />
+        <activity android:name=".Activities.UIActivities.AboutActivity" />
+        <activity android:name=".Activities.UIActivities.CompletedGameActivity" />
+        <activity android:name=".Activities.UIActivities.SavedGameActivity" />
+        <activity android:name=".Activities.UIActivities.MainMenuActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -41,8 +41,8 @@
             android:name=".Settings.SudokuSettingsActivity"
             android:label="Settings"
             android:theme="@style/Base.Theme.AppCompat.Light" />
-        <activity android:name=".Activities.GamerProfileActivity" />
-        <activity android:name=".Activities.DynamoDbTestActivity"></activity>
+        <activity android:name=".Activities.UIActivities.GamerProfileActivity" />
+        <activity android:name=".Activities.UIActivities.DynamoDbTestActivity"></activity>
     </application>
 
 </manifest>

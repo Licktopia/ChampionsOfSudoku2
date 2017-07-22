@@ -1,18 +1,17 @@
-package com.licktopia.thechampionofsudoku.Activities;
+package com.licktopia.thechampionofsudoku.Activities.UIActivities;
 
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.licktopia.thechampionofsudoku.Activities.BaseActivity;
 import com.licktopia.thechampionofsudoku.CompletedGameListAdapter;
 
 import com.licktopia.thechampionofsudoku.CompletedGameListItem;
-import com.licktopia.thechampionofsudoku.Gamer;
 import com.licktopia.thechampionofsudoku.R;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
@@ -22,7 +21,7 @@ import java.util.Comparator;
 import java.util.List;
 
 
-public class CompletedGameActivity extends AppCompatActivity {
+public class CompletedGameActivity extends BaseActivity {
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
     private Button tvSortRecent;
@@ -52,7 +51,7 @@ public class CompletedGameActivity extends AppCompatActivity {
         recyclerView.addItemDecoration(
                 new HorizontalDividerItemDecoration.Builder(this).size(12).build());
 
-        tvGpDisplay.setText(new StringBuilder().append(Gamer.getUsername()).append(getString(R.string.game_history)).toString());
+        tvGpDisplay.setText(new StringBuilder().append(getUsername()).append(getString(R.string.game_history)).toString());
 
         tvSortRecent.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -96,22 +95,32 @@ public class CompletedGameActivity extends AppCompatActivity {
 
     private void fillListItems(){
         completedGameListItems = new ArrayList<>();
-        for(int i = 0; i < Gamer.getCompletedGames().size(); i++){
+        for(int i = 0; i < getCompletedGames().size(); i++){
             CompletedGameListItem cGLI= new CompletedGameListItem(
-                    Gamer.getCompletedGames().get(i).getAccuracy(),
-                    Gamer.getCompletedGames().get(i).getDate(),
-                    Gamer.getCompletedGames().get(i).getLevel(),
-                    Gamer.getCompletedGames().get(i).getPuzzleNumber(),
-                    Gamer.getCompletedGames().get(i).getRealScore(),
-                    Gamer.getCompletedGames().get(i).getTime(),
-                    Gamer.getCompletedGames().get(i).getXp(),
-                    Gamer.getCompletedGames().get(i).getGamerID(),
-                    Gamer.getCompletedGames().get(i).isColor(),
-                    Gamer.getCompletedGames().get(i).getExactTime());
+                    getCompletedGames().get(i).getAccuracy(),
+                    getCompletedGames().get(i).getDate(),
+                    getCompletedGames().get(i).getLevel(),
+                    getCompletedGames().get(i).getPuzzleNumber(),
+                    getCompletedGames().get(i).getRealScore(),
+                    getCompletedGames().get(i).getTime(),
+                    getCompletedGames().get(i).getXp(),
+                    getCompletedGames().get(i).getGamerID(),
+                    getCompletedGames().get(i).isColor(),
+                    getCompletedGames().get(i).getExactTime());
             completedGameListItems.add(cGLI);
 
         }
         Collections.sort(completedGameListItems,new RecentSorter());
+    }
+
+    @Override
+    public void onSignInFailed() {
+
+    }
+
+    @Override
+    public void onSignInSucceeded() {
+
     }
 
 
@@ -199,16 +208,4 @@ public class CompletedGameActivity extends AppCompatActivity {
         return timeNumber;
     }
 
-    public Long formatExactTime(String time) {
-        Long timeNumber;
-        StringBuilder str = new StringBuilder();
-        for(char c : time.toCharArray()){
-            if(c != ','){
-                str.append(c);
-            }
-
-        }
-        timeNumber = Long.valueOf(str.toString());
-        return timeNumber;
-    }
 }
