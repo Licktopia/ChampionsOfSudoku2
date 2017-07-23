@@ -403,9 +403,11 @@ public class Strategies {
     {
         if(!board.isStartingValue(row, col) && board.getValueAt(row, col) == 0)
         {
+            //used to prevent the score from being impacted
+            Board tempBoard = new Board(board);
             for(int i = 1; i <= board.getSize(); i++)
             {
-                Set<Integer> testStk = board.setValueAt(row, col, i);
+                Set<Integer> testStk = tempBoard.setValueAt(row, col, i);
                 if(testStk.isEmpty())
                 {
                     if (!removeOnly) board.setNotepadAt(row, col, i, true);
@@ -414,7 +416,8 @@ public class Strategies {
                 {
                     board.setNotepadAt(row, col, i, false);
                 }
-                board.setValueAt(row, col, 0);
+                //commented out because tempBoard was created
+                //board.setValueAt(row, col, 0);
             }
         }
     }

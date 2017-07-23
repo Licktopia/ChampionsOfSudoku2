@@ -18,7 +18,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * Created by John Konecny on 6/19/2017.
  */
 
-class Solver {
+class Solver implements java.io.Serializable {
 
     Board curBoard;
     Queue<Square> solvingSteps;
