@@ -65,7 +65,7 @@ public class CompletedGameListItem {
 
     public String getTime() {
 
-        return formatTime(Integer.valueOf(time));
+        return formatTime(time);
     }
 
     public int getXp() {
@@ -84,10 +84,12 @@ public class CompletedGameListItem {
         return exactTime;
     }
 
-    private String formatTime(int seconds){
+    private String formatTime(String seconds){
+        seconds = seconds.replace(",","");
+        int intSeconds = Integer.valueOf(seconds);
         String formattedTime;
-        int minutes = seconds/60;
-        int secs = seconds%60;
+        int minutes = intSeconds/60;
+        int secs = intSeconds%60;
         String minutos = String.format("%d",minutes);
         String segundos = String.format("%d",secs);
         if(segundos.length()==1){
