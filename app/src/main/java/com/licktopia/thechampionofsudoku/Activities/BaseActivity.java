@@ -14,6 +14,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 /**
  * Created by Matt on 6/22/2017.
@@ -46,7 +47,7 @@ public abstract class BaseActivity extends BaseGameActivity {
     public static int level=0;
     public static long xp;
     public static ArrayList<CompletedGame> completedGames;
-    public static ArrayList<SavedGame> savedGames;
+    public static ArrayList<SavedGame> savedGames  = new ArrayList<SavedGame>();
 
 
 
