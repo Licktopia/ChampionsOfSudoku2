@@ -385,6 +385,10 @@ public class Strategies {
         executeStrategyFromList(board, getLockedCandidates(board));
     }
 
+    public static void removeRandomXWingValues(Board board) {
+        executeStrategyFromList(board, getXWings(board));
+    }
+
     //updates all squares' notepads so that only valid moves are true
     public static void updateAllNotepads(Board board, boolean removeOnly)
     {

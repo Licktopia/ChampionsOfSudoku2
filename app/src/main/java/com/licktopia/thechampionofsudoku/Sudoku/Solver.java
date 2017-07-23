@@ -96,21 +96,23 @@ class Solver implements java.io.Serializable {
         // Iterate while there are still squares to fill or we can't solve any more
         while (squaresToComplete > 0 && !cannotSolve) {
             switch(strategyNumber) {
-                case 5:
+                case Strategies.XWING:
+                    Strategies.removeRandomXWingValues(curBoard);
+                case Strategies.LOCKED_CANDIDATE:
                     Strategies.removeRandomLockedCandidateValues(curBoard);
-                case 4:
+                case Strategies.HIDDEN_PAIR:
                     Strategies.removeRandomHiddenPairValues(curBoard);
-                case 3:
+                case Strategies.HIDDEN_SINGLE:
                     Strategies.removeRandomNakedPairValues(curBoard);
-                case 2:
+                case Strategies.NAKED_DOUBLE:
                     Strategies.removeRandomHiddenSingle(curBoard);
-                case 1:
+                case Strategies.NAKED_SINGLE:
                     strategiesUsed++;
                     int index = Strategies.removeRandomNakedSingle(curBoard);
                     // If no squares are found
                     if (index == -1) {
                         // Exhausted all strategies, we cannot solve at this point (YET)
-                        if (strategyNumber == 5)
+                        if (strategyNumber == Strategies.XWING)
                             cannotSolve = true;
                         else // Try next strategy
                             strategyNumber++;
