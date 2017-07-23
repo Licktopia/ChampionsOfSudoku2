@@ -1,6 +1,7 @@
 package com.licktopia.thechampionofsudoku.Activities;
 
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 
 import com.google.example.games.basegameutils.BaseGameActivity;
@@ -23,6 +24,7 @@ import java.util.List;
 public abstract class BaseActivity extends BaseGameActivity {
     public static final String KEY = "SAVED_KEY";
     public static final String KEY2 = "COMPLETED_KEY";
+    public static final String KEY3 = "XP_KEY";
 
 
 
@@ -47,7 +49,7 @@ public abstract class BaseActivity extends BaseGameActivity {
     public static int level=0;
     public static long xp;
     public static ArrayList<CompletedGame> completedGames;
-    public static ArrayList<SavedGame> savedGames  = new ArrayList<SavedGame>();
+    public static ArrayList<SavedGame> savedGames;
 
 
 
@@ -180,25 +182,35 @@ public abstract class BaseActivity extends BaseGameActivity {
         timeNumber = Long.valueOf(str.toString());
         return timeNumber;
     }
-    @Override
-    protected void onStart() {
-       completedGames = new ArrayList<>();
-        savedGames = new ArrayList<>();
-        super.onStart();
-    }
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        //completedGames = new ArrayList<>();
+        //savedGames = new ArrayList<>();
+
+    }
 
     @Override
     protected void onResume() {
+        Type type = new TypeToken<ArrayList<SavedGame>>() {}.getType();
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         Gson gson = new Gson();
-        String json = sharedPrefs.getString(KEY, null);
-        Type type = new TypeToken<ArrayList<SavedGame>>() {}.getType();
-        savedGames = gson.fromJson(json, type);
+        if(sharedPrefs.getString(KEY,null)!=null) {
+            String json = sharedPrefs.getString(KEY, null);
+            savedGames = gson.fromJson(json, type);
+        }
 
-        json = sharedPrefs.getString(KEY2, null);
+        setXp(sharedPrefs.getLong(KEY3,0));
         type = new TypeToken<ArrayList<CompletedGame>>() {}.getType();
-        completedGames = gson.fromJson(json, type);
+        if(sharedPrefs.getString(KEY2,null)!=null) {
+            String json = sharedPrefs.getString(KEY2, null);
+            completedGames = gson.fromJson(json, type);
+        }
+
+
+
+
         super.onResume();
     }
 
@@ -213,6 +225,8 @@ public abstract class BaseActivity extends BaseGameActivity {
 
         json = gson.toJson(completedGames);
         editor.putString(KEY2, json);
+        editor.apply();
+        editor.putLong(KEY3, xp);
         editor.apply();
         super.onPause();
     }

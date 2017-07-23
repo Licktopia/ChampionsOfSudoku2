@@ -229,7 +229,7 @@ public class MainMenuActivity  extends BaseActivity {
     }
 
     private void querySavedGameDb() {
-        if (isInternet()) {
+
             String partitionKey = getId();
             SavedGame sg = new SavedGame();
             sg.setGamerID(partitionKey);
@@ -253,7 +253,7 @@ public class MainMenuActivity  extends BaseActivity {
                     setSavedGames(sGames);
 
 
-                    updateActivity(true);
+                    updateActivity();
 
 
                 }
@@ -261,43 +261,43 @@ public class MainMenuActivity  extends BaseActivity {
 
             Thread mythread = new Thread(runnable);
 
-            updateActivity(false);
+
             mythread.start();
 
 
 
 
 
-        }
-        updateActivity(true);
+
+
     }
 
     //Updates the save game button based on the current state of the loading the saved game
-    void updateActivity(final boolean finishedrunning)
+    void updateActivity()
     {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
 
 
-                if (getSavedGames().isEmpty()) {
-                    if(finishedrunning) {
+                if (getSavedGames() == null || getSavedGames().isEmpty()) {
+
                         mProgressBar.setVisibility(View.GONE);
                         mResumeButton.setVisibility(View.VISIBLE);
                         mResumeButton.setAlpha(RESUME_ALPHA);
                         mResumeButton.setClickable(false);
-                    }
+
 
 
                 }
                  else {
-                    if(finishedrunning) {
+
                         initializeResumeButton(mResumeButton);
                         mResumeButton.setAlpha(1f);
                         mResumeButton.setClickable(true);
                         mProgressBar.setVisibility(View.GONE);
                         mResumeButton.setVisibility(View.VISIBLE);
-                    }
+
 
                 }
             }
@@ -331,8 +331,14 @@ public class MainMenuActivity  extends BaseActivity {
             if(gameHelper.getApiClient().isConnected()) {
                 getHighestScoreFromLeaderBoard();
             }
-            queryCompletedGameDb();
-            querySavedGameDb();
+            if(isInternet()) {
+                queryCompletedGameDb();
+                querySavedGameDb();
+            }
+            else{
+                mProgressBar.setVisibility(View.GONE);
+                mResumeButton.setAlpha(RESUME_ALPHA);
+            }
         }
         else{
             setNullUser();
