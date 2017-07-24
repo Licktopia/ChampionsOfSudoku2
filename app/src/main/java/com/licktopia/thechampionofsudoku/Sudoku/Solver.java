@@ -2,8 +2,7 @@ package com.licktopia.thechampionofsudoku.Sudoku;
 
 import android.support.v4.util.Pair;
 
-import com.licktopia.thechampionofsudoku.Sudoku.Square;
-
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -18,13 +17,13 @@ import java.util.concurrent.ThreadLocalRandom;
  * Created by John Konecny on 6/19/2017.
  */
 
-class Solver implements java.io.Serializable {
+public class Solver implements java.io.Serializable {
 
     Board curBoard;
     Queue<Square> solvingSteps;
     Queue<Square> solvingStepsStrategies;
 
-    protected Solver(Board curBoard)
+    public Solver(Board curBoard)
     {
         this.curBoard = new Board(curBoard);
         solvingSteps = new LinkedList<Square>();
@@ -86,7 +85,7 @@ class Solver implements java.io.Serializable {
     }
 
     // Returns a queue of squares that is an exact set of steps to solve the puzzle
-    protected int solveWithStrategies() {
+    public int solveWithStrategies() {
         int strategiesUsed = 0;
         // Number of steps
         int squaresToComplete = curBoard.getOpenSquares();
@@ -97,21 +96,23 @@ class Solver implements java.io.Serializable {
         // Iterate while there are still squares to fill or we can't solve any more
         while (squaresToComplete > 0 && !cannotSolve) {
             switch(strategyNumber) {
-                case 5:
+                case Strategies.XWING:
+                    Strategies.removeRandomXWingValues(curBoard);
+                case Strategies.LOCKED_CANDIDATE:
                     Strategies.removeRandomLockedCandidateValues(curBoard);
-                case 4:
+                case Strategies.HIDDEN_PAIR:
                     Strategies.removeRandomHiddenPairValues(curBoard);
-                case 3:
+                case Strategies.HIDDEN_SINGLE:
                     Strategies.removeRandomNakedPairValues(curBoard);
-                case 2:
+                case Strategies.NAKED_DOUBLE:
                     Strategies.removeRandomHiddenSingle(curBoard);
-                case 1:
+                case Strategies.NAKED_SINGLE:
                     strategiesUsed++;
                     int index = Strategies.removeRandomNakedSingle(curBoard);
                     // If no squares are found
                     if (index == -1) {
                         // Exhausted all strategies, we cannot solve at this point (YET)
-                        if (strategyNumber == 5)
+                        if (strategyNumber == Strategies.XWING)
                             cannotSolve = true;
                         else // Try next strategy
                             strategyNumber++;
@@ -177,7 +178,7 @@ class Solver implements java.io.Serializable {
     {
         return  solvingSteps;
     }
-    protected Queue<Square> getExactSolution() {
+    public Queue<Square> getExactSolution() {
         return solvingStepsStrategies;
     }
 

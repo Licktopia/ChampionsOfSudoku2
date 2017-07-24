@@ -1183,7 +1183,7 @@ public class BoardActivity extends BaseActivity {
     private void hintDisplay(Strategies.Hint hint) {
         removeAllHighlights();
         for (int i : hint.hintInfo[Strategies.CONNECTED]) {
-            squareViews[i].setHighlighted(true, true);
+            squareViews[i].setHighlighted(true, !colorGame);
         }
         for (int i : hint.hintInfo[Strategies.SELECTED]) {
             squareViews[i].setDarkHighlight();
