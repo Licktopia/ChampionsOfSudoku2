@@ -32,58 +32,6 @@
                 android:layout_height="wrap_content" />
 
             <TextView
-                android:id="@+id/textView52"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="A Special Thank You"
-                android:textStyle="normal|bold" />
-
-            <TextView
-                android:id="@+id/textView53"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="A most warm hearted thank you to my ever patient wife Yaneth Garcia who has tolerated my late nights and played more Sudoku than a spouse should ever have to. " />
-
-            <TextView
-                android:id="@+id/textView9"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-            <TextView
-                android:id="@+id/textView56"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="To my friend Djamil Bouchentouf whose support and advice has been very encouraging from the beginning." />
-
-            <TextView
-                android:id="@+id/textView55"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-            <TextView
-                android:id="@+id/textView54"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="To my colleague Philip Chang who is a true Sudoku fiend, and whose advice has been  indispensable.  " />
-
-            <TextView
-                android:id="@+id/textView57"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-            <TextView
-                android:id="@+id/textView58"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:autoLink="email"
-                android:text="To the amazing graphic artist Diana Sánchez whose custom art and design advice has been just the touch that was needed to make the app really shine. Email Diana for your project needs at: hola.dianapaola@gmail.com " />
-
-            <TextView
-                android:id="@+id/textView51"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-            <TextView
                 android:id="@+id/textView32"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -98,24 +46,6 @@
 
             <TextView
                 android:id="@+id/textView33"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-            <TextView
-                android:id="@+id/textView12"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Animation and Backtracking Algorithm "
-                android:textStyle="normal|bold" />
-
-            <TextView
-                android:id="@+id/textView37"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="In order to create and solve a unique Sudoku, Sudoku  uses a recursive backtracking algorithm. The algorithm first identifies the easiest square to solve, makes a list of candidates, and then makes a guess which is added to the board. It continues until it has reached a dead end, at which time the guess is eliminated and removed from the board. It then goes back to the last previous decision and makes another guess. This process is continued until a solution is reached. The “solve animation” that is played when a user completes a number puzzle is a graphical representation of this algorithm. The animation will play up to 40,000 moves, at which point stability becomes an issue on some devices.  " />
-
-            <TextView
-                android:id="@+id/textView59"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 

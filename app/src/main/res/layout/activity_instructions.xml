@@ -89,7 +89,7 @@
                 android:text="Master: Level bonus 400, 130 points per square, 10 points/20 second penalty + time bonus 10 points per second remaining to 12 minutes " />
 
             <TextView
-                android:text="Points per square are only awarded if the correct value is entered into the square the first time a value is attempted to enter the square. Illegal attempts or incorrect values will make the square ineligible for points for the remainder of the game. "
+                android:text="Points per square are only awarded if the correct value is entered into the square the first time a value is attempted to enter the square. Illegal attempts or incorrect values will make the square ineligible for points for the remainder of the game. Points for a square are awarded when an entry is made, and deducted when a square is emptied "
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/textView49"/>
@@ -177,38 +177,6 @@
                 android:id="@+id/textView38"/>
 
             <TextView
-                android:text="Check Progress"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/textView14"
-                android:textStyle="normal|bold"
-                tools:text="Check Progress "/>
-
-            <TextView
-                android:id="@+id/textView18"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Checks for incorrect squares. Each sudoku has only one unique solution, so any incorrect number will be highlighted in whiled button remains pressed. Incorrect colors will have a red border.  " />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/textView39"/>
-
-            <TextView
-                android:text="Solve"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/textView15"
-                android:textStyle="normal|bold"/>
-
-            <TextView
-                android:id="@+id/textView16"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="When clicked, the game will be ended and the puzzle will be solved from its current state. If the current state is incorrect (meaning that there is no possible solution), a message will appear. The board will need to be corrected before the app can solve it.  " />
-
-            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/textView40"/>
@@ -239,22 +207,17 @@
                 android:id="@+id/textView27"/>
 
             <TextView
-                android:text="Guess Key - when in Guess mode, after a number is input into a square, tap this key to label it as a “guess”.  The number will become light grey, and the color will now have a thick border. This is useful for higher level puzzles in which you might not be able to deduce an answer from every square. By marking the square as a “guess”, you will be able to backtrack later to this square if a dead end is reached, and choose a different candidate. "
+                android:text="Hints Key - Displays solving strategies, Check Progress, and Solve Now buttons. Maintain solving strategies buttons to view different ways to solve the current Sudoku board. A point penalty is incurred. Check Progress highlights incorrect squares, and Solve Now shows the computer's solving steps to get the solution. "
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/textView30"/>
 
             <TextView
-                android:text="Black Key - when in Candidates mode, clears all of the candidates from the square "
+                android:text="Clear Key - Empties the square. "
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/textView26"/>
 
-            <TextView
-                android:text="Down Arrow Key - closes the keyboard "
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/textView24"/>
         </LinearLayout>
     </ScrollView>
 </RelativeLayout>
