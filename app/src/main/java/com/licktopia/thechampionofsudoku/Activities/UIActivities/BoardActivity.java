@@ -1155,7 +1155,7 @@ public class BoardActivity extends BaseActivity {
             hintDisplay(hint);
         }
         else {
-            // TODO None exist, display message?
+            mPlaySounds.playSounds(this, 2);
         }
     }
 
@@ -1297,6 +1297,7 @@ public class BoardActivity extends BaseActivity {
                 else{
                     if(colorGame){
                         squareViews[i].setSameColorHighlight();
+                        squareViews[i].setSameColorHighlightNotepad();
                     }
                 }
             }

@@ -252,6 +252,12 @@ public class SquareView {
         color.setAlpha(COLOR_SQUARE_SAME_NUMBER_TRANSPARENCY);
     }
 
+    public void setSameColorHighlightNotepad() {
+        for (ImageView i : notepadNums) {
+            i.setAlpha(COLOR_SQUARE_SAME_NUMBER_TRANSPARENCY);
+        }
+    }
+
     /* Sets highlight layout to given color */
     private void setHighlightColor(int color) {
         highlight.setBackgroundColor(color);
@@ -265,7 +271,9 @@ public class SquareView {
     /* Sets Alpha back to full */
     public void setFullAlpha() {
         color.setAlpha(1f);
-
+        for (ImageView i : notepadNums) {
+            i.setAlpha(1f);
+        }
     }
 
 
