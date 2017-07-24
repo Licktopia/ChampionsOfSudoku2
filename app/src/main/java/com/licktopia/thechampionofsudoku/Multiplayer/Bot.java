@@ -22,7 +22,7 @@ public class Bot {
     // Percentage chance that bot "can't find" answer, waits another cycle
     private static final int[] ACCURACY = {30, 25, 20, 15, 13, 10, 8, 5, 2, 0};
 
-
+    private String name;
     private int skill;
     private int consistency;
     private int accuracy;
@@ -37,8 +37,9 @@ public class Bot {
     };
 
     // Constructor
-    public Bot(Board board, int skill) {
+    public Bot(Board board, String name, int skill) {
         this.board = board;
+        this.name = name;
         setSkill(skill);
         setConsistency(5);   // Default value
         setAccuracy(7);      // Default value
@@ -46,6 +47,11 @@ public class Bot {
         solver.solveWithStrategies();
         steps = solver.getExactSolution();
     }
+
+    public Bot(Board board) {
+        this(board, "SudokuBot3000", 5);
+    }
+
 
     // Set bot skill level (speed)
     public void setSkill(int skill) {
