@@ -17,13 +17,13 @@ import java.util.concurrent.ThreadLocalRandom;
  * Created by John Konecny on 6/19/2017.
  */
 
-class Solver implements java.io.Serializable {
+public class Solver implements java.io.Serializable {
 
     Board curBoard;
     Queue<Square> solvingSteps;
     Queue<Square> solvingStepsStrategies;
 
-    protected Solver(Board curBoard)
+    public Solver(Board curBoard)
     {
         this.curBoard = new Board(curBoard);
         solvingSteps = new LinkedList<Square>();
@@ -85,7 +85,7 @@ class Solver implements java.io.Serializable {
     }
 
     // Returns a queue of squares that is an exact set of steps to solve the puzzle
-    protected int solveWithStrategies() {
+    public int solveWithStrategies() {
         int strategiesUsed = 0;
         // Number of steps
         int squaresToComplete = curBoard.getOpenSquares();
@@ -178,7 +178,7 @@ class Solver implements java.io.Serializable {
     {
         return  solvingSteps;
     }
-    protected Queue<Square> getExactSolution() {
+    public Queue<Square> getExactSolution() {
         return solvingStepsStrategies;
     }
 

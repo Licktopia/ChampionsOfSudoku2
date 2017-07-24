@@ -12,7 +12,7 @@ import java.util.Set;
  * Board class represents a single instance of a Sudoku puzzle
  */
 
-class Board implements java.io.Serializable {
+public class Board implements java.io.Serializable {
 
     private static int SIZE = 9;         // Board size
     private static int CLUSTER_SIZE = 3; // Size of N x N cluster
@@ -83,7 +83,7 @@ class Board implements java.io.Serializable {
     private Set<Integer> problemSqrs;
     /* Inserts parameter value at the board location specified by row and col.
     *  Returns empty stack if value inserted successfully, not empty if not */
-    protected Set<Integer> setValueAt(int row, int col, int value) {
+    public Set<Integer> setValueAt(int row, int col, int value) {
         //return this set
         problemSqrs = new HashSet<Integer>();
 
@@ -138,7 +138,7 @@ class Board implements java.io.Serializable {
     //sets value of square given the index
     //returns empty stack if successful
     //returns ids of problem squares in stack if failed
-    protected Set<Integer> setValueAt(int idx, int value) {
+    public Set<Integer> setValueAt(int idx, int value) {
         return this.setValueAt(idxToRow(idx), idxToCol(idx), value);
     }
 
