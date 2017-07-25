@@ -2,9 +2,10 @@ package com.licktopia.thechampionofsudoku.Multiplayer;
 
 import android.os.Handler;
 
-import com.licktopia.thechampionofsudoku.Sudoku.Board;
+import com.licktopia.thechampionofsudoku.Sudoku.Game;
 import com.licktopia.thechampionofsudoku.Sudoku.Solver;
 import com.licktopia.thechampionofsudoku.Sudoku.Square;
+
 
 import java.util.Queue;
 import java.util.concurrent.ThreadLocalRandom;
@@ -26,8 +27,8 @@ public class Bot {
     private int skill;
     private int consistency;
     private int accuracy;
-    private Board board;
-    private Solver solver;
+    private Game game;
+
     private Queue<Square> steps;
     private Handler moveHandler;
     private Runnable makeMove = new Runnable() {
@@ -37,19 +38,19 @@ public class Bot {
     };
 
     // Constructor
-    public Bot(Board board, String name, int skill) {
-        this.board = board;
+    public Bot(Game game, String name, int skill) {
+        this.game = game;
         this.name = name;
         setSkill(skill);
         setConsistency(5);   // Default value
         setAccuracy(7);      // Default value
-        solver = new Solver(board);
-        solver.solveWithStrategies();
-        steps = solver.getExactSolution();
+
+        this.game.getSolutionSolver().solveWithStrategies();
+        steps = this.game.getSolutionSolver().getExactSolution();
     }
 
-    public Bot(Board board) {
-        this(board, "SudokuBot3000", 5);
+    public Bot(Game game) {
+        this(game, "SudokuBot3000", 5);
     }
 
 
@@ -68,8 +69,12 @@ public class Bot {
         this.accuracy = accuracy;
     }
 
+    //Get game object the bot is playing on
+    public Game getGameObj(){return this.game;}
+
     // Fills in board over time based on bot skills and attributes
-    private void startPlayingGame() {
+    public void startPlayingGame() {
+        this.game.unpauseTimer();
         moveHandler.postDelayed(makeMove, getRandomizedWaitTime());
     }
 
@@ -82,7 +87,7 @@ public class Bot {
             int randomNum = ThreadLocalRandom.current().nextInt(0, 100);
             if (randomNum > ACCURACY[accuracy]) {
                 Square square = steps.poll();
-                board.setValueAt(square.getIdx(), square.getValue());
+                game.setBoardValueAt(square.getIdx(), square.getValue());
             }
 
             moveHandler.postDelayed(makeMove, getRandomizedWaitTime());

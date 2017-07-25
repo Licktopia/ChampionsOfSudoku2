@@ -53,6 +53,14 @@ public class Game implements java.io.Serializable
         }
     }
 
+    public Game(Game oldGame)
+    {
+        this.level = oldGame.level;
+        this.curBoard = new Board(oldGame.curBoard);
+        this.solutionSolver = new Solver(curBoard);
+        this.scoreWeights = oldGame.scoreWeights;
+    }
+
     private Board curBoard;
 
     //sets value of square given row and col
@@ -296,6 +304,8 @@ public class Game implements java.io.Serializable
     //stores solution to game
     private Solver solutionSolver;
 
+    public Solver getSolutionSolver(){ return solutionSolver;}
+
     //passes current state of game to new solver
     public void updateSolver() {
         solutionSolver = new Solver(curBoard);
@@ -375,4 +385,9 @@ public class Game implements java.io.Serializable
         val = curBoard.getOpenSquares();
         return val;
     }
+
+    /*
+    returns a copy of the game's internal board
+     */
+    private Board getBoardCopy(){return new Board(this.curBoard);}
 }
