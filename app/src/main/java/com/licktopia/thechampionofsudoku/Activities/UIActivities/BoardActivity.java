@@ -71,6 +71,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.concurrent.ThreadLocalRandom;
+
+import main.java.com.maximeroussy.invitrode.RandomWord;
 
 import static android.view.View.GONE;
 
@@ -129,6 +132,10 @@ public class BoardActivity extends BaseActivity {
     private LinearLayout botBar;
     private String exactTime;
     private boolean alreadySaved = false;
+    private String savedName;
+    private String savedDate;
+    private String fileSaveName = "Default";
+
 
     ShareDialog shareDialog;
 
@@ -144,11 +151,14 @@ public class BoardActivity extends BaseActivity {
         setContentView(R.layout.activity_board);
         //pass in mode and level
         colorGame = getIntent().getExtras().getBoolean("COLOR_MODE");
+        level = getIntent().getExtras().getInt("LEVEL");
         resume = getIntent().getExtras().getBoolean("RESUME");
         level = getIntent().getExtras().getInt("LEVEL");
         long sTime = getIntent().getExtras().getLong("STOPPED_TIME");
         multipayer = getIntent().getExtras().getBoolean("MULTIPLAYER");
         exactTime = getIntent().getExtras().getString("EXACT_TIME");
+        savedName = getIntent().getExtras().getString("SAVED_NAME");
+        savedDate = getIntent().getExtras().getString("SAVED_DATE");
         //initialize actiion bar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         this.setSupportActionBar(toolbar);
@@ -270,9 +280,19 @@ public class BoardActivity extends BaseActivity {
 
     private void uploadSavedGame(boolean autosave){
         if(isInternet()&&gameHelper.getApiClient().isConnected()) {
+            if(!alreadySaved){
+                try {
+                    ThreadLocalRandom _Rand = ThreadLocalRandom.current();
+                    int randomNum= _Rand.nextInt(4, 11);
+                    fileSaveName = RandomWord.getNewWord(randomNum);
+                } catch(Exception e) {
+                    //handle exception
+                    //the method getNewWord can throw a WordLengthException when the length chosen is outside of the current limits (between 3 and 15 characters)
+                }
+            }
             long stoppedTime = mChronometer.getBase() - SystemClock.elapsedRealtime();
             Date dt = new Date();
-            SimpleDateFormat dateFormat = new SimpleDateFormat("MMM d, yyyy");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("MMM d hh:mm aaa");
             SimpleDateFormat sdf = new SimpleDateFormat("hh:mm aaa");
             String today = dateFormat.format(dt);
             String now = sdf.format(dt);
@@ -282,18 +302,19 @@ public class BoardActivity extends BaseActivity {
                 Long exactoTime = System.currentTimeMillis();
                 exactTime = String.format("%,d", exactoTime);
                 obj.setExactTime(String.format("%,d", exactoTime));
+                obj.setDate(today);
+                obj.setTime(fileSaveName);
             }
             else{
                 obj.setExactTime(exactTime);
+                obj.setDate(savedDate);
+                obj.setTime(savedName);
             }
             obj.setColorMode(colorGame);
-            obj.setDate(today);
-            if(!autosave) {
-                obj.setTime(now);
-            }
-            else{
-                obj.setTime(new StringBuilder().append(now).append(" -autosave").toString());
-            }
+
+
+
+
             obj.setPuzzleNumber(mGame.getBoardNumber()+1+level*10000);
             obj.setLevel(level);
             obj.setStoppedTime(stoppedTime);
@@ -318,7 +339,7 @@ public class BoardActivity extends BaseActivity {
             Thread mythread = new Thread(runnable);
             mythread.start();
             alreadySaved = true;
-            Toast.makeText(this, R.string.game_saved,Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, new StringBuilder().append(R.string.game_saved).append(" with alias ").append(fileSaveName).toString(),Toast.LENGTH_SHORT).show();
 
 
 
