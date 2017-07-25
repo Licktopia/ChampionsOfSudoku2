@@ -1309,10 +1309,6 @@ public class BoardActivity extends BaseActivity {
 
             //Set highlights
             squareViews[squareNumber].setSelectedHighlight();
-            if(rowColHighlights)
-                highlightConnected();
-
-
 
             // Bold similar numbers
             if (mGame.getBoardValueAt(selectedSquare) != 0) {
@@ -1330,6 +1326,8 @@ public class BoardActivity extends BaseActivity {
                     }
                 }
             }
+            else if(rowColHighlights)
+                highlightConnected();
         }
     }
 
