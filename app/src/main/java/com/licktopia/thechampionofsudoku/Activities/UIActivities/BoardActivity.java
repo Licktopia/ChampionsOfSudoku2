@@ -127,6 +127,8 @@ public class BoardActivity extends BaseActivity {
     private TextView botScore;
     private boolean multipayer;
     private LinearLayout botBar;
+    private String exactTime;
+    private boolean alreadySaved = false;
 
     ShareDialog shareDialog;
 
@@ -146,6 +148,7 @@ public class BoardActivity extends BaseActivity {
         level = getIntent().getExtras().getInt("LEVEL");
         long sTime = getIntent().getExtras().getLong("STOPPED_TIME");
         multipayer = getIntent().getExtras().getBoolean("MULTIPLAYER");
+        exactTime = getIntent().getExtras().getString("EXACT_TIME");
         //initialize actiion bar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         this.setSupportActionBar(toolbar);
@@ -236,6 +239,7 @@ public class BoardActivity extends BaseActivity {
         initializeButtons();
         if(resume){
             initializeBoardFromResume(sTime);
+            alreadySaved = true;
         }
         else {
             initializeBoard();//get starting board
@@ -274,7 +278,14 @@ public class BoardActivity extends BaseActivity {
             String now = sdf.format(dt);
             final SavedGame obj = new SavedGame();
             obj.setGamerID(getId());
-            obj.setExactTime(String.format("%,d",System.currentTimeMillis()));
+            if(!alreadySaved) {
+                Long exactoTime = System.currentTimeMillis();
+                exactTime = String.format("%,d", exactoTime);
+                obj.setExactTime(String.format("%,d", exactoTime));
+            }
+            else{
+                obj.setExactTime(exactTime);
+            }
             obj.setColorMode(colorGame);
             obj.setDate(today);
             if(!autosave) {
@@ -306,6 +317,7 @@ public class BoardActivity extends BaseActivity {
             };
             Thread mythread = new Thread(runnable);
             mythread.start();
+            alreadySaved = true;
             Toast.makeText(this, R.string.game_saved,Toast.LENGTH_SHORT).show();
 
 
@@ -331,7 +343,10 @@ public class BoardActivity extends BaseActivity {
             obj.setPuzzleNumber(mGame.getBoardNumber()+1+level*10000);
             obj.setLevel(level);
             obj.setAccuracy(mGame.getAccuracy());
-            obj.setExactTime(String.format("%,d",System.currentTimeMillis()));
+            obj.setExactTime(String.format("%,d", System.currentTimeMillis()));
+
+
+
 
 
             // id field is null at this point
