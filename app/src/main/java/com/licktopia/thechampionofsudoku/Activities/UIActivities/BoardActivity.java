@@ -134,7 +134,7 @@ public class BoardActivity extends BaseActivity {
     private boolean alreadySaved = false;
     private String savedName;
     private String savedDate;
-    private String fileSaveName = "Default";
+    private String fileSaveName;
 
 
     ShareDialog shareDialog;
@@ -290,6 +290,9 @@ public class BoardActivity extends BaseActivity {
                     //the method getNewWord can throw a WordLengthException when the length chosen is outside of the current limits (between 3 and 15 characters)
                 }
             }
+            if(resume){
+                fileSaveName = savedName;
+            }
             long stoppedTime = mChronometer.getBase() - SystemClock.elapsedRealtime();
             Date dt = new Date();
             SimpleDateFormat dateFormat = new SimpleDateFormat("MMM d hh:mm aaa");
@@ -311,10 +314,6 @@ public class BoardActivity extends BaseActivity {
                 obj.setTime(savedName);
             }
             obj.setColorMode(colorGame);
-
-
-
-
             obj.setPuzzleNumber(mGame.getBoardNumber()+1+level*10000);
             obj.setLevel(level);
             obj.setStoppedTime(stoppedTime);
@@ -333,13 +332,18 @@ public class BoardActivity extends BaseActivity {
             Runnable runnable = new Runnable() {
                 public void run() {
                     //DynamoDB calls go here
-                    mapper.save(obj);
+                    try {
+                        mapper.save(obj);
+                    }
+                    catch(Exception e){
+
+                    }
                 }
             };
             Thread mythread = new Thread(runnable);
             mythread.start();
             alreadySaved = true;
-            Toast.makeText(this, new StringBuilder().append(R.string.game_saved).append(" with alias ").append(fileSaveName).toString(),Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, new StringBuilder().append(getString(R.string.gamesavedwithalias)).append(fileSaveName).toString(),Toast.LENGTH_SHORT).show();
 
 
 
