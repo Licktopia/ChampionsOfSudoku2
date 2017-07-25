@@ -14,12 +14,14 @@ import android.os.Handler;
 import android.os.SystemClock;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.ImageButton;
@@ -120,6 +122,11 @@ public class BoardActivity extends BaseActivity {
     private boolean resume;
     private boolean fromResume;
     private boolean mAutoSave;
+    private TextView botName;
+    private TextView botProgress;
+    private TextView botScore;
+    private boolean multipayer;
+    private LinearLayout botBar;
 
     ShareDialog shareDialog;
 
@@ -138,6 +145,7 @@ public class BoardActivity extends BaseActivity {
         resume = getIntent().getExtras().getBoolean("RESUME");
         level = getIntent().getExtras().getInt("LEVEL");
         long sTime = getIntent().getExtras().getLong("STOPPED_TIME");
+        multipayer = getIntent().getExtras().getBoolean("MULTIPLAYER");
         //initialize actiion bar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         this.setSupportActionBar(toolbar);
@@ -180,6 +188,10 @@ public class BoardActivity extends BaseActivity {
         mEndGameLayout = (LinearLayout)findViewById(R.id.end_game_layout);
         userBadge = (ImageView)findViewById(R.id.user_image);
         userText = (TextView)findViewById(R.id.user_text);
+        botName = (TextView)findViewById(R.id.bot_name);
+        botProgress = (TextView)findViewById(R.id.bot_progress);
+        botName = (TextView)findViewById(R.id.bot_score);
+        botBar = (LinearLayout)findViewById(R.id.botbar);
         highlightHandler = new Handler();
 
 
@@ -1460,8 +1472,25 @@ public class BoardActivity extends BaseActivity {
      * Number vs Color initial setup
      *********************************/
     private void customizeLayout(boolean resume) {
+
+// Changes the height and width to the specified *pixels*
+        ViewGroup.LayoutParams params = botBar.getLayoutParams();
+
+
+        if(multipayer){
+            params.height = 100;
+            botBar.setLayoutParams(params);
+        }
+        else{
+            params.height = 0;
+            botBar.setLayoutParams(params);
+        }
+
         /////make board unclickable, made clickable after start animation
         allClickable(false);
+        if(multipayer){
+
+        }
         /////set keypad colors
         for (int i = 0; i < size; i++) {
             if (!colorGame) {

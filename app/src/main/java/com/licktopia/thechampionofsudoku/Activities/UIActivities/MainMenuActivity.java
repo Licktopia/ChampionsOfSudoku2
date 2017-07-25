@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -78,6 +79,8 @@ public class MainMenuActivity  extends BaseActivity {
     private AmazonDynamoDBClient ddbClient;
     private DynamoDBMapper mapper;
     private ProgressBar mProgressBar;
+    private boolean multiplayer = false;
+    private CheckBox multiplayerCheck;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,7 +120,13 @@ public class MainMenuActivity  extends BaseActivity {
         setMessage();
         initializeLick();
         initializeShareBar();
+        initializeMPCheckbox();
 
+
+    }
+
+    private void initializeMPCheckbox(){
+        multiplayerCheck = (CheckBox)findViewById(R.id.checkBox);
 
     }
 
@@ -448,6 +457,12 @@ public class MainMenuActivity  extends BaseActivity {
             modeButtons[i].setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if(multiplayerCheck.isChecked()){
+                        multiplayer = true;
+                    }
+                    else{
+                        multiplayer = false;
+                    }
                     if(finalI ==0){
                         colorMode =true;
                     }
@@ -459,6 +474,7 @@ public class MainMenuActivity  extends BaseActivity {
                     intent.putExtra("RESUME", resume);
                     intent.putExtra("LEVEL", level);
                     intent.putExtra("COLOR_MODE", colorMode);
+                    intent.putExtra("MULTIPLAYER", multiplayer);
                     startActivity(intent);
                 }
             });
