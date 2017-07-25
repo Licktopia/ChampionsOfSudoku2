@@ -285,6 +285,7 @@ public class BoardActivity extends BaseActivity {
                     ThreadLocalRandom _Rand = ThreadLocalRandom.current();
                     int randomNum= _Rand.nextInt(4, 11);
                     fileSaveName = RandomWord.getNewWord(randomNum);
+                    savedName = fileSaveName;
                 } catch(Exception e) {
                     //handle exception
                     //the method getNewWord can throw a WordLengthException when the length chosen is outside of the current limits (between 3 and 15 characters)
@@ -306,6 +307,7 @@ public class BoardActivity extends BaseActivity {
                 exactTime = String.format("%,d", exactoTime);
                 obj.setExactTime(String.format("%,d", exactoTime));
                 obj.setDate(today);
+                savedDate = today;
                 obj.setTime(fileSaveName);
             }
             else{
