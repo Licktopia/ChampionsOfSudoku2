@@ -46,8 +46,8 @@ import com.google.android.gms.games.multiplayer.realtime.RoomUpdateListener;
 
 import static java.lang.System.exit;
 
-public class MultiGame extends GameInterface implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, RealTimeMessageReceivedListener,
-        RoomStatusUpdateListener, RoomUpdateListener, OnInvitationReceivedListener {
+public class MultiGame implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, RealTimeMessageReceivedListener,
+        RoomStatusUpdateListener, RoomUpdateListener, OnInvitationReceivedListener, GameInterface {
 
     final static String TAG = "MultiGame";
 

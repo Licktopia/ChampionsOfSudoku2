@@ -11,19 +11,19 @@ import java.util.Set;
  * Created by John Konecny on 7/25/2017.
  */
 
-public abstract class GameInterface {
+public interface GameInterface {
 
     /*******************
      * Get the index image of image used in art mode
      * @return image number used for Sudoku art mode
      */
-    public abstract int getImageNumber();
+    public int getImageNumber();
 
     /****************************************
      * Set the index image of image used in art mode
      * @param imageNumber corresponding index of image used in art mode
      */
-    public abstract void setImageNumber(int imageNumber);
+    public void setImageNumber(int imageNumber);
 
 
 
@@ -43,7 +43,7 @@ public abstract class GameInterface {
      * @param value 0-9 int for square to be filled with
      * @return ids of problem squares in stack if failed. Empty stack if successful.
      */
-    public abstract Set<Integer> setBoardValueAt(int idx, int value);
+    public Set<Integer> setBoardValueAt(int idx, int value);
 
     //gets value of square given row and col
 
@@ -53,7 +53,7 @@ public abstract class GameInterface {
      * @param col column index of square on Sudoku board
      * @return value of square given row and col
      */
-    public abstract int getBoardValueAt(int row, int col);
+    public int getBoardValueAt(int row, int col);
 
     //gets board number
 
@@ -61,7 +61,7 @@ public abstract class GameInterface {
      * gets board number index for Sudoku Game
      * @return board number index for Sudoku Game
      */
-    public abstract int getBoardNumber();
+    public int getBoardNumber();
 
 
     /************************************************
@@ -69,7 +69,7 @@ public abstract class GameInterface {
      * @param idx index of square on Sudoku board
      * @return value of square given the index
      */
-    public abstract int getBoardValueAt(int idx);
+    public int getBoardValueAt(int idx);
 
     //gets number of 1's, 2's, etc
 
@@ -77,7 +77,7 @@ public abstract class GameInterface {
      * gets number of 1's, 2's, etc
      * @return number of 1's, 2's, etc
      */
-    public abstract int[] getValueTotals();
+    public int[] getValueTotals();
 
 
     /************************************************
@@ -85,7 +85,7 @@ public abstract class GameInterface {
      * @param idx index of square on Sudoku board
      * @return true if a square at the index is a starting value
      */
-    public abstract boolean isStartingValue(int idx);
+    public boolean isStartingValue(int idx);
 
 
     /************************************************
@@ -94,7 +94,7 @@ public abstract class GameInterface {
      * @param col column index of square on Sudoku board
      * @return true if a square at the index is a starting value
      */
-    public abstract boolean isStartingValue(int row, int col);
+    public boolean isStartingValue(int row, int col);
 
 
     /**************************************************
@@ -103,7 +103,7 @@ public abstract class GameInterface {
      * @param num the notepad number which is being changed
      * @param value the value the board value will be set to
      */
-    public abstract void setBoardNotepadAt(int idx, int num, boolean value);
+    public void setBoardNotepadAt(int idx, int num, boolean value);
 
     //set cell notepad value for given num
 
@@ -114,7 +114,7 @@ public abstract class GameInterface {
      * @param num the notepad number which is being changed
      * @param value the value the board value will be set to
      */
-    public abstract void setBoardNotepadAt(int row, int col, int num, boolean value);
+    public void setBoardNotepadAt(int row, int col, int num, boolean value);
 
 
     /******************************************************
@@ -122,7 +122,7 @@ public abstract class GameInterface {
      * @param idx index of square on Sudoku board
      * @param num the notepad number which is being changed
      */
-    public abstract void toggleBoardNotepadAt(int idx, int num);
+    public void toggleBoardNotepadAt(int idx, int num);
 
     //toggles cell notepad value for given num
 
@@ -132,7 +132,7 @@ public abstract class GameInterface {
      * @param col column index of square on Sudoku board
      * @param num the notepad number which is being changed
      */
-    public abstract void toggleBoardNotepadAt(int row, int col, int num);
+    public void toggleBoardNotepadAt(int row, int col, int num);
 
 
 
@@ -142,7 +142,7 @@ public abstract class GameInterface {
      * @param num the notepad number which boolean is being returned
      * @return the notepad value for boolean num
      */
-    public abstract boolean getBoardNotepadAt(int idx, int num);
+    public boolean getBoardNotepadAt(int idx, int num);
 
 
     /****************************************************
@@ -152,7 +152,7 @@ public abstract class GameInterface {
      * @param num the notepad number which boolean is being returned
      * @return the notepad value for boolean num
      */
-    public abstract boolean getBoardNotepadAt(int row, int col, int num);
+    public boolean getBoardNotepadAt(int row, int col, int num);
 
     //returns index of a altered cell after an undo
     //returns -1 if no undo occurred
@@ -161,14 +161,14 @@ public abstract class GameInterface {
      * undo last move
      * @return index of a altered cell after an undo. -1 if no undo occurred
      */
-    public abstract int undo();
+    public int undo();
 
 
     /**********************************
      * true if a undo can occur
      * @return true if a undo can occur
      */
-    public abstract boolean canUndo();
+    public boolean canUndo();
 
 
     /**************************************************
@@ -181,18 +181,18 @@ public abstract class GameInterface {
      * true if a redo can occur
      * @return true if a redo can occur
      */
-    public abstract boolean canRedo();
+    public boolean canRedo();
 
 
     /******************************************************
      * pauses game timer
      */
-    public abstract void pauseTimer();
+    public void pauseTimer();
 
     /******************************************************
      * unpauses game timer
      */
-    public abstract void unpauseTimer();
+    public void unpauseTimer();
 
     //returns running time in seconds
 
@@ -200,19 +200,19 @@ public abstract class GameInterface {
      * total time game timer has been running (not including time being paused)
      * @return total time game timer has been running (not including time being paused)
      */
-    public abstract long getRunningTime();
+    public long getRunningTime();
 
     /**************************************************
      * gets the total score for the game
      * @return the total score for the game
      */
-    public abstract long getScore();
+    public long getScore();
 
     /**************************************************
      * Bonus score for level difficulty
      * @return Bonus score for level difficulty
      */
-    public abstract long getLevelBonus();
+    public long getLevelBonus();
 
     /**************************************************
      * total number of square which are user entered and a number has been inputted only
@@ -220,7 +220,7 @@ public abstract class GameInterface {
      * @return total number of square which are user entered and a number has been inputted only
      * once on it
      */
-    public abstract long getTotalOneTimeGuesses();
+    public long getTotalOneTimeGuesses();
 
 
     /**********************************************************************
@@ -241,7 +241,7 @@ public abstract class GameInterface {
      * penalty for each incorrect guess
      * @return penalty for each incorrect guess
      */
-    public abstract double getIncorrectGuessesPenalty();
+    public double getIncorrectGuessesPenalty();
 
     /***********************************************************************
      * The interval when points will be taken off when for time
@@ -249,7 +249,7 @@ public abstract class GameInterface {
      * @return The interval when points will be taken off when for time
      * related scoring penalties
      */
-    public abstract long getRunningTimeRemovalInterval();
+    public long getRunningTimeRemovalInterval();
 
 
     /***************************************************************************
@@ -261,62 +261,62 @@ public abstract class GameInterface {
      * At 50 secs total penalty is 20 pts and this function would return 2 intervals
      * @return the number of penalty time intervals hit in game time
      */
-    public abstract long totalPenaltyTimeIntervals();
+    public long totalPenaltyTimeIntervals();
 
     /*****************************************************************************
      * Total incorrect guesses made by the user
      * @return Total incorrect guesses made by the user
      */
-    public abstract long totalIncorrectGuesses();
+    public long totalIncorrectGuesses();
 
     /****************************************************************************
      * The percentage, as a fraction, of one time guesses to total user input squares
      * @return The percentage, as a fraction, of one time guesses to total user input squares
      */
-    public abstract double getAccuracy();
+    public double getAccuracy();
 
     /**************************************************************************
      * Total score given to the player given at the start
      * @return Total score given to the player given at the start
      */
-    public abstract long getEarlyFinishBonus();
+    public long getEarlyFinishBonus();
 
     /*************************************************************************
      * The time when the early finish bonus goes to zero
      * @return The time when the early finish bonus goes to zero
      */
-    public abstract long getEarlyFinishTime();
+    public long getEarlyFinishTime();
 
     /************************************************************************
      * Solver object solution to the game
      * @return Solver object solution to the game
      */
-    public abstract Solver getSolutionSolver();
+    public Solver getSolutionSolver();
 
 
     /******************************************************
      * passes current state of game to new solver
      */
-    public abstract void updateSolver();
+    public void updateSolver();
 
 
     /*****************************************************
      * returns the steps required to solve from a blank board
      * @return the steps required to solve from a blank board
      */
-    public abstract Queue<Square> getSolutionSteps();
+    public Queue<Square> getSolutionSteps();
 
     /**********************************************************************************
      * Update all notepad values to where only valid numbers are set to true
      * @param removeOnly when true, update will only remove notepad values, not add any
      */
-    public abstract void updateAllNotepads(boolean removeOnly);
+    public void updateAllNotepads(boolean removeOnly);
 
     /***********************************************************
      * Return a random square indices which has have only one possible value
      * @return a random square indices which has have only one possible value
      */
-    public abstract int getNakedSingle();
+    public int getNakedSingle();
 
     /**************************************************************************
      * hint object which has hint for given hintType
@@ -329,14 +329,14 @@ public abstract class GameInterface {
      * Everyone knows what this does
      * @param hint the hint this will happen to
      */
-    public abstract void removeNakedDoubles(Strategies.Hint hint);
+    public void removeNakedDoubles(Strategies.Hint hint);
 
 
     /********************************************************************
      * returns the total number of square on the board
      * @return The total number of square on the board
      */
-    public abstract int totalBoardElements();
+    public int totalBoardElements();
 
     //returns the total number of rows in the board
 
@@ -344,7 +344,7 @@ public abstract class GameInterface {
      * returns the total number of rows on the board
      * @return the total number of rows on the board
      */
-    public abstract int totalBoardRows();
+    public int totalBoardRows();
 
 
     /*****************************************************************
@@ -357,25 +357,25 @@ public abstract class GameInterface {
      * returns the column/row size of a cluster
      * @return the column/row size of a cluster
      */
-    public abstract int getClusterSize();
+    public int getClusterSize();
 
 
     /***************************************************************
      * true if the board is complete
      * @return true if the board is complete
      */
-    public abstract boolean isGameFinished();
+    public boolean isGameFinished();
 
     /******************************************************************
      * reset the values of the game to what they were at the start
      */
-    public abstract void resetGame();
+    public void resetGame();
 
     /****************************************************************
      * returns the total number of open square remaining
      * @return the total number of open square remaining
      */
-    public abstract int getNumberOpenSquares();
+    public int getNumberOpenSquares();
 
 
 }
