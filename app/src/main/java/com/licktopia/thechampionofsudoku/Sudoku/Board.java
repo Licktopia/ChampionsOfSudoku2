@@ -379,11 +379,6 @@ public class Board implements java.io.Serializable {
         return !redoStk.isEmpty();
     }
 
-    //returns true if the save was successful
-    protected boolean saveGame()
-    {
-        return false;
-    }
 
     //gets the length for both the rows and columns of the game
     protected int getSize()

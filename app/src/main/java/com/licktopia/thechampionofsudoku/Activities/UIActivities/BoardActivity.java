@@ -48,6 +48,7 @@ import com.google.android.gms.games.snapshot.Snapshots;
 import com.google.example.games.basegameutils.GameHelper;
 import com.licktopia.thechampionofsudoku.Activities.BaseActivity;
 import com.licktopia.thechampionofsudoku.BackgroundImages;
+import com.licktopia.thechampionofsudoku.Multiplayer.MultiGame;
 import com.licktopia.thechampionofsudoku.PlaySounds;
 import com.licktopia.thechampionofsudoku.R;
 import com.licktopia.thechampionofsudoku.Settings.SudokuSettings;
@@ -59,6 +60,7 @@ import com.licktopia.thechampionofsudoku.Sudoku.Game;
 import com.licktopia.thechampionofsudoku.Sudoku.SavedGame;
 import com.licktopia.thechampionofsudoku.Sudoku.Square;
 import com.licktopia.thechampionofsudoku.Sudoku.Strategies;
+import com.licktopia.thechampionofsudoku.GameInterface;
 import com.licktopia.thechampionofsudoku.Tags;
 import java.math.BigInteger;
 import java.text.SimpleDateFormat;
@@ -91,7 +93,7 @@ public class BoardActivity extends BaseActivity {
     private boolean animationFinished = false;
     private boolean solveClicked = false;
     private TextView scoreBoard;
-    private com.licktopia.thechampionofsudoku.Sudoku.Game mGame;
+    private GameInterface mGame;
     private boolean smallNumPadState = false;
     private Button[] numberButtons;
     private TextView[] lilNums;
@@ -125,7 +127,7 @@ public class BoardActivity extends BaseActivity {
     private TextView botName;
     private TextView botProgress;
     private TextView botScore;
-    private boolean multipayer;
+    private boolean multiplayer;
     private LinearLayout botBar;
 
     ShareDialog shareDialog;
@@ -145,7 +147,7 @@ public class BoardActivity extends BaseActivity {
         resume = getIntent().getExtras().getBoolean("RESUME");
         level = getIntent().getExtras().getInt("LEVEL");
         long sTime = getIntent().getExtras().getLong("STOPPED_TIME");
-        multipayer = getIntent().getExtras().getBoolean("MULTIPLAYER");
+        multiplayer = getIntent().getExtras().getBoolean("MULTIPLAYER");
         //initialize actiion bar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         this.setSupportActionBar(toolbar);
@@ -190,7 +192,7 @@ public class BoardActivity extends BaseActivity {
         userText = (TextView)findViewById(R.id.user_text);
         botName = (TextView)findViewById(R.id.bot_name);
         botProgress = (TextView)findViewById(R.id.bot_progress);
-        botName = (TextView)findViewById(R.id.bot_score);
+        botScore = (TextView)findViewById(R.id.bot_score);
         botBar = (LinearLayout)findViewById(R.id.botbar);
         highlightHandler = new Handler();
 
@@ -217,6 +219,12 @@ public class BoardActivity extends BaseActivity {
             {
                 Log.d("ClassNotFoundException", "What class are you talking about?");
             }
+        }
+        else if(multiplayer)
+        {
+            mGame = new MultiGame(MultiGame.GameMode.RACE,
+                    MultiGame.ConnectType.BOT_GAME,
+                    level, this);
         }
         //START NEW GAME HERE
         else
@@ -563,6 +571,20 @@ public class BoardActivity extends BaseActivity {
     private void updateScore(){
         if(!solveClicked) {
             scoreBoard.setText("" + mGame.getScore());
+        }
+        if(multiplayer)
+        {
+            botName.setText(((MultiGame)mGame).getOpponentName(0));
+            botProgress.setText(((MultiGame)mGame).getOpponentFilledSquares(0) + "/" +
+                    ((MultiGame)mGame).getOpponentTotalBoardElements(0) + " squares");
+            botScore.setText("Score: " + Long.toString(((MultiGame)mGame).getOpponentScore(0)));
+            for(int i = 0; i < ((MultiGame)mGame).getTotalOpponents(); i++)
+            {
+                if(((MultiGame)mGame).isOpponentGameFinished(i))
+                {
+                    endOfGame(false);
+                }
+            }
         }
     }
     private void undoRedoListener() {
@@ -1435,6 +1457,7 @@ public class BoardActivity extends BaseActivity {
                 endOfGame(false);
         }
 
+
     }
 
     /* Uses the BoardActivity UI to solve a puzzle given the solution steps */
@@ -1477,8 +1500,13 @@ public class BoardActivity extends BaseActivity {
         ViewGroup.LayoutParams params = botBar.getLayoutParams();
 
 
-        if(multipayer){
+        if(multiplayer){
             params.height = 100;
+            botName.setText(((MultiGame)mGame).getOpponentName(0));
+           botProgress.setText(((MultiGame)mGame).getOpponentFilledSquares(0) + "/" +
+                   ((MultiGame)mGame).getOpponentTotalBoardElements(0) + " squares");
+            botScore.setText("Score: " + Long.toString(((MultiGame)mGame).getOpponentScore(0)));
+
             botBar.setLayoutParams(params);
         }
         else{
@@ -1488,7 +1516,7 @@ public class BoardActivity extends BaseActivity {
 
         /////make board unclickable, made clickable after start animation
         allClickable(false);
-        if(multipayer){
+        if(multiplayer){
 
         }
         /////set keypad colors

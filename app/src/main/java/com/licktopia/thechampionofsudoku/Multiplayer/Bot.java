@@ -30,7 +30,7 @@ public class Bot {
     private Game game;
 
     private Queue<Square> steps;
-    private Handler moveHandler;
+    private Handler moveHandler = new Handler();
     private Runnable makeMove = new Runnable() {
         public void run() {
             makeNextMove();
@@ -71,6 +71,8 @@ public class Bot {
 
     //Get game object the bot is playing on
     public Game getGameObj(){return this.game;}
+
+    public String getName(){return this.name;}
 
     // Fills in board over time based on bot skills and attributes
     public void startPlayingGame() {

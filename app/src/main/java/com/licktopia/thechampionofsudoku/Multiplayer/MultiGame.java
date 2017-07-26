@@ -9,8 +9,10 @@ import android.util.Log;
 
 import android.os.Bundle;
 
+import com.licktopia.thechampionofsudoku.GameInterface;
 import com.licktopia.thechampionofsudoku.Sudoku.Game;
 import com.licktopia.thechampionofsudoku.Sudoku.SavedGame;
+import com.licktopia.thechampionofsudoku.Sudoku.Solver;
 import com.licktopia.thechampionofsudoku.Sudoku.Square;
 import com.licktopia.thechampionofsudoku.Sudoku.Strategies;
 
@@ -44,7 +46,7 @@ import com.google.android.gms.games.multiplayer.realtime.RoomUpdateListener;
 
 import static java.lang.System.exit;
 
-public class MultiGame implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, RealTimeMessageReceivedListener,
+public class MultiGame extends GameInterface implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, RealTimeMessageReceivedListener,
         RoomStatusUpdateListener, RoomUpdateListener, OnInvitationReceivedListener {
 
     final static String TAG = "MultiGame";
@@ -85,7 +87,7 @@ public class MultiGame implements GoogleApiClient.ConnectionCallbacks, GoogleApi
      * @param level difficulty of board
      * @param ctx
      */
-    MultiGame(GameMode mode, ConnectType cType, int level, Context ctx)
+    public MultiGame(GameMode mode, ConnectType cType, int level, Context ctx)
     {
 
 
@@ -123,11 +125,13 @@ public class MultiGame implements GoogleApiClient.ConnectionCallbacks, GoogleApi
         mGame = new Game(level, ctx);
         try(ByteArrayOutputStream b = new ByteArrayOutputStream()){
             ObjectOutputStream o = new ObjectOutputStream(b);
-            o.writeObject(mGame);
+
             //header = G to indicate game being sent
-            byte[] header = new byte['G'];
-            msgBuffer = header;
+            o.writeByte('G');
+            o.writeObject(mGame);
+
             msgBuffer = b.toByteArray();
+            o.close();
         }
         catch(IOException e)
         {
@@ -182,7 +186,7 @@ public class MultiGame implements GoogleApiClient.ConnectionCallbacks, GoogleApi
      *
      * @return total number of bots
      */
-    public int getTotalBots()
+    public int getTotalOpponents()
     {
         if(isBotGame)
         {
@@ -195,13 +199,72 @@ public class MultiGame implements GoogleApiClient.ConnectionCallbacks, GoogleApi
     }
 
     /******
-     *
-     * @param i index of the bot
-     * @return score of bot at index i
+     * get the opponent score
+     * @param i index of the opponent
+     * @return the opponent score
      */
     public long getOpponentScore(int i)
     {
-        return this.allBots[i].getGameObj().getScore();
+        if(isBotGame)
+        {
+            return this.allBots[i].getGameObj().getScore();
+        }
+        else
+        {
+            return -100;
+        }
+    }
+
+    public int getOpponentFilledSquares(int i)
+    {
+        if(isBotGame)
+        {
+            return  this.allBots[i].getGameObj().totalBoardElements()
+                    - this.allBots[i].getGameObj().getNumberOpenSquares();
+        }
+        else
+        {
+            return -100;
+        }
+    }
+
+    public boolean isOpponentGameFinished(int i)
+    {
+        return this.allBots[i].getGameObj().isGameFinished();
+    }
+
+    /***********************************************
+     * Total board elements opponent's board has
+     * @param i index of opponent
+     * @return total board elements opponent's board has
+     */
+    public int getOpponentTotalBoardElements(int i)
+    {
+        if(isBotGame)
+        {
+            return  this.allBots[i].getGameObj().totalBoardElements();
+        }
+        else
+        {
+            return -100;
+        }
+    }
+
+    /************************************************
+     * Return the name of the opponent
+     * @param i index of opponent
+     * @return name of opponent
+     */
+    public String getOpponentName(int i)
+    {
+        if(isBotGame)
+        {
+            return this.allBots[i].getName();
+        }
+        else
+        {
+            return "Not Coded Yet";
+        }
     }
 
     /****
@@ -216,7 +279,7 @@ public class MultiGame implements GoogleApiClient.ConnectionCallbacks, GoogleApi
 
     /*******
      * get total number of squares filled in by the user
-     * @return
+     * @return total number of squares filled in by the user
      */
     public long getNumberFilledSquares()
     {
@@ -548,7 +611,6 @@ public class MultiGame implements GoogleApiClient.ConnectionCallbacks, GoogleApi
      * Game Class Object Functions
      ****************************************************/
 
-
     public int getImageNumber() {
         return mGame.getImageNumber();
     }
@@ -711,7 +773,6 @@ public class MultiGame implements GoogleApiClient.ConnectionCallbacks, GoogleApi
         return mGame.getTotalOneTimeGuesses();
     }
 
-
     public long getOneTimeGuessSquareBonus()
     {
         return mGame.getOneTimeGuessSquareBonus();
@@ -781,6 +842,7 @@ public class MultiGame implements GoogleApiClient.ConnectionCallbacks, GoogleApi
     }
 
     //returns the total number of elements in the board
+
     public  int totalBoardElements() {return mGame.totalBoardElements(); }
 
     //returns the total number of rows in the board
@@ -802,8 +864,15 @@ public class MultiGame implements GoogleApiClient.ConnectionCallbacks, GoogleApi
     {
         mGame.resetGame();
     }
+
     public int getNumberOpenSquares(){
         return mGame.getNumberOpenSquares();
     }
+
+    /************************************************************************
+     * Solver object solution to the game
+     * @return Solver object solution to the game
+     */
+    public Solver getSolutionSolver() {return mGame.getSolutionSolver();}
 
 }
