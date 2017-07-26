@@ -73,6 +73,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.concurrent.ThreadLocalRandom;
+
+import main.java.com.maximeroussy.invitrode.RandomWord;
 
 import static android.view.View.GONE;
 
@@ -129,6 +132,12 @@ public class BoardActivity extends BaseActivity {
     private TextView botScore;
     private boolean multiplayer;
     private LinearLayout botBar;
+    private String exactTime;
+    private boolean alreadySaved = false;
+    private String savedName;
+    private String savedDate;
+    private String fileSaveName;
+
 
     ShareDialog shareDialog;
 
@@ -144,10 +153,14 @@ public class BoardActivity extends BaseActivity {
         setContentView(R.layout.activity_board);
         //pass in mode and level
         colorGame = getIntent().getExtras().getBoolean("COLOR_MODE");
+        level = getIntent().getExtras().getInt("LEVEL");
         resume = getIntent().getExtras().getBoolean("RESUME");
         level = getIntent().getExtras().getInt("LEVEL");
         long sTime = getIntent().getExtras().getLong("STOPPED_TIME");
-        multiplayer = getIntent().getExtras().getBoolean("MULTIPLAYER");
+        multipayer = getIntent().getExtras().getBoolean("MULTIPLAYER");
+        exactTime = getIntent().getExtras().getString("EXACT_TIME");
+        savedName = getIntent().getExtras().getString("SAVED_NAME");
+        savedDate = getIntent().getExtras().getString("SAVED_DATE");
         //initialize actiion bar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         this.setSupportActionBar(toolbar);
@@ -244,6 +257,7 @@ public class BoardActivity extends BaseActivity {
         initializeButtons();
         if(resume){
             initializeBoardFromResume(sTime);
+            alreadySaved = true;
         }
         else {
             initializeBoard();//get starting board
@@ -274,23 +288,42 @@ public class BoardActivity extends BaseActivity {
 
     private void uploadSavedGame(boolean autosave){
         if(isInternet()&&gameHelper.getApiClient().isConnected()) {
+            if(!alreadySaved){
+                try {
+                    ThreadLocalRandom _Rand = ThreadLocalRandom.current();
+                    int randomNum= _Rand.nextInt(4, 11);
+                    fileSaveName = RandomWord.getNewWord(randomNum);
+                    savedName = fileSaveName;
+                } catch(Exception e) {
+                    //handle exception
+                    //the method getNewWord can throw a WordLengthException when the length chosen is outside of the current limits (between 3 and 15 characters)
+                }
+            }
+            if(resume){
+                fileSaveName = savedName;
+            }
             long stoppedTime = mChronometer.getBase() - SystemClock.elapsedRealtime();
             Date dt = new Date();
-            SimpleDateFormat dateFormat = new SimpleDateFormat("MMM d, yyyy");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("MMM d hh:mm aaa");
             SimpleDateFormat sdf = new SimpleDateFormat("hh:mm aaa");
             String today = dateFormat.format(dt);
             String now = sdf.format(dt);
             final SavedGame obj = new SavedGame();
             obj.setGamerID(getId());
-            obj.setExactTime(String.format("%,d",System.currentTimeMillis()));
-            obj.setColorMode(colorGame);
-            obj.setDate(today);
-            if(!autosave) {
-                obj.setTime(now);
+            if(!alreadySaved) {
+                Long exactoTime = System.currentTimeMillis();
+                exactTime = String.format("%,d", exactoTime);
+                obj.setExactTime(String.format("%,d", exactoTime));
+                obj.setDate(today);
+                savedDate = today;
+                obj.setTime(fileSaveName);
             }
             else{
-                obj.setTime(new StringBuilder().append(now).append(" -autosave").toString());
+                obj.setExactTime(exactTime);
+                obj.setDate(savedDate);
+                obj.setTime(savedName);
             }
+            obj.setColorMode(colorGame);
             obj.setPuzzleNumber(mGame.getBoardNumber()+1+level*10000);
             obj.setLevel(level);
             obj.setStoppedTime(stoppedTime);
@@ -309,12 +342,18 @@ public class BoardActivity extends BaseActivity {
             Runnable runnable = new Runnable() {
                 public void run() {
                     //DynamoDB calls go here
-                    mapper.save(obj);
+                    try {
+                        mapper.save(obj);
+                    }
+                    catch(Exception e){
+
+                    }
                 }
             };
             Thread mythread = new Thread(runnable);
             mythread.start();
-            Toast.makeText(this, R.string.game_saved,Toast.LENGTH_SHORT).show();
+            alreadySaved = true;
+            Toast.makeText(this, new StringBuilder().append(getString(R.string.gamesavedwithalias)).append(fileSaveName).toString(),Toast.LENGTH_SHORT).show();
 
 
 
@@ -339,7 +378,10 @@ public class BoardActivity extends BaseActivity {
             obj.setPuzzleNumber(mGame.getBoardNumber()+1+level*10000);
             obj.setLevel(level);
             obj.setAccuracy(mGame.getAccuracy());
-            obj.setExactTime(String.format("%,d",System.currentTimeMillis()));
+            obj.setExactTime(String.format("%,d", System.currentTimeMillis()));
+
+
+
 
 
             // id field is null at this point
