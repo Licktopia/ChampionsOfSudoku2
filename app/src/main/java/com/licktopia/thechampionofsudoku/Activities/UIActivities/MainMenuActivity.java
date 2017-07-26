@@ -48,6 +48,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+
 public class MainMenuActivity  extends BaseActivity {
     private static final String PREF_FILE = "com.licktopia.com.licktopia.championofsudoku.preferences";
     private static final int RC_SAVED_GAMES = 9009;
@@ -80,7 +83,10 @@ public class MainMenuActivity  extends BaseActivity {
     private DynamoDBMapper mapper;
     private ProgressBar mProgressBar;
     private boolean multiplayer = false;
-    private CheckBox multiplayerCheck;
+    private Button goLeft;
+    private LinearLayout lickbar;
+    private LinearLayout multiplayerBar;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +94,8 @@ public class MainMenuActivity  extends BaseActivity {
         setContentView(R.layout.activity_main_menu);
         mLevelSelect = (LinearLayout)findViewById(R.id.level_select);
         mModeSelect = (LinearLayout)findViewById(R.id.mode_select);
+        lickbar = (LinearLayout)findViewById(R.id.lickbar);
+        multiplayerBar = (LinearLayout)findViewById(R.id.multiplayer_bar);
         mBadge = (LinearLayout)findViewById(R.id.badge);
         mPlaySounds = new PlaySounds();
         SharedPreferences mSharedPreferences = getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
@@ -119,16 +127,11 @@ public class MainMenuActivity  extends BaseActivity {
         menuBackInitialize();
         setMessage();
         initializeLick();
+        initializeMultiPlayerBar();
         initializeShareBar();
-        initializeMPCheckbox();
-
-
     }
 
-    private void initializeMPCheckbox(){
-        multiplayerCheck = (CheckBox)findViewById(R.id.checkBox);
 
-    }
 
     private void initializeResumeButton(LinearLayout mResumeButton) {
         mResumeButton.setOnClickListener(new View.OnClickListener() {
@@ -291,8 +294,8 @@ public class MainMenuActivity  extends BaseActivity {
 
                 if (getSavedGames() == null || getSavedGames().isEmpty()) {
 
-                        mProgressBar.setVisibility(View.GONE);
-                        mResumeButton.setVisibility(View.VISIBLE);
+                        mProgressBar.setVisibility(GONE);
+                        mResumeButton.setVisibility(VISIBLE);
                         mResumeButton.setAlpha(RESUME_ALPHA);
                         mResumeButton.setClickable(false);
 
@@ -304,8 +307,8 @@ public class MainMenuActivity  extends BaseActivity {
                         initializeResumeButton(mResumeButton);
                         mResumeButton.setAlpha(1f);
                         mResumeButton.setClickable(true);
-                        mProgressBar.setVisibility(View.GONE);
-                        mResumeButton.setVisibility(View.VISIBLE);
+                        mProgressBar.setVisibility(GONE);
+                        mResumeButton.setVisibility(VISIBLE);
 
 
                 }
@@ -324,17 +327,17 @@ public class MainMenuActivity  extends BaseActivity {
                 userSignIn = false;
             }
 
-            mProgressBar.setVisibility(View.VISIBLE);
-            mResumeButton.setVisibility(View.GONE);
+            mProgressBar.setVisibility(VISIBLE);
+            mResumeButton.setVisibility(GONE);
 
 
-            mProgressBar.setVisibility(View.VISIBLE);
-            mResumeButton.setVisibility(View.GONE);
+            mProgressBar.setVisibility(VISIBLE);
+            mResumeButton.setVisibility(GONE);
 
 
 
-            mSignInButton.setVisibility(View.GONE);
-            mBadge.setVisibility(View.VISIBLE);
+            mSignInButton.setVisibility(GONE);
+            mBadge.setVisibility(VISIBLE);
             loadPlayer();
             gameHelper.getApiClient().connect();
             if(gameHelper.getApiClient().isConnected()) {
@@ -345,7 +348,7 @@ public class MainMenuActivity  extends BaseActivity {
                 querySavedGameDb();
             }
             else{
-                mProgressBar.setVisibility(View.GONE);
+                mProgressBar.setVisibility(GONE);
                 mResumeButton.setAlpha(RESUME_ALPHA);
             }
         }
@@ -354,13 +357,13 @@ public class MainMenuActivity  extends BaseActivity {
             if(clickedOut) {
                 mPlaySounds.playSounds(this,8);
             }
-            mProgressBar.setVisibility(View.GONE);
+            mProgressBar.setVisibility(GONE);
             mResumeButton.setAlpha(RESUME_ALPHA);
-            mResumeButton.setVisibility(View.VISIBLE);
+            mResumeButton.setVisibility(VISIBLE);
             clickedOut = false;
-            mSignInButton.setVisibility(View.VISIBLE);
+            mSignInButton.setVisibility(VISIBLE);
             mSignOutButton.setVisibility(View.INVISIBLE);
-            mBadge.setVisibility(View.GONE);
+            mBadge.setVisibility(GONE);
             userBadge.setImageDrawable(getResources().getDrawable(BADGETAGS[getLevel()]));
         }
         setMessage();
@@ -421,6 +424,25 @@ public class MainMenuActivity  extends BaseActivity {
 
             }
         });
+        ImageButton goRight = (ImageButton)findViewById(R.id.go_right);
+        goRight.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                lickbar.setVisibility(GONE);
+                multiplayerBar.setVisibility(VISIBLE);
+            }
+        });
+    }
+
+    private void initializeMultiPlayerBar() {
+        ImageButton goLeft = (ImageButton)findViewById(R.id.go_left);
+        goLeft.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                multiplayerBar.setVisibility(GONE);
+                lickbar.setVisibility(VISIBLE);
+            }
+        });
     }
 
     private void menuBackInitialize() {
@@ -457,12 +479,6 @@ public class MainMenuActivity  extends BaseActivity {
             modeButtons[i].setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(multiplayerCheck.isChecked()){
-                        multiplayer = true;
-                    }
-                    else{
-                        multiplayer = false;
-                    }
                     if(finalI ==0){
                         colorMode =true;
                     }
@@ -499,9 +515,9 @@ public class MainMenuActivity  extends BaseActivity {
 
     private void chooseGameType(){
         mPlaySounds.playSounds(this,10);
-        mLevelSelect.setVisibility(View.GONE);
+        mLevelSelect.setVisibility(GONE);
         mLevelSelect.startAnimation(animHide);
-        mModeSelect.setVisibility(View.VISIBLE);
+        mModeSelect.setVisibility(VISIBLE);
         mModeSelect.startAnimation(animShow);
 
     }
@@ -509,7 +525,7 @@ public class MainMenuActivity  extends BaseActivity {
     private void goBack() {
         mModeSelect.setVisibility(View.INVISIBLE);
         mModeSelect.startAnimation(animHide);
-        mLevelSelect.setVisibility(View.VISIBLE);
+        mLevelSelect.setVisibility(VISIBLE);
         mLevelSelect.startAnimation(animShow);
         mPlaySounds.playSounds(this,10);
     }
@@ -536,12 +552,12 @@ public class MainMenuActivity  extends BaseActivity {
             mMessage.setVisibility(View.INVISIBLE);
         }
         else{
-            mMessage.setVisibility(View.VISIBLE);
+            mMessage.setVisibility(VISIBLE);
         }
         if(gameHelper.getApiClient().isConnected()) {
             if (level < 2) {
                 mMessage.setText(getString(R.string.harder_puzzle_message));
-                mMessage.setVisibility(View.VISIBLE);
+                mMessage.setVisibility(VISIBLE);
             } else {
                 mMessage.setText("");
                 mMessage.setVisibility(View.INVISIBLE);

@@ -42,11 +42,6 @@
                 android:layout_weight="15"
                 android:orientation="vertical">
 
-                <CheckBox
-                    android:id="@+id/checkBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Multiplayer" />
             </LinearLayout>
 
             <LinearLayout
@@ -573,33 +568,112 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/multiplayer_bar"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_above="@+id/share_bar"
+            android:layout_marginBottom="20dp"
+            android:layout_marginTop="30dp"
+            android:layout_weight="17"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            android:weightSum="100"
+            tools:visibility="gone">
+
+            <ImageButton
+                android:id="@+id/go_left"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_marginLeft="10dp"
+                android:layout_weight="7"
+                android:scaleType="centerCrop"
+                android:visibility="visible"
+                app:srcCompat="@drawable/chevron_left" />
+
+            <Button
+                android:id="@+id/host_button"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="29"
+                android:clickable="false"
+                android:padding="5dp"
+                android:text="Host Game"
+                android:visibility="visible"
+                android:weightSum="100"
+                tools:visibility="visible"></Button>
+
+            <Button
+                android:id="@+id/quick_button"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:layout_marginBottom="5dp"
+                android:layout_weight="28"
+                android:text="Quick Game">
+
+
+            </Button>
+
+            <Button
+                android:id="@+id/join_button"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="29"
+                android:padding="5dp"
+                android:text="Join Game"
+                android:weightSum="100"></Button>
+
+            <ImageButton
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_marginRight="10dp"
+                android:layout_weight="7"
+                android:rotation="180"
+                android:scaleType="centerCrop"
+                android:visibility="invisible"
+                app:srcCompat="@drawable/chevron_left" />
+
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/lickbar"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_above="@+id/share_bar"
             android:layout_marginBottom="20dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
             android:layout_marginTop="30dp"
             android:layout_weight="17"
             android:orientation="horizontal"
-            android:weightSum="3">
+            android:weightSum="100"
+            tools:visibility="visible">
+
+            <ImageButton
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_marginLeft="10dp"
+                android:layout_weight="5"
+                android:scaleType="centerCrop"
+                android:visibility="invisible"
+                app:srcCompat="@drawable/chevron_left" />
 
             <ProgressBar
                 android:id="@+id/progressBar"
                 style="?android:attr/progressBarStyle"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
+                android:layout_weight="30"
                 android:scaleX=".7"
                 android:scaleY=".7"
                 android:visibility="visible" />
 
             <LinearLayout
                 android:id="@+id/resume"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
+                android:layout_weight="30"
                 android:clickable="false"
                 android:orientation="vertical"
                 android:padding="5dp"
@@ -634,11 +708,11 @@
             </LinearLayout>
 
             <RelativeLayout
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"
                 android:layout_marginBottom="5dp"
-                android:layout_weight="1">
+                android:layout_weight="30">
 
                 <LinearLayout
 
@@ -716,9 +790,9 @@
 
             <LinearLayout
                 android:id="@+id/lick"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
+                android:layout_weight="30"
                 android:orientation="vertical"
                 android:padding="5dp"
                 android:weightSum="100">
@@ -742,6 +816,19 @@
                     android:layout_weight="30"
                     app:srcCompat="@drawable/lickbotton" />
             </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/go_right"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_marginRight="10dp"
+                android:layout_weight="5"
+                android:rotation="180"
+                android:scaleType="centerCrop"
+                android:scaleX="1"
+                android:scaleY="1"
+                app:srcCompat="@drawable/chevron_left" />
 
         </LinearLayout>
 

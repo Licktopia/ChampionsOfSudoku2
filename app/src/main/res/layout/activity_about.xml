@@ -24,7 +24,7 @@
                 android:id="@+id/textView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Sudoku is a Licktopia creation. If you are enjoying this free game then please leave a review. Licktopia is currently a college student working on nights and weekends to bring you this free entertainment. Any contribution such as purchasing the premium version when available is greatly appreciated." />
+                android:text="Sudoku is a Licktopia creation. If you are enjoying this free game then please leave a review. Licktopia is currently a group of college students working on nights and weekends to bring you this free entertainment. Any contribution such as purchasing the premium version when available is greatly appreciated." />
 
             <TextView
                 android:id="@+id/textView2"

@@ -15,16 +15,17 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
 
 /**
  * Created by Matt on 6/22/2017.
  */
 
 public abstract class BaseActivity extends BaseGameActivity {
-    public static final String KEY = "SAVED_KEY";
-    public static final String KEY2 = "COMPLETED_KEY";
-    public static final String KEY3 = "XP_KEY";
+    public static final String SAVED_KEY = "SAVED_KEY";
+    public static final String COMPLETED_KEY = "COMPLETED_KEY";
+    public static final String XP_KEY = "XP_KEY";
+    public static final String USERNAME_KEY = "USERNAME_KEY";
+    public static final String LEVEL_KEY = "LEVEL_KEY";
 
 
 
@@ -192,42 +193,46 @@ public abstract class BaseActivity extends BaseGameActivity {
     }
 
     @Override
-    protected void onResume() {
+    protected void onStart() {
+        super.onStart();
         Type type = new TypeToken<ArrayList<SavedGame>>() {}.getType();
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         Gson gson = new Gson();
-        if(sharedPrefs.getString(KEY,null)!=null) {
-            String json = sharedPrefs.getString(KEY, null);
+        if(sharedPrefs.getString(SAVED_KEY,null)!=null) {
+            String json = sharedPrefs.getString(SAVED_KEY, null);
             savedGames = gson.fromJson(json, type);
         }
-
-        setXp(sharedPrefs.getLong(KEY3,0));
+        if(sharedPrefs.getLong(XP_KEY, 0)!=0) {
+            setXp(sharedPrefs.getLong(XP_KEY, 0));
+        }
         type = new TypeToken<ArrayList<CompletedGame>>() {}.getType();
-        if(sharedPrefs.getString(KEY2,null)!=null) {
-            String json = sharedPrefs.getString(KEY2, null);
+        if(sharedPrefs.getString(COMPLETED_KEY,null)!=null) {
+            String json = sharedPrefs.getString(COMPLETED_KEY, null);
             completedGames = gson.fromJson(json, type);
         }
+        if(sharedPrefs.getInt(LEVEL_KEY, 0)!=0) {
+            level = sharedPrefs.getInt(LEVEL_KEY, 0);
+        }
+        if(sharedPrefs.getString(USERNAME_KEY, null)!=null) {
+            username = sharedPrefs.getString(USERNAME_KEY, null);
+        }
 
-
-
-
-        super.onResume();
     }
 
     @Override
-    protected void onPause() {
+    protected void onStop() {
+        super.onStop();
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = sharedPrefs.edit();
         Gson gson = new Gson();
         String json = gson.toJson(savedGames);
-        editor.putString(KEY, json);
+        editor.putString(SAVED_KEY, json);
+        json = gson.toJson(completedGames);
+        editor.putString(COMPLETED_KEY, json);
+        editor.putLong(XP_KEY, xp);
+        editor.putString(USERNAME_KEY, username);
+        editor.putInt(LEVEL_KEY, level);
         editor.apply();
 
-        json = gson.toJson(completedGames);
-        editor.putString(KEY2, json);
-        editor.apply();
-        editor.putLong(KEY3, xp);
-        editor.apply();
-        super.onPause();
     }
 }
