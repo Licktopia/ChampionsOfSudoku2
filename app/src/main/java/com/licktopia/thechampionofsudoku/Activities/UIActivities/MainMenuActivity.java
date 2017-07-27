@@ -4,9 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
+import android.gesture.GestureOverlayView;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -38,6 +40,7 @@ import com.google.android.gms.games.snapshot.Snapshots;
 
 import com.google.example.games.basegameutils.GameHelper;
 import com.licktopia.thechampionofsudoku.Activities.BaseActivity;
+import com.licktopia.thechampionofsudoku.OnSwipeTouchListener;
 import com.licktopia.thechampionofsudoku.PlaySounds;
 import com.licktopia.thechampionofsudoku.R;
 import com.licktopia.thechampionofsudoku.Sudoku.CompletedGame;
@@ -45,6 +48,7 @@ import com.licktopia.thechampionofsudoku.Sudoku.SavedGame;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
 
@@ -77,16 +81,19 @@ public class MainMenuActivity  extends BaseActivity {
     private boolean userSignIn=false;
     private SharedPreferences.Editor ed;
     private GameHelper gameHelper;
-    private byte[] mSaveGameData;
     private CognitoCachingCredentialsProvider credentialsProvider;
     private AmazonDynamoDBClient ddbClient;
     private DynamoDBMapper mapper;
     private ProgressBar mProgressBar;
     private boolean multiplayer = false;
-    private Button goLeft;
     private LinearLayout lickbar;
     private LinearLayout multiplayerBar;
-
+    private float x1,x2;
+    static final int MIN_DISTANCE = 150;
+    private long startClickTime;
+    static final int MAX_SWIPE_TIME = 200;
+    private GestureOverlayView gestureOverlayView;
+    private boolean lickVisible = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +103,7 @@ public class MainMenuActivity  extends BaseActivity {
         mModeSelect = (LinearLayout)findViewById(R.id.mode_select);
         lickbar = (LinearLayout)findViewById(R.id.lickbar);
         multiplayerBar = (LinearLayout)findViewById(R.id.multiplayer_bar);
+        gestureOverlayView = (GestureOverlayView)findViewById(R.id.gestures);
         mBadge = (LinearLayout)findViewById(R.id.badge);
         mPlaySounds = new PlaySounds();
         SharedPreferences mSharedPreferences = getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
@@ -421,28 +429,56 @@ public class MainMenuActivity  extends BaseActivity {
             @Override
             public void onClick(View v) {
                 playLickSound();
-
             }
         });
-        ImageButton goRight = (ImageButton)findViewById(R.id.go_right);
-        goRight.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                lickbar.setVisibility(GONE);
-                multiplayerBar.setVisibility(VISIBLE);
+        gestureOverlayView.setOnTouchListener(new OnSwipeTouchListener() {
+            public boolean onSwipeRight() {
+                if(lickbar.getVisibility()==VISIBLE) {
+                    lickbar.setVisibility(GONE);
+                    multiplayerBar.setVisibility(VISIBLE);
+                    lickVisible = false;
+                }
+                else{
+                    lickbar.setVisibility(VISIBLE);
+                    multiplayerBar.setVisibility(GONE);
+                    lickVisible = true;
+                }
+                return true;
             }
+            public boolean onSwipeLeft() {
+                if(lickbar.getVisibility()==VISIBLE) {
+                    lickbar.setVisibility(GONE);
+                    multiplayerBar.setVisibility(VISIBLE);
+                    lickVisible = false;
+                }
+                else{
+                    lickbar.setVisibility(VISIBLE);
+                    multiplayerBar.setVisibility(GONE);
+                    lickVisible = true;
+                }
+                return true;
+            }
+
         });
     }
 
+
     private void initializeMultiPlayerBar() {
-        ImageButton goLeft = (ImageButton)findViewById(R.id.go_left);
-        goLeft.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                multiplayerBar.setVisibility(GONE);
+        /*
+        multiplayerBar.setOnTouchListener(new OnSwipeTouchListener() {
+            public boolean onSwipeRight() {
                 lickbar.setVisibility(VISIBLE);
+                multiplayerBar.setVisibility(GONE);
+                return true;
             }
+            public boolean onSwipeLeft() {
+                lickbar.setVisibility(VISIBLE);
+                multiplayerBar.setVisibility(GONE);
+                return true;
+            }
+
         });
+        */
     }
 
     private void menuBackInitialize() {
