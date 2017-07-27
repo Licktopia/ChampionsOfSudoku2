@@ -17,7 +17,7 @@ import com.licktopia.thechampionofsudoku.Sudoku.Solver;
 
 //Runs a game of Sudoku
 //UI uses only this class to interact with the game
-public class Game  extends GameInterface implements java.io.Serializable
+public class Game implements GameInterface, java.io.Serializable
 {
 
     public int getImageNumber() {
