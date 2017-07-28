@@ -17,11 +17,13 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.ImageButton;
@@ -127,16 +129,15 @@ public class BoardActivity extends BaseActivity {
     private boolean resume;
     private boolean fromResume;
     private boolean mAutoSave;
-    private TextView botName;
-    private TextView botProgress;
-    private TextView botScore;
     private boolean multiplayer;
-    private LinearLayout botBar;
+    private RelativeLayout botBar;
     private String exactTime;
     private boolean alreadySaved = false;
     private String savedName;
     private String savedDate;
     private String fileSaveName;
+    WindowManager wm;
+    Display d;
 
 
     ShareDialog shareDialog;
@@ -152,12 +153,15 @@ public class BoardActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_board);
         //pass in mode and level
+        wm = getWindowManager();
+        d = wm.getDefaultDisplay();
         colorGame = getIntent().getExtras().getBoolean("COLOR_MODE");
         level = getIntent().getExtras().getInt("LEVEL");
         resume = getIntent().getExtras().getBoolean("RESUME");
         level = getIntent().getExtras().getInt("LEVEL");
         long sTime = getIntent().getExtras().getLong("STOPPED_TIME");
-        multiplayer = getIntent().getExtras().getBoolean("MULTIPLAYER");
+        //multiplayer = getIntent().getExtras().getBoolean("MULTIPLAYER");
+        multiplayer = true;
         exactTime = getIntent().getExtras().getString("EXACT_TIME");
         savedName = getIntent().getExtras().getString("SAVED_NAME");
         savedDate = getIntent().getExtras().getString("SAVED_DATE");
@@ -203,10 +207,7 @@ public class BoardActivity extends BaseActivity {
         mEndGameLayout = (LinearLayout)findViewById(R.id.end_game_layout);
         userBadge = (ImageView)findViewById(R.id.user_image);
         userText = (TextView)findViewById(R.id.user_text);
-        botName = (TextView)findViewById(R.id.bot_name);
-        botProgress = (TextView)findViewById(R.id.bot_progress);
-        botScore = (TextView)findViewById(R.id.bot_score);
-        botBar = (LinearLayout)findViewById(R.id.botbar);
+        botBar = (RelativeLayout)findViewById(R.id.botbar);
         highlightHandler = new Handler();
 
 
@@ -272,6 +273,29 @@ public class BoardActivity extends BaseActivity {
             }
         });
 
+    }
+
+    private void upDatePositions(){
+        int thisViewWidth = d.getWidth();
+
+        int numPlayers =8;
+        float[] Positions = {1,.25f,.35f,.40f,.5f,.45f,.15f,0};
+        int[] PlayerTags = {R.id.player1,R.id.player2,R.id.player3,R.id.player4,R.id.player4,R.id.player5,R.id.player6,R.id.player7,R.id.player8};
+        ImageView[] Opponents = new ImageView[8];
+        for(int i = 0; i < Opponents.length; i++){
+            Opponents[i] = (ImageView)findViewById(PlayerTags[i]);
+            if(i<numPlayers){
+                Opponents[i].setVisibility(View.VISIBLE);
+            }
+            else{
+                Opponents[i].setVisibility(GONE);
+            }
+        }
+        for(int i = 0; i < Positions.length; i++){
+            ViewGroup.LayoutParams params=Opponents[i].getLayoutParams();
+            float newPos = Positions[i]*(thisViewWidth-params.width);
+            Opponents[i].setX(newPos);
+        }
     }
 
     private boolean isInternet(){
@@ -616,10 +640,6 @@ public class BoardActivity extends BaseActivity {
         }
         if(multiplayer)
         {
-            botName.setText(((MultiGame)mGame).getOpponentName(0));
-            botProgress.setText(((MultiGame)mGame).getOpponentFilledSquares(0) + "/" +
-                    ((MultiGame)mGame).getOpponentTotalBoardElements(0) + " squares");
-            botScore.setText("Score: " + Long.toString(((MultiGame)mGame).getOpponentScore(0)));
             for(int i = 0; i < ((MultiGame)mGame).getTotalOpponents(); i++)
             {
                 if(((MultiGame)mGame).isOpponentGameFinished(i))
@@ -732,6 +752,7 @@ public class BoardActivity extends BaseActivity {
             mGame.getRunningTime();
         }
         fromResume = false;
+        upDatePositions();
         super.onResume();
     }
 
@@ -1540,15 +1561,10 @@ public class BoardActivity extends BaseActivity {
 
 // Changes the height and width to the specified *pixels*
         ViewGroup.LayoutParams params = botBar.getLayoutParams();
-
+        int view_height = d.getHeight();
 
         if(multiplayer){
-            params.height = 100;
-            botName.setText(((MultiGame)mGame).getOpponentName(0));
-           botProgress.setText(((MultiGame)mGame).getOpponentFilledSquares(0) + "/" +
-                   ((MultiGame)mGame).getOpponentTotalBoardElements(0) + " squares");
-            botScore.setText("Score: " + Long.toString(((MultiGame)mGame).getOpponentScore(0)));
-
+            params.height = (int)(view_height*.07);
             botBar.setLayoutParams(params);
         }
         else{
