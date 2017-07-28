@@ -4,6 +4,12 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 
+import com.amazonaws.auth.CognitoCachingCredentialsProvider;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBQueryExpression;
+import com.amazonaws.regions.Region;
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.google.example.games.basegameutils.BaseGameActivity;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -15,6 +21,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 /**
  * Created by Matt on 6/22/2017.
@@ -51,7 +58,9 @@ public abstract class BaseActivity extends BaseGameActivity {
     public static long xp;
     public static ArrayList<CompletedGame> completedGames;
     public static ArrayList<SavedGame> savedGames;
-
+    public static CognitoCachingCredentialsProvider credentialsProvider;
+    public static AmazonDynamoDBClient ddbClient;
+    public static DynamoDBMapper mapper;
 
 
 
@@ -171,6 +180,42 @@ public abstract class BaseActivity extends BaseGameActivity {
         }
     }
 
+    public void querySavedGameDb() {
+
+        String partitionKey = getId();
+        SavedGame sg = new SavedGame();
+        sg.setGamerID(partitionKey);
+
+
+        final DynamoDBQueryExpression<SavedGame> queryExpression = new DynamoDBQueryExpression<SavedGame>()
+                .withHashKeyValues(sg)
+                .withConsistentRead(false);
+
+        final List<SavedGame>[] list = new List[]{new ArrayList<SavedGame>()};
+
+        // id field is null at this point
+        Runnable runnable = new Runnable() {
+            public void run() {
+                //DynamoDB calls go here
+                list[0] = mapper.query(SavedGame.class, queryExpression);
+                ArrayList<SavedGame> sGames = new ArrayList<SavedGame>();
+                for (int i = 0; i < list[0].size(); i++) {
+                    sGames.add(list[0].get(i));
+                }
+                setSavedGames(sGames);
+
+
+                //updateActivity();
+
+
+            }
+        };
+
+        Thread mythread = new Thread(runnable);
+        mythread.start();
+    }
+
+
     public static Long formatExactTime(String time) {
         Long timeNumber;
         StringBuilder str = new StringBuilder();
@@ -187,6 +232,16 @@ public abstract class BaseActivity extends BaseGameActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        credentialsProvider = new CognitoCachingCredentialsProvider(
+                getApplicationContext(),
+                "us-east-2:40802ef0-7537-4910-8442-31e2b30c5a7d", // Identity Pool ID
+                Regions.US_EAST_2 // Region
+        );
+
+
+        ddbClient = new AmazonDynamoDBClient(credentialsProvider);
+        mapper = new DynamoDBMapper(ddbClient);
+        ddbClient.setRegion(Region.getRegion(Regions.US_EAST_2));
         //completedGames = new ArrayList<>();
         //savedGames = new ArrayList<>();
 

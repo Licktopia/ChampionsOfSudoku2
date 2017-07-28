@@ -82,9 +82,7 @@ public class MainMenuActivity  extends BaseActivity {
     private boolean userSignIn=false;
     private SharedPreferences.Editor ed;
     private GameHelper gameHelper;
-    private CognitoCachingCredentialsProvider credentialsProvider;
-    private AmazonDynamoDBClient ddbClient;
-    private DynamoDBMapper mapper;
+
     private ProgressBar mProgressBar;
     private boolean multiplayer = false;
     private LinearLayout lickbar;
@@ -138,17 +136,8 @@ public class MainMenuActivity  extends BaseActivity {
         gameHelper.enableDebugLog(true);
         gameHelper.setup(this);
         // Initialize the Amazon Cognito credentials provider
-        credentialsProvider = new CognitoCachingCredentialsProvider(
-                getApplicationContext(),
-                "us-east-2:40802ef0-7537-4910-8442-31e2b30c5a7d", // Identity Pool ID
-                Regions.US_EAST_2 // Region
-        );
 
-
-        ddbClient = new AmazonDynamoDBClient(credentialsProvider);
-        mapper = new DynamoDBMapper(ddbClient);
-        ddbClient.setRegion(Region.getRegion(Regions.US_EAST_2));
-        mResumeButton.setClickable(false);
+        //mResumeButton.setClickable(false);
         signInInitialization();
         initAnimation();
         levelButtonInitialize();
@@ -157,6 +146,7 @@ public class MainMenuActivity  extends BaseActivity {
         setMessage();
         initializeLick();
         initializeShareBar();
+        initializeResumeButton(mResumeButton);
     }
 
 
@@ -165,8 +155,13 @@ public class MainMenuActivity  extends BaseActivity {
         mResumeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainMenuActivity.this, SavedGameActivity.class);
-                startActivity(intent);
+                if(gameHelper.getApiClient().isConnected()) {
+                    Intent intent = new Intent(MainMenuActivity.this, SavedGameActivity.class);
+                    startActivity(intent);
+                }
+                else{
+                    Toast.makeText(MainMenuActivity.this, R.string.must_be_logged_in,Toast.LENGTH_SHORT).show();
+                }
 
             }
         });
@@ -268,49 +263,6 @@ public class MainMenuActivity  extends BaseActivity {
 
     }
 
-    private void querySavedGameDb() {
-
-            String partitionKey = getId();
-            SavedGame sg = new SavedGame();
-            sg.setGamerID(partitionKey);
-
-
-            final DynamoDBQueryExpression<SavedGame> queryExpression = new DynamoDBQueryExpression<SavedGame>()
-                    .withHashKeyValues(sg)
-                    .withConsistentRead(false);
-
-            final List<SavedGame>[] list = new List[]{new ArrayList<SavedGame>()};
-
-            // id field is null at this point
-            Runnable runnable = new Runnable() {
-                public void run() {
-                    //DynamoDB calls go here
-                    list[0] = mapper.query(SavedGame.class, queryExpression);
-                    ArrayList<SavedGame> sGames = new ArrayList<SavedGame>();
-                    for (int i = 0; i < list[0].size(); i++) {
-                        sGames.add(list[0].get(i));
-                    }
-                    setSavedGames(sGames);
-
-
-                    updateActivity();
-
-
-                }
-            };
-
-            Thread mythread = new Thread(runnable);
-
-
-            mythread.start();
-
-
-
-
-
-
-
-    }
 
     //Updates the save game button based on the current state of the loading the saved game
     void updateActivity()
@@ -322,21 +274,21 @@ public class MainMenuActivity  extends BaseActivity {
 
                 if (getSavedGames() == null || getSavedGames().isEmpty()) {
 
-                        mProgressBar.setVisibility(GONE);
-                        mResumeButton.setVisibility(VISIBLE);
-                        mResumeButton.setAlpha(RESUME_ALPHA);
-                        mResumeButton.setClickable(false);
+                        //mProgressBar.setVisibility(GONE);
+                       // mResumeButton.setVisibility(VISIBLE);
+                        //mResumeButton.setAlpha(RESUME_ALPHA);
+                        //mResumeButton.setClickable(false);
 
 
 
                 }
                  else {
 
-                        initializeResumeButton(mResumeButton);
-                        mResumeButton.setAlpha(1f);
-                        mResumeButton.setClickable(true);
-                        mProgressBar.setVisibility(GONE);
-                        mResumeButton.setVisibility(VISIBLE);
+                       // initializeResumeButton(mResumeButton);
+                        //mResumeButton.setAlpha(1f);
+                        //mResumeButton.setClickable(true);
+                        //mProgressBar.setVisibility(GONE);
+                        //mResumeButton.setVisibility(VISIBLE);
 
 
                 }
@@ -355,12 +307,12 @@ public class MainMenuActivity  extends BaseActivity {
                 userSignIn = false;
             }
 
-            mProgressBar.setVisibility(VISIBLE);
-            mResumeButton.setVisibility(GONE);
+            //mProgressBar.setVisibility(VISIBLE);
+           // mResumeButton.setVisibility(GONE);
 
 
-            mProgressBar.setVisibility(VISIBLE);
-            mResumeButton.setVisibility(GONE);
+            //mProgressBar.setVisibility(VISIBLE);
+           // mResumeButton.setVisibility(GONE);
 
 
 
@@ -376,8 +328,8 @@ public class MainMenuActivity  extends BaseActivity {
                 querySavedGameDb();
             }
             else{
-                mProgressBar.setVisibility(GONE);
-                mResumeButton.setAlpha(RESUME_ALPHA);
+                //mProgressBar.setVisibility(GONE);
+               // mResumeButton.setAlpha(RESUME_ALPHA);
             }
         }
         else{
@@ -385,9 +337,9 @@ public class MainMenuActivity  extends BaseActivity {
             if(clickedOut) {
                 mPlaySounds.playSounds(this,8);
             }
-            mProgressBar.setVisibility(GONE);
-            mResumeButton.setAlpha(RESUME_ALPHA);
-            mResumeButton.setVisibility(VISIBLE);
+            //mProgressBar.setVisibility(GONE);
+           // mResumeButton.setAlpha(RESUME_ALPHA);
+            //mResumeButton.setVisibility(VISIBLE);
             clickedOut = false;
             mSignInButton.setVisibility(VISIBLE);
             mSignOutButton.setVisibility(View.INVISIBLE);
@@ -471,7 +423,7 @@ public class MainMenuActivity  extends BaseActivity {
                             // Left to Right swipe action
                             if (x2 > x1) {
 
-                                    scrollView.scrollTo(0, 0);
+                                    scrollView.smoothScrollTo(0, 0);
 
 
                             }
@@ -479,7 +431,7 @@ public class MainMenuActivity  extends BaseActivity {
                             // Right to left swipe action
                             else
                             {
-                                scrollView.scrollTo(view_width,0);
+                                scrollView.smoothScrollTo(view_width,0);
                             }
 
                         }

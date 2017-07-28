@@ -87,5 +87,6 @@
     <string name="autosave">Autosave</string>
     <string name="saves_inprogress">Saves game in progress when app is closed</string>
     <string name="gamesavedwithalias">Game saved with alias\u0020</string>
+    <string name="must_be_logged_in">You must be logged in to use this feature</string>
 
 </resources>
