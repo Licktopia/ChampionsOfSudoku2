@@ -567,244 +567,254 @@
             </LinearLayout>
         </LinearLayout>
 
-        <android.gesture.GestureOverlayView xmlns:android="http://schemas.android.com/apk/res/android"
+        <HorizontalScrollView xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/gestures"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginBottom="20dp"
             android:layout_marginTop="30dp"
             android:layout_weight="17"
-            android:eventsInterceptionEnabled="false"
-            android:gestureStrokeType="single"
-            android:orientation="horizontal">
+            android:isScrollContainer="false"
+            android:longClickable="false"
+            android:scrollIndicators="none"
+            android:scrollbars="none">
 
             <LinearLayout
-                android:id="@+id/lickbar"
-                android:layout_width="match_parent"
+                android:id="@+id/innerscrollview"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_above="@+id/share_bar"
-                android:layout_weight="17"
-                android:orientation="horizontal"
-                android:weightSum="100"
-                tools:visibility="gone">
 
-                <ProgressBar
-                    android:id="@+id/progressBar"
-                    style="?android:attr/progressBarStyle"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="33"
-                    android:scaleX=".7"
-                    android:scaleY=".7"
-                    android:visibility="visible" />
+                android:orientation="horizontal">
 
                 <LinearLayout
-                    android:id="@+id/resume"
-                    android:layout_width="0dp"
+                    android:id="@+id/lickbar"
+                    android:layout_width="250dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="33"
-                    android:clickable="false"
-                    android:orientation="vertical"
-                    android:padding="5dp"
-                    android:visibility="gone"
+                    android:orientation="horizontal"
+                    android:visibility="visible"
                     android:weightSum="100"
-                    tools:visibility="gone">
+                    tools:visibility="visible">
 
-                    <ImageView
-                        android:id="@+id/imageView7"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginTop="5dp"
-                        android:layout_weight="70"
-                        android:alpha="1"
-                        android:scaleType="fitCenter"
-                        android:scaleX=".9"
-                        android:scaleY=".9"
-                        app:srcCompat="@drawable/star"
-                        tools:visibility="visible" />
-
-                    <TextView
-                        android:id="@+id/textView50"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="30"
-                        android:gravity="top|center_horizontal"
-                        android:text="Resume"
-                        android:textSize="13sp"
-                        android:textStyle="bold"
-                        tools:visibility="visible" />
-                </LinearLayout>
-
-                <RelativeLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginBottom="5dp"
-                    android:layout_weight="34">
-
-                    <LinearLayout
-
-                        android:id="@+id/signin_button"
-                        android:layout_width="70dp"
-                        android:layout_height="70dp"
-                        android:layout_centerInParent="true"
-                        android:layout_gravity="center"
-                        android:background="@drawable/back_button"
-                        android:orientation="vertical"
-                        android:visibility="visible"
-                        android:weightSum="100"
-                        tools:visibility="visible">
-
-                        <ImageView
-                            android:id="@+id/imageView4"
-                            android:layout_width="25dp"
-                            android:layout_height="25dp"
-                            android:layout_alignParentLeft="false"
-                            android:layout_alignParentStart="false"
-                            android:layout_gravity="center"
-                            android:layout_marginTop="14dp"
-                            android:src="@drawable/googlelogo" />
-
-                        <TextView
-                            android:id="@+id/textView8"
-                            android:layout_width="60dp"
-                            android:layout_height="match_parent"
-                            android:layout_gravity="center"
-                            android:layout_marginBottom="7dp"
-                            android:layout_marginLeft="7dp"
-                            android:layout_marginRight="7dp"
-                            android:gravity="center"
-                            android:text="@string/sign_in_button"
-                            android:textSize="11sp" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/badge"
-                        android:layout_width="match_parent"
+                    <ProgressBar
+                        android:id="@+id/progressBar"
+                        style="?android:attr/progressBarStyle"
+                        android:layout_width="0dp"
                         android:layout_height="match_parent"
+                        android:layout_weight="33"
+                        android:scaleX=".7"
+                        android:scaleY=".7"
+                        android:visibility="visible" />
+
+                    <LinearLayout
+                        android:id="@+id/resume"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="33"
+                        android:clickable="false"
                         android:orientation="vertical"
+                        android:padding="5dp"
                         android:visibility="gone"
                         android:weightSum="100"
                         tools:visibility="gone">
 
                         <ImageView
-                            android:id="@+id/user_badge_level"
+                            android:id="@+id/imageView7"
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
-                            android:layout_alignParentLeft="false"
-                            android:layout_alignParentStart="false"
-                            android:layout_alignParentTop="false"
-                            android:layout_gravity="center"
-                            android:layout_weight="75"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginTop="5dp"
+                            android:layout_weight="70"
+                            android:alpha="1"
                             android:scaleType="fitCenter"
-                            android:visibility="visible"
-                            app:srcCompat="@drawable/rank0"
-                            tools:visibility="gone" />
+                            android:scaleX=".9"
+                            android:scaleY=".9"
+                            app:srcCompat="@drawable/star"
+                            tools:visibility="visible" />
 
                         <TextView
-                            android:id="@+id/user_name"
+                            android:id="@+id/textView50"
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
-                            android:layout_alignParentBottom="false"
-                            android:layout_centerHorizontal="true"
-                            android:layout_weight="25"
-                            android:gravity="center"
-                            android:text="@string/stats_amp_more"
-                            android:textSize="14sp"
-                            android:visibility="visible" />
+                            android:layout_weight="30"
+                            android:gravity="top|center_horizontal"
+                            android:text="Resume"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
+                            tools:visibility="visible" />
                     </LinearLayout>
 
-                </RelativeLayout>
-
-                <LinearLayout
-                    android:id="@+id/lick"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="33"
-                    android:orientation="vertical"
-                    android:padding="5dp"
-                    android:weightSum="100">
-
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginTop="5dp"
-                        android:layout_weight="70"
-                        android:alpha="1"
-                        android:scaleType="fitCenter"
-                        android:scaleX=".9"
-                        android:scaleY=".9"
-                        app:srcCompat="@drawable/licktop" />
+                        android:layout_marginBottom="5dp"
+                        android:layout_weight="34">
 
-                    <ImageView
-                        android:id="@+id/imageView8"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="30"
-                        app:srcCompat="@drawable/lickbotton" />
+                        <LinearLayout
+
+                            android:id="@+id/signin_button"
+                            android:layout_width="70dp"
+                            android:layout_height="70dp"
+                            android:layout_centerInParent="true"
+                            android:layout_gravity="center"
+                            android:background="@drawable/back_button"
+                            android:orientation="vertical"
+                            android:visibility="visible"
+                            android:weightSum="100"
+                            tools:visibility="visible">
+
+                            <ImageView
+                                android:id="@+id/imageView4"
+                                android:layout_width="25dp"
+                                android:layout_height="25dp"
+                                android:layout_alignParentLeft="false"
+                                android:layout_alignParentStart="false"
+                                android:layout_gravity="center"
+                                android:layout_marginTop="14dp"
+                                android:src="@drawable/googlelogo" />
+
+                            <TextView
+                                android:id="@+id/textView8"
+                                android:layout_width="60dp"
+                                android:layout_height="match_parent"
+                                android:layout_gravity="center"
+                                android:layout_marginBottom="7dp"
+                                android:layout_marginLeft="7dp"
+                                android:layout_marginRight="7dp"
+                                android:gravity="center"
+                                android:text="@string/sign_in_button"
+                                android:textSize="11sp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/badge"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:visibility="gone"
+                            android:weightSum="100"
+                            tools:visibility="gone">
+
+                            <ImageView
+                                android:id="@+id/user_badge_level"
+                                android:layout_width="match_parent"
+                                android:layout_height="0dp"
+                                android:layout_alignParentLeft="false"
+                                android:layout_alignParentStart="false"
+                                android:layout_alignParentTop="false"
+                                android:layout_gravity="center"
+                                android:layout_weight="75"
+                                android:scaleType="fitCenter"
+                                android:visibility="visible"
+                                app:srcCompat="@drawable/rank0"
+                                tools:visibility="gone" />
+
+                            <TextView
+                                android:id="@+id/user_name"
+                                android:layout_width="match_parent"
+                                android:layout_height="0dp"
+                                android:layout_alignParentBottom="false"
+                                android:layout_centerHorizontal="true"
+                                android:layout_weight="25"
+                                android:gravity="center"
+                                android:text="@string/stats_amp_more"
+                                android:textSize="14sp"
+                                android:visibility="visible" />
+                        </LinearLayout>
+
+                    </RelativeLayout>
+
+                    <LinearLayout
+                        android:id="@+id/lick"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="33"
+                        android:orientation="vertical"
+                        android:padding="5dp"
+                        android:weightSum="100">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginTop="5dp"
+                            android:layout_weight="70"
+                            android:alpha="1"
+                            android:scaleType="fitCenter"
+                            android:scaleX=".9"
+                            android:scaleY=".9"
+                            app:srcCompat="@drawable/licktop" />
+
+                        <ImageView
+                            android:id="@+id/imageView8"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="30"
+                            app:srcCompat="@drawable/lickbotton" />
+                    </LinearLayout>
+
                 </LinearLayout>
 
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/multiplayer_bar"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_above="@+id/share_bar"
-                android:orientation="horizontal"
-                android:visibility="gone"
-                android:weightSum="100"
-                tools:visibility="visible">
-
-                <Button
-                    android:id="@+id/host_button"
-                    android:layout_width="0dp"
+                <LinearLayout
+                    android:id="@+id/multiplayer_bar"
+                    android:layout_width="250dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="33"
-                    android:clickable="false"
-                    android:padding="5dp"
-                    android:scaleX=".5"
-                    android:scaleY=".5"
-                    android:text="Host Game"
+                    android:layout_toEndOf="@+id/lickbar"
+                    android:layout_toRightOf="@+id/lickbar"
+                    android:orientation="horizontal"
                     android:visibility="visible"
                     android:weightSum="100"
                     tools:visibility="visible">
 
-                </Button>
+                    <Button
+                        android:id="@+id/host_button"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="33"
+                        android:clickable="false"
+                        android:padding="5dp"
+                        android:scaleX=".5"
+                        android:scaleY=".5"
+                        android:text="Host Game"
+                        android:visibility="visible"
+                        android:weightSum="100"
+                        tools:visibility="visible">
 
-                <Button
-                    android:id="@+id/quick_button"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginBottom="5dp"
-                    android:layout_weight="34"
-                    android:scaleX=".5"
-                    android:scaleY=".5"
-                    android:text="Quick Game"
-                    android:visibility="visible">
+                    </Button>
+
+                    <Button
+                        android:id="@+id/quick_button"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginBottom="5dp"
+                        android:layout_weight="34"
+                        android:scaleX=".5"
+                        android:scaleY=".5"
+                        android:text="Quick Game"
+                        android:visibility="visible">
 
 
-                </Button>
+                    </Button>
 
-                <Button
-                    android:id="@+id/join_button"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="33"
-                    android:padding="5dp"
-                    android:scaleX=".5"
-                    android:scaleY=".5"
-                    android:text="Join Game"
-                    android:visibility="visible"
-                    android:weightSum="100">
+                    <Button
+                        android:id="@+id/join_button"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="33"
+                        android:padding="5dp"
+                        android:scaleX=".5"
+                        android:scaleY=".5"
+                        android:text="Join Game"
+                        android:visibility="visible"
+                        android:weightSum="100">
 
-                </Button>
+                    </Button>
 
+                </LinearLayout>
             </LinearLayout>
-        </android.gesture.GestureOverlayView>
+        </HorizontalScrollView>
+
 
         <RelativeLayout
             android:id="@+id/share_bar"
