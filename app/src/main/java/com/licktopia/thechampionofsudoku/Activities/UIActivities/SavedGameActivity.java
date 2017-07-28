@@ -70,7 +70,9 @@ public class SavedGameActivity extends BaseActivity {
                     getSavedGames().get(i).getExactTime(),
                     getSavedGames().get(i).getLevel(),
                     getSavedGames().get(i).getPuzzleNumber(),
-                    getSavedGames().get(i).getGamerID()
+                    getSavedGames().get(i).getGamerID(),
+                    getSavedGames().get(i).getSaveFile(),
+                    getSavedGames().get(i).getStoppedTime()
                     );
             savedGameListItems.add(sGLI);
 

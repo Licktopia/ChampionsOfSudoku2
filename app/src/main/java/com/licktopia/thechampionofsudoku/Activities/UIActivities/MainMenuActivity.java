@@ -129,7 +129,6 @@ public class MainMenuActivity  extends BaseActivity {
         ed = mSharedPreferences.edit();
         ed.apply();
         userBadge = (ImageView)findViewById(R.id.user_badge_level);
-        mProgressBar = (ProgressBar)findViewById(R.id.progressBar);
         mResumeButton = (LinearLayout) findViewById(R.id.resume);
         gameHelper = new GameHelper(this, GameHelper.CLIENT_GAMES);
         //TODO Remove this for production
@@ -437,7 +436,14 @@ public class MainMenuActivity  extends BaseActivity {
                         }
                         else
                         {
-                            //handle if it wasn't long enough
+                           if(scrollView.getScrollX()!=0 || scrollView.getScrollX()!=view_width){
+                               if(scrollView.getScrollX()<view_width/2) {
+                                   scrollView.smoothScrollTo(0, 0);
+                               }
+                               else{
+                                   scrollView.smoothScrollTo(view_width, 0);
+                               }
+                           }
                         }
                         return true;
                 }

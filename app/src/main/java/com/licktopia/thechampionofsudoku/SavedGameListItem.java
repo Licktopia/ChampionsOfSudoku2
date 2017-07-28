@@ -15,13 +15,17 @@ public class SavedGameListItem {
     private String time;
     private String exactTime;
     private String gamerID;
+    private long stoppedTime;
+    private byte[] savedGame;
 
 
 
 
     private boolean color;
 
-    public SavedGameListItem(String date,String time, boolean colorMode, String exactTime, int level, int puzzleNumber, String gamerID) {
+
+
+    public SavedGameListItem(String date, String time, boolean colorMode, String exactTime, int level, int puzzleNumber, String gamerID, byte[] savedGame, long stoppedTIme) {
 
         this.date = date;
         this.level = level;
@@ -30,6 +34,8 @@ public class SavedGameListItem {
         this.exactTime = exactTime;
         this.color = colorMode;
         this.gamerID = gamerID;
+        this.stoppedTime = stoppedTIme;
+        this.savedGame = savedGame;
 
     }
 
@@ -60,6 +66,18 @@ public class SavedGameListItem {
 
     public String getExactTime() {
         return exactTime;
+    }
+
+    public long getStoppedTime() {
+        return stoppedTime;
+    }
+
+    public byte[] getSavedGame() {
+        return savedGame;
+    }
+
+    public String getGamerID() {
+        return gamerID;
     }
 
 

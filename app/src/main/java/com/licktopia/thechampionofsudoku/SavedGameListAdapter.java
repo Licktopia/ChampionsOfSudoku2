@@ -64,7 +64,7 @@ public class SavedGameListAdapter extends RecyclerView.Adapter<SavedGameListAdap
 
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
-        SavedGameListItem savedGameListItem = savedGameListItems.get(position);
+        final SavedGameListItem savedGameListItem = savedGameListItems.get(position);
         final int boardNumber = savedGameListItem.getPuzzleNumber();
         final String exactTime = savedGameListItem.getExactTime();
         final String gamerId = savedGameListItem.getGamerId();
@@ -111,13 +111,13 @@ public class SavedGameListAdapter extends RecyclerView.Adapter<SavedGameListAdap
                                     //Make level less than zero so that activity knows to load a game
                                     boolean resume = true;
                                     intent.putExtra("RESUME", resume);
-                                    intent.putExtra("COLOR_MODE", BaseActivity.getSavedGames().get(position).getColorMode());
-                                    intent.putExtra("LEVEL", BaseActivity.getSavedGames().get(position).getLevel());
-                                    intent.putExtra("SAVE_FILE", BaseActivity.getSavedGames().get(position).getSaveFile());
-                                    intent.putExtra("STOPPED_TIME", BaseActivity.getSavedGames().get(position).getStoppedTime());
-                                    intent.putExtra("EXACT_TIME", BaseActivity.getSavedGames().get(position).getExactTime());
-                                    intent.putExtra("SAVED_NAME", BaseActivity.getSavedGames().get(position).getTime());
-                                    intent.putExtra("SAVED_DATE", BaseActivity.getSavedGames().get(position).getDate());
+                                    intent.putExtra("COLOR_MODE", savedGameListItem.isColor());
+                                    intent.putExtra("LEVEL", savedGameListItem.getLevel());
+                                    intent.putExtra("SAVE_FILE", savedGameListItem.getSavedGame());
+                                    intent.putExtra("STOPPED_TIME", savedGameListItem.getStoppedTime());
+                                    intent.putExtra("EXACT_TIME", savedGameListItem.getExactTime());
+                                    intent.putExtra("SAVED_NAME", savedGameListItem.getTime());
+                                    intent.putExtra("SAVED_DATE", savedGameListItem.getDate());
 
                                     context.startActivity(intent);
 
