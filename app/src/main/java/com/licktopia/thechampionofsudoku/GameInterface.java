@@ -377,5 +377,10 @@ public interface GameInterface {
      */
     public int getNumberOpenSquares();
 
+    /*************************************************************
+     * gets the total number of starting open squares
+     * @return total number of starting open squares
+     */
+    public int getStartingOpenSquares();
 
 }

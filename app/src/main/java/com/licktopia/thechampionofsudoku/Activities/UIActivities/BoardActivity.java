@@ -270,6 +270,7 @@ public class BoardActivity extends BaseActivity {
             @Override
             public void onChronometerTick(Chronometer chronometer) {
                 updateScore();
+                upDatePositions();
             }
         });
 
@@ -278,8 +279,12 @@ public class BoardActivity extends BaseActivity {
     private void upDatePositions(){
         int thisViewWidth = d.getWidth();
 
-        int numPlayers =8;
-        float[] Positions = {1,.25f,.35f,.40f,.5f,.45f,.15f,0};
+        //int numPlayers =8;
+        //float[] Positions = {1,.25f,.35f,.40f,.5f,.45f,.15f,0};
+
+        int numPlayers = ((MultiGame)mGame).getTotalOpponents();
+        float[] Positions = new float[numPlayers];
+
         int[] PlayerTags = {R.id.player1,R.id.player2,R.id.player3,R.id.player4,R.id.player4,R.id.player5,R.id.player6,R.id.player7,R.id.player8};
         ImageView[] Opponents = new ImageView[8];
         for(int i = 0; i < Opponents.length; i++){
@@ -291,9 +296,9 @@ public class BoardActivity extends BaseActivity {
                 Opponents[i].setVisibility(GONE);
             }
         }
-        for(int i = 0; i < Positions.length; i++){
+        for(int i = 0; i < numPlayers; i++){
             ViewGroup.LayoutParams params=Opponents[i].getLayoutParams();
-            float newPos = Positions[i]*(thisViewWidth-params.width);
+            float newPos = ((MultiGame)mGame).getOpponetProgress(i) * (thisViewWidth-params.width);
             Opponents[i].setX(newPos);
         }
     }

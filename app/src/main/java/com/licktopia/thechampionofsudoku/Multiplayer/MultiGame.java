@@ -52,7 +52,7 @@ public class MultiGame implements GoogleApiClient.ConnectionCallbacks, GoogleApi
     final static String TAG = "MultiGame";
 
     private byte[] msgBuffer;
-    final int MIN_OPPONENTS = 1, MAX_OPPONENTS = 1;
+    final int MIN_OPPONENTS = 1, MAX_OPPONENTS = 3;
     private Game mGame;
 
     //stores the bots and the threads they are playing on
@@ -266,6 +266,21 @@ public class MultiGame implements GoogleApiClient.ConnectionCallbacks, GoogleApi
             return "Not Coded Yet";
         }
     }
+
+    /************************************************
+     * Returns a number between 0.0 and 1.0
+     * 1 means opponent is completely finished
+     * 0 means opponent hasn't made any progress
+     * @param i index of opponent
+     * @return the progress of the opponent as a fraction
+     */
+    public float getOpponetProgress(int i)
+    {
+        return (float)1.0 - ((float)allBots[i].getGameObj().getNumberOpenSquares()
+                / (float)allBots[i].getGameObj().getStartingOpenSquares());
+    }
+
+
 
     /****
      *
@@ -875,4 +890,6 @@ public class MultiGame implements GoogleApiClient.ConnectionCallbacks, GoogleApi
      */
     public Solver getSolutionSolver() {return mGame.getSolutionSolver();}
 
+
+    public int getStartingOpenSquares() { return mGame.getStartingOpenSquares(); }
 }

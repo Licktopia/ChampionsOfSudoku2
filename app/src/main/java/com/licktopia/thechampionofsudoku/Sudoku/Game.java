@@ -392,4 +392,7 @@ public class Game implements GameInterface, java.io.Serializable
     returns a copy of the game's internal board
      */
     private Board getBoardCopy(){return new Board(this.curBoard);}
+
+
+    public int getStartingOpenSquares() { return this.curBoard.getStartingOpenSquares(); }
 }
