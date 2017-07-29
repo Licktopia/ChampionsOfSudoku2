@@ -55,4 +55,32 @@ public class DifficultyClassifier {
             }
         }
     }
+
+    public static void getSolverEfficiency(Context context) {
+        int[][] stepsToGo = new int[2][PUZZLES_PER_DIFFICULTY];
+        int numCompleted = 0;
+
+        for (int level = 1; level < 2; level++) {
+            for (int index = 0; index < PUZZLES_PER_DIFFICULTY; index++) {
+                Board board = new Board(level, context, index);
+                Solver solutionSolver = new Solver(board);
+                int solvedSteps = solutionSolver.solveWithStrategies();
+                int squaresToGo = solutionSolver.getNumberOfSquaresUnfilled();
+                if (squaresToGo == 0) numCompleted++;
+                stepsToGo[level - 1][index] = squaresToGo;
+                if (index % 50 == 0) Log.i("BoardResults", "Finished board #" + index + " at level " + level);
+            }
+            Log.i("LevelResults", "Level " + level + " Results: ");
+            StringBuilder results = new StringBuilder();
+            for (int i = 0; i < PUZZLES_PER_DIFFICULTY; i++) {
+                if (i % 200 == 0) {
+                    Log.i("IndResults", results.toString());
+                    results = new StringBuilder();
+                }
+                results.append(stepsToGo[level - 1][i]);
+                results.append(',');
+            }
+        }
+        Log.i("LevelResults", "Number completed over 2 levels is: " + numCompleted);
+    }
 }

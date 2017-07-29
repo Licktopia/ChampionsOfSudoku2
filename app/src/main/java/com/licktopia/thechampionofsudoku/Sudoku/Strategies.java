@@ -1,5 +1,7 @@
 package com.licktopia.thechampionofsudoku.Sudoku;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -85,7 +87,7 @@ public class Strategies {
             for (int idx : hint.hintInfo[CONNECTED])
                 indicesToEdit.add(idx);
             for (int idx : hint.hintInfo[SELECTED])
-                indicesToEdit.remove(idx);
+                indicesToEdit.remove(Integer.valueOf(idx));
         }
         else
             for (int idx : hint.hintInfo[SELECTED])

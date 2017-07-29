@@ -1,6 +1,7 @@
 package com.licktopia.thechampionofsudoku.Sudoku;
 
 import android.support.v4.util.Pair;
+import android.util.Log;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -22,10 +23,12 @@ public class Solver implements java.io.Serializable {
     Board curBoard;
     Queue<Square> solvingSteps;
     Queue<Square> solvingStepsStrategies;
+    int initialOpenSquares;
 
     public Solver(Board curBoard)
     {
         this.curBoard = new Board(curBoard);
+        initialOpenSquares = curBoard.getOpenSquares();
         solvingSteps = new LinkedList<Square>();
         solvingStepsStrategies = new LinkedList<>();
     }
@@ -178,8 +181,13 @@ public class Solver implements java.io.Serializable {
     {
         return  solvingSteps;
     }
+
     public Queue<Square> getExactSolution() {
         return solvingStepsStrategies;
+    }
+
+    public int getNumberOfSquaresUnfilled() {
+        return initialOpenSquares - solvingStepsStrategies.size();
     }
 
 }

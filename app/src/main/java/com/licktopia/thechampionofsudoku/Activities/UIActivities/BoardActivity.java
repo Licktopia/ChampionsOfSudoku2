@@ -1572,6 +1572,10 @@ public class BoardActivity extends BaseActivity {
 
         final ArrayList<Square> newSteps = new ArrayList(mGame.getSolutionSteps());
 
+        if (newSteps.isEmpty()) {
+            return;
+        }
+
         double regression = 1340100 * Math.pow(.88316, 81-mGame.getNumberOpenSquares());
         int speedControl = (int) regression;
         int speed = speedControl /newSteps.size();
