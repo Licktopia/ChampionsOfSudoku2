@@ -145,6 +145,7 @@ public class BoardActivity extends BaseActivity {
     private CognitoSyncManager syncClient;
     private AmazonDynamoDBClient ddbClient;
     private DynamoDBMapper mapper;
+    private ObjectAnimator animX;
 
 
     @Override
@@ -314,7 +315,10 @@ public class BoardActivity extends BaseActivity {
         for(int i = 0; i < numPlayers; i++){
             ViewGroup.LayoutParams params=Opponents[i].getLayoutParams();
             float newPos = ((MultiGame)mGame).getOpponetProgress(i) * (thisViewWidth-params.width);
-            Opponents[i].setX(newPos);
+            animX= ObjectAnimator.ofFloat(Opponents[i], "x", newPos);
+            animX.setDuration(100);
+            animX.start();
+            //Opponents[i].setX(newPos);
         }
     }
 
