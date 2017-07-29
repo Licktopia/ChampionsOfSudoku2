@@ -136,16 +136,15 @@ public class BoardActivity extends BaseActivity {
     private String savedName;
     private String savedDate;
     private String fileSaveName;
-    WindowManager wm;
-    Display d;
-
-
-    ShareDialog shareDialog;
-
-    CognitoCachingCredentialsProvider credentialsProvider;
-    CognitoSyncManager syncClient;
-    AmazonDynamoDBClient ddbClient;
-    DynamoDBMapper mapper;
+    private WindowManager wm;
+    private Display d;
+    private ImageView[] Opponents;
+    private int numPlayers;
+    private ShareDialog shareDialog;
+    private CognitoCachingCredentialsProvider credentialsProvider;
+    private CognitoSyncManager syncClient;
+    private AmazonDynamoDBClient ddbClient;
+    private DynamoDBMapper mapper;
 
 
     @Override
@@ -209,7 +208,7 @@ public class BoardActivity extends BaseActivity {
         userText = (TextView)findViewById(R.id.user_text);
         botBar = (RelativeLayout)findViewById(R.id.botbar);
         highlightHandler = new Handler();
-
+        Opponents = new ImageView[8];
 
         mPlaySounds = new PlaySounds();
 
@@ -265,6 +264,7 @@ public class BoardActivity extends BaseActivity {
             initializeBoard();//get starting board
         }
         customizeLayout(resume);
+        initializePlayerTokens();
         listeners(toolbar);//set all listeners for BoardActivity layout
         updateScore();
         mChronometer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
@@ -277,26 +277,40 @@ public class BoardActivity extends BaseActivity {
 
     }
 
-    private void upDatePositions(){
-        int thisViewWidth = d.getWidth();
-
-        //int numPlayers =8;
-        //float[] Positions = {1,.25f,.35f,.40f,.5f,.45f,.15f,0};
-
-        int numPlayers = ((MultiGame)mGame).getTotalOpponents();
-        float[] Positions = new float[numPlayers];
-
-        int[] PlayerTags = {R.id.player1,R.id.player2,R.id.player3,R.id.player4,R.id.player4,R.id.player5,R.id.player6,R.id.player7,R.id.player8};
-        ImageView[] Opponents = new ImageView[8];
-        for(int i = 0; i < Opponents.length; i++){
-            Opponents[i] = (ImageView)findViewById(PlayerTags[i]);
-            if(i<numPlayers){
-                Opponents[i].setVisibility(View.VISIBLE);
+    private void initializePlayerTokens(){
+        if(multiplayer) {
+            numPlayers = ((MultiGame) mGame).getTotalOpponents();
+            for (int i = 0; i < Opponents.length; i++) {
+                Opponents[i] = (ImageView) findViewById(Tags.PlayerTags[i]);
+                if (i < numPlayers) {
+                    Opponents[i].setVisibility(View.VISIBLE);
+                    //Opponents[i].setX(0);
+                } else {
+                    Opponents[i].setVisibility(GONE);
+                }
             }
-            else{
-                Opponents[i].setVisibility(GONE);
+
+            ViewGroup.LayoutParams paramsBar = botBar.getLayoutParams();
+            int view_height = d.getHeight();
+            paramsBar.height = (int)(view_height*(numPlayers*.0125));
+            botBar.setLayoutParams(paramsBar);
+
+
+
+
+            ViewGroup.LayoutParams params=botBar.getLayoutParams();
+            int botBarHeight = params.height;
+            ViewGroup.LayoutParams params2=Opponents[0].getLayoutParams();
+            int playerTokenHeight = params2.height;
+            float offset = (botBarHeight-playerTokenHeight)/(numPlayers-1);
+            for(int i = 0; i < numPlayers; i++){
+                Opponents[i].setY(i*offset);
             }
         }
+    }
+
+    private void upDatePositions(){
+        int thisViewWidth = d.getWidth();
         for(int i = 0; i < numPlayers; i++){
             ViewGroup.LayoutParams params=Opponents[i].getLayoutParams();
             float newPos = ((MultiGame)mGame).getOpponetProgress(i) * (thisViewWidth-params.width);
@@ -1568,14 +1582,10 @@ public class BoardActivity extends BaseActivity {
     private void customizeLayout(boolean resume) {
 
 // Changes the height and width to the specified *pixels*
-        ViewGroup.LayoutParams params = botBar.getLayoutParams();
-        int view_height = d.getHeight();
 
-        if(multiplayer){
-            params.height = (int)(view_height*.07);
-            botBar.setLayoutParams(params);
-        }
-        else{
+        if(!multiplayer){
+            ViewGroup.LayoutParams params = botBar.getLayoutParams();
+            int view_height = d.getHeight();
             params.height = 0;
             botBar.setLayoutParams(params);
         }
