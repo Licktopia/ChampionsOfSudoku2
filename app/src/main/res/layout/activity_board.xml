@@ -31,57 +31,57 @@
 
         <ImageView
             android:id="@+id/player1"
-            android:layout_width="12dp"
-            android:layout_height="12dp"
+            android:layout_width="14dp"
+            android:layout_height="14dp"
             android:layout_centerVertical="false"
             app:srcCompat="@drawable/cbut_bluedot" />
 
         <ImageView
             android:id="@+id/player2"
-            android:layout_width="12dp"
-            android:layout_height="12dp"
+            android:layout_width="14dp"
+            android:layout_height="14dp"
             android:layout_centerVertical="false"
             app:srcCompat="@drawable/cbut_lightreddot" />
 
         <ImageView
             android:id="@+id/player3"
-            android:layout_width="12dp"
-            android:layout_height="12dp"
+            android:layout_width="14dp"
+            android:layout_height="14dp"
             android:layout_centerVertical="false"
             app:srcCompat="@drawable/cbut_darkreddot" />
 
         <ImageView
             android:id="@+id/player4"
-            android:layout_width="12dp"
-            android:layout_height="12dp"
+            android:layout_width="14dp"
+            android:layout_height="14dp"
             android:layout_centerVertical="false"
             app:srcCompat="@drawable/cbut_silverdot" />
 
         <ImageView
             android:id="@+id/player5"
-            android:layout_width="12dp"
-            android:layout_height="12dp"
+            android:layout_width="14dp"
+            android:layout_height="14dp"
             android:layout_centerVertical="false"
             app:srcCompat="@drawable/cbut_orangedot" />
 
         <ImageView
             android:id="@+id/player6"
-            android:layout_width="12dp"
-            android:layout_height="12dp"
+            android:layout_width="14dp"
+            android:layout_height="14dp"
             android:layout_centerVertical="false"
             app:srcCompat="@drawable/cbut_purpledot" />
 
         <ImageView
             android:id="@+id/player7"
-            android:layout_width="12dp"
-            android:layout_height="12dp"
+            android:layout_width="14dp"
+            android:layout_height="14dp"
             android:layout_centerVertical="false"
             app:srcCompat="@drawable/cbut_yellowdot" />
 
         <ImageView
             android:id="@+id/player8"
-            android:layout_width="12dp"
-            android:layout_height="12dp"
+            android:layout_width="14dp"
+            android:layout_height="14dp"
             android:layout_centerVertical="false"
             app:srcCompat="@drawable/cbut_darkgreendot"
             tools:visibility="visible" />

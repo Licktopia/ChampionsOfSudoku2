@@ -145,7 +145,7 @@ public class BoardActivity extends BaseActivity {
     private CognitoSyncManager syncClient;
     private AmazonDynamoDBClient ddbClient;
     private DynamoDBMapper mapper;
-    private ObjectAnimator animX;
+
 
 
     @Override
@@ -293,7 +293,7 @@ public class BoardActivity extends BaseActivity {
 
             ViewGroup.LayoutParams paramsBar = botBar.getLayoutParams();
             int view_height = d.getHeight();
-            paramsBar.height = (int)(view_height*(numPlayers*.0125));
+            paramsBar.height = (int)(view_height*(numPlayers*.015));
             botBar.setLayoutParams(paramsBar);
 
 
@@ -312,12 +312,26 @@ public class BoardActivity extends BaseActivity {
 
     private void upDatePositions(){
         int thisViewWidth = d.getWidth();
+        ObjectAnimator animX;
+        ObjectAnimator fadeOut;
+        ObjectAnimator fadeIn;
+        AnimatorSet animatorSet;
+        animatorSet = new AnimatorSet();
         for(int i = 0; i < numPlayers; i++){
             ViewGroup.LayoutParams params=Opponents[i].getLayoutParams();
+            float oldPos = Opponents[i].getX();
             float newPos = ((MultiGame)mGame).getOpponetProgress(i) * (thisViewWidth-params.width);
-            animX= ObjectAnimator.ofFloat(Opponents[i], "x", newPos);
-            animX.setDuration(100);
-            animX.start();
+            if(newPos!=oldPos) {
+                animX = ObjectAnimator.ofFloat(Opponents[i], "x", newPos);
+                animX.setDuration(800);
+                fadeOut = ObjectAnimator.ofFloat(Opponents[i], "alpha", .5f);
+                fadeOut.setDuration(100);
+                fadeIn = ObjectAnimator.ofFloat(Opponents[i], "alpha", 1);
+                fadeIn.setDuration(100);
+                animatorSet.playSequentially(fadeOut, animX, fadeIn);
+                animatorSet.start();
+            }
+            //animX.start();
             //Opponents[i].setX(newPos);
         }
     }
