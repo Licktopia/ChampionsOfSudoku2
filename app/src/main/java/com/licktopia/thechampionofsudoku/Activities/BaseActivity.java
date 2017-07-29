@@ -69,6 +69,15 @@ public abstract class BaseActivity extends BaseGameActivity {
         return savedGames;
     }
 
+    public static byte[] getThisSavedGame(String exactTime){
+        for(int i = 0; i < savedGames.size(); i ++){
+            if(exactTime.compareTo(savedGames.get(i).getExactTime()) == 0){
+                return savedGames.get(i).getSaveFile();
+            }
+        }
+        return null;
+    }
+
     public static void setSavedGames(ArrayList<SavedGame> savedGames) {
         Collections.sort(savedGames, new BaseActivity.RecentSorter());
         BaseActivity.savedGames = savedGames;

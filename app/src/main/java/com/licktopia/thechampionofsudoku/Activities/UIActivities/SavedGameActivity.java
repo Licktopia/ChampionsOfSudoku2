@@ -54,10 +54,7 @@ public class SavedGameActivity extends BaseActivity {
 
 
 
-        querySavedGameDb();
-        fillListItems();
-        adapter = new SavedGameListAdapter(savedGameListItems, this);
-        recyclerView.setAdapter(adapter);
+
     }
 
     private void fillListItems(){
@@ -71,7 +68,7 @@ public class SavedGameActivity extends BaseActivity {
                     getSavedGames().get(i).getLevel(),
                     getSavedGames().get(i).getPuzzleNumber(),
                     getSavedGames().get(i).getGamerID(),
-                    getSavedGames().get(i).getSaveFile(),
+                    //getSavedGames().get(i).getSaveFile(),
                     getSavedGames().get(i).getStoppedTime()
                     );
             savedGameListItems.add(sGLI);
@@ -85,6 +82,16 @@ public class SavedGameActivity extends BaseActivity {
         super.onResume();
 
     }
+
+    @Override
+    protected void onStart(){
+        super.onStart();
+        querySavedGameDb();
+        fillListItems();
+        adapter = new SavedGameListAdapter(savedGameListItems, this);
+        recyclerView.setAdapter(adapter);
+    }
+
     @Override
     public void onSignInFailed() {
 

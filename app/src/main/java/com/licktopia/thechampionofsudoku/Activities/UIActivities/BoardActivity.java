@@ -217,8 +217,9 @@ public class BoardActivity extends BaseActivity {
         //LOAD GAME STUFF IS HERE
         if(resume)
         {
-            byte[] temp = getIntent().getExtras().getByteArray("SAVE_FILE");
-            try(ByteArrayInputStream b = new ByteArrayInputStream(getIntent().getExtras().getByteArray("SAVE_FILE"))){
+           // byte[] temp = getIntent().getExtras().getByteArray("SAVE_FILE");
+
+            try(ByteArrayInputStream b = new ByteArrayInputStream(getThisSavedGame(exactTime))){
 
 
                 ObjectInputStream o = new ObjectInputStream(b);
@@ -316,7 +317,7 @@ public class BoardActivity extends BaseActivity {
     }
 
     private void uploadSavedGame(boolean autosave){
-        if(isInternet()&&gameHelper.getApiClient().isConnected()) {
+        if(isInternet() && gameHelper.getApiClient().isConnected() && !multiplayer) {
             if(!alreadySaved){
                 try {
                     ThreadLocalRandom _Rand = ThreadLocalRandom.current();
@@ -388,7 +389,9 @@ public class BoardActivity extends BaseActivity {
 
         }
         else{
-            Toast.makeText(this, R.string.not_upload,Toast.LENGTH_SHORT).show();
+            if(!multiplayer) {
+                Toast.makeText(this, R.string.not_upload, Toast.LENGTH_SHORT).show();
+            }
         }
     }
 

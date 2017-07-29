@@ -25,7 +25,7 @@ public class SavedGameListItem {
 
 
 
-    public SavedGameListItem(String date, String time, boolean colorMode, String exactTime, int level, int puzzleNumber, String gamerID, byte[] savedGame, long stoppedTIme) {
+    public SavedGameListItem(String date, String time, boolean colorMode, String exactTime, int level, int puzzleNumber, String gamerID, long stoppedTIme) {
 
         this.date = date;
         this.level = level;
