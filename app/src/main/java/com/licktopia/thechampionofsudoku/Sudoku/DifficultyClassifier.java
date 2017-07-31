@@ -89,16 +89,28 @@ public class DifficultyClassifier {
 
     public static void runBacktracking(Context context) {
 
-        for (int level = 5; level < 6; level++) {
+        for (int level = 0; level < 6; level++) {
+            for (int index = 0; index < 1000; index++) {
+                Board board = new Board(level, context, index);
+                Solver solutionSolver = new Solver(board);
+                solutionSolver.solve();
+                if (index % 50 == 0) Log.i("BoardResults", "BACK: Finished board #" + index + " at level " + level);
+            }
+        }
+    }
+
+    public static void runStrategies(Context context) {
+
+        for (int level = 0; level < 6; level++) {
             int unsolved = 0;
             for (int index = 0; index < 1000; index++) {
                 Board board = new Board(level, context, index);
                 Solver solutionSolver = new Solver(board);
                 solutionSolver.solveWithStrategies();
                 if (solutionSolver.getExactSolution().size() != board.getOpenSquares()) unsolved++;
-                if (index % 5 == 0) Log.i("BoardResults", "STRAT: Finished board #" + index + " at level " + level);
+                if (index % 50 == 0) Log.i("BoardResults", "STRAT: Finished board #" + index + " at level " + level);
             }
-            Log.i("BoardResults", "Unsolved: " + unsolved);
+            Log.i("BoardResults", "Unsolved: " + unsolved + " at level " + level);
         }
     }
 }
