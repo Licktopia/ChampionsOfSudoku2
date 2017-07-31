@@ -160,8 +160,8 @@ public class BoardActivity extends BaseActivity {
         resume = getIntent().getExtras().getBoolean("RESUME");
         level = getIntent().getExtras().getInt("LEVEL");
         long sTime = getIntent().getExtras().getLong("STOPPED_TIME");
-        //multiplayer = getIntent().getExtras().getBoolean("MULTIPLAYER");
-        multiplayer = true;
+        multiplayer = getIntent().getExtras().getBoolean("MULTIPLAYER");
+        //multiplayer = true;
         exactTime = getIntent().getExtras().getString("EXACT_TIME");
         savedName = getIntent().getExtras().getString("SAVED_NAME");
         savedDate = getIntent().getExtras().getString("SAVED_DATE");
