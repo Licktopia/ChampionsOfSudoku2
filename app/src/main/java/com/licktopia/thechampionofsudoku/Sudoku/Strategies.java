@@ -40,6 +40,8 @@ public class Strategies {
     public static final int LOCKED_CANDIDATE = 5;
     public static final int XWING = 6;
 
+    public static final int NUM_STRATEGIES = 6;
+
     /* Returns a single random element of type <T> from a list */
     public static <T> T getRandomElement(List<T> list) {
         int rand = ThreadLocalRandom.current().nextInt(0, list.size());
@@ -95,7 +97,7 @@ public class Strategies {
 
         for (int idx : indicesToEdit) {
             for (int np : hint.hintInfo[NOTEPAD])
-                board.getSquare(idx).setNotepad(np, false);
+                board.setNotepadAt(idx, np, false);
         }
     }
 
@@ -362,33 +364,35 @@ public class Strategies {
         return xWings;
     }
 
-    public static void executeStrategyFromList(Board board, List<Hint> hints) {
+    public static int executeStrategyFromList(Board board, List<Hint> hints) {
         if (!hints.isEmpty()) {
             Hint hint = getRandomElement(hints);
             executeStrategy(board, hint);
+            return 1;   // Signify a move was made
         }
+        else return 0;  // No move made
     }
 
     /* Finds, selects, and executes naked pair strategy on one random existing hidden single */
-    public static void removeRandomHiddenSingle(Board board) {
-        executeStrategyFromList(board, getHiddenSingles(board));
+    public static int removeRandomHiddenSingle(Board board) {
+        return executeStrategyFromList(board, getHiddenSingles(board));
     }
     /* Finds, selects, and executes naked pair strategy on one random existing naked pair */
-    public static void removeRandomNakedPairValues(Board board) {
-        executeStrategyFromList(board, getNakedPairs(board));
+    public static int removeRandomNakedPairValues(Board board) {
+        return executeStrategyFromList(board, getNakedPairs(board));
     }
 
     /* Finds, selects, and executes hidden pair strategy on one random existing hidden pair */
-    public static void removeRandomHiddenPairValues(Board board) {
-        executeStrategyFromList(board, getHiddenPairs(board));
+    public static int removeRandomHiddenPairValues(Board board) {
+        return executeStrategyFromList(board, getHiddenPairs(board));
     }
 
-    public static void removeRandomLockedCandidateValues(Board board) {
-        executeStrategyFromList(board, getLockedCandidates(board));
+    public static int removeRandomLockedCandidateValues(Board board) {
+        return executeStrategyFromList(board, getLockedCandidates(board));
     }
 
-    public static void removeRandomXWingValues(Board board) {
-        executeStrategyFromList(board, getXWings(board));
+    public static int removeRandomXWingValues(Board board) {
+        return executeStrategyFromList(board, getXWings(board));
     }
 
     //updates all squares' notepads so that only valid moves are true

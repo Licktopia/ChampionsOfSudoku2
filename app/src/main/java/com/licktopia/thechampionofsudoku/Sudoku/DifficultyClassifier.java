@@ -57,17 +57,20 @@ public class DifficultyClassifier {
     }
 
     public static void getSolverEfficiency(Context context) {
-        int[][] stepsToGo = new int[2][PUZZLES_PER_DIFFICULTY];
+        int[][] strategiesUsed = new int[1][PUZZLES_PER_DIFFICULTY];
+        int[][] stepsToGo = new int[1][PUZZLES_PER_DIFFICULTY];
         int numCompleted = 0;
 
-        for (int level = 1; level < 2; level++) {
+        for (int level = 4; level < 5; level++) {
             for (int index = 0; index < PUZZLES_PER_DIFFICULTY; index++) {
                 Board board = new Board(level, context, index);
                 Solver solutionSolver = new Solver(board);
-                int solvedSteps = solutionSolver.solveWithStrategies();
+                solutionSolver.solve();
+                //int solvedSteps = solutionSolver.solveWithStrategies();
                 int squaresToGo = solutionSolver.getNumberOfSquaresUnfilled();
                 if (squaresToGo == 0) numCompleted++;
-                stepsToGo[level - 1][index] = squaresToGo;
+                strategiesUsed[level - 4][index] = 0;
+                stepsToGo[level - 4][index] = squaresToGo;
                 if (index % 50 == 0) Log.i("BoardResults", "Finished board #" + index + " at level " + level);
             }
             Log.i("LevelResults", "Level " + level + " Results: ");
@@ -77,10 +80,25 @@ public class DifficultyClassifier {
                     Log.i("IndResults", results.toString());
                     results = new StringBuilder();
                 }
-                results.append(stepsToGo[level - 1][i]);
+                results.append(strategiesUsed[level - 4][i]);
                 results.append(',');
             }
         }
         Log.i("LevelResults", "Number completed over 2 levels is: " + numCompleted);
+    }
+
+    public static void runBacktracking(Context context) {
+
+        for (int level = 5; level < 6; level++) {
+            int unsolved = 0;
+            for (int index = 0; index < 1000; index++) {
+                Board board = new Board(level, context, index);
+                Solver solutionSolver = new Solver(board);
+                solutionSolver.solveWithStrategies();
+                if (solutionSolver.getExactSolution().size() != board.getOpenSquares()) unsolved++;
+                if (index % 5 == 0) Log.i("BoardResults", "STRAT: Finished board #" + index + " at level " + level);
+            }
+            Log.i("BoardResults", "Unsolved: " + unsolved);
+        }
     }
 }

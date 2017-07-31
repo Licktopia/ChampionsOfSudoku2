@@ -87,7 +87,7 @@ public class Solver implements java.io.Serializable {
         return curBoard;
     }
 
-    // Returns a queue of squares that is an exact set of steps to solve the puzzle
+    // Returns an int representing a difficulty score, calculated by how many strategies were used
     public int solveWithStrategies() {
         int strategiesUsed = 0;
         // Number of steps
@@ -98,30 +98,31 @@ public class Solver implements java.io.Serializable {
         Strategies.updateAllNotepads(curBoard, false);
         // Iterate while there are still squares to fill or we can't solve any more
         while (squaresToComplete > 0 && !cannotSolve) {
+            int beforeStrategiesUsed = strategiesUsed;
             switch(strategyNumber) {
                 case Strategies.XWING:
-                    Strategies.removeRandomXWingValues(curBoard);
+                    strategiesUsed += Strategies.removeRandomXWingValues(curBoard);
                 case Strategies.LOCKED_CANDIDATE:
-                    Strategies.removeRandomLockedCandidateValues(curBoard);
+                    strategiesUsed += Strategies.removeRandomLockedCandidateValues(curBoard);
                 case Strategies.HIDDEN_PAIR:
-                    Strategies.removeRandomHiddenPairValues(curBoard);
+                    strategiesUsed += Strategies.removeRandomHiddenPairValues(curBoard);
                 case Strategies.HIDDEN_SINGLE:
-                    Strategies.removeRandomNakedPairValues(curBoard);
+                    strategiesUsed += Strategies.removeRandomNakedPairValues(curBoard);
                 case Strategies.NAKED_DOUBLE:
-                    Strategies.removeRandomHiddenSingle(curBoard);
+                    strategiesUsed += Strategies.removeRandomHiddenSingle(curBoard);
                 case Strategies.NAKED_SINGLE:
-                    strategiesUsed++;
                     int index = Strategies.removeRandomNakedSingle(curBoard);
                     // If no squares are found
                     if (index == -1) {
-                        // Exhausted all strategies, we cannot solve at this point (YET)
-                        if (strategyNumber == Strategies.XWING)
+                        // Not a single change was made from any strategy, we cannot solve at this point (YET)
+                        if (strategyNumber == Strategies.NUM_STRATEGIES && (strategiesUsed - beforeStrategiesUsed == 0))
                             cannotSolve = true;
-                        else // Try next strategy
+                        else if (strategyNumber != Strategies.NUM_STRATEGIES)// Try next strategy
                             strategyNumber++;
                     }
                     // Add step to queue, and repeat
                     else {
+                        strategiesUsed++;
                         solvingStepsStrategies.add(curBoard.getSquare(index));
                         squaresToComplete--;
                         Strategies.updateAllNotepads(curBoard, true);
