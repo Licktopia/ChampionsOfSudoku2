@@ -470,6 +470,11 @@ public class Board implements java.io.Serializable {
         return cluster1 == cluster2;
     }
 
+    // Returns if two indices are connected
+    protected boolean isConnected(int idx1, int idx2) {
+        return (isSameRow(idx1, idx2) || isSameCol(idx1, idx2) || isSameCluster(idx1, idx2));
+    }
+
     // Returns an array of indices of all squares in same row as idx
     protected int[] getRowIndicesByIndex(int idx) {
         return getRowIndices(idxToRow(idx));

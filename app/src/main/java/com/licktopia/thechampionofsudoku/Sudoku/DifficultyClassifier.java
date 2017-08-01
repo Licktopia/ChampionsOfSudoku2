@@ -57,11 +57,11 @@ public class DifficultyClassifier {
     }
 
     public static void getSolverEfficiency(Context context) {
-        int[][] strategiesUsed = new int[1][PUZZLES_PER_DIFFICULTY];
-        int[][] stepsToGo = new int[1][PUZZLES_PER_DIFFICULTY];
+        int[][] strategiesUsed = new int[DIFFICULTY_LEVELS][PUZZLES_PER_DIFFICULTY];
+        int[][] stepsToGo = new int[DIFFICULTY_LEVELS][PUZZLES_PER_DIFFICULTY];
         int numCompleted = 0;
 
-        for (int level = 4; level < 5; level++) {
+        for (int level = 0; level < 6; level++) {
             for (int index = 0; index < PUZZLES_PER_DIFFICULTY; index++) {
                 Board board = new Board(level, context, index);
                 Solver solutionSolver = new Solver(board);
@@ -69,8 +69,8 @@ public class DifficultyClassifier {
                 //int solvedSteps = solutionSolver.solveWithStrategies();
                 int squaresToGo = solutionSolver.getNumberOfSquaresUnfilled();
                 if (squaresToGo == 0) numCompleted++;
-                strategiesUsed[level - 4][index] = 0;
-                stepsToGo[level - 4][index] = squaresToGo;
+                strategiesUsed[level][index] = 0;
+                stepsToGo[level][index] = squaresToGo;
                 if (index % 50 == 0) Log.i("BoardResults", "Finished board #" + index + " at level " + level);
             }
             Log.i("LevelResults", "Level " + level + " Results: ");
@@ -80,7 +80,7 @@ public class DifficultyClassifier {
                     Log.i("IndResults", results.toString());
                     results = new StringBuilder();
                 }
-                results.append(strategiesUsed[level - 4][i]);
+                results.append(strategiesUsed[level][i]);
                 results.append(',');
             }
         }

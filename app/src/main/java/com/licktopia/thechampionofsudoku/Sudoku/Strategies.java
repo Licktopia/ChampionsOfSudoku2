@@ -39,6 +39,7 @@ public class Strategies {
     public static final int HIDDEN_PAIR = 4;
     public static final int LOCKED_CANDIDATE = 5;
     public static final int XWING = 6;
+    public static final int YWING =7;
 
     public static final int NUM_STRATEGIES = 6;
 
