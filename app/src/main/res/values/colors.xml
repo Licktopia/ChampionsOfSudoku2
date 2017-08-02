@@ -20,9 +20,9 @@
     <color name="green">#329d53</color>
     <color name="highlightred">#46d9433b</color>
     <color name="color1">#abd03a</color>
-    <color name="color2">#1E91D6</color>
+    <color name="color2">#1e91d6</color>
     <color name="color3">#ea3f6a</color>
-    <color name="color4">#7D1538</color>
+    <color name="color4">#7d1538</color>
     <color name="color5">#7c8597</color>
     <color name="color6">#E18335</color>
     <color name="color7">#4A2772</color>
@@ -30,6 +30,8 @@
     <color name="color9">#329d53</color>
     <color name="samecolorhiglight">#fff176</color>
     <color name="red">#ff3333</color>
+    <color name="sudokublue">#2979ff</color>
+    <color name="icongrey">#bdc3c6</color>
 
 
 </resources>

@@ -31,18 +31,15 @@ public class SavedGameActivity extends BaseActivity {
     private TextView savedUser;
     public static List<SavedGameListItem> savedGameListItems;
 
-
-
-
-
  
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_savedgame);
-        recyclerView = (RecyclerView)findViewById(R.id.savedrecyclerView);
         mProgressIndicator = (ProgressBar)findViewById(R.id.progressBar2);
         mProgressIndicator.setVisibility(View.VISIBLE);
+        recyclerView = (RecyclerView)findViewById(R.id.savedrecyclerView);
+
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         savedUser = (TextView)findViewById(R.id.saveduser_name);
@@ -50,11 +47,6 @@ public class SavedGameActivity extends BaseActivity {
                 new HorizontalDividerItemDecoration.Builder(this).size(12).build());
 
         savedUser.setText(new StringBuilder().append(getUsername()).append(getString(R.string.your_saved_games)).toString());
-
-
-
-
-
     }
 
     private void fillListItems(){
@@ -87,9 +79,7 @@ public class SavedGameActivity extends BaseActivity {
     protected void onStart(){
         super.onStart();
         querySavedGameDb();
-        fillListItems();
-        adapter = new SavedGameListAdapter(savedGameListItems, this);
-        recyclerView.setAdapter(adapter);
+
     }
 
     @Override
@@ -126,26 +116,22 @@ public class SavedGameActivity extends BaseActivity {
                     sGames.add(list[0].get(i));
                 }
                 setSavedGames(sGames);
+
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         //execute code on main thread
+                        fillListItems();
+                        adapter = new SavedGameListAdapter(savedGameListItems, SavedGameActivity.this);
+                        recyclerView.setAdapter(adapter);
                         mProgressIndicator.setVisibility(View.GONE);
                     }
                 });
-
-
-
             }
         };
 
         Thread mythread = new Thread(runnable);
         mythread.start();
-        try {
-            mythread.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
     }
 
     public class RecentSorter implements Comparator<SavedGameListItem> {
