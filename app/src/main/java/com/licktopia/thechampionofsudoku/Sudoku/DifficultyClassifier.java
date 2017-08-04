@@ -89,14 +89,17 @@ public class DifficultyClassifier {
 
     public static void runBacktracking(Context context) {
 
+        int unsolvedBoards = 0;
         for (int level = 0; level < 6; level++) {
             for (int index = 0; index < 1000; index++) {
                 Board board = new Board(level, context, index);
                 Solver solutionSolver = new Solver(board);
                 solutionSolver.solve();
+                if (solutionSolver.curBoard.isBoardFull()) unsolvedBoards++;
                 if (index % 50 == 0) Log.i("BoardResults", "BACK: Finished board #" + index + " at level " + level);
             }
         }
+        Log.i("BoardResults", "Unsolved boards: " + unsolvedBoards);
     }
 
     public static void runStrategies(Context context) {

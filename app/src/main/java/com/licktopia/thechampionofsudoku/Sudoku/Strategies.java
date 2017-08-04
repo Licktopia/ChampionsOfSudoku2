@@ -365,7 +365,34 @@ public class Strategies {
         return xWings;
     }
 
-    public static int executeStrategyFromList(Board board, List<Hint> hints) {
+    /****** Y WING *******/
+    //  Square #1 with only candidates AB, connected to two other squares, #2 and #3, (in different groups) with
+    //  candidates AC and BC respectively.  Any other square that is connected to both #2 and #3
+    //  is able to remove candidate C as one of those two squares must contain it.
+
+    public static List<Hint> getYWings(Board board) {
+
+        ArrayList<Hint> yWings = new ArrayList<>();
+        int size = board.getSize() * board.getSize();
+
+        // Track which square notepads have two values only
+        boolean[] notepadCheck = new boolean[size];
+        for (int i = 0; i < size; i++) {
+            int notepadNums = board.getTotalNotepadValues(i);
+            notepadCheck[i] = notepadNums == 2;
+        }
+
+        // Iterate through all qualifying squares
+        for (int i = 0; i < size; i++) {
+            if (notepadCheck[i]) {
+                
+            }
+        }
+
+        return yWings;
+    }
+
+        public static int executeStrategyFromList(Board board, List<Hint> hints) {
         if (!hints.isEmpty()) {
             Hint hint = getRandomElement(hints);
             executeStrategy(board, hint);
