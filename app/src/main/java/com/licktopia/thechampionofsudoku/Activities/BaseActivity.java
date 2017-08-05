@@ -451,6 +451,7 @@ public class BaseActivity extends BaseGameActivity
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode,resultCode,data);
+        gameHelper.onActivityResult(requestCode, resultCode, data);
     }
 
     //@Override //TODO Not a fragment function, need to implement in Activity possibly
@@ -472,6 +473,8 @@ public class BaseActivity extends BaseGameActivity
             } else {
                 swapFragment(BaseActivity.MAIN_MENU_FRAGMENT, new Bundle());
             }
+        }else{
+            super.onBackPressed();
         }
     }
 
