@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/backgroundcroppedsmall"
     android:fitsSystemWindows="false"
-    android:orientation="vertical"
     android:weightSum="100">
 
     <LinearLayout
         android:id="@+id/menu"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:alpha=".6"
         android:orientation="vertical"
         android:weightSum="100"
         tools:visibility="visible">
@@ -593,7 +593,7 @@
                     android:orientation="horizontal"
                     android:visibility="visible"
                     android:weightSum="100"
-                    tools:visibility="visible">
+                    tools:visibility="gone">
 
                     <ImageView
                         android:id="@+id/imageView9"
@@ -639,7 +639,6 @@
                             android:gravity="top|center_horizontal"
                             android:text="Resume"
                             android:textSize="13sp"
-                            android:textStyle="bold"
                             tools:visibility="visible" />
                     </LinearLayout>
 
@@ -768,80 +767,112 @@
 
                 <LinearLayout
                     android:id="@+id/multiplayer_bar"
-                    android:layout_width="250dp"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_toEndOf="@+id/lickbar"
                     android:layout_toRightOf="@+id/lickbar"
-                    android:orientation="horizontal"
+                    android:orientation="vertical"
                     android:visibility="visible"
                     android:weightSum="100"
-                    tools:visibility="gone">
+                    tools:layout_width="400dp"
+                    tools:visibility="visible">
 
-                    <ImageView
-                        android:id="@+id/imageView12"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="15dp"
-                        android:layout_weight="5"
-                        android:rotation="180"
-                        android:visibility="invisible"
-                        app:srcCompat="@drawable/rightpointer" />
+                    <TextView
+                        android:id="@+id/textView9"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="35"
+                        android:gravity="center"
+                        android:text="Multiplayer Game"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textSize="18sp" />
 
-                    <Button
-                        android:id="@+id/host_button"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="30"
-                        android:clickable="false"
-                        android:padding="5dp"
-                        android:scaleX=".75"
-                        android:scaleY=".75"
-                        android:text="Host Game"
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="65"
+                        android:orientation="horizontal"
                         android:visibility="visible"
                         android:weightSum="100"
+                        tools:layout_width="match_parent"
                         tools:visibility="visible">
 
-                    </Button>
+                        <ImageView
+                            android:id="@+id/imageView12"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="15dp"
+                            android:layout_weight="5"
+                            android:rotation="180"
+                            android:visibility="invisible"
+                            app:srcCompat="@drawable/rightpointer" />
 
-                    <Button
-                        android:id="@+id/quick_button"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center_vertical"
-                        android:layout_weight="30"
-                        android:padding="5dp"
-                        android:scaleX=".75"
-                        android:scaleY=".75"
-                        android:text="Quick Game"
-                        android:visibility="visible">
+                        <Button
+                            android:id="@+id/host_button"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_margin="5dp"
+                            android:layout_weight="30"
+                            android:background="@drawable/multiplayer_button"
+                            android:clickable="true"
+                            android:text="Host "
+                            android:textColor="@color/white"
+                            android:textSize="12sp"
+                            android:visibility="visible"
+                            android:weightSum="100"
+                            tools:clickable="true"
+                            tools:visibility="visible">
+
+                        </Button>
+
+                        <Button
+                            android:id="@+id/quick_button"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center_vertical"
+                            android:layout_margin="5dp"
+                            android:layout_weight="30"
+                            android:background="@drawable/multiplayer_button"
+                            android:clickable="true"
+                            android:text="Quick "
+                            android:textColor="@color/white"
+                            android:textSize="12sp"
+                            android:visibility="visible"
+                            tools:clickable="true">
 
 
-                    </Button>
+                        </Button>
 
-                    <Button
-                        android:id="@+id/join_button"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="30"
-                        android:padding="5dp"
-                        android:scaleX=".75"
-                        android:scaleY=".75"
-                        android:text="Join Game"
-                        android:visibility="visible"
-                        android:weightSum="100">
+                        <Button
+                            android:id="@+id/join_button"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_margin="5dp"
+                            android:layout_weight="30"
+                            android:background="@drawable/multiplayer_button"
+                            android:clickable="true"
+                            android:text="Join "
+                            android:textColor="@color/white"
+                            android:textSize="12sp"
+                            android:visibility="visible"
+                            android:weightSum="100"
+                            tools:clickable="true">
 
-                    </Button>
+                        </Button>
 
-                    <ImageView
-                        android:id="@+id/imageView13"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="15dp"
-                        android:layout_weight="5"
-                        android:visibility="visible"
-                        app:srcCompat="@drawable/rightpointer" />
+                        <ImageView
+                            android:id="@+id/imageView13"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="15dp"
+                            android:layout_weight="5"
+                            android:visibility="visible"
+                            app:srcCompat="@drawable/rightpointer" />
+
+                    </LinearLayout>
 
                 </LinearLayout>
+
             </LinearLayout>
         </HorizontalScrollView>
 
@@ -887,4 +918,11 @@
         </RelativeLayout>
     </LinearLayout>
 
-</LinearLayout>
+    <ProgressBar
+        android:id="@+id/main_progress"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true" />
+
+</RelativeLayout>

@@ -53,6 +53,7 @@ import com.licktopia.thechampionofsudoku.BackgroundImages;
 import com.licktopia.thechampionofsudoku.Multiplayer.MultiGame;
 import com.licktopia.thechampionofsudoku.PlaySounds;
 import com.licktopia.thechampionofsudoku.R;
+import com.licktopia.thechampionofsudoku.SavedGameListAdapter;
 import com.licktopia.thechampionofsudoku.Settings.SudokuSettings;
 import com.licktopia.thechampionofsudoku.Settings.SudokuSettingsActivity;
 import com.licktopia.thechampionofsudoku.SquareView;
@@ -406,16 +407,29 @@ public class BoardActivity extends BaseActivity {
                     //DynamoDB calls go here
                     try {
                         mapper.save(obj);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                //execute code on main thread
+                                Toast.makeText(BoardActivity.this, new StringBuilder().append(getString(R.string.gamesavedwithalias)).append(fileSaveName).toString(),Toast.LENGTH_SHORT).show();
+                            }
+                        });
                     }
-                    catch(Exception e){
-
+                    catch(final Exception e){
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                //execute code on main thread
+                                Toast.makeText(BoardActivity.this, (CharSequence) e,Toast.LENGTH_SHORT).show();
+                            }
+                        });
                     }
                 }
             };
             Thread mythread = new Thread(runnable);
             mythread.start();
             alreadySaved = true;
-            Toast.makeText(this, new StringBuilder().append(getString(R.string.gamesavedwithalias)).append(fileSaveName).toString(),Toast.LENGTH_SHORT).show();
+
 
 
 

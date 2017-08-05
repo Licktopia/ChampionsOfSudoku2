@@ -49,6 +49,7 @@ import com.licktopia.thechampionofsudoku.Sudoku.CompletedGame;
 import com.licktopia.thechampionofsudoku.Sudoku.SavedGame;
 
 import java.math.BigInteger;
+import java.security.spec.ECField;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -94,6 +95,7 @@ public class MainMenuActivity  extends BaseActivity {
     private HorizontalScrollView scrollView;
     LinearLayout mLick;
     LinearLayout innerScrollView;
+    LinearLayout mainScreen;
 
 
     @Override
@@ -107,6 +109,8 @@ public class MainMenuActivity  extends BaseActivity {
         lickbar = (LinearLayout)findViewById(R.id.lickbar);
         multiplayerBar = (LinearLayout)findViewById(R.id.multiplayer_bar);
         innerScrollView = (LinearLayout) findViewById(R.id.innerscrollview);
+        mProgressBar = (ProgressBar)findViewById(R.id.main_progress);
+        mainScreen = (LinearLayout)findViewById(R.id.menu);
         mLick = (LinearLayout)findViewById(R.id.lick);
         WindowManager wm = getWindowManager();
         Display d = wm.getDefaultDisplay();
@@ -136,7 +140,6 @@ public class MainMenuActivity  extends BaseActivity {
         gameHelper.setup(this);
         // Initialize the Amazon Cognito credentials provider
 
-        //mResumeButton.setClickable(false);
         signInInitialization();
         initAnimation();
         levelButtonInitialize();
@@ -248,7 +251,12 @@ public class MainMenuActivity  extends BaseActivity {
             Runnable runnable = new Runnable() {
                 public void run() {
                     //DynamoDB calls go here
-                    list[0] = mapper.query(CompletedGame.class, queryExpression);
+                    try {
+                        list[0] = mapper.query(CompletedGame.class, queryExpression);
+                    }
+                    catch(Exception e){
+
+                    }
                     ArrayList<CompletedGame> cGames = new ArrayList<CompletedGame>();
                     for (int i = 0; i < list[0].size(); i++) {
                         cGames.add(list[0].get(i));
@@ -263,39 +271,6 @@ public class MainMenuActivity  extends BaseActivity {
     }
 
 
-    //Updates the save game button based on the current state of the loading the saved game
-    void updateActivity()
-    {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-
-
-                if (getSavedGames() == null || getSavedGames().isEmpty()) {
-
-                        //mProgressBar.setVisibility(GONE);
-                       // mResumeButton.setVisibility(VISIBLE);
-                        //mResumeButton.setAlpha(RESUME_ALPHA);
-                        //mResumeButton.setClickable(false);
-
-
-
-                }
-                 else {
-
-                       // initializeResumeButton(mResumeButton);
-                        //mResumeButton.setAlpha(1f);
-                        //mResumeButton.setClickable(true);
-                        //mProgressBar.setVisibility(GONE);
-                        //mResumeButton.setVisibility(VISIBLE);
-
-
-                }
-            }
-        });
-    }
-
-
     /***************************************
     *Update UI when login or logout occurs
     ***************************************/
@@ -305,15 +280,6 @@ public class MainMenuActivity  extends BaseActivity {
                 mPlaySounds.playSounds(this,7);
                 userSignIn = false;
             }
-
-            //mProgressBar.setVisibility(VISIBLE);
-           // mResumeButton.setVisibility(GONE);
-
-
-            //mProgressBar.setVisibility(VISIBLE);
-           // mResumeButton.setVisibility(GONE);
-
-
 
             mSignInButton.setVisibility(GONE);
             mBadge.setVisibility(VISIBLE);
@@ -326,19 +292,13 @@ public class MainMenuActivity  extends BaseActivity {
                 queryCompletedGameDb();
                 querySavedGameDb();
             }
-            else{
-                //mProgressBar.setVisibility(GONE);
-               // mResumeButton.setAlpha(RESUME_ALPHA);
-            }
         }
         else{
             setNullUser();
             if(clickedOut) {
                 mPlaySounds.playSounds(this,8);
             }
-            //mProgressBar.setVisibility(GONE);
-           // mResumeButton.setAlpha(RESUME_ALPHA);
-            //mResumeButton.setVisibility(VISIBLE);
+
             clickedOut = false;
             mSignInButton.setVisibility(VISIBLE);
             mSignOutButton.setVisibility(View.INVISIBLE);
@@ -346,7 +306,8 @@ public class MainMenuActivity  extends BaseActivity {
             userBadge.setImageDrawable(getResources().getDrawable(BADGETAGS[getLevel()]));
         }
         setMessage();
-
+        mProgressBar.setVisibility(GONE);
+        mainScreen.setAlpha(1);
     }
 
     private void getHighestScoreFromLeaderBoard(){

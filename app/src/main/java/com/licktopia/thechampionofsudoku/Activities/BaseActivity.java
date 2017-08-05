@@ -206,6 +206,7 @@ public abstract class BaseActivity extends BaseGameActivity {
         Runnable runnable = new Runnable() {
             public void run() {
                 //DynamoDB calls go here
+
                 list[0] = mapper.query(SavedGame.class, queryExpression);
                 ArrayList<SavedGame> sGames = new ArrayList<SavedGame>();
                 for (int i = 0; i < list[0].size(); i++) {
