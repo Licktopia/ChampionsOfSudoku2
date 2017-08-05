@@ -7,7 +7,9 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.Display;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,16 +23,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.amazonaws.auth.CognitoCachingCredentialsProvider;
-import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBQueryExpression;
-import com.amazonaws.regions.Region;
-import com.amazonaws.regions.Regions;
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.games.Games;
@@ -46,22 +42,27 @@ import com.licktopia.thechampionofsudoku.Activities.BaseActivity;
 import com.licktopia.thechampionofsudoku.PlaySounds;
 import com.licktopia.thechampionofsudoku.R;
 import com.licktopia.thechampionofsudoku.Sudoku.CompletedGame;
-import com.licktopia.thechampionofsudoku.Sudoku.SavedGame;
+import com.licktopia.thechampionofsudoku.Sudoku.DifficultyClassifier;
 
 import java.math.BigInteger;
-import java.security.spec.ECField;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
+import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.BOARD_FRAGMENT;
+import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.GAMER_PROFILE_FRAGMENT;
+import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.SAVED_GAME_FRAGMENT;
+import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.getUsername;
+import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.setId;
+import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.setUsername;
 
-public class MainMenuActivity  extends BaseActivity {
+public class MainMenuFragment extends Fragment {
     private static final String PREF_FILE = "com.licktopia.com.licktopia.championofsudoku.preferences";
     private static final int RC_SAVED_GAMES = 9009;
     private static final float RESUME_ALPHA = .3f;
-    private final static String TAG = "MainMenuActivity";
+    private final static String TAG = "MainMenuFragment";
     private String mCurrentSaveName = "snapshotTemp";
 
     private int[] levelButtonTags = {R.id.beginnerButton,R.id.easyButton,R.id.mediumButton,R.id.hardButton,R.id.expertButton,R.id.masterButton};
@@ -97,22 +98,33 @@ public class MainMenuActivity  extends BaseActivity {
     LinearLayout innerScrollView;
     LinearLayout mainScreen;
 
+    private Button hostButton;
+
+    private View view;
+    private MainMenuFragmentListener callback;
+
+    public static MainMenuFragment newInstance() {
+        return new MainMenuFragment();
+    }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_menu);
-        scrollView = (HorizontalScrollView)findViewById(R.id.gestures);
-        mLevelSelect = (LinearLayout)findViewById(R.id.level_select);
-        mModeSelect = (LinearLayout)findViewById(R.id.mode_select);
-        lickbar = (LinearLayout)findViewById(R.id.lickbar);
-        lickbar = (LinearLayout)findViewById(R.id.lickbar);
-        multiplayerBar = (LinearLayout)findViewById(R.id.multiplayer_bar);
-        innerScrollView = (LinearLayout) findViewById(R.id.innerscrollview);
-        mProgressBar = (ProgressBar)findViewById(R.id.main_progress);
-        mainScreen = (LinearLayout)findViewById(R.id.menu);
-        mLick = (LinearLayout)findViewById(R.id.lick);
-        WindowManager wm = getWindowManager();
+
+        view = inflater.inflate(R.layout.activity_main_menu, container, false);
+
+        scrollView = (HorizontalScrollView)view.findViewById(R.id.gestures);
+        mLevelSelect = (LinearLayout)view.findViewById(R.id.level_select);
+        mModeSelect = (LinearLayout)view.findViewById(R.id.mode_select);
+        lickbar = (LinearLayout)view.findViewById(R.id.lickbar);
+        lickbar = (LinearLayout)view.findViewById(R.id.lickbar);
+        multiplayerBar = (LinearLayout)view.findViewById(R.id.multiplayer_bar);
+        innerScrollView = (LinearLayout)view.findViewById(R.id.innerscrollview);
+        mProgressBar = (ProgressBar)view.findViewById(R.id.main_progress);
+        mainScreen = (LinearLayout)view.findViewById(R.id.menu);
+        mLick = (LinearLayout)view.findViewById(R.id.lick);
+        WindowManager wm = getActivity().getWindowManager();
         Display d = wm.getDefaultDisplay();
         int view_width = 2*d.getWidth();
         ViewGroup.LayoutParams params=innerScrollView.getLayoutParams();
@@ -127,17 +139,17 @@ public class MainMenuActivity  extends BaseActivity {
         params3.width = d.getWidth();
         multiplayerBar.setLayoutParams(params3);
 
-        mBadge = (LinearLayout)findViewById(R.id.badge);
+        mBadge = (LinearLayout)view.findViewById(R.id.badge);
         mPlaySounds = new PlaySounds();
-        SharedPreferences mSharedPreferences = getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
+        SharedPreferences mSharedPreferences = getContext().getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
         ed = mSharedPreferences.edit();
         ed.apply();
-        userBadge = (ImageView)findViewById(R.id.user_badge_level);
-        mResumeButton = (LinearLayout) findViewById(R.id.resume);
-        gameHelper = new GameHelper(this, GameHelper.CLIENT_GAMES);
+        userBadge = (ImageView)view.findViewById(R.id.user_badge_level);
+        mResumeButton = (LinearLayout)view.findViewById(R.id.resume);
+        gameHelper = new GameHelper(getActivity(), GameHelper.CLIENT_GAMES);
         //TODO Remove this for production
         gameHelper.enableDebugLog(true);
-        gameHelper.setup(this);
+        gameHelper.setup((BaseActivity)getActivity());
         // Initialize the Amazon Cognito credentials provider
 
         signInInitialization();
@@ -149,20 +161,47 @@ public class MainMenuActivity  extends BaseActivity {
         initializeLick();
         initializeShareBar();
         initializeResumeButton(mResumeButton);
+
+        hostButton = (Button)view.findViewById(R.id.host_button);
+        final Context context = getContext();
+        hostButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DifficultyClassifier.runBacktracking(context);
+            }
+        });
+
+        return view;
     }
 
+    //Checks interface is implemented in the activity.
+    @Override
+    public void onAttach(Context context){
+        super.onAttach(context);
 
+        try {
+            callback = (MainMenuFragmentListener)context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() +
+                    " must implement MainMenuFragmentListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        callback = null;
+    }
 
     private void initializeResumeButton(LinearLayout mResumeButton) {
         mResumeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(gameHelper.getApiClient().isConnected()) {
-                    Intent intent = new Intent(MainMenuActivity.this, SavedGameActivity.class);
-                    startActivity(intent);
+                    callback.swapFragment(SAVED_GAME_FRAGMENT, new Bundle());
                 }
                 else{
-                    Toast.makeText(MainMenuActivity.this, R.string.must_be_logged_in,Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), R.string.must_be_logged_in,Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -177,14 +216,14 @@ public class MainMenuActivity  extends BaseActivity {
     private void signInInitialization() {
 
 
-        mSignInButton = (LinearLayout)findViewById(R.id.signin_button);
+        mSignInButton = (LinearLayout)view.findViewById(R.id.signin_button);
         mSignInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 signInClicked();
             }
         });
-        mSignOutButton = (Button)findViewById(R.id.sign_out_button);
+        mSignOutButton = (Button)view.findViewById(R.id.sign_out_button);
         mSignOutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -195,38 +234,38 @@ public class MainMenuActivity  extends BaseActivity {
     }
 
     @Override
-    protected void onStart() {
+    public void onStart() {
         super.onStart();
-        gameHelper.onStart(this);
+        gameHelper.onStart(getActivity());
 
 
     }
 
     @Override
-    protected void onStop() {
+    public void onStop() {
         gameHelper.onStop();
         super.onStop();
 
     }
 
     @Override
-    protected void onResume(){
+    public void onResume(){
         super.onResume();
-        userBadge.setImageDrawable(getResources().getDrawable(BADGETAGS[getLevel()]));
+        userBadge.setImageDrawable(getResources().getDrawable(callback.getBadgetag(), null));
     }
 
     private void loadPlayer(){
         if(gameHelper.getApiClient().isConnected()) {
             setUsername(Games.Players.getCurrentPlayer(gameHelper.getApiClient()).getDisplayName());
             setId(Games.Players.getCurrentPlayer(gameHelper.getApiClient()).getPlayerId());
-            mBadgeButtonInitialize(getUsername(), getId());
+            mBadgeButtonInitialize(getUsername(), BaseActivity.getId());
         }
     }
 
     private boolean isInternet(){
         boolean isConnected;
         ConnectivityManager cm =
-                (ConnectivityManager)this.getSystemService(Context.CONNECTIVITY_SERVICE);
+                (ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
 
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         isConnected = activeNetwork != null &&
@@ -237,7 +276,7 @@ public class MainMenuActivity  extends BaseActivity {
 
     private void queryCompletedGameDb(){
         if(isInternet()) {
-            String partitionKey = getId();
+            String partitionKey = BaseActivity.getId();
             CompletedGame cg = new CompletedGame();
             cg.setGamerID(partitionKey);
 
@@ -252,7 +291,7 @@ public class MainMenuActivity  extends BaseActivity {
                 public void run() {
                     //DynamoDB calls go here
                     try {
-                        list[0] = mapper.query(CompletedGame.class, queryExpression);
+                        list[0] = BaseActivity.mapper.query(CompletedGame.class, queryExpression);
                     }
                     catch(Exception e){
 
@@ -261,7 +300,7 @@ public class MainMenuActivity  extends BaseActivity {
                     for (int i = 0; i < list[0].size(); i++) {
                         cGames.add(list[0].get(i));
                     }
-                    setCompletedGames(cGames);
+                    BaseActivity.setCompletedGames(cGames);
                 }
             };
             Thread mythread = new Thread(runnable);
@@ -274,10 +313,10 @@ public class MainMenuActivity  extends BaseActivity {
     /***************************************
     *Update UI when login or logout occurs
     ***************************************/
-    private void updateUI(boolean loggedIn){
+    public void updateUI(boolean loggedIn){
         if(loggedIn){
             if(userSignIn) {
-                mPlaySounds.playSounds(this,7);
+                mPlaySounds.playSounds(getContext(),7);
                 userSignIn = false;
             }
 
@@ -290,20 +329,20 @@ public class MainMenuActivity  extends BaseActivity {
             }
             if(isInternet()) {
                 queryCompletedGameDb();
-                querySavedGameDb();
+                callback.querySavedGameDb();
             }
         }
         else{
-            setNullUser();
+            BaseActivity.setNullUser();
             if(clickedOut) {
-                mPlaySounds.playSounds(this,8);
+                mPlaySounds.playSounds(getContext(),8);
             }
 
             clickedOut = false;
             mSignInButton.setVisibility(VISIBLE);
             mSignOutButton.setVisibility(View.INVISIBLE);
             mBadge.setVisibility(GONE);
-            userBadge.setImageDrawable(getResources().getDrawable(BADGETAGS[getLevel()]));
+            userBadge.setImageDrawable(getResources().getDrawable(callback.getBadgetag(), null));
         }
         setMessage();
         mProgressBar.setVisibility(GONE);
@@ -323,8 +362,8 @@ public class MainMenuActivity  extends BaseActivity {
                         && GamesStatusCodes.STATUS_OK == result.getStatus().getStatusCode()
                         && result.getScore() != null) {
                     long highestScore = result.getScore().getRawScore();
-                    setXp(highestScore);
-                    userBadge.setImageDrawable(getResources().getDrawable(BADGETAGS[getLevel()]));
+                    BaseActivity.setXp(highestScore);
+                    userBadge.setImageDrawable(getResources().getDrawable(callback.getBadgetag(), null));
                 }
 
             }
@@ -346,7 +385,7 @@ public class MainMenuActivity  extends BaseActivity {
     }
 
     private void initializeShareBar() {
-        RelativeLayout mShareBar = (RelativeLayout)findViewById(R.id.share_bar);
+        RelativeLayout mShareBar = (RelativeLayout)view.findViewById(R.id.share_bar);
         mShareBar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -356,7 +395,7 @@ public class MainMenuActivity  extends BaseActivity {
     }
 
     private void initializeLick() {
-        WindowManager wm = getWindowManager();
+        WindowManager wm = getActivity().getWindowManager();
         final Display d = wm.getDefaultDisplay();
         final int view_width = d.getWidth();
         mLick.setOnClickListener(new View.OnClickListener() {
@@ -419,7 +458,7 @@ public class MainMenuActivity  extends BaseActivity {
 
 
     private void menuBackInitialize() {
-        ImageButton mMenuBack = (ImageButton)findViewById(R.id.menu_back);
+        ImageButton mMenuBack = (ImageButton)view.findViewById(R.id.menu_back);
         mMenuBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -432,14 +471,14 @@ public class MainMenuActivity  extends BaseActivity {
     }
 
     private void mBadgeButtonInitialize(final String gamername, final String gamerID){
-        userBadge.setImageDrawable(getResources().getDrawable(BADGETAGS[getLevel()]));
+        userBadge.setImageDrawable(getResources().getDrawable(callback.getBadgetag(), null));
         mBadge.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainMenuActivity.this, GamerProfileActivity.class);
-                intent.putExtra("GAMERNAME", gamername);
-                intent.putExtra("GAMERID", gamerID);
-                startActivity(intent);
+                Bundle args = new Bundle();
+                args.putString("GAMERNAME", gamername);
+                args.putString("GAMERID", gamerID);
+                callback.swapFragment(GAMER_PROFILE_FRAGMENT, args);
             }
         });
     }
@@ -447,7 +486,7 @@ public class MainMenuActivity  extends BaseActivity {
     private void modeButtonInitialize() {
         ImageButton[] modeButtons = new ImageButton[modeButtonTags.length];
         for(int i = 0; i< modeButtons.length; i++){
-            modeButtons[i] =(ImageButton)findViewById(modeButtonTags[i]);
+            modeButtons[i] =(ImageButton)view.findViewById(modeButtonTags[i]);
             final int finalI = i;
             modeButtons[i].setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -458,13 +497,13 @@ public class MainMenuActivity  extends BaseActivity {
                     else{
                         colorMode=false;
                     }
-                    Intent intent = new Intent(MainMenuActivity.this, BoardActivity.class);
                     boolean resume = false;
-                    intent.putExtra("RESUME", resume);
-                    intent.putExtra("LEVEL", level);
-                    intent.putExtra("COLOR_MODE", colorMode);
-                    intent.putExtra("MULTIPLAYER", multiplayer);
-                    startActivity(intent);
+                    Bundle args = new Bundle();
+                    args.putBoolean("RESUME", resume);
+                    args.putInt("LEVEL", level);
+                    args.putBoolean("COLOR_MODE", colorMode);
+                    args.putBoolean("MULTIPLAYER", multiplayer);
+                    callback.swapFragment(BOARD_FRAGMENT, args);
                 }
             });
         }
@@ -473,7 +512,7 @@ public class MainMenuActivity  extends BaseActivity {
     private void levelButtonInitialize() {
         ImageButton[] levelButtons = new ImageButton[levelButtonTags.length];
         for(int i = 0; i< levelButtons.length; i++){
-            levelButtons[i] = (ImageButton)findViewById(levelButtonTags[i]);
+            levelButtons[i] = (ImageButton)view.findViewById(levelButtonTags[i]);
             final int finalI = i;
             levelButtons[i].setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -487,7 +526,7 @@ public class MainMenuActivity  extends BaseActivity {
     }
 
     private void chooseGameType(){
-        mPlaySounds.playSounds(this,10);
+        mPlaySounds.playSounds(getContext(),10);
         mLevelSelect.setVisibility(GONE);
         mLevelSelect.startAnimation(animHide);
         mModeSelect.setVisibility(VISIBLE);
@@ -500,11 +539,11 @@ public class MainMenuActivity  extends BaseActivity {
         mModeSelect.startAnimation(animHide);
         mLevelSelect.setVisibility(VISIBLE);
         mLevelSelect.startAnimation(animShow);
-        mPlaySounds.playSounds(this,10);
+        mPlaySounds.playSounds(getContext(),10);
     }
 
     private void playLickSound(){
-        mPlaySounds.playSounds(this, 5);
+        mPlaySounds.playSounds(getContext(), 5);
     }
 
     private void showSavedGamesUI() {
@@ -515,12 +554,12 @@ public class MainMenuActivity  extends BaseActivity {
             startActivityForResult(savedGamesIntent, RC_SAVED_GAMES);
         }
         else{
-            Toast.makeText(this, R.string.login_touse_thisfeature,Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), R.string.login_touse_thisfeature,Toast.LENGTH_SHORT).show();
         }
     }
 
     private void setMessage(){
-        TextView mMessage = (TextView)findViewById(R.id.message);
+        TextView mMessage = (TextView)view.findViewById(R.id.message);
         if(gameHelper.getApiClient().isConnected()){
             mMessage.setVisibility(View.INVISIBLE);
         }
@@ -542,17 +581,17 @@ public class MainMenuActivity  extends BaseActivity {
                 @Override
                 public void onClick(View v) {
                     userSignIn = true;
-                    beginUserInitiatedSignIn();
+                    callback.beginUserInitSignIn();
                 }
             });
         }
     }
     private void initAnimation()
     {
-        animShow = AnimationUtils.loadAnimation( this, R.anim.view_show);
-        animHide = AnimationUtils.loadAnimation( this, R.anim.view_hide);
-        animHiSl = AnimationUtils.loadAnimation(this, R.anim.view_hideslow);
-        animShSlow = AnimationUtils.loadAnimation(this, R.anim.view_showslow);
+        animShow = AnimationUtils.loadAnimation(getContext(), R.anim.view_show);
+        animHide = AnimationUtils.loadAnimation(getContext(), R.anim.view_hide);
+        animHiSl = AnimationUtils.loadAnimation(getContext(), R.anim.view_hideslow);
+        animShSlow = AnimationUtils.loadAnimation(getContext(), R.anim.view_showslow);
     }
 
     private void share() {
@@ -608,16 +647,13 @@ public class MainMenuActivity  extends BaseActivity {
 
     }
 
+    //Interface to be implemented by containing activity.
+    public interface MainMenuFragmentListener {
+        void swapFragment(String fragmentName, Bundle args);
+        void querySavedGameDb();
+        int getBadgetag();
+        void beginUserInitSignIn();
 
-    @Override
-    public void onSignInFailed() {
-        updateUI(false);
     }
-
-    @Override
-    public void onSignInSucceeded() {
-        updateUI(true);
-    }
-
 
 }

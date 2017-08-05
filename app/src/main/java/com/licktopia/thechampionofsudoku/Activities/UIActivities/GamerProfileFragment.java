@@ -1,5 +1,6 @@
 package com.licktopia.thechampionofsudoku.Activities.UIActivities;
 
+import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -8,7 +9,9 @@ import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 
 import android.widget.ImageView;
@@ -35,7 +38,12 @@ import com.licktopia.thechampionofsudoku.Tags;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GamerProfileActivity extends BaseActivity {
+import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.COMPLETED_GAME_FRAGMENT;
+import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.GAMER_PROFILE_FRAGMENT;
+import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.MAIN_MENU_FRAGMENT;
+import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.completedGames;
+
+public class GamerProfileFragment extends Fragment {
 
     private SudokuFacts sudokuFacts;
     private GameHelper gameHelper;
@@ -46,15 +54,22 @@ public class GamerProfileActivity extends BaseActivity {
     private DynamoDBMapper mapper;
     private Button mHistoryButton;
 
+    private View view;
+    private GamerProfileFragmentListener callback;
 
+    public static GamerProfileFragment newInstance() {
+        return new GamerProfileFragment();
+    }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_gamer_profile);
-        mHistoryButton = (Button) findViewById(R.id.history_button);
+
+        view = inflater.inflate(R.layout.activity_gamer_profile, container, false);
+
+        mHistoryButton = (Button) view.findViewById(R.id.history_button);
         credentialsProvider = new CognitoCachingCredentialsProvider(
-                getApplicationContext(),
+                getContext(),
                 "us-east-2:40802ef0-7537-4910-8442-31e2b30c5a7d", // Identity Pool ID
                 Regions.US_EAST_2 // Region
         );
@@ -62,18 +77,40 @@ public class GamerProfileActivity extends BaseActivity {
         mapper = new DynamoDBMapper(ddbClient);
 
         ddbClient.setRegion(Region.getRegion(Regions.US_EAST_2));
-        gameHelper = new GameHelper(this, GameHelper.CLIENT_GAMES);
+        gameHelper = new GameHelper(getActivity(), GameHelper.CLIENT_GAMES);
         //TODO Remove this for production
         gameHelper.enableDebugLog(true);
-        gameHelper.setup(this);
+        gameHelper.setup((BaseActivity)getActivity());
         queryCompletedGameDb();
         initializeSignOut();
         updateUI();
         listeners();
+
+        return view;
+    }
+
+
+    //Checks interface is implemented in the activity.
+    @Override
+    public void onAttach(Context context){
+        super.onAttach(context);
+
+        try {
+            callback = (GamerProfileFragmentListener)context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() +
+                    " must implement GamerProfileFragmentListener");
+        }
     }
 
     @Override
-    protected void onResume() {
+    public void onDetach() {
+        super.onDetach();
+        callback = null;
+    }
+
+    @Override
+    public void onResume() {
         super.onResume();
         updateUI();
 
@@ -82,24 +119,23 @@ public class GamerProfileActivity extends BaseActivity {
 
     private void initializeSignOut() {
         mPlaySounds = new PlaySounds();
-        Button mSignOut = (Button)findViewById(R.id.sign_out_new);
+        Button mSignOut = (Button)view.findViewById(R.id.sign_out_new);
         mSignOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 gameHelper.signOut();
                 playDisconnect();
-                Intent intent = new Intent(GamerProfileActivity.this, MainMenuActivity.class);
-                startActivity(intent);
+                callback.swapFragment(MAIN_MENU_FRAGMENT, new Bundle());
 
             }
         });
     }
 
     private void playDisconnect() {
-        mPlaySounds.playSounds(this, 8);
+        mPlaySounds.playSounds(getContext(), 8);
     }
     private void listeners() {
-        Button mLeaderButton = (Button)findViewById(R.id.leader);
+        Button mLeaderButton = (Button)view.findViewById(R.id.leader);
         mLeaderButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -109,13 +145,13 @@ public class GamerProfileActivity extends BaseActivity {
                 } else {
                     // Alternative implementation (or warn user that they must
                     // sign in to use this feature)
-                    Toast.makeText(GamerProfileActivity.this, R.string.login_tosee_leaderboards , Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), R.string.login_tosee_leaderboards , Toast.LENGTH_SHORT).show();
                 }
 
             }
 
         });
-        Button mAchievementButton = (Button)findViewById(R.id.achievements);
+        Button mAchievementButton = (Button)view.findViewById(R.id.achievements);
         mAchievementButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -127,7 +163,7 @@ public class GamerProfileActivity extends BaseActivity {
                 } else {
                     // Alternative implementation (or warn user that they must
                     // sign in to use this feature)
-                    Toast.makeText(GamerProfileActivity.this, R.string.mustbe_loggedin_viewachievements, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), R.string.mustbe_loggedin_viewachievements, Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -136,21 +172,20 @@ public class GamerProfileActivity extends BaseActivity {
         mHistoryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(GamerProfileActivity.this, CompletedGameActivity.class);
-                startActivity(intent);
+                callback.swapFragment(COMPLETED_GAME_FRAGMENT, new Bundle());
             }
         });
     }
 
     private void updateUI() {
-        TextView mTitleName = (TextView) findViewById(R.id.title_name);
-        TextView mFactText = (TextView) findViewById(R.id.fact_text);
-        TextView mDidYouKnow = (TextView) findViewById(R.id.did_you_know);
-        TextView xpDisplay = (TextView) findViewById(R.id.xp_display);
-        TextView nextPowerUpDisplay = (TextView) findViewById(R.id.powerup_display);
-        LinearLayout mFactBackground = (LinearLayout) findViewById(R.id.fact_background);
-        ImageView mRankDisplay = (ImageView)findViewById(R.id.rank_display);
-        Button mHistoryButton = (Button) findViewById(R.id.history_button);
+        TextView mTitleName = (TextView) view.findViewById(R.id.title_name);
+        TextView mFactText = (TextView) view.findViewById(R.id.fact_text);
+        TextView mDidYouKnow = (TextView) view.findViewById(R.id.did_you_know);
+        TextView xpDisplay = (TextView) view.findViewById(R.id.xp_display);
+        TextView nextPowerUpDisplay = (TextView) view.findViewById(R.id.powerup_display);
+        LinearLayout mFactBackground = (LinearLayout) view.findViewById(R.id.fact_background);
+        ImageView mRankDisplay = (ImageView)view.findViewById(R.id.rank_display);
+        Button mHistoryButton = (Button) view.findViewById(R.id.history_button);
 
         sudokuFacts = new SudokuFacts();
         mFactText.setText(sudokuFacts.getFunFact());
@@ -158,7 +193,7 @@ public class GamerProfileActivity extends BaseActivity {
         mDidYouKnow.setBackgroundColor(Color.parseColor(color));
         mFactBackground.setBackgroundColor(Color.parseColor(color));
         mTitleName.setBackgroundColor(Color.parseColor(color));
-        mTitleName.setText(getUsername());
+        mTitleName.setText(BaseActivity.getUsername());
 
         if(completedGames!= null && completedGames.isEmpty()){
             mHistoryButton.setAlpha(.5f);
@@ -166,20 +201,20 @@ public class GamerProfileActivity extends BaseActivity {
         else{
             mHistoryButton.setAlpha(1);
         }
-        if(getLevel()==CUTOFF.length){
-            nextPowerUpDisplay.setText(RANKNAMES[getLevel()]);
+        if(BaseActivity.getLevel()==BaseActivity.CUTOFF.length){
+            nextPowerUpDisplay.setText(callback.getRank());
         }
         else{
-            nextPowerUpDisplay.setText(new StringBuilder().append(getString(R.string.next_levelup)).append(" ").append(String.format("%,d", CUTOFF[getLevel()] - getXp())).append(" XP").toString());
+            nextPowerUpDisplay.setText(new StringBuilder().append(getString(R.string.next_levelup)).append(" ").append(String.format("%,d", callback.getCutoff() - BaseActivity.getXp())).append(" XP").toString());
         }
-        xpDisplay.setText(new StringBuilder().append(String.format("%,d", Integer.parseInt(String.valueOf(getXp())))).append(" XP").toString());
-        nextPowerUpDisplay.setText(new StringBuilder().append(getString(R.string.next_levelup)).append(" ").append(String.format("%,d", CUTOFF[getLevel() + 1] - getXp())).append(" XP").toString());
-        mRankDisplay.setImageDrawable(getResources().getDrawable(BADGETAGS[getLevel()]));
+        xpDisplay.setText(new StringBuilder().append(String.format("%,d", Integer.parseInt(String.valueOf(BaseActivity.getXp())))).append(" XP").toString());
+        nextPowerUpDisplay.setText(new StringBuilder().append(getString(R.string.next_levelup)).append(" ").append(String.format("%,d", callback.getCutoff() - BaseActivity.getXp())).append(" XP").toString());
+        mRankDisplay.setImageDrawable(getResources().getDrawable(callback.getBadgetag(), null));
         ImageView[] verticalBadges = new ImageView[52];
         for(int i = 0; i< Tags.verticalBadges.length;i++){
-            verticalBadges[i]=(ImageView)findViewById(Tags.verticalBadges[i]);
+            verticalBadges[i]=(ImageView)view.findViewById(Tags.verticalBadges[i]);
             verticalBadges[i].setImageDrawable(getResources().getDrawable(Tags.badgeTags[i]));
-            if(i<=getLevel()){
+            if(i<=BaseActivity.getLevel()){
                 verticalBadges[i].setVisibility(View.VISIBLE);
             }
             else{
@@ -191,7 +226,7 @@ public class GamerProfileActivity extends BaseActivity {
 
     private void queryCompletedGameDb(){
         if(isInternet()) {
-            String partitionKey = getId();
+            String partitionKey = BaseActivity.getId();
             CompletedGame cg = new CompletedGame();
             cg.setGamerID(partitionKey);
 
@@ -210,7 +245,7 @@ public class GamerProfileActivity extends BaseActivity {
                     for (int i = 0; i < list[0].size(); i++) {
                         cGames.add(list[0].get(i));
                     }
-                    setCompletedGames(cGames);
+                    BaseActivity.setCompletedGames(cGames);
                     if(completedGames!= null && completedGames.isEmpty()){
                         mHistoryButton.setAlpha(.5f);
                     }
@@ -230,7 +265,7 @@ public class GamerProfileActivity extends BaseActivity {
     private boolean isInternet(){
         boolean isConnected;
         ConnectivityManager cm =
-                (ConnectivityManager)this.getSystemService(Context.CONNECTIVITY_SERVICE);
+                (ConnectivityManager)getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
 
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         isConnected = activeNetwork != null &&
@@ -240,32 +275,29 @@ public class GamerProfileActivity extends BaseActivity {
     }
 
     @Override
-    protected void onStart() {
+    public void onStart() {
         super.onStart();
-            gameHelper.onStart(this);
+            gameHelper.onStart(getActivity());
 
 
     }
 
     @Override
-    protected void onStop() {
+    public void onStop() {
         super.onStop();
         gameHelper.onStop();
 
     }
 
-    @Override
-    public void onSignInFailed() {
-        Toast.makeText(this, R.string.nolonger_loggedin,Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(GamerProfileActivity.this, GamerProfileActivity.class);
-        startActivity(intent);
+    public void signInFailed() {
+        Toast.makeText(getActivity(), R.string.nolonger_loggedin,Toast.LENGTH_SHORT).show();
+        callback.swapFragment(GAMER_PROFILE_FRAGMENT, new Bundle());
     }
 
 
-    @Override
-    public void onSignInSucceeded() {
+    public void signInSucceeded() {
         if(gameHelper.getApiClient().isConnected()) {
-            TextView mTitleName = (TextView) findViewById(R.id.title_name);
+            TextView mTitleName = (TextView) view.findViewById(R.id.title_name);
             mTitleName.setText(Games.Players.getCurrentPlayer(gameHelper.getApiClient()).getDisplayName());
         }
     }
@@ -276,5 +308,14 @@ public class GamerProfileActivity extends BaseActivity {
 
         gameHelper.onActivityResult(requestCode, resultCode, data);
 
+    }
+
+    //Interface to be implemented by containing activity.
+    public interface GamerProfileFragmentListener {
+        void swapFragment(String fragmentName, Bundle args);
+        int getBadgetag();
+        String getRank();
+        int getCutoff();
+        int getNextCutoff();
     }
 }

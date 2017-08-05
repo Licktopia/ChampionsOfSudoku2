@@ -27,11 +27,11 @@
             android:exported="true" />
 
         <activity android:name=".Activities.UIActivities.BoardActivity" />
-        <activity android:name=".Activities.UIActivities.InstructionsActivity" />
-        <activity android:name=".Activities.UIActivities.AboutActivity" />
-        <activity android:name=".Activities.UIActivities.CompletedGameActivity" />
-        <activity android:name=".Activities.UIActivities.SavedGameActivity" />
-        <activity android:name=".Activities.UIActivities.MainMenuActivity">
+        <activity android:name=".Activities.UIActivities.InstructionsFragment" />
+        <activity android:name=".Activities.UIActivities.AboutFragment" />
+        <activity android:name=".Activities.UIActivities.CompletedGameFragment" />
+        <activity android:name=".Activities.UIActivities.SavedGameFragment" />
+        <activity android:name=".Activities.BaseActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -42,7 +42,7 @@
             android:name=".Settings.SudokuSettingsActivity"
             android:label="Settings"
             android:theme="@style/Base.Theme.AppCompat.Light" />
-        <activity android:name=".Activities.UIActivities.GamerProfileActivity" />
+        <activity android:name=".Activities.UIActivities.GamerProfileFragment" />
         <activity android:name=".Activities.UIActivities.DynamoDbTestActivity"></activity>
     </application>
 

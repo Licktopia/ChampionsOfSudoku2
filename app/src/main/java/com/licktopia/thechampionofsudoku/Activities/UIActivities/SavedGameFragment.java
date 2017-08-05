@@ -2,10 +2,13 @@ package com.licktopia.thechampionofsudoku.Activities.UIActivities;
 
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -23,45 +26,55 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.formatExactTime;
 
-public class SavedGameActivity extends BaseActivity {
+
+public class SavedGameFragment extends Fragment {
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
     private ProgressBar mProgressIndicator;
     private TextView savedUser;
     public static List<SavedGameListItem> savedGameListItems;
 
- 
+    public static SavedGameFragment newInstance() {
+        return new SavedGameFragment();
+    }
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_savedgame);
-        mProgressIndicator = (ProgressBar)findViewById(R.id.progressBar2);
+
+        View view = inflater.inflate(R.layout.activity_savedgame, container, false);
+
+        mProgressIndicator = (ProgressBar)view.findViewById(R.id.progressBar2);
         mProgressIndicator.setVisibility(View.VISIBLE);
-        recyclerView = (RecyclerView)findViewById(R.id.savedrecyclerView);
+        recyclerView = (RecyclerView)view.findViewById(R.id.savedrecyclerView);
 
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        savedUser = (TextView)findViewById(R.id.saveduser_name);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        savedUser = (TextView)view.findViewById(R.id.saveduser_name);
         recyclerView.addItemDecoration(
-                new HorizontalDividerItemDecoration.Builder(this).size(12).build());
+                new HorizontalDividerItemDecoration.Builder(getContext()).size(12).build());
 
-        savedUser.setText(new StringBuilder().append(getUsername()).append(getString(R.string.your_saved_games)).toString());
+        savedUser.setText(new StringBuilder().append(BaseActivity.getUsername()).append(getString(R.string.your_saved_games)).toString());
+
+        return view;
     }
 
     private void fillListItems(){
         savedGameListItems = new ArrayList<>();
-        for(int i = 0; i < getSavedGames().size(); i++){
+        ArrayList<SavedGame> savedGames = BaseActivity.getSavedGames();
+        for(int i = 0; i < savedGames.size(); i++){
             SavedGameListItem sGLI= new SavedGameListItem(
-                    getSavedGames().get(i).getDate(),
-                    getSavedGames().get(i).getTime(),
-                    getSavedGames().get(i).getColorMode(),
-                    getSavedGames().get(i).getExactTime(),
-                    getSavedGames().get(i).getLevel(),
-                    getSavedGames().get(i).getPuzzleNumber(),
-                    getSavedGames().get(i).getGamerID(),
+                    savedGames.get(i).getDate(),
+                    savedGames.get(i).getTime(),
+                    savedGames.get(i).getColorMode(),
+                    savedGames.get(i).getExactTime(),
+                    savedGames.get(i).getLevel(),
+                    savedGames.get(i).getPuzzleNumber(),
+                    savedGames.get(i).getGamerID(),
                     //getSavedGames().get(i).getSaveFile(),
-                    getSavedGames().get(i).getStoppedTime()
+                    savedGames.get(i).getStoppedTime()
                     );
             savedGameListItems.add(sGLI);
 
@@ -70,32 +83,21 @@ public class SavedGameActivity extends BaseActivity {
     }
 
     @Override
-    protected void onResume(){
+    public void onResume(){
         super.onResume();
 
     }
 
     @Override
-    protected void onStart(){
+    public void onStart(){
         super.onStart();
         querySavedGameDb();
 
     }
 
-    @Override
-    public void onSignInFailed() {
-
-    }
-
-    @Override
-    public void onSignInSucceeded() {
-
-    }
-
-    @Override
     public void querySavedGameDb() {
 
-        String partitionKey = getId();
+        String partitionKey = BaseActivity.getId();
         SavedGame sg = new SavedGame();
         sg.setGamerID(partitionKey);
 
@@ -110,19 +112,19 @@ public class SavedGameActivity extends BaseActivity {
         Runnable runnable = new Runnable() {
             public void run() {
                 //DynamoDB calls go here
-                list[0] = mapper.query(SavedGame.class, queryExpression);
+                list[0] = BaseActivity.mapper.query(SavedGame.class, queryExpression);
                 ArrayList<SavedGame> sGames = new ArrayList<SavedGame>();
                 for (int i = 0; i < list[0].size(); i++) {
                     sGames.add(list[0].get(i));
                 }
-                setSavedGames(sGames);
+                BaseActivity.setSavedGames(sGames);
 
-                runOnUiThread(new Runnable() {
+                getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         //execute code on main thread
                         fillListItems();
-                        adapter = new SavedGameListAdapter(savedGameListItems, SavedGameActivity.this);
+                        adapter = new SavedGameListAdapter(savedGameListItems, getContext());
                         recyclerView.setAdapter(adapter);
                         mProgressIndicator.setVisibility(View.GONE);
                     }
