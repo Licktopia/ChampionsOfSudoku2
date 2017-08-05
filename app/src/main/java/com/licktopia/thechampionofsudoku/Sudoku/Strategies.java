@@ -385,7 +385,7 @@ public class Strategies {
         // Iterate through all qualifying squares
         for (int i = 0; i < size; i++) {
             if (notepadCheck[i]) {
-                
+
             }
         }
 
