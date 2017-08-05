@@ -1,11 +1,11 @@
 package com.licktopia.thechampionofsudoku.Activities;
 
-import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
@@ -21,10 +21,11 @@ import com.google.example.games.basegameutils.GameHelper;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.licktopia.thechampionofsudoku.Activities.UIActivities.AboutFragment;
-import com.licktopia.thechampionofsudoku.Activities.UIActivities.BoardActivity;
+import com.licktopia.thechampionofsudoku.Activities.UIActivities.BoardFragment;
 import com.licktopia.thechampionofsudoku.Activities.UIActivities.CompletedGameFragment;
 import com.licktopia.thechampionofsudoku.Activities.UIActivities.GamerProfileFragment;
 import com.licktopia.thechampionofsudoku.Activities.UIActivities.InstructionsFragment;
+import com.licktopia.thechampionofsudoku.Activities.UIActivities.InviteDialogFragment;
 import com.licktopia.thechampionofsudoku.Activities.UIActivities.MainMenuFragment;
 import com.licktopia.thechampionofsudoku.Activities.UIActivities.SavedGameFragment;
 import com.licktopia.thechampionofsudoku.R;
@@ -44,7 +45,7 @@ import java.util.List;
 public class BaseActivity extends BaseGameActivity
         implements MainMenuFragment.MainMenuFragmentListener,
         GamerProfileFragment.GamerProfileFragmentListener,
-        BoardActivity.BoardFragmentListener {
+        BoardFragment.BoardFragmentListener {
 
     public static final String SAVED_KEY = "SAVED_KEY";
     public static final String COMPLETED_KEY = "COMPLETED_KEY";
@@ -59,6 +60,7 @@ public class BaseActivity extends BaseGameActivity
     public static final String GAMER_PROFILE_FRAGMENT = "GAMER_PROFILE_FRAGMENT";
     public static final String INSTRUCTIONS_FRAGMENT = "INSTRUCTIONS_FRAGMENT";
     public static final String SAVED_GAME_FRAGMENT = "SAVED_GAME_FRAGMENT";
+    public static final String INVITE_DIALOG_FRAGMENT = "INVITE_DIALOG_FRAGMENT";
     public static  GameHelper gameHelper;
     public static boolean clickedOut = false;
     public static boolean userSignIn=false;
@@ -100,7 +102,7 @@ public class BaseActivity extends BaseGameActivity
                 fragment = AboutFragment.newInstance();
                 break;
             case BOARD_FRAGMENT:
-                fragment = BoardActivity.newInstance();
+                fragment = BoardFragment.newInstance();
                 break;
             case COMPLETED_GAME_FRAGMENT:
                 fragment = CompletedGameFragment.newInstance();
@@ -114,6 +116,11 @@ public class BaseActivity extends BaseGameActivity
             case SAVED_GAME_FRAGMENT:
                 fragment = SavedGameFragment.newInstance();
                 break;
+            case INVITE_DIALOG_FRAGMENT:
+                DialogFragment dialog = InviteDialogFragment.newInstance();
+                dialog.setArguments(args);
+                dialog.show(getSupportFragmentManager(), "choose dialog");
+                return;
             case MAIN_MENU_FRAGMENT:
             default:
                 fragment = MainMenuFragment.newInstance();
@@ -416,8 +423,8 @@ public class BaseActivity extends BaseGameActivity
             mmf.updateUI(false);
             return;
         }
-        else if (f instanceof BoardActivity) {
-            BoardActivity ba = (BoardActivity)f;
+        else if (f instanceof BoardFragment) {
+            BoardFragment ba = (BoardFragment)f;
             ba.updateUI(false);
             return;
         }
@@ -436,8 +443,8 @@ public class BaseActivity extends BaseGameActivity
             mmf.updateUI(true);
             return;
         }
-        else if (f instanceof BoardActivity) {
-            BoardActivity ba = (BoardActivity)f;
+        else if (f instanceof BoardFragment) {
+            BoardFragment ba = (BoardFragment)f;
             ba.updateUI(true);
             return;
         }
@@ -457,8 +464,8 @@ public class BaseActivity extends BaseGameActivity
     //@Override //TODO Not a fragment function, need to implement in Activity possibly
     public void onBackPressed() {
         Fragment f = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-        if (f instanceof BoardActivity) {
-            BoardActivity ba = (BoardActivity) f;
+        if (f instanceof BoardFragment) {
+            BoardFragment ba = (BoardFragment) f;
             if (!ba.getSolvedState()) {
                 new AlertDialog.Builder(this)
                         .setMessage(getString(R.string.are_you_sure))

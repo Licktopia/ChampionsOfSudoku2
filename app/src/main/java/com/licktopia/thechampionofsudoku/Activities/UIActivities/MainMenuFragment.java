@@ -166,7 +166,7 @@ public class MainMenuFragment extends Fragment {
         hostButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DifficultyClassifier.runBacktracking(context);
+                callback.swapFragment(BaseActivity.INVITE_DIALOG_FRAGMENT, new Bundle());
             }
         });
 

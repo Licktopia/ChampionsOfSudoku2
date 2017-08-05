@@ -6,7 +6,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -44,13 +43,7 @@ import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
-import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.games.Games;
-import com.google.android.gms.games.snapshot.Snapshot;
-import com.google.android.gms.games.snapshot.SnapshotMetadata;
-import com.google.android.gms.games.snapshot.SnapshotMetadataChange;
-import com.google.android.gms.games.snapshot.Snapshots;
-import com.google.example.games.basegameutils.GameHelper;
 import com.licktopia.thechampionofsudoku.Activities.BaseActivity;
 import com.licktopia.thechampionofsudoku.BackgroundImages;
 import com.licktopia.thechampionofsudoku.Multiplayer.MultiGame;
@@ -67,12 +60,10 @@ import com.licktopia.thechampionofsudoku.Sudoku.Square;
 import com.licktopia.thechampionofsudoku.Sudoku.Strategies;
 import com.licktopia.thechampionofsudoku.GameInterface;
 import com.licktopia.thechampionofsudoku.Tags;
-import java.math.BigInteger;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Locale;
-import java.util.Random;
 import java.util.Set;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -86,7 +77,7 @@ import main.java.com.maximeroussy.invitrode.RandomWord;
 import static android.view.View.GONE;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.gameHelper;
 
-public class BoardActivity extends Fragment {
+public class BoardFragment extends Fragment {
 
     private static final float UNDOREDOALPHA = .45f;
     private String mCurrentSaveName = "snapshotTemp";
@@ -154,8 +145,8 @@ public class BoardActivity extends Fragment {
     private View view;
     private BoardFragmentListener callback;
 
-    public static BoardActivity newInstance() {
-        return new BoardActivity();
+    public static BoardFragment newInstance() {
+        return new BoardFragment();
     }
 
     @Override
@@ -181,7 +172,7 @@ public class BoardActivity extends Fragment {
         Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
 
-        shareDialog = new ShareDialog(BoardActivity.this);
+        shareDialog = new ShareDialog(BoardFragment.this);
 
 
 
@@ -275,7 +266,7 @@ public class BoardActivity extends Fragment {
         }
         customizeLayout(resume);
         initializePlayerTokens();
-        listeners(toolbar);//set all listeners for BoardActivity layout
+        listeners(toolbar);//set all listeners for BoardFragment layout
         updateScore();
         mChronometer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
             @Override
@@ -295,7 +286,7 @@ public class BoardActivity extends Fragment {
         super.onAttach(context);
 
         try {
-            callback = (BoardActivity.BoardFragmentListener)context;
+            callback = (BoardFragment.BoardFragmentListener)context;
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString() +
                     " must implement BoardFragmentListener");
@@ -1604,7 +1595,7 @@ public class BoardActivity extends Fragment {
 
     }
 
-    /* Uses the BoardActivity UI to solve a puzzle given the solution steps */
+    /* Uses the BoardFragment UI to solve a puzzle given the solution steps */
     public void solvePuzzle() {
 
         Handler solutionHandler = new Handler();

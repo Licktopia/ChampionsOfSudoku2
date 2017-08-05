@@ -23,8 +23,7 @@ import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
 import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
-import com.licktopia.thechampionofsudoku.Activities.BaseActivity;
-import com.licktopia.thechampionofsudoku.Activities.UIActivities.BoardActivity;
+import com.licktopia.thechampionofsudoku.Activities.UIActivities.BoardFragment;
 import com.licktopia.thechampionofsudoku.Sudoku.SavedGame;
 
 import java.util.List;
@@ -107,7 +106,7 @@ public class SavedGameListAdapter extends RecyclerView.Adapter<SavedGameListAdap
                             public void onClick(DialogInterface dialog, int id) {
                                     /***** Maybe we should tell the user that the game is loading... *****/
                                     /******* FOR THE PURPOSE OF DEBUGGING THE FIRST GAME ON THE LIST GETS PICKED******************/
-                                    Intent intent = new Intent(context, BoardActivity.class);
+                                    Intent intent = new Intent(context, BoardFragment.class);
                                     //Make level less than zero so that activity knows to load a game
                                     boolean resume = true;
                                     intent.putExtra("RESUME", resume);
