@@ -2,9 +2,12 @@ package com.licktopia.thechampionofsudoku.Activities.UIActivities;
 
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -13,6 +16,7 @@ import com.licktopia.thechampionofsudoku.CompletedGameListAdapter;
 
 import com.licktopia.thechampionofsudoku.CompletedGameListItem;
 import com.licktopia.thechampionofsudoku.R;
+import com.licktopia.thechampionofsudoku.Sudoku.CompletedGame;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import java.util.ArrayList;
@@ -20,8 +24,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.formatExactTime;
 
-public class CompletedGameActivity extends BaseActivity {
+
+public class CompletedGameFragment extends Fragment {
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
     private Button tvSortRecent;
@@ -31,27 +37,29 @@ public class CompletedGameActivity extends BaseActivity {
     private TextView tvGpDisplay;
     public static List<CompletedGameListItem> completedGameListItems;
 
-
-
+    public static CompletedGameFragment newInstance() {
+        return new CompletedGameFragment();
+    }
  
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_completedgame);
 
-        tvSortRecent = (Button)findViewById(R.id.sort_recent);
-        tvSortBest = (Button)findViewById(R.id.sort_best);
-        tvSortHigh = (Button)findViewById(R.id.sort_highscore);
-        tvSortTime = (Button)findViewById(R.id.sort_time);
-        recyclerView = (RecyclerView)findViewById(R.id.recyclerView);
+        View view = inflater.inflate(R.layout.activity_completedgame, container, false);
+
+        tvSortRecent = (Button)view.findViewById(R.id.sort_recent);
+        tvSortBest = (Button)view.findViewById(R.id.sort_best);
+        tvSortHigh = (Button)view.findViewById(R.id.sort_highscore);
+        tvSortTime = (Button)view.findViewById(R.id.sort_time);
+        recyclerView = (RecyclerView)view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         fillListItems();
-        tvGpDisplay = (TextView)findViewById(R.id.user_name);
+        tvGpDisplay = (TextView)view.findViewById(R.id.user_name);
         recyclerView.addItemDecoration(
-                new HorizontalDividerItemDecoration.Builder(this).size(12).build());
+                new HorizontalDividerItemDecoration.Builder(getContext()).size(12).build());
 
-        tvGpDisplay.setText(new StringBuilder().append(getUsername()).append(getString(R.string.game_history)).toString());
+        tvGpDisplay.setText(new StringBuilder().append(BaseActivity.getUsername()).append(getString(R.string.game_history)).toString());
 
         tvSortRecent.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -89,40 +97,32 @@ public class CompletedGameActivity extends BaseActivity {
             }
         });
 
-        adapter = new CompletedGameListAdapter(completedGameListItems, this);
+        adapter = new CompletedGameListAdapter(completedGameListItems, getContext());
         recyclerView.setAdapter(adapter);
+
+        return view;
     }
 
     private void fillListItems(){
         completedGameListItems = new ArrayList<>();
-        for(int i = 0; i < getCompletedGames().size(); i++){
+        ArrayList<CompletedGame> completedGames = BaseActivity.getCompletedGames();
+        for(int i = 0; i < completedGames.size(); i++){
             CompletedGameListItem cGLI= new CompletedGameListItem(
-                    getCompletedGames().get(i).getAccuracy(),
-                    getCompletedGames().get(i).getDate(),
-                    getCompletedGames().get(i).getLevel(),
-                    getCompletedGames().get(i).getPuzzleNumber(),
-                    getCompletedGames().get(i).getRealScore(),
-                    getCompletedGames().get(i).getTime(),
-                    getCompletedGames().get(i).getXp(),
-                    getCompletedGames().get(i).getGamerID(),
-                    getCompletedGames().get(i).isColor(),
-                    getCompletedGames().get(i).getExactTime());
+                    completedGames.get(i).getAccuracy(),
+                    completedGames.get(i).getDate(),
+                    completedGames.get(i).getLevel(),
+                    completedGames.get(i).getPuzzleNumber(),
+                    completedGames.get(i).getRealScore(),
+                    completedGames.get(i).getTime(),
+                    completedGames.get(i).getXp(),
+                    completedGames.get(i).getGamerID(),
+                    completedGames.get(i).isColor(),
+                    completedGames.get(i).getExactTime());
             completedGameListItems.add(cGLI);
 
         }
         Collections.sort(completedGameListItems,new RecentSorter());
     }
-
-    @Override
-    public void onSignInFailed() {
-
-    }
-
-    @Override
-    public void onSignInSucceeded() {
-
-    }
-
 
     public class RecentSorter implements Comparator<CompletedGameListItem> {
 

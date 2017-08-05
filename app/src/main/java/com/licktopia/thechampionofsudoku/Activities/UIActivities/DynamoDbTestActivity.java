@@ -93,7 +93,7 @@ public class DynamoDbTestActivity extends AppCompatActivity {
                     /***** Maybe we should tell the user that the game is loading... *****/
                     mythread.join();
                     /******* FOR THE PURPOSE OF DEBUGGING THE FIRST GAME ON THE LIST GETS PICKED******************/
-                    Intent intent = new Intent(DynamoDbTestActivity.this, BoardActivity.class);
+                    Intent intent = new Intent(DynamoDbTestActivity.this, BoardFragment.class);
                     //Make level less than zero so that activity knows to load a game
                     intent.putExtra("LEVEL", -5);
                     intent.putExtra("COLOR_MODE", list[0].get(0).getColorMode());

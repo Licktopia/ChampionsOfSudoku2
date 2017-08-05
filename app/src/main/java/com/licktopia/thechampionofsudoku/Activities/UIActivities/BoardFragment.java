@@ -6,19 +6,21 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.LinearLayoutCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Display;
+import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -41,19 +43,12 @@ import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
-import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.games.Games;
-import com.google.android.gms.games.snapshot.Snapshot;
-import com.google.android.gms.games.snapshot.SnapshotMetadata;
-import com.google.android.gms.games.snapshot.SnapshotMetadataChange;
-import com.google.android.gms.games.snapshot.Snapshots;
-import com.google.example.games.basegameutils.GameHelper;
 import com.licktopia.thechampionofsudoku.Activities.BaseActivity;
 import com.licktopia.thechampionofsudoku.BackgroundImages;
 import com.licktopia.thechampionofsudoku.Multiplayer.MultiGame;
 import com.licktopia.thechampionofsudoku.PlaySounds;
 import com.licktopia.thechampionofsudoku.R;
-import com.licktopia.thechampionofsudoku.SavedGameListAdapter;
 import com.licktopia.thechampionofsudoku.Settings.SudokuSettings;
 import com.licktopia.thechampionofsudoku.Settings.SudokuSettingsActivity;
 import com.licktopia.thechampionofsudoku.SquareView;
@@ -65,11 +60,10 @@ import com.licktopia.thechampionofsudoku.Sudoku.Square;
 import com.licktopia.thechampionofsudoku.Sudoku.Strategies;
 import com.licktopia.thechampionofsudoku.GameInterface;
 import com.licktopia.thechampionofsudoku.Tags;
-import java.math.BigInteger;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Random;
 import java.util.Set;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -81,8 +75,9 @@ import java.util.concurrent.ThreadLocalRandom;
 import main.java.com.maximeroussy.invitrode.RandomWord;
 
 import static android.view.View.GONE;
+import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.gameHelper;
 
-public class BoardActivity extends BaseActivity {
+public class BoardFragment extends Fragment {
 
     private static final float UNDOREDOALPHA = .45f;
     private String mCurrentSaveName = "snapshotTemp";
@@ -119,7 +114,7 @@ public class BoardActivity extends BaseActivity {
     private int size;
     private long timeWhenStopped;
     private Handler highlightHandler;
-    private GameHelper gameHelper;
+
     private LinearLayout mHintsLayout;
     private LinearLayout mEndGameLayout;
     private ImageView userBadge;
@@ -147,47 +142,51 @@ public class BoardActivity extends BaseActivity {
     private AmazonDynamoDBClient ddbClient;
     private DynamoDBMapper mapper;
 
+    private View view;
+    private BoardFragmentListener callback;
 
+    public static BoardFragment newInstance() {
+        return new BoardFragment();
+    }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_board);
+
+        view = inflater.inflate(R.layout.activity_board, container, false);
+
         //pass in mode and level
-        wm = getWindowManager();
+        wm = getActivity().getWindowManager();
         d = wm.getDefaultDisplay();
-        colorGame = getIntent().getExtras().getBoolean("COLOR_MODE");
-        level = getIntent().getExtras().getInt("LEVEL");
-        resume = getIntent().getExtras().getBoolean("RESUME");
-        level = getIntent().getExtras().getInt("LEVEL");
-        long sTime = getIntent().getExtras().getLong("STOPPED_TIME");
-        multiplayer = getIntent().getExtras().getBoolean("MULTIPLAYER");
+        colorGame = getArguments().getBoolean("COLOR_MODE");
+        level = getArguments().getInt("LEVEL");
+        resume = getArguments().getBoolean("RESUME");
+        level = getArguments().getInt("LEVEL");
+        long sTime = getArguments().getLong("STOPPED_TIME");
+        multiplayer = getArguments().getBoolean("MULTIPLAYER");
         //multiplayer = true;
-        exactTime = getIntent().getExtras().getString("EXACT_TIME");
-        savedName = getIntent().getExtras().getString("SAVED_NAME");
-        savedDate = getIntent().getExtras().getString("SAVED_DATE");
-        //initialize actiion bar
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        this.setSupportActionBar(toolbar);
+        exactTime = getArguments().getString("EXACT_TIME");
+        savedName = getArguments().getString("SAVED_NAME");
+        savedDate = getArguments().getString("SAVED_DATE");
+        //initialize action bar
+        Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
+        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
 
-        shareDialog = new ShareDialog(BoardActivity.this);
+        shareDialog = new ShareDialog(BoardFragment.this);
 
 
-        gameHelper = new GameHelper(this, GameHelper.CLIENT_GAMES);
-        //TODO Remove this for production
-        gameHelper.enableDebugLog(true);
-        gameHelper.setup(this);
+
 
         // Initialize the Amazon Cognito credentials provider
         credentialsProvider = new CognitoCachingCredentialsProvider(
-                getApplicationContext(),
+                getContext(),
                 "us-east-2:40802ef0-7537-4910-8442-31e2b30c5a7d", // Identity Pool ID
                 Regions.US_EAST_2 // Region
         );
 
         // Initialize the Cognito Sync client
         syncClient = new CognitoSyncManager(
-                getApplicationContext(),
+                getContext(),
                 Regions.US_EAST_2, // Region
                 credentialsProvider);
 
@@ -199,16 +198,16 @@ public class BoardActivity extends BaseActivity {
 
 
         //bindings
-        mChronometer = (Chronometer)findViewById(com.licktopia.thechampionofsudoku.R.id.chronometer);
-        mUndoButton = (ImageButton)findViewById(R.id.backButton);
-        mRedoButton = (ImageButton)findViewById(R.id.forwardButton);
-        notepadIcon = (ImageButton) findViewById(R.id.scratch);
-        scoreBoard = (TextView)findViewById(R.id.score);
-        mHintsLayout = (LinearLayout)findViewById(R.id.hints_layout);
-        mEndGameLayout = (LinearLayout)findViewById(R.id.end_game_layout);
-        userBadge = (ImageView)findViewById(R.id.user_image);
-        userText = (TextView)findViewById(R.id.user_text);
-        botBar = (RelativeLayout)findViewById(R.id.botbar);
+        mChronometer = (Chronometer)view.findViewById(com.licktopia.thechampionofsudoku.R.id.chronometer);
+        mUndoButton = (ImageButton)view.findViewById(R.id.backButton);
+        mRedoButton = (ImageButton)view.findViewById(R.id.forwardButton);
+        notepadIcon = (ImageButton) view.findViewById(R.id.scratch);
+        scoreBoard = (TextView)view.findViewById(R.id.score);
+        mHintsLayout = (LinearLayout)view.findViewById(R.id.hints_layout);
+        mEndGameLayout = (LinearLayout)view.findViewById(R.id.end_game_layout);
+        userBadge = (ImageView)view.findViewById(R.id.user_image);
+        userText = (TextView)view.findViewById(R.id.user_text);
+        botBar = (RelativeLayout)view.findViewById(R.id.botbar);
         highlightHandler = new Handler();
         Opponents = new ImageView[8];
 
@@ -220,7 +219,7 @@ public class BoardActivity extends BaseActivity {
         {
            // byte[] temp = getIntent().getExtras().getByteArray("SAVE_FILE");
 
-            try(ByteArrayInputStream b = new ByteArrayInputStream(getThisSavedGame(exactTime))){
+            try(ByteArrayInputStream b = new ByteArrayInputStream(BaseActivity.getThisSavedGame(exactTime))){
 
 
                 ObjectInputStream o = new ObjectInputStream(b);
@@ -229,7 +228,7 @@ public class BoardActivity extends BaseActivity {
             catch(IOException e)
             {
                 Log.d("IOException", "Failed to load the game!");
-                mGame = new Game(0, this);
+                mGame = new Game(0, getContext());
             }
             catch(ClassNotFoundException e)
             {
@@ -240,12 +239,12 @@ public class BoardActivity extends BaseActivity {
         {
             mGame = new MultiGame(MultiGame.GameMode.RACE,
                     MultiGame.ConnectType.BOT_GAME,
-                    level, this);
+                    level, getContext());
         }
         //START NEW GAME HERE
         else
         {
-            mGame = new Game(level, this);
+            mGame = new Game(level, getContext());
         }
 
         size = mGame.totalBoardRows();
@@ -267,7 +266,7 @@ public class BoardActivity extends BaseActivity {
         }
         customizeLayout(resume);
         initializePlayerTokens();
-        listeners(toolbar);//set all listeners for BoardActivity layout
+        listeners(toolbar);//set all listeners for BoardFragment layout
         updateScore();
         mChronometer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
             @Override
@@ -276,14 +275,35 @@ public class BoardActivity extends BaseActivity {
                 upDatePositions();
             }
         });
+        setHasOptionsMenu(true);
 
+        return view;
+    }
+
+    //Checks interface is implemented in the activity.
+    @Override
+    public void onAttach(Context context){
+        super.onAttach(context);
+
+        try {
+            callback = (BoardFragment.BoardFragmentListener)context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() +
+                    " must implement BoardFragmentListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        callback = null;
     }
 
     private void initializePlayerTokens(){
         if(multiplayer) {
             numPlayers = ((MultiGame) mGame).getTotalOpponents();
             for (int i = 0; i < Opponents.length; i++) {
-                Opponents[i] = (ImageView) findViewById(Tags.PlayerTags[i]);
+                Opponents[i] = (ImageView) view.findViewById(Tags.PlayerTags[i]);
                 if (i < numPlayers) {
                     Opponents[i].setVisibility(View.VISIBLE);
                     //Opponents[i].setX(0);
@@ -340,7 +360,7 @@ public class BoardActivity extends BaseActivity {
     private boolean isInternet(){
         boolean isConnected;
         ConnectivityManager cm =
-                (ConnectivityManager)this.getSystemService(Context.CONNECTIVITY_SERVICE);
+                (ConnectivityManager)getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
 
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         isConnected = activeNetwork != null &&
@@ -372,7 +392,7 @@ public class BoardActivity extends BaseActivity {
             String today = dateFormat.format(dt);
             String now = sdf.format(dt);
             final SavedGame obj = new SavedGame();
-            obj.setGamerID(getId());
+            obj.setGamerID(BaseActivity.getId());
             if(!alreadySaved) {
                 Long exactoTime = System.currentTimeMillis();
                 exactTime = String.format("%,d", exactoTime);
@@ -407,20 +427,20 @@ public class BoardActivity extends BaseActivity {
                     //DynamoDB calls go here
                     try {
                         mapper.save(obj);
-                        runOnUiThread(new Runnable() {
+                        getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 //execute code on main thread
-                                Toast.makeText(BoardActivity.this, new StringBuilder().append(getString(R.string.gamesavedwithalias)).append(fileSaveName).toString(),Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity(), new StringBuilder().append(getString(R.string.gamesavedwithalias)).append(fileSaveName).toString(),Toast.LENGTH_SHORT).show();
                             }
                         });
                     }
                     catch(final Exception e){
-                        runOnUiThread(new Runnable() {
+                        getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 //execute code on main thread
-                                Toast.makeText(BoardActivity.this, (CharSequence) e,Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity(),  e.toString(),Toast.LENGTH_SHORT).show();
                             }
                         });
                     }
@@ -436,7 +456,7 @@ public class BoardActivity extends BaseActivity {
         }
         else{
             if(!multiplayer) {
-                Toast.makeText(this, R.string.not_upload, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), R.string.not_upload, Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -447,7 +467,7 @@ public class BoardActivity extends BaseActivity {
             SimpleDateFormat dateFormat = new SimpleDateFormat("MMM d, yyyy");
             String today = dateFormat.format(dt);
             final CompletedGame obj = new CompletedGame();
-            obj.setGamerID(getId());
+            obj.setGamerID(BaseActivity.getId());
             obj.setRealScore((int) mGame.getScore());
             obj.setXp(xp);
             obj.setTime(String.format("%,d",(int) mGame.getRunningTime()));
@@ -473,16 +493,16 @@ public class BoardActivity extends BaseActivity {
             mythread.start();
         }
         else{
-            Toast.makeText(this, R.string.not_upload,Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), R.string.not_upload,Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void updateUI(boolean isLoggedIn){
+    public void updateUI(boolean isLoggedIn){
         if(isLoggedIn){
             loadPlayer();
         }
         else{
-            userBadge.setImageDrawable(getResources().getDrawable(BADGETAGS[0]));
+            userBadge.setImageDrawable(getResources().getDrawable(callback.getBadgetag(), null));
             userText.setText(R.string.me);
         }
     }
@@ -492,8 +512,8 @@ public class BoardActivity extends BaseActivity {
         if(gameHelper.getApiClient().isConnected()) {
             gamerName = Games.Players.getCurrentPlayer(gameHelper.getApiClient()).getDisplayName();
             gamerID = Games.Players.getCurrentPlayer(gameHelper.getApiClient()).getPlayerId();
-            userBadge.setImageDrawable(getResources().getDrawable(BADGETAGS[getLevel()]));
-            userText.setText(getUsername());
+            userBadge.setImageDrawable(getResources().getDrawable(callback.getBadgetag(), null));
+            userText.setText(BaseActivity.getUsername());
         }
     }
 
@@ -520,14 +540,14 @@ public class BoardActivity extends BaseActivity {
 
         }
         else{
-            final RelativeLayout mStatsBox = (RelativeLayout) findViewById(R.id.game_stats_box);
-            final LinearLayout mLevelUpBox = (LinearLayout) findViewById(R.id.level_up_view);
-            final ImageButton mCloseLevelUp = (ImageButton) findViewById(R.id.close_levelup);
-            ImageButton mCloseStats = (ImageButton) findViewById(R.id.close_stats);
+            final RelativeLayout mStatsBox = (RelativeLayout) view.findViewById(R.id.game_stats_box);
+            final LinearLayout mLevelUpBox = (LinearLayout) view.findViewById(R.id.level_up_view);
+            final ImageButton mCloseLevelUp = (ImageButton) view.findViewById(R.id.close_levelup);
+            ImageButton mCloseStats = (ImageButton) view.findViewById(R.id.close_stats);
             int sound;
             updateScore();
-            long gameXP = (long) (mGame.getScore()* MULTIPLIER[getLevel()]);
-            boolean levelUp = addExperience(gameXP);
+            long gameXP = (long) (mGame.getScore()* callback.getMultiplier());
+            boolean levelUp = BaseActivity.addExperience(gameXP);
             if(!solveClicked) {
                 uploadCompletedGame((int) gameXP);
                 sendToLeaderBoard(gameXP);
@@ -549,19 +569,19 @@ public class BoardActivity extends BaseActivity {
             }
             else {//Level Up
                 sound = 4;
-                ImageView levelUpBadge = (ImageView)findViewById(R.id.level_up_badge);
-                ImageButton shareLevelUp = (ImageButton) findViewById(R.id.share_levelup);
-                TextView newMultiplier = (TextView) findViewById(R.id.new_multiplier);
-                levelUpBadge.setImageDrawable(getResources().getDrawable(BADGETAGS[getLevel()]));
-                userBadge.setImageDrawable(getResources().getDrawable(BADGETAGS[getLevel()]));
-                userText.setText(getUsername());
+                ImageView levelUpBadge = (ImageView)view.findViewById(R.id.level_up_badge);
+                ImageButton shareLevelUp = (ImageButton) view.findViewById(R.id.share_levelup);
+                TextView newMultiplier = (TextView) view.findViewById(R.id.new_multiplier);
+                levelUpBadge.setImageDrawable(getResources().getDrawable(callback.getBadgetag(), null));
+                userBadge.setImageDrawable(getResources().getDrawable(callback.getBadgetag(), null));
+                userText.setText(BaseActivity.getUsername());
                 shareLevelUp.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         facebookShare();
                     }
                 });
-                newMultiplier.setText("Multiplier " + String.format("%,2.1f",MULTIPLIER[level])+"x");
+                newMultiplier.setText("Multiplier " + String.format("%,2.1f",callback.getMultiplier())+"x");
                 mLevelUpBox.setVisibility(View.VISIBLE);
                 mCloseLevelUp.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -572,7 +592,7 @@ public class BoardActivity extends BaseActivity {
 
             }
             if(!solveClicked) {
-                mPlaySounds.playSounds(this, sound);
+                mPlaySounds.playSounds(getContext(), sound);
             }
 
         }
@@ -586,7 +606,7 @@ public class BoardActivity extends BaseActivity {
 
         int[] array = mGame.getValueTotals();
         for(int i=0; i< array.length;i++){
-             lilNums[i]=(TextView)findViewById(Tags.lilNumTags[i]);
+             lilNums[i]=(TextView)view.findViewById(Tags.lilNumTags[i]);
              lilNums[i].setText(String.valueOf(array[i]));
         }
 
@@ -602,8 +622,8 @@ public class BoardActivity extends BaseActivity {
                 Games.Leaderboards.submitScore(gameHelper.getApiClient(),getString(R.string.leaderboard_highest_single_game_score), (int)gameXP,"1337");
                 Games.Leaderboards.submitScore(gameHelper.getApiClient(), getString(Tags.leaderboards[level]), (int)mGame.getRunningTime() * 1000,"1337");
             }
-            Games.Leaderboards.submitScore(gameHelper.getApiClient(), getString(R.string.leaderboard_most_total_xp), (int)getXp(),"1337");
-            Toast.makeText(this, R.string.scoretime_submitted, Toast.LENGTH_SHORT).show();
+            Games.Leaderboards.submitScore(gameHelper.getApiClient(), getString(R.string.leaderboard_most_total_xp), (int)BaseActivity.getXp(),"1337");
+            Toast.makeText(getActivity(), R.string.scoretime_submitted, Toast.LENGTH_SHORT).show();
         }
 
 
@@ -625,7 +645,7 @@ public class BoardActivity extends BaseActivity {
             if(gameXP>=10000){
                 unlockAchievements(R.string.achievement_big_time_scorer);
             }
-            if(getXp()>=100000){
+            if(BaseActivity.getXp()>=100000){
                 unlockAchievements(R.string.achievement_up_and_comer_ii);
             }
             if(level>=3&&mGame.getAccuracy()>=1&&mGame.getRunningTime()<15*60){
@@ -637,7 +657,7 @@ public class BoardActivity extends BaseActivity {
             if(gameXP>=15000){
                 unlockAchievements(R.string.achievement_big_time_scorer_ii);
             }
-            if(getXp()>=1000000){
+            if(BaseActivity.getXp()>=1000000){
                 unlockAchievements(R.string.achievement_up_and_comer_iii);
             }
             if(level>=4&&mGame.getAccuracy()>=1&&mGame.getRunningTime()<10*60){
@@ -656,17 +676,17 @@ public class BoardActivity extends BaseActivity {
      * Set stats box at end of game
      *********************************/
     private void setStatsBox(long gameXP){
-        TextView mTitleStats = (TextView)findViewById(R.id.title_stats);
-        TextView mTotalXpStats = (TextView)findViewById(R.id.totalxp_stats);
-        TextView mRpStats = (TextView)findViewById(R.id.regular_points);
-        TextView mLevelBonusStats = (TextView)findViewById(R.id.levelbonus_stats);
-        TextView mTimeBonusStats = (TextView)findViewById(R.id.timebonus_stats);
-        TextView mGoodSquaresStats = (TextView)findViewById(R.id.goodsquares_stats);
-        TextView mAccuracyStats = (TextView)findViewById(R.id.accurracy_stats);
-        TextView mPenalty = (TextView)findViewById(R.id.penalty_stats);
-        mTitleStats.setText(getUsername());
+        TextView mTitleStats = (TextView)view.findViewById(R.id.title_stats);
+        TextView mTotalXpStats = (TextView)view.findViewById(R.id.totalxp_stats);
+        TextView mRpStats = (TextView)view.findViewById(R.id.regular_points);
+        TextView mLevelBonusStats = (TextView)view.findViewById(R.id.levelbonus_stats);
+        TextView mTimeBonusStats = (TextView)view.findViewById(R.id.timebonus_stats);
+        TextView mGoodSquaresStats = (TextView)view.findViewById(R.id.goodsquares_stats);
+        TextView mAccuracyStats = (TextView)view.findViewById(R.id.accurracy_stats);
+        TextView mPenalty = (TextView)view.findViewById(R.id.penalty_stats);
+        mTitleStats.setText(BaseActivity.getUsername());
         mTotalXpStats.setText(String.format("%,d",(int) gameXP)+ " XP");
-        mRpStats.setText("Multiplier: " + String.format("%,d",(int) mGame.getScore())+ " x " + String.format("%2.1f",MULTIPLIER[getLevel()]));
+        mRpStats.setText("Multiplier: " + String.format("%,d",(int) mGame.getScore())+ " x " + String.format("%2.1f", callback.getMultiplier()));
         mLevelBonusStats.setText("Level Bonus: " + String.format("%,d",(int) mGame.getLevelBonus()));
         if((mGame.getEarlyFinishTime() - mGame.getRunningTime()) >= 0)
         {
@@ -780,14 +800,14 @@ public class BoardActivity extends BaseActivity {
     }
 
     @Override
-    protected void onResume() {
-        settings = new SudokuSettings(this);
+    public void onResume() {
+        settings = new SudokuSettings(getContext());
         rowColHighlights= settings.getHighlightPreference();
         mPlaySounds.setMute(settings.getSoundPreference());
         mAutoSave = settings.getAutoSavePreference();
 
         for (int i=0;i<lilNums.length;i++) {
-            lilNums[i]=(TextView)findViewById(Tags.lilNumTags[i]);
+            lilNums[i]=(TextView)view.findViewById(Tags.lilNumTags[i]);
             if (settings.getLilNumPreference()) {
                 lilNums[i].setVisibility(View.VISIBLE);
             } else {
@@ -811,10 +831,10 @@ public class BoardActivity extends BaseActivity {
     }
 
     @Override
-    protected void onPause() {
+    public void onPause() {
         removeAllHighlights();
         selectedSquare = -1;
-        settings = new SudokuSettings(this);
+        settings = new SudokuSettings(getContext());
         rowColHighlights= settings.getHighlightPreference();
         mPlaySounds.setMute(settings.getSoundPreference());
         mGame.pauseTimer();
@@ -828,18 +848,18 @@ public class BoardActivity extends BaseActivity {
      *********************************/
     private void initializeButtons() {
         for (int i = 0; i < Tags.numberButtonTags.length; i++) {//getButtons
-            numberButtons[i] = (Button) findViewById(Tags.numberButtonTags[i]);
+            numberButtons[i] = (Button) view.findViewById(Tags.numberButtonTags[i]);
         }
-        clearButton = (Button) findViewById(R.id.clear);
-        solveButton = (Button) findViewById(R.id.solveButton);
-        checkProgressButton = (Button) findViewById(R.id.progressButton);
-        nakedSingleButton = (Button) findViewById(R.id.naked_single);
-        nakedDoubleButton = (Button) findViewById(R.id.naked_double);
-        hiddenSingleButton = (Button) findViewById(R.id.hidden_single);
-        hiddenPairButton = (Button) findViewById(R.id.hidden_pair);
-        lockedCandidateButton = (Button) findViewById(R.id.locked_candidate);
-        xWingButton = (Button) findViewById(R.id.x_wing);
-        hintButton = (Button) findViewById(R.id.hints);
+        clearButton = (Button) view.findViewById(R.id.clear);
+        solveButton = (Button) view.findViewById(R.id.solveButton);
+        checkProgressButton = (Button) view.findViewById(R.id.progressButton);
+        nakedSingleButton = (Button) view.findViewById(R.id.naked_single);
+        nakedDoubleButton = (Button) view.findViewById(R.id.naked_double);
+        hiddenSingleButton = (Button) view.findViewById(R.id.hidden_single);
+        hiddenPairButton = (Button) view.findViewById(R.id.hidden_pair);
+        lockedCandidateButton = (Button) view.findViewById(R.id.locked_candidate);
+        xWingButton = (Button) view.findViewById(R.id.x_wing);
+        hintButton = (Button) view.findViewById(R.id.hints);
     }
 
     /************************************
@@ -850,8 +870,8 @@ public class BoardActivity extends BaseActivity {
     private void initializeBoard() {
         fromResume = false;
         for (int i = 0; i < squareViews.length; i++) {//set up starting board
-            RelativeLayout rl = (RelativeLayout) findViewById(Tags.squareTags[i]); // get Relative layout
-            squareViews[i] = new SquareView(this, rl,colorGame);
+            RelativeLayout rl = (RelativeLayout) view.findViewById(Tags.squareTags[i]); // get Relative layout
+            squareViews[i] = new SquareView(getContext(), rl,colorGame);
             final int value = mGame.getBoardValueAt(i);
 
             int timer;
@@ -895,8 +915,8 @@ public class BoardActivity extends BaseActivity {
     private void initializeBoardFromResume(Long stoppedTime) {
         fromResume = true;
         for (int i = 0; i < squareViews.length; i++){
-            RelativeLayout rl = (RelativeLayout) findViewById(Tags.squareTags[i]); // get Relative layout
-            squareViews[i] = new SquareView(this, rl,colorGame);
+            RelativeLayout rl = (RelativeLayout) view.findViewById(Tags.squareTags[i]); // get Relative layout
+            squareViews[i] = new SquareView(getContext(), rl,colorGame);
             for (int j = 0; j < 9; j++){
                 squareViews[i].showNotepadNumber(j+1,mGame.getBoardNotepadAt(i,j+1));
 
@@ -954,7 +974,7 @@ public class BoardActivity extends BaseActivity {
     }
 
     private void continueListener(){
-        LinearLayout continueButton =(LinearLayout)findViewById(R.id.continue_button);
+        LinearLayout continueButton =(LinearLayout)view.findViewById(R.id.continue_button);
         continueButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -963,26 +983,26 @@ public class BoardActivity extends BaseActivity {
         });
     }
     private void userBadgeListener(){
-        LinearLayout userBadgeButton =(LinearLayout)findViewById(R.id.user_button);
+        LinearLayout userBadgeButton =(LinearLayout)view.findViewById(R.id.user_button);
         userBadgeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 gameHelper.getApiClient().connect();
                 if(gameHelper.getApiClient().isConnected()) {
-                    Intent intent = new Intent(BoardActivity.this, GamerProfileActivity.class);
-                    intent.putExtra("GAMERNAME", gamerName);
-                    intent.putExtra("GAMERID", gamerID);
-                    startActivity(intent);
+                    Bundle args = new Bundle();
+                    args.putString("GAMERNAME", gamerName);
+                    args.putString("GAMERID", gamerID);
+                    callback.swapFragment(BaseActivity.GAMER_PROFILE_FRAGMENT, args);
                 }
                 else{
-                    Toast.makeText(BoardActivity.this,getString(R.string.login_toview_profile),Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(),getString(R.string.login_toview_profile),Toast.LENGTH_SHORT).show();
                 }
             }
         });
     }
     private void leaderBoardsListener(){
         gameHelper.getApiClient().connect();
-        LinearLayout leaderBoardButton =(LinearLayout)findViewById(R.id.leader_button);
+        LinearLayout leaderBoardButton =(LinearLayout)view.findViewById(R.id.leader_button);
         leaderBoardButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -992,13 +1012,13 @@ public class BoardActivity extends BaseActivity {
                 } else {
                     // Alternative implementation (or warn user that they must
                     // sign in to use this feature)
-                    Toast.makeText(BoardActivity.this, R.string.login_tosee_leaderboards , Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), R.string.login_tosee_leaderboards , Toast.LENGTH_SHORT).show();
                 }
             }
         });
     }
     private void facebookListener(){
-        LinearLayout facebookButton =(LinearLayout)findViewById(R.id.facebook_button);
+        LinearLayout facebookButton =(LinearLayout)view.findViewById(R.id.facebook_button);
         facebookButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -1013,10 +1033,10 @@ public class BoardActivity extends BaseActivity {
         String imageTag;
         if(gameHelper.getApiClient().isConnected()) {
             if(!colorGame){
-                imageTag = Tags.postScoreImagesNumber[getLevel()];
+                imageTag = Tags.postScoreImagesNumber[BaseActivity.getLevel()];
             }
             else{
-               imageTag = Tags.postScoreImagesColor[getLevel()];
+               imageTag = Tags.postScoreImagesColor[BaseActivity.getLevel()];
             }
 
         }
@@ -1055,7 +1075,7 @@ public class BoardActivity extends BaseActivity {
         for (int i = 0; i < (size * size); i++) {
             final int finalI = i;
             final int finalI1 = i;
-            RelativeLayout rl = (RelativeLayout) findViewById(Tags.squareTags[i]);
+            RelativeLayout rl = (RelativeLayout) view.findViewById(Tags.squareTags[i]);
             squareViews[i].getSquareHolder().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -1101,17 +1121,17 @@ public class BoardActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 if (selectedSquare > -1) {
-                    RelativeLayout notepadBackground = (RelativeLayout) findViewById(R.id.scratch_bg);
+                    RelativeLayout notepadBackground = (RelativeLayout) view.findViewById(R.id.scratch_bg);
                     if (smallNumPadState) {
                         smallNumPadState = false;
-                        notepadBackground.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorKeypad));
+                        notepadBackground.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorKeypad));
 
                     } else {
                         smallNumPadState = true;
                         if (!colorGame) {
-                            notepadBackground.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.notepadNumberHighlight));
+                            notepadBackground.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.notepadNumberHighlight));
                         } else {
-                            notepadBackground.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.notepadColorHighlight));
+                            notepadBackground.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.notepadColorHighlight));
                         }
                     }
                 }
@@ -1306,7 +1326,7 @@ public class BoardActivity extends BaseActivity {
             hintDisplay(hint);
         }
         else {
-            mPlaySounds.playSounds(this, 2);
+            mPlaySounds.playSounds(getContext(), 2);
         }
     }
 
@@ -1452,8 +1472,6 @@ public class BoardActivity extends BaseActivity {
                     }
                 }
             }
-            // TODO disable all buttons except down
-            // TODO toggle highlights?
         }
 
         else { // Input square clicked
@@ -1541,7 +1559,7 @@ public class BoardActivity extends BaseActivity {
             Set<Integer> conflicts = mGame.setBoardValueAt(selectedSquare, keypadNumber);  // Set board value to number
             if (conflicts.isEmpty()) {
                 if(!solveClicked&&!mGame.isGameFinished()&&mGame.getBoardValueAt(selectedSquare)!=0) {
-                    mPlaySounds.playSounds(this, 1);
+                    mPlaySounds.playSounds(getContext(), 1);
                 }
                 if (!colorGame)
                     currSquare.setBigNumber(keypadNumber,false);   // Display number
@@ -1550,7 +1568,7 @@ public class BoardActivity extends BaseActivity {
             }
             else {
                 if(!solveClicked) {
-                    mPlaySounds.playSounds(this, 2);
+                    mPlaySounds.playSounds(getContext(), 2);
                 }
                 for (int conflict : conflicts) {
                     squareViews[conflict].setErrorHighlight(colorGame);     // Display error highlight
@@ -1577,7 +1595,7 @@ public class BoardActivity extends BaseActivity {
 
     }
 
-    /* Uses the BoardActivity UI to solve a puzzle given the solution steps */
+    /* Uses the BoardFragment UI to solve a puzzle given the solution steps */
     public void solvePuzzle() {
 
         Handler solutionHandler = new Handler();
@@ -1642,14 +1660,14 @@ public class BoardActivity extends BaseActivity {
             }
         }
         /////reset all keypad buttons to original color
-        RelativeLayout notepadBackground = (RelativeLayout) findViewById(R.id.scratch_bg);
+        RelativeLayout notepadBackground = (RelativeLayout) view.findViewById(R.id.scratch_bg);
         notepadBackground.setBackgroundColor(getResources().getColor(R.color.colorKeypad));
         clearButton.setBackgroundColor(getResources().getColor(R.color.colorKeypad));
         hintButton.setBackgroundColor(getResources().getColor(R.color.colorKeypad));
 
         /////////set notepadbutton with correct image, color or number
 
-        ImageView artHolder = (ImageView)findViewById(R.id.artHolder);
+        ImageView artHolder = (ImageView)view.findViewById(R.id.artHolder);
         if (!colorGame) {
             notepadIcon.setImageDrawable(getResources().getDrawable(R.drawable.numbers));
             artHolder.setImageDrawable(null);
@@ -1695,8 +1713,8 @@ public class BoardActivity extends BaseActivity {
         }
         keyboardState=false;
         removeAllHighlights();
-        LinearLayout mBottomLayout = (LinearLayout)findViewById(R.id.bottomLayout);
-        RelativeLayout mKeypad = (RelativeLayout) findViewById(R.id.keypad);
+        LinearLayout mBottomLayout = (LinearLayout)view.findViewById(R.id.bottomLayout);
+        RelativeLayout mKeypad = (RelativeLayout) view.findViewById(R.id.keypad);
         mBottomLayout.setVisibility(View.VISIBLE);
 
         ObjectAnimator scalex = ObjectAnimator.ofFloat(mBottomLayout, "scaleY", 0, 1);
@@ -1717,8 +1735,8 @@ public class BoardActivity extends BaseActivity {
      *********************************/
     private void openKeyboard() {
             keyboardState = true;
-            LinearLayout mBottomLayout = (LinearLayout)findViewById(R.id.bottomLayout);
-            RelativeLayout mKeypad = (RelativeLayout) findViewById(R.id.keypad);
+            LinearLayout mBottomLayout = (LinearLayout)view.findViewById(R.id.bottomLayout);
+            RelativeLayout mKeypad = (RelativeLayout) view.findViewById(R.id.keypad);
 
 
             mKeypad.setVisibility(View.VISIBLE);
@@ -1739,14 +1757,15 @@ public class BoardActivity extends BaseActivity {
      * Overflow menu functions
      *********************************/
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(com.licktopia.thechampionofsudoku.R.menu.menu_main, menu);
+        inflater.inflate(com.licktopia.thechampionofsudoku.R.menu.menu_main, menu);
 
-        return true;
+
     }
 
-    public boolean onPrepareOptionsMenu(Menu menu){
+    @Override
+    public void onPrepareOptionsMenu(Menu menu){
         /*
         if(solvedState) {
             SpannableString s = new SpannableString("Save game");
@@ -1754,8 +1773,6 @@ public class BoardActivity extends BaseActivity {
             menu.getItem(5).setTitle(s);
         }
         */
-        return true;
-
     }
 
     @Override
@@ -1767,18 +1784,16 @@ public class BoardActivity extends BaseActivity {
 
 
         if (id == R.id.settingsMenu) {
-            Intent intent = new Intent(this, SudokuSettingsActivity.class);
+            Intent intent = new Intent(getActivity(), SudokuSettingsActivity.class); //TODO Leave settings as activity??
                 startActivity(intent);
         }
 
         if (id == R.id.action_instructions) {
-                Intent intent = new Intent(this, InstructionsActivity.class);
-                    startActivity(intent);
-
+            callback.swapFragment(BaseActivity.INSTRUCTIONS_FRAGMENT, new Bundle());
         }
+
         if (id == R.id.action_about) {
-                Intent intent = new Intent(this, AboutActivity.class);
-                    startActivity(intent);
+            callback.swapFragment(BaseActivity.ABOUT_FRAGMENT, new Bundle());
         }
 
         if (id == R.id.save_and_exit) {
@@ -1796,47 +1811,30 @@ public class BoardActivity extends BaseActivity {
 
     }
 
-    @Override
-    public void onBackPressed() {
-        final Intent intent = new Intent(BoardActivity.this, MainMenuActivity.class);//state intent to go to Shopping Cart Activity
-        if(!solvedState) {
-            new AlertDialog.Builder(this)
-                    .setMessage(getString(R.string.are_you_sure))
-                    .setCancelable(true)
-                    .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            startActivity(intent);//GO
-                        }
-                    })
-                    .setNegativeButton(getString(R.string.no), null)
-                    .show();
-        }
-        else{
-            startActivity(intent);//GO
-        }
-    }
+
     private void homeClick() {
         goToMainMenu();
     }
 
     private void goToMainMenu() {
-        final Intent intent = new Intent(BoardActivity.this, MainMenuActivity.class);//state intent to go to Shopping Cart Activity
         if(!solvedState) {
-            new AlertDialog.Builder(this)
+            new AlertDialog.Builder(getContext())
                     .setMessage(getString(R.string.quit_to_menu))
                     .setCancelable(true)
                     .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
-                            startActivity(intent);//GO
+                            callback.swapFragment(BaseActivity.MAIN_MENU_FRAGMENT, new Bundle());
                         }
                     })
                     .setNegativeButton(getString(R.string.no), null)
                     .show();
         }
         else{
-            startActivity(intent);//GO
+            callback.swapFragment(BaseActivity.MAIN_MENU_FRAGMENT, new Bundle());
         }
     }
+
+    public boolean getSolvedState() { return solvedState; }
 
     private void share() {
 
@@ -1860,57 +1858,23 @@ public class BoardActivity extends BaseActivity {
     }
 
     @Override
-    protected void onStart() {
+    public void onStart() {
         super.onStart();
-        gameHelper.onStart(this);
+
     }
 
     @Override
-    protected void onStop() {
+    public void onStop() {
         super.onStop();
         if(mAutoSave && isInternet() && gameHelper.getApiClient().isConnected()&&!solvedState){
             uploadSavedGame(true);
         }
-        gameHelper.onStop();
+
     }
 
 
-    @Override
-    public void onSignInFailed() {
-        updateUI(false);
-    }
-
-    @Override
-    public void onSignInSucceeded() {
-        updateUI(true);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        super.onActivityResult(requestCode, resultCode, intent);
-
-        gameHelper.onActivityResult(requestCode, resultCode, intent);
 
 
-        if (intent != null) {
-            if (intent.hasExtra(Snapshots.EXTRA_SNAPSHOT_METADATA)) {
-                // Load a snapshot.
-                SnapshotMetadata snapshotMetadata = (SnapshotMetadata)
-                        intent.getParcelableExtra(Snapshots.EXTRA_SNAPSHOT_METADATA);
-                mCurrentSaveName = snapshotMetadata.getUniqueName();
-
-                // Load the game data from the Snapshot
-                // ...
-            } else if (intent.hasExtra(Snapshots.EXTRA_SNAPSHOT_NEW)) {
-                // Create a new snapshot named with a unique string
-                String unique = new BigInteger(281, new Random()).toString(13);
-                mCurrentSaveName = "snapshotTemp-" + unique;
-
-                // Create the new snapshot
-                // ...
-            }
-        }
-    }
 
     private void unlockAchievements(int achievement){
         if(gameHelper.isSignedIn()) {
@@ -1918,23 +1882,14 @@ public class BoardActivity extends BaseActivity {
         }
     }
 
-    private PendingResult<Snapshots.CommitSnapshotResult> writeSnapshot(Snapshot snapshot,
-                                                                        byte[] data, Bitmap coverImage, String desc) {
 
-        // Set the data payload for the snapshot
-        snapshot.getSnapshotContents().writeBytes(data);
 
-        // Create the change operation
-        SnapshotMetadataChange metadataChange = new SnapshotMetadataChange.Builder()
-                .setCoverImage(coverImage)
-                .setDescription(desc)
-                .build();
-
-        // Commit the operation
-        return Games.Snapshots.commitAndClose(gameHelper.getApiClient(), snapshot, metadataChange);
+    //Interface to be implemented by containing activity.
+    public interface BoardFragmentListener {
+        void swapFragment(String fragmentName, Bundle args);
+        int getBadgetag();
+        double getMultiplier();
     }
-
-
 }
 
 

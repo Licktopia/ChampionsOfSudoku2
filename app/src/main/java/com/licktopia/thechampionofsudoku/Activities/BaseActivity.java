@@ -1,8 +1,14 @@
 package com.licktopia.thechampionofsudoku.Activities;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
@@ -11,8 +17,17 @@ import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.google.example.games.basegameutils.BaseGameActivity;
+import com.google.example.games.basegameutils.GameHelper;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.licktopia.thechampionofsudoku.Activities.UIActivities.AboutFragment;
+import com.licktopia.thechampionofsudoku.Activities.UIActivities.BoardFragment;
+import com.licktopia.thechampionofsudoku.Activities.UIActivities.CompletedGameFragment;
+import com.licktopia.thechampionofsudoku.Activities.UIActivities.GamerProfileFragment;
+import com.licktopia.thechampionofsudoku.Activities.UIActivities.InstructionsFragment;
+import com.licktopia.thechampionofsudoku.Activities.UIActivities.InviteDialogFragment;
+import com.licktopia.thechampionofsudoku.Activities.UIActivities.MainMenuFragment;
+import com.licktopia.thechampionofsudoku.Activities.UIActivities.SavedGameFragment;
 import com.licktopia.thechampionofsudoku.R;
 import com.licktopia.thechampionofsudoku.Sudoku.CompletedGame;
 import com.licktopia.thechampionofsudoku.Sudoku.SavedGame;
@@ -27,13 +42,28 @@ import java.util.List;
  * Created by Matt on 6/22/2017.
  */
 
-public abstract class BaseActivity extends BaseGameActivity {
+public class BaseActivity extends BaseGameActivity
+        implements MainMenuFragment.MainMenuFragmentListener,
+        GamerProfileFragment.GamerProfileFragmentListener,
+        BoardFragment.BoardFragmentListener {
+
     public static final String SAVED_KEY = "SAVED_KEY";
     public static final String COMPLETED_KEY = "COMPLETED_KEY";
     public static final String XP_KEY = "XP_KEY";
     public static final String USERNAME_KEY = "USERNAME_KEY";
     public static final String LEVEL_KEY = "LEVEL_KEY";
 
+    public static final String MAIN_MENU_FRAGMENT = "MAIN_MENU_FRAGMENT";
+    public static final String ABOUT_FRAGMENT = "ABOUT_FRAGMENT";
+    public static final String BOARD_FRAGMENT = "BOARD_FRAGMENT";
+    public static final String COMPLETED_GAME_FRAGMENT = "COMPLETED_GAME_FRAGMENT";
+    public static final String GAMER_PROFILE_FRAGMENT = "GAMER_PROFILE_FRAGMENT";
+    public static final String INSTRUCTIONS_FRAGMENT = "INSTRUCTIONS_FRAGMENT";
+    public static final String SAVED_GAME_FRAGMENT = "SAVED_GAME_FRAGMENT";
+    public static final String INVITE_DIALOG_FRAGMENT = "INVITE_DIALOG_FRAGMENT";
+    public static  GameHelper gameHelper;
+    public static boolean clickedOut = false;
+    public static boolean userSignIn=false;
 
 
     public static int[] CUTOFF = {0,250,5000,11000,18000,30000,42000,55000,70000,90000,115000,140000,167000,195000,225000,262000,305000,355000,413000,480000,560000,650000,
@@ -62,6 +92,51 @@ public abstract class BaseActivity extends BaseGameActivity {
     public static AmazonDynamoDBClient ddbClient;
     public static DynamoDBMapper mapper;
 
+
+    public void swapFragment(String fragmentName, Bundle args) {
+
+        Fragment fragment = null;
+
+        switch(fragmentName) {
+            case ABOUT_FRAGMENT:
+                fragment = AboutFragment.newInstance();
+                break;
+            case BOARD_FRAGMENT:
+                fragment = BoardFragment.newInstance();
+                break;
+            case COMPLETED_GAME_FRAGMENT:
+                fragment = CompletedGameFragment.newInstance();
+                break;
+            case GAMER_PROFILE_FRAGMENT:
+                fragment = GamerProfileFragment.newInstance();
+                break;
+            case INSTRUCTIONS_FRAGMENT:
+                fragment = InstructionsFragment.newInstance();
+                break;
+            case SAVED_GAME_FRAGMENT:
+                fragment = SavedGameFragment.newInstance();
+                break;
+            case INVITE_DIALOG_FRAGMENT:
+                DialogFragment dialog = InviteDialogFragment.newInstance();
+                dialog.setArguments(args);
+                dialog.show(getSupportFragmentManager(), "choose dialog");
+                return;
+            case MAIN_MENU_FRAGMENT:
+            default:
+                fragment = MainMenuFragment.newInstance();
+                break;
+        }
+
+        if (fragment != null)
+            fragment.setArguments(args);
+
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+        transaction.replace(R.id.fragment_container, fragment);
+        transaction.addToBackStack(null);
+
+        transaction.commit();
+    }
 
 
 
@@ -242,6 +317,21 @@ public abstract class BaseActivity extends BaseGameActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_base);
+
+        //Check if there is a fragment container
+        if (findViewById(R.id.fragment_container) != null) {
+
+            //Check if there is already a fragment displayed
+            if (savedInstanceState != null) {
+                return;
+            }
+
+            MainMenuFragment menuFragment = MainMenuFragment.newInstance();
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.fragment_container, menuFragment).commit();
+        }
+
         credentialsProvider = new CognitoCachingCredentialsProvider(
                 getApplicationContext(),
                 "us-east-2:40802ef0-7537-4910-8442-31e2b30c5a7d", // Identity Pool ID
@@ -252,14 +342,20 @@ public abstract class BaseActivity extends BaseGameActivity {
         ddbClient = new AmazonDynamoDBClient(credentialsProvider);
         mapper = new DynamoDBMapper(ddbClient);
         ddbClient.setRegion(Region.getRegion(Regions.US_EAST_2));
+        gameHelper = new GameHelper(this, GameHelper.CLIENT_GAMES);
+        //TODO Remove this for production
+        gameHelper.enableDebugLog(true);
+        gameHelper.setup(this);
         //completedGames = new ArrayList<>();
         //savedGames = new ArrayList<>();
+
 
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+        gameHelper.onStart(this);
         Type type = new TypeToken<ArrayList<SavedGame>>() {}.getType();
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         Gson gson = new Gson();
@@ -287,6 +383,7 @@ public abstract class BaseActivity extends BaseGameActivity {
     @Override
     protected void onStop() {
         super.onStop();
+        gameHelper.onStop();
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = sharedPrefs.edit();
         Gson gson = new Gson();
@@ -300,4 +397,92 @@ public abstract class BaseActivity extends BaseGameActivity {
         editor.apply();
 
     }
+
+    /* Implemented from MainMenuFragmentListener */
+    public int getBadgetag() {
+        return BADGETAGS[level];
+    }
+    public void beginUserInitSignIn() {
+        beginUserInitiatedSignIn();
+    }
+
+    /* Implemented from GamerProfileFragmentListener*/
+    public String getRank() { return RANKNAMES[level]; }
+    public int getCutoff() { return CUTOFF[level]; }
+    public int getNextCutoff() { return CUTOFF[level + 1]; }
+
+    /* Implemented from BoardFragmentListener */
+    public double getMultiplier() { return MULTIPLIER[level]; }
+
+
+    @Override
+    public void onSignInFailed() {
+        Fragment f = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+        if (f instanceof MainMenuFragment) {
+            MainMenuFragment mmf = (MainMenuFragment)f;
+            mmf.updateUI(false);
+            return;
+        }
+        else if (f instanceof BoardFragment) {
+            BoardFragment ba = (BoardFragment)f;
+            ba.updateUI(false);
+            return;
+        }
+        else if (f instanceof GamerProfileFragment) {
+            GamerProfileFragment gpf = (GamerProfileFragment)f;
+            gpf.signInFailed();
+            return;
+        }
+    }
+
+    @Override
+    public void onSignInSucceeded() {
+        Fragment f = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+        if (f instanceof MainMenuFragment) {
+            MainMenuFragment mmf = (MainMenuFragment)f;
+            mmf.updateUI(true);
+            return;
+        }
+        else if (f instanceof BoardFragment) {
+            BoardFragment ba = (BoardFragment)f;
+            ba.updateUI(true);
+            return;
+        }
+        else if (f instanceof GamerProfileFragment) {
+            GamerProfileFragment gpf = (GamerProfileFragment)f;
+            gpf.signInSucceeded();
+            return;
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data){
+        super.onActivityResult(requestCode,resultCode,data);
+        gameHelper.onActivityResult(requestCode, resultCode, data);
+    }
+
+    //@Override //TODO Not a fragment function, need to implement in Activity possibly
+    public void onBackPressed() {
+        Fragment f = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+        if (f instanceof BoardFragment) {
+            BoardFragment ba = (BoardFragment) f;
+            if (!ba.getSolvedState()) {
+                new AlertDialog.Builder(this)
+                        .setMessage(getString(R.string.are_you_sure))
+                        .setCancelable(true)
+                        .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                swapFragment(BaseActivity.MAIN_MENU_FRAGMENT, new Bundle());
+                            }
+                        })
+                        .setNegativeButton(getString(R.string.no), null)
+                        .show();
+            } else {
+                swapFragment(BaseActivity.MAIN_MENU_FRAGMENT, new Bundle());
+            }
+        }else{
+            super.onBackPressed();
+        }
+    }
+
 }
