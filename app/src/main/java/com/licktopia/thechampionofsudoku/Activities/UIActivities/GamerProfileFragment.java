@@ -204,7 +204,7 @@ public class GamerProfileFragment extends Fragment {
             nextPowerUpDisplay.setText(new StringBuilder().append(getString(R.string.next_levelup)).append(" ").append(String.format("%,d", callback.getCutoff() - BaseActivity.getXp())).append(" XP").toString());
         }
         xpDisplay.setText(new StringBuilder().append(String.format("%,d", Integer.parseInt(String.valueOf(BaseActivity.getXp())))).append(" XP").toString());
-        nextPowerUpDisplay.setText(new StringBuilder().append(getString(R.string.next_levelup)).append(" ").append(String.format("%,d", callback.getCutoff() - BaseActivity.getXp())).append(" XP").toString());
+        nextPowerUpDisplay.setText(new StringBuilder().append(getString(R.string.next_levelup)).append(" ").append(String.format("%,d", callback.getNextCutoff() - BaseActivity.getXp())).append(" XP").toString());
         mRankDisplay.setImageDrawable(getResources().getDrawable(callback.getBadgetag(), null));
         ImageView[] verticalBadges = new ImageView[52];
         for(int i = 0; i< Tags.verticalBadges.length;i++){

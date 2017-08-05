@@ -159,6 +159,8 @@ public class MainMenuFragment extends Fragment {
         initializeShareBar();
         initializeResumeButton(mResumeButton);
 
+
+        // IGNORE, TESTING FOR CLASSIFIER, SWITCH TO REAL HOST FUNCTION WHEN MERGEz
         hostButton = (Button)view.findViewById(R.id.host_button);
         final Context context = getContext();
         hostButton.setOnClickListener(new View.OnClickListener() {
