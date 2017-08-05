@@ -1,12 +1,14 @@
 package com.licktopia.thechampionofsudoku.Activities;
 
 import android.app.FragmentManager;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
@@ -450,4 +452,27 @@ public class BaseActivity extends BaseGameActivity
     public void onActivityResult(int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode,resultCode,data);
     }
+
+    //@Override //TODO Not a fragment function, need to implement in Activity possibly
+    public void onBackPressed() {
+        Fragment f = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+        if (f instanceof BoardActivity) {
+            BoardActivity ba = (BoardActivity) f;
+            if (!ba.getSolvedState()) {
+                new AlertDialog.Builder(this)
+                        .setMessage(getString(R.string.are_you_sure))
+                        .setCancelable(true)
+                        .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                swapFragment(BaseActivity.MAIN_MENU_FRAGMENT, new Bundle());
+                            }
+                        })
+                        .setNegativeButton(getString(R.string.no), null)
+                        .show();
+            } else {
+                swapFragment(BaseActivity.MAIN_MENU_FRAGMENT, new Bundle());
+            }
+        }
+    }
+
 }

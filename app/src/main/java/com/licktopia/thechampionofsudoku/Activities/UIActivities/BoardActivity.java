@@ -1481,8 +1481,6 @@ public class BoardActivity extends Fragment {
                     }
                 }
             }
-            // TODO disable all buttons except down
-            // TODO toggle highlights?
         }
 
         else { // Input square clicked
@@ -1844,6 +1842,8 @@ public class BoardActivity extends Fragment {
             callback.swapFragment(BaseActivity.MAIN_MENU_FRAGMENT, new Bundle());
         }
     }
+
+    public boolean getSolvedState() { return solvedState; }
 
     private void share() {
 
