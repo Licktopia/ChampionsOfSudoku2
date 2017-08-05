@@ -1,5 +1,7 @@
 package com.licktopia.thechampionofsudoku.Activities;
 
+import android.app.FragmentManager;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -13,6 +15,7 @@ import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.google.example.games.basegameutils.BaseGameActivity;
+import com.google.example.games.basegameutils.GameHelper;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.licktopia.thechampionofsudoku.Activities.UIActivities.AboutFragment;
@@ -54,6 +57,9 @@ public class BaseActivity extends BaseGameActivity
     public static final String GAMER_PROFILE_FRAGMENT = "GAMER_PROFILE_FRAGMENT";
     public static final String INSTRUCTIONS_FRAGMENT = "INSTRUCTIONS_FRAGMENT";
     public static final String SAVED_GAME_FRAGMENT = "SAVED_GAME_FRAGMENT";
+    public static  GameHelper gameHelper;
+    public static boolean clickedOut = false;
+    public static boolean userSignIn=false;
 
 
     public static int[] CUTOFF = {0,250,5000,11000,18000,30000,42000,55000,70000,90000,115000,140000,167000,195000,225000,262000,305000,355000,413000,480000,560000,650000,
@@ -122,6 +128,8 @@ public class BaseActivity extends BaseGameActivity
 
         transaction.commit();
     }
+
+
 
     public static ArrayList<SavedGame> getSavedGames() {
         return savedGames;
@@ -325,14 +333,20 @@ public class BaseActivity extends BaseGameActivity
         ddbClient = new AmazonDynamoDBClient(credentialsProvider);
         mapper = new DynamoDBMapper(ddbClient);
         ddbClient.setRegion(Region.getRegion(Regions.US_EAST_2));
+        gameHelper = new GameHelper(this, GameHelper.CLIENT_GAMES);
+        //TODO Remove this for production
+        gameHelper.enableDebugLog(true);
+        gameHelper.setup(this);
         //completedGames = new ArrayList<>();
         //savedGames = new ArrayList<>();
+
 
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+        gameHelper.onStart(this);
         Type type = new TypeToken<ArrayList<SavedGame>>() {}.getType();
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         Gson gson = new Gson();
@@ -360,6 +374,7 @@ public class BaseActivity extends BaseGameActivity
     @Override
     protected void onStop() {
         super.onStop();
+        gameHelper.onStop();
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = sharedPrefs.edit();
         Gson gson = new Gson();
@@ -429,5 +444,10 @@ public class BaseActivity extends BaseGameActivity
             gpf.signInSucceeded();
             return;
         }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data){
+        super.onActivityResult(requestCode,resultCode,data);
     }
 }

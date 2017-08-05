@@ -42,11 +42,11 @@ import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.COMPLETE
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.GAMER_PROFILE_FRAGMENT;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.MAIN_MENU_FRAGMENT;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.completedGames;
+import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.gameHelper;
 
 public class GamerProfileFragment extends Fragment {
 
     private SudokuFacts sudokuFacts;
-    private GameHelper gameHelper;
     private PlaySounds mPlaySounds;
     private CognitoCachingCredentialsProvider credentialsProvider;
     private CognitoSyncManager syncClient;
@@ -77,10 +77,6 @@ public class GamerProfileFragment extends Fragment {
         mapper = new DynamoDBMapper(ddbClient);
 
         ddbClient.setRegion(Region.getRegion(Regions.US_EAST_2));
-        gameHelper = new GameHelper(getActivity(), GameHelper.CLIENT_GAMES);
-        //TODO Remove this for production
-        gameHelper.enableDebugLog(true);
-        gameHelper.setup((BaseActivity)getActivity());
         queryCompletedGameDb();
         initializeSignOut();
         updateUI();
@@ -277,16 +273,11 @@ public class GamerProfileFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-            gameHelper.onStart(getActivity());
-
-
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        gameHelper.onStop();
-
     }
 
     public void signInFailed() {

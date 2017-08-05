@@ -54,17 +54,18 @@ import static android.view.View.VISIBLE;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.BOARD_FRAGMENT;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.GAMER_PROFILE_FRAGMENT;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.SAVED_GAME_FRAGMENT;
+import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.clickedOut;
+import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.gameHelper;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.getUsername;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.setId;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.setUsername;
+import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.userSignIn;
 
 public class MainMenuFragment extends Fragment {
     private static final String PREF_FILE = "com.licktopia.com.licktopia.championofsudoku.preferences";
     private static final int RC_SAVED_GAMES = 9009;
     private static final float RESUME_ALPHA = .3f;
     private final static String TAG = "MainMenuFragment";
-    private String mCurrentSaveName = "snapshotTemp";
-
     private int[] levelButtonTags = {R.id.beginnerButton,R.id.easyButton,R.id.mediumButton,R.id.hardButton,R.id.expertButton,R.id.masterButton};
     private int[] modeButtonTags = {R.id.topiaChoice,R.id.numberChoice};
     private ImageView userBadge;
@@ -80,10 +81,9 @@ public class MainMenuFragment extends Fragment {
     private Animation animShow, animHide, animHiSl, animShSlow;
     private PlaySounds mPlaySounds;
 
-    private boolean clickedOut = false;
-    private boolean userSignIn=false;
+
     private SharedPreferences.Editor ed;
-    private GameHelper gameHelper;
+
 
     private ProgressBar mProgressBar;
     private boolean multiplayer = false;
@@ -146,10 +146,7 @@ public class MainMenuFragment extends Fragment {
         ed.apply();
         userBadge = (ImageView)view.findViewById(R.id.user_badge_level);
         mResumeButton = (LinearLayout)view.findViewById(R.id.resume);
-        gameHelper = new GameHelper(getActivity(), GameHelper.CLIENT_GAMES);
-        //TODO Remove this for production
-        gameHelper.enableDebugLog(true);
-        gameHelper.setup((BaseActivity)getActivity());
+
         // Initialize the Amazon Cognito credentials provider
 
         signInInitialization();
@@ -236,14 +233,11 @@ public class MainMenuFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        gameHelper.onStart(getActivity());
-
-
+        updateUI(gameHelper.isSignedIn());
     }
 
     @Override
     public void onStop() {
-        gameHelper.onStop();
         super.onStop();
 
     }
@@ -329,7 +323,7 @@ public class MainMenuFragment extends Fragment {
             }
             if(isInternet()) {
                 queryCompletedGameDb();
-                callback.querySavedGameDb();
+               // callback.querySavedGameDb();
             }
         }
         else{
@@ -373,7 +367,7 @@ public class MainMenuFragment extends Fragment {
 
     // Call when the sign-in button is clicked
     private void signInClicked() {
-        gameHelper.beginUserInitiatedSignIn();
+        BaseActivity.gameHelper.beginUserInitiatedSignIn();
         userSignIn = true;
     }
 
@@ -546,17 +540,6 @@ public class MainMenuFragment extends Fragment {
         mPlaySounds.playSounds(getContext(), 5);
     }
 
-    private void showSavedGamesUI() {
-        if(gameHelper.getApiClient().isConnected()) {
-            int maxNumberOfSavedGamesToShow = 5;
-            Intent savedGamesIntent = Games.Snapshots.getSelectSnapshotIntent(gameHelper.getApiClient(),
-                    "See My Saves", false, true, maxNumberOfSavedGamesToShow);
-            startActivityForResult(savedGamesIntent, RC_SAVED_GAMES);
-        }
-        else{
-            Toast.makeText(getContext(), R.string.login_touse_thisfeature,Toast.LENGTH_SHORT).show();
-        }
-    }
 
     private void setMessage(){
         TextView mMessage = (TextView)view.findViewById(R.id.message);
@@ -619,33 +602,6 @@ public class MainMenuFragment extends Fragment {
 
 
     }
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-
-
-        gameHelper.onActivityResult(requestCode, resultCode, data);
-        if (data != null) {
-            if (data.hasExtra(Snapshots.EXTRA_SNAPSHOT_METADATA)) {
-                // Load a snapshot.
-                SnapshotMetadata snapshotMetadata = (SnapshotMetadata)
-                        data.getParcelableExtra(Snapshots.EXTRA_SNAPSHOT_METADATA);
-                mCurrentSaveName = snapshotMetadata.getUniqueName();
-
-                // Load the game data from the Snapshot
-                // ...
-            } else if (data.hasExtra(Snapshots.EXTRA_SNAPSHOT_NEW)) {
-                // Create a new snapshot named with a unique string
-                String unique = new BigInteger(281, new Random()).toString(13);
-                mCurrentSaveName = "snapshotTemp-" + unique;
-
-                // Create the new snapshot
-                // ...
-            }
-        }
-
-    }
 
     //Interface to be implemented by containing activity.
     public interface MainMenuFragmentListener {
@@ -655,5 +611,7 @@ public class MainMenuFragment extends Fragment {
         void beginUserInitSignIn();
 
     }
+
+
 
 }

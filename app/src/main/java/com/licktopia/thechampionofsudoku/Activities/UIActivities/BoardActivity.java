@@ -21,6 +21,7 @@ import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -70,6 +71,7 @@ import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Random;
 import java.util.Set;
 import java.io.ByteArrayInputStream;
@@ -82,6 +84,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import main.java.com.maximeroussy.invitrode.RandomWord;
 
 import static android.view.View.GONE;
+import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.gameHelper;
 
 public class BoardActivity extends Fragment {
 
@@ -120,7 +123,7 @@ public class BoardActivity extends Fragment {
     private int size;
     private long timeWhenStopped;
     private Handler highlightHandler;
-    private GameHelper gameHelper;
+
     private LinearLayout mHintsLayout;
     private LinearLayout mEndGameLayout;
     private ImageView userBadge;
@@ -181,10 +184,7 @@ public class BoardActivity extends Fragment {
         shareDialog = new ShareDialog(BoardActivity.this);
 
 
-        gameHelper = new GameHelper(getActivity(), GameHelper.CLIENT_GAMES);
-        //TODO Remove this for production
-        gameHelper.enableDebugLog(true);
-        gameHelper.setup((BaseActivity)getActivity());
+
 
         // Initialize the Amazon Cognito credentials provider
         credentialsProvider = new CognitoCachingCredentialsProvider(
@@ -284,6 +284,7 @@ public class BoardActivity extends Fragment {
                 upDatePositions();
             }
         });
+        setHasOptionsMenu(true);
 
         return view;
     }
@@ -448,7 +449,7 @@ public class BoardActivity extends Fragment {
                             @Override
                             public void run() {
                                 //execute code on main thread
-                                Toast.makeText(getActivity(), (CharSequence) e,Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity(),  e.toString(),Toast.LENGTH_SHORT).show();
                             }
                         });
                     }
@@ -1766,12 +1767,12 @@ public class BoardActivity extends Fragment {
     /************************************
      * Overflow menu functions
      *********************************/
-    //@Override     //TODO Likely need to change something to get this working correctly
-    public boolean onCreateOptionsMenu(Menu menu) {
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getActivity().getMenuInflater().inflate(com.licktopia.thechampionofsudoku.R.menu.menu_main, menu);
+        inflater.inflate(com.licktopia.thechampionofsudoku.R.menu.menu_main, menu);
 
-        return true;
+
     }
 
     @Override
@@ -1821,24 +1822,7 @@ public class BoardActivity extends Fragment {
 
     }
 
-    //@Override //TODO Not a fragment function, need to implement in Activity possibly
-    public void onBackPressed() {
-        if(!solvedState) {
-            new AlertDialog.Builder(getContext())
-                    .setMessage(getString(R.string.are_you_sure))
-                    .setCancelable(true)
-                    .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            callback.swapFragment(BaseActivity.MAIN_MENU_FRAGMENT, new Bundle());
-                        }
-                    })
-                    .setNegativeButton(getString(R.string.no), null)
-                    .show();
-        }
-        else{
-            callback.swapFragment(BaseActivity.MAIN_MENU_FRAGMENT, new Bundle());
-        }
-    }
+
     private void homeClick() {
         goToMainMenu();
     }
@@ -1885,7 +1869,7 @@ public class BoardActivity extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        gameHelper.onStart(getActivity());
+
     }
 
     @Override
@@ -1894,36 +1878,12 @@ public class BoardActivity extends Fragment {
         if(mAutoSave && isInternet() && gameHelper.getApiClient().isConnected()&&!solvedState){
             uploadSavedGame(true);
         }
-        gameHelper.onStop();
+
     }
 
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        super.onActivityResult(requestCode, resultCode, intent);
-
-        gameHelper.onActivityResult(requestCode, resultCode, intent);
 
 
-        if (intent != null) {
-            if (intent.hasExtra(Snapshots.EXTRA_SNAPSHOT_METADATA)) {
-                // Load a snapshot.
-                SnapshotMetadata snapshotMetadata = (SnapshotMetadata)
-                        intent.getParcelableExtra(Snapshots.EXTRA_SNAPSHOT_METADATA);
-                mCurrentSaveName = snapshotMetadata.getUniqueName();
-
-                // Load the game data from the Snapshot
-                // ...
-            } else if (intent.hasExtra(Snapshots.EXTRA_SNAPSHOT_NEW)) {
-                // Create a new snapshot named with a unique string
-                String unique = new BigInteger(281, new Random()).toString(13);
-                mCurrentSaveName = "snapshotTemp-" + unique;
-
-                // Create the new snapshot
-                // ...
-            }
-        }
-    }
 
     private void unlockAchievements(int achievement){
         if(gameHelper.isSignedIn()) {
@@ -1931,21 +1891,7 @@ public class BoardActivity extends Fragment {
         }
     }
 
-    private PendingResult<Snapshots.CommitSnapshotResult> writeSnapshot(Snapshot snapshot,
-                                                                        byte[] data, Bitmap coverImage, String desc) {
 
-        // Set the data payload for the snapshot
-        snapshot.getSnapshotContents().writeBytes(data);
-
-        // Create the change operation
-        SnapshotMetadataChange metadataChange = new SnapshotMetadataChange.Builder()
-                .setCoverImage(coverImage)
-                .setDescription(desc)
-                .build();
-
-        // Commit the operation
-        return Games.Snapshots.commitAndClose(gameHelper.getApiClient(), snapshot, metadataChange);
-    }
 
     //Interface to be implemented by containing activity.
     public interface BoardFragmentListener {
