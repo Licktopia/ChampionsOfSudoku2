@@ -59,6 +59,8 @@ import java.util.List;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
+import static com.licktopia.thechampionofsudoku.Activities.UIActivities.MainMenuFragment.mProgressBar;
+import static com.licktopia.thechampionofsudoku.Activities.UIActivities.MainMenuFragment.mainScreen;
 
 /**
  * Created by Matt on 6/22/2017.
@@ -384,6 +386,8 @@ public class BaseActivity extends BaseGameActivity
     @Override
     protected void onStart() {
         super.onStart();
+        mProgressBar.setVisibility(VISIBLE);
+        mainScreen.setAlpha(.6f);
         gameHelper.onStart(this);
         Type type = new TypeToken<ArrayList<SavedGame>>() {}.getType();
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);

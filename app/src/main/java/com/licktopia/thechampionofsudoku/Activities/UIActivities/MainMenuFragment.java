@@ -85,7 +85,7 @@ public class MainMenuFragment extends Fragment {
     private SharedPreferences.Editor ed;
 
 
-    private ProgressBar mProgressBar;
+    public static ProgressBar mProgressBar;
     private boolean multiplayer = false;
     private LinearLayout lickbar;
     private LinearLayout multiplayerBar;
@@ -94,9 +94,9 @@ public class MainMenuFragment extends Fragment {
     private long startClickTime;
     static final int MAX_SWIPE_TIME = 200;
     private HorizontalScrollView scrollView;
-    LinearLayout mLick;
-    LinearLayout innerScrollView;
-    LinearLayout mainScreen;
+    private LinearLayout mLick;
+    private LinearLayout innerScrollView;
+    public static LinearLayout mainScreen;
 
     private Button hostButton;
     private Button quickButton;
@@ -246,7 +246,7 @@ public class MainMenuFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        updateUI(gameHelper.isSignedIn());
+
     }
 
     @Override
@@ -258,7 +258,21 @@ public class MainMenuFragment extends Fragment {
     @Override
     public void onResume(){
         super.onResume();
-        userBadge.setImageDrawable(getResources().getDrawable(callback.getBadgetag(), null));
+        //updateUI(gameHelper.isSignedIn());
+        if(gameHelper.getApiClient().isConnected()) {
+
+            mSignInButton.setVisibility(GONE);
+            mBadge.setVisibility(VISIBLE);
+            getHighestScoreFromLeaderBoard();
+            loadPlayer();
+
+        }
+        if(isInternet()) {
+            queryCompletedGameDb();
+            // callback.querySavedGameDb();
+        }
+       //userBadge.setImageDrawable(getResources().getDrawable(callback.getBadgetag(), null));
+        setMessage();
     }
 
     private void loadPlayer(){

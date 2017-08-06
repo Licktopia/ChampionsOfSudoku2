@@ -12,7 +12,6 @@
         android:id="@+id/menu"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:alpha=".6"
         android:orientation="vertical"
         android:weightSum="100"
         tools:visibility="visible">
@@ -33,7 +32,6 @@
                 style="@style/InvPopupButton"
                 android:text="@string/accept_popup_invite" />
         </LinearLayout>
-
 
 
         <TextView
@@ -955,6 +953,7 @@
         style="?android:attr/progressBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true" />
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
 
 </RelativeLayout>
