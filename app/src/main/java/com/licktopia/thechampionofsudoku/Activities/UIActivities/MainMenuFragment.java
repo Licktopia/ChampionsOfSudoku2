@@ -99,6 +99,8 @@ public class MainMenuFragment extends Fragment {
     LinearLayout mainScreen;
 
     private Button hostButton;
+    private Button quickButton;
+    private LinearLayout screenWait;
 
     private View view;
     private MainMenuFragmentListener callback;
@@ -116,6 +118,7 @@ public class MainMenuFragment extends Fragment {
 
         scrollView = (HorizontalScrollView)view.findViewById(R.id.gestures);
         mLevelSelect = (LinearLayout)view.findViewById(R.id.level_select);
+        screenWait = (LinearLayout)view.findViewById(R.id.screen_wait);
         mModeSelect = (LinearLayout)view.findViewById(R.id.mode_select);
         lickbar = (LinearLayout)view.findViewById(R.id.lickbar);
         lickbar = (LinearLayout)view.findViewById(R.id.lickbar);
@@ -167,6 +170,14 @@ public class MainMenuFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 callback.swapFragment(BaseActivity.INVITE_DIALOG_FRAGMENT, new Bundle());
+            }
+        });
+
+        quickButton = (Button)view.findViewById(R.id.quick_button);
+        quickButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((BaseActivity)getActivity()).startQuickGame();
             }
         });
 
@@ -452,7 +463,6 @@ public class MainMenuFragment extends Fragment {
     }
 
 
-
     private void menuBackInitialize() {
         ImageButton mMenuBack = (ImageButton)view.findViewById(R.id.menu_back);
         mMenuBack.setOnClickListener(new View.OnClickListener() {
@@ -613,7 +623,5 @@ public class MainMenuFragment extends Fragment {
         void beginUserInitSignIn();
 
     }
-
-
 
 }

@@ -9,6 +9,11 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.LinearLayout;
 
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
@@ -16,6 +21,17 @@ import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBQueryExp
 import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
+import com.google.android.gms.games.Games;
+import com.google.android.gms.games.GamesStatusCodes;
+import com.google.android.gms.games.multiplayer.Invitation;
+import com.google.android.gms.games.multiplayer.OnInvitationReceivedListener;
+import com.google.android.gms.games.multiplayer.Participant;
+import com.google.android.gms.games.multiplayer.realtime.RealTimeMessage;
+import com.google.android.gms.games.multiplayer.realtime.RealTimeMessageReceivedListener;
+import com.google.android.gms.games.multiplayer.realtime.Room;
+import com.google.android.gms.games.multiplayer.realtime.RoomConfig;
+import com.google.android.gms.games.multiplayer.realtime.RoomStatusUpdateListener;
+import com.google.android.gms.games.multiplayer.realtime.RoomUpdateListener;
 import com.google.example.games.basegameutils.BaseGameActivity;
 import com.google.example.games.basegameutils.GameHelper;
 import com.google.gson.Gson;
@@ -28,15 +44,21 @@ import com.licktopia.thechampionofsudoku.Activities.UIActivities.InstructionsFra
 import com.licktopia.thechampionofsudoku.Activities.UIActivities.InviteDialogFragment;
 import com.licktopia.thechampionofsudoku.Activities.UIActivities.MainMenuFragment;
 import com.licktopia.thechampionofsudoku.Activities.UIActivities.SavedGameFragment;
+import com.licktopia.thechampionofsudoku.GameInterface;
+import com.licktopia.thechampionofsudoku.Multiplayer.MultiGame;
 import com.licktopia.thechampionofsudoku.R;
 import com.licktopia.thechampionofsudoku.Sudoku.CompletedGame;
 import com.licktopia.thechampionofsudoku.Sudoku.SavedGame;
 
 import java.lang.reflect.Type;
+import java.security.PrivateKey;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 
 /**
  * Created by Matt on 6/22/2017.
@@ -45,7 +67,9 @@ import java.util.List;
 public class BaseActivity extends BaseGameActivity
         implements MainMenuFragment.MainMenuFragmentListener,
         GamerProfileFragment.GamerProfileFragmentListener,
-        BoardFragment.BoardFragmentListener {
+        BoardFragment.BoardFragmentListener,
+        RealTimeMessageReceivedListener,
+        RoomStatusUpdateListener, RoomUpdateListener, OnInvitationReceivedListener {
 
     public static final String SAVED_KEY = "SAVED_KEY";
     public static final String COMPLETED_KEY = "COMPLETED_KEY";
@@ -64,6 +88,9 @@ public class BaseActivity extends BaseGameActivity
     public static  GameHelper gameHelper;
     public static boolean clickedOut = false;
     public static boolean userSignIn=false;
+
+    //will store the multiplayer game information
+    private MultiGame mMultiGame = null;
 
 
     public static int[] CUTOFF = {0,250,5000,11000,18000,30000,42000,55000,70000,90000,115000,140000,167000,195000,225000,262000,305000,355000,413000,480000,560000,650000,
@@ -91,6 +118,8 @@ public class BaseActivity extends BaseGameActivity
     public static CognitoCachingCredentialsProvider credentialsProvider;
     public static AmazonDynamoDBClient ddbClient;
     public static DynamoDBMapper mapper;
+
+    final static String TAG = "BaseActivity";
 
 
     public void swapFragment(String fragmentName, Bundle args) {
@@ -318,7 +347,6 @@ public class BaseActivity extends BaseGameActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base);
-
         //Check if there is a fragment container
         if (findViewById(R.id.fragment_container) != null) {
 
@@ -338,6 +366,7 @@ public class BaseActivity extends BaseGameActivity
                 Regions.US_EAST_2 // Region
         );
 
+        mMultiGame = null;
 
         ddbClient = new AmazonDynamoDBClient(credentialsProvider);
         mapper = new DynamoDBMapper(ddbClient);
@@ -484,5 +513,353 @@ public class BaseActivity extends BaseGameActivity
             super.onBackPressed();
         }
     }
+
+
+    /********************************************************************************************
+     * Multiplayer Stuff
+     ********************************************************************************************/
+
+    private String mIncomingInvitationId;
+    Button mInvitePlayers;
+    Button mQuickGame;
+    Button mSeeInvites;
+    private LinearLayout mLevelSelect;
+    private LinearLayout mModeSelect;
+    private LinearLayout screenWait;
+
+    // The participants in the currently active game
+    private ArrayList<Participant> mParticipants = null;
+    // My participant ID in the currently active game
+    private String mMyId = null;
+
+    String mRoomId = null;
+
+    // Request codes for the UIs that we show with startActivityForResult:
+    final static int RC_SELECT_PLAYERS = 10000;
+    final static int RC_INVITATION_INBOX = 10001;
+    final static int RC_WAITING_ROOM = 10002;
+
+    private void setupMultiplayer()
+    {
+        screenWait = (LinearLayout)findViewById(R.id.screen_wait);
+        mLevelSelect = (LinearLayout)findViewById(R.id.level_select);
+        mModeSelect = (LinearLayout)findViewById(R.id.mode_select);
+    }
+
+
+
+    @Override
+    public void onRealTimeMessageReceived(RealTimeMessage rtm) {
+        byte[] buf = rtm.getMessageData();
+        Log.d(TAG, "Message received: " + (char) buf[0]);
+        Log.d(TAG, "We got a message!");
+
+        if(mMultiGame != null)
+        {
+            Log.d(TAG, "mMultiGame was not null!");
+            mMultiGame.readMessage(buf);
+        }
+        else
+        {
+            mMultiGame = MultiGame.byteToObj(buf, mParticipants,
+                    mMyId, gameHelper, mRoomId);
+            if(mMultiGame != null)
+            {
+                switchToBoardFrag();
+            }
+        }
+
+    }
+
+
+    //TODO write code for onInvitationReceived
+    // Called when we get an invitation to play a game. We react by showing that to the user.
+    @Override
+    public void onInvitationReceived(Invitation invitation) {
+        // We got an invitation to play a game! So, store it in
+        // mIncomingInvitationId
+        // and show the popup on the screen.
+        mIncomingInvitationId = invitation.getInvitationId();
+
+        /*
+        ((TextView) findViewById(R.id.incoming_invitation_text)).setText(
+                invitation.getInviter().getDisplayName() + " " +
+                        getString(R.string.is_inviting_you));
+        switchToScreen(mCurScreen); // This will show the invitation popup
+        */
+    }
+
+    //TODO write code for onInvitationRemoved
+    @Override
+    public void onInvitationRemoved(String invitationId) {
+
+        /*
+        if (mIncomingInvitationId.equals(invitationId)&&mIncomingInvitationId!=null) {
+            mIncomingInvitationId = null;
+            switchToScreen(mCurScreen); // This will hide the invitation popup
+        }
+        */
+
+    }
+
+
+    //TODO write code for onConnectedToRoom
+    // Called when we are connected to the room. We're not ready to play yet! (maybe not everybody
+    // is connected yet).
+    @Override
+    public void onConnectedToRoom(Room room) {
+        Log.d(TAG, "onConnectedToRoom.");
+
+        //get participants and my ID:
+        mParticipants = room.getParticipants();
+        mMyId = room.getParticipantId(Games.Players.getCurrentPlayerId(gameHelper.getApiClient()));
+
+        // save room ID if its not initialized in onRoomCreated() so we can leave cleanly before the game starts.
+        if(mRoomId==null)
+            mRoomId = room.getRoomId();
+
+        // print out the list of participants (for debug purposes)
+        Log.d(TAG, "Room ID: " + mRoomId);
+        Log.d(TAG, "My ID " + mMyId);
+        Log.d(TAG, "<< CONNECTED TO ROOM>>");
+    }
+
+    //TODO onLeftRoom
+    // Called when we've successfully left the room (this happens a result of voluntarily leaving
+    // via a call to leaveRoom(). If we get disconnected, we get onDisconnectedFromRoom()).
+    @Override
+    public void onLeftRoom(int statusCode, String roomId) {
+        // we have left the room; return to main screen.
+        Log.d(TAG, "onLeftRoom, code " + statusCode);
+        switchToWaitScreen();
+    }
+
+    //TODO onDisconnectedFromRoom
+    // Called when we get disconnected from the room. We return to the main screen.
+    @Override
+    public void onDisconnectedFromRoom(Room room) {
+        mRoomId = null;
+        mMultiGame = null;
+        Log.d(TAG, "Disconnected from room");
+    }
+
+    //TODO showGameError
+    // Show error message about game being cancelled and return to main screen.
+    void showGameError() {
+        /*
+        BaseGameUtils.makeSimpleDialog(this, getString(R.string.game_problem));
+        switchToMainScreen();
+        */
+    }
+
+    // Called when room has been created
+    @Override
+    public void onRoomCreated(int statusCode, Room room) {
+        Log.d(TAG, "onRoomCreated(" + statusCode + ", " + room + ")");
+
+        if (statusCode != GamesStatusCodes.STATUS_OK) {
+            Log.e(TAG, "*** Error: onRoomCreated, status " + statusCode);
+            showGameError();
+            return;
+        }
+
+        // save room ID so we can leave cleanly before the game starts.
+        mRoomId = room.getRoomId();
+
+        // show the waiting room UI
+        showWaitingRoom(room);
+
+    }
+
+    // Called when room is fully connected.
+    @Override
+    public void onRoomConnected(int statusCode, Room room) {
+        Log.d(TAG, "onRoomConnected(" + statusCode + ", " + room + ")");
+        if (statusCode != GamesStatusCodes.STATUS_OK) {
+            Log.e(TAG, "*** Error: onRoomConnected, status " + statusCode);
+            showGameError();
+            return;
+        }
+        updateRoom(room);
+    }
+
+    //TODO onJoinedRoom
+    @Override
+    public void onJoinedRoom(int statusCode, Room room) {
+        Log.d(TAG, "onJoinedRoom(" + statusCode + ", " + room + ")");
+        if (statusCode != GamesStatusCodes.STATUS_OK) {
+            Log.e(TAG, "*** Error: onRoomConnected, status " + statusCode);
+            showGameError();
+            return;
+        }
+        showWaitingRoom(room);
+    }
+
+
+
+
+    @Override
+    public void onPeerDeclined(Room room, List<String> arg1) {
+        updateRoom(room);
+    }
+
+    @Override
+    public void onPeerInvitedToRoom(Room room, List<String> arg1) {
+        updateRoom(room);
+    }
+
+
+
+    @Override
+    public void onP2PDisconnected(String participant) {
+    }
+
+    @Override
+    public void onP2PConnected(String participant) {
+    }
+
+    @Override
+    public void onPeerJoined(Room room, List<String> arg1) {
+        updateRoom(room);
+    }
+
+    @Override
+    public void onPeerLeft(Room room, List<String> peersWhoLeft) {
+        updateRoom(room);
+    }
+
+    @Override
+    public void onRoomAutoMatching(Room room) {
+        updateRoom(room);
+    }
+
+    @Override
+    public void onRoomConnecting(Room room) {
+        updateRoom(room);
+    }
+
+    @Override
+    public void onPeersConnected(Room room, List<String> peers) {
+        updateRoom(room);
+
+        if (shouldStartGame(room)) {
+            Log.d(TAG, "Start the game!");
+
+            for(int i = 0; i < mParticipants.size(); i++)
+            {
+                if(mParticipants.get(i).isConnectedToRoom())
+                    if(mParticipants.get(i).getParticipantId().equals(mMyId))
+
+                    {
+                        mMultiGame = new MultiGame(MultiGame.GameMode.RACE,
+                                MultiGame.ConnectType.HUMAN_GAME, 0, this,
+                                mParticipants,
+                                mMyId,
+                                gameHelper,
+                                mRoomId);
+
+                        switchToBoardFrag();
+                    }
+                    else
+                    {
+                        break;
+                    }
+            }
+
+        }
+    }
+
+    @Override
+    public void onPeersDisconnected(Room room, List<String> peers) {
+        updateRoom(room);
+    }
+
+
+    void updateRoom(Room room) {
+
+        if (room != null) {
+            mParticipants = room.getParticipants();
+        }
+        /*
+        if (mParticipants != null) {
+            updatePeerScoresDisplay();
+        }
+        */
+    }
+
+
+    public MultiGame getMultiGame()
+    {
+        return mMultiGame;
+    }
+
+    public void startQuickGame() {
+        // quick-start a game with 1 randomly selected opponent
+        final int MIN_OPPONENTS = 1, MAX_OPPONENTS = 1;
+        Bundle autoMatchCriteria = RoomConfig.createAutoMatchCriteria(MultiGame.MIN_OPPONENTS,
+                MultiGame.MAX_OPPONENTS , 0);
+        RoomConfig.Builder rtmConfigBuilder = RoomConfig.builder(this);
+        rtmConfigBuilder.setMessageReceivedListener(this);
+        rtmConfigBuilder.setRoomStatusUpdateListener(this);
+        rtmConfigBuilder.setAutoMatchCriteria(autoMatchCriteria);
+        switchToWaitScreen();
+        keepScreenOn();
+        Games.RealTimeMultiplayer.create(gameHelper.getApiClient(), rtmConfigBuilder.build());
+    }
+
+    // returns whether there are enough players to start the game
+    boolean shouldStartGame(Room room) {
+        int connectedPlayers = 0;
+        for (Participant p : room.getParticipants()) {
+            if (p.isConnectedToRoom()) ++connectedPlayers;
+        }
+        return connectedPlayers >= (MultiGame.MIN_OPPONENTS + 1);
+    }
+
+    void keepScreenOn() {
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+    }
+
+    void switchToBoardFrag()
+    {
+        Bundle args = new Bundle();
+        args.putBoolean("MULTIPLAYER", true);
+        swapFragment(BOARD_FRAGMENT, args);
+    }
+
+
+
+    void switchToWaitScreen() {
+
+        setupMultiplayer();
+        mLevelSelect.setVisibility(GONE);
+        mModeSelect.setVisibility(GONE);
+        screenWait.setVisibility(VISIBLE);
+
+        // should we show the invitation popup?
+        boolean showInvPopup;
+        if (mIncomingInvitationId == null) {
+            // no invitation, so no popup
+            showInvPopup = false;
+        } else{
+            // if in multiplayer, only show invitation on main screen
+            showInvPopup = true;
+        }
+        findViewById(R.id.invitation_popup).setVisibility(showInvPopup ? View.VISIBLE : View.GONE);
+    }
+
+
+    void showWaitingRoom(Room room) {
+        // minimum number of players required for our game
+        // For simplicity, we require everyone to join the game before we start it
+        // (this is signaled by Integer.MAX_VALUE).
+        final int MIN_PLAYERS = Integer.MAX_VALUE;
+        Intent i = Games.RealTimeMultiplayer.getWaitingRoomIntent(gameHelper.getApiClient(), room, MIN_PLAYERS);
+
+        // show waiting room UI
+        startActivityForResult(i, RC_WAITING_ROOM);
+    }
+
+
 
 }

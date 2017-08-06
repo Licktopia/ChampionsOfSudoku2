@@ -94,7 +94,7 @@ public class BoardFragment extends Fragment {
     private boolean animationFinished = false;
     private boolean solveClicked = false;
     private TextView scoreBoard;
-    private GameInterface mGame;
+
     private boolean smallNumPadState = false;
     private Button[] numberButtons;
     private TextView[] lilNums;
@@ -141,7 +141,7 @@ public class BoardFragment extends Fragment {
     private CognitoSyncManager syncClient;
     private AmazonDynamoDBClient ddbClient;
     private DynamoDBMapper mapper;
-
+    private GameInterface mGame;
     private View view;
     private BoardFragmentListener callback;
 
@@ -237,9 +237,14 @@ public class BoardFragment extends Fragment {
         }
         else if(multiplayer)
         {
-            mGame = new MultiGame(MultiGame.GameMode.RACE,
-                    MultiGame.ConnectType.BOT_GAME,
-                    level, getContext());
+            mGame = ((BaseActivity)getActivity()).getMultiGame();
+            if(mGame == null)
+            {
+                mGame = new MultiGame(MultiGame.GameMode.RACE,
+                        MultiGame.ConnectType.BOT_GAME,
+                        level, getContext(), null, null, null, null);
+            }
+
         }
         //START NEW GAME HERE
         else
@@ -324,7 +329,10 @@ public class BoardFragment extends Fragment {
             int botBarHeight = params.height;
             ViewGroup.LayoutParams params2=Opponents[0].getLayoutParams();
             int playerTokenHeight = params2.height;
-            float offset = (botBarHeight-playerTokenHeight)/(numPlayers-1);
+
+            // WAS: float offset = (botBarHeight-playerTokenHeight)/(numPlayers - 1)
+            // if numPlayers = 1 we'll divide by zero
+            float offset = (botBarHeight-playerTokenHeight)/(numPlayers);
             for(int i = 0; i < numPlayers; i++){
                 Opponents[i].setY(i*offset);
             }
@@ -341,7 +349,7 @@ public class BoardFragment extends Fragment {
         for(int i = 0; i < numPlayers; i++){
             ViewGroup.LayoutParams params=Opponents[i].getLayoutParams();
             float oldPos = Opponents[i].getX();
-            float newPos = ((MultiGame)mGame).getOpponetProgress(i) * (thisViewWidth-params.width);
+            float newPos = ((MultiGame)mGame).getOpponentProgress(i) * (thisViewWidth-params.width);
             if(newPos!=oldPos) {
                 animX = ObjectAnimator.ofFloat(Opponents[i], "x", newPos);
                 animX.setDuration(800);

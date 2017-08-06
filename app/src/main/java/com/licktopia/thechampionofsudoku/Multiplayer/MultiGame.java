@@ -9,6 +9,7 @@ import android.util.Log;
 
 import android.os.Bundle;
 
+import com.google.example.games.basegameutils.GameHelper;
 import com.licktopia.thechampionofsudoku.GameInterface;
 import com.licktopia.thechampionofsudoku.Sudoku.Game;
 import com.licktopia.thechampionofsudoku.Sudoku.SavedGame;
@@ -22,44 +23,32 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Queue;
 import java.util.List;
 import java.util.Set;
 
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.games.Games;
-import com.google.android.gms.games.GamesStatusCodes;
-import com.google.android.gms.games.GamesActivityResultCodes;
-import com.google.android.gms.games.multiplayer.Invitation;
-import com.google.android.gms.games.multiplayer.Multiplayer;
-import com.google.android.gms.games.multiplayer.OnInvitationReceivedListener;
 import com.google.android.gms.games.multiplayer.Participant;
-import com.google.android.gms.games.multiplayer.realtime.RealTimeMessage;
-import com.google.android.gms.games.multiplayer.realtime.RealTimeMessageReceivedListener;
-import com.google.android.gms.games.multiplayer.realtime.Room;
-import com.google.android.gms.games.multiplayer.realtime.RoomConfig;
-import com.google.android.gms.games.multiplayer.realtime.RoomStatusUpdateListener;
-import com.google.android.gms.games.multiplayer.realtime.RoomUpdateListener;
 
 
 import static java.lang.System.exit;
 
-public class MultiGame implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, RealTimeMessageReceivedListener,
-        RoomStatusUpdateListener, RoomUpdateListener, OnInvitationReceivedListener, GameInterface {
+public class MultiGame implements GameInterface, java.io.Serializable {
 
     final static String TAG = "MultiGame";
 
-    private byte[] msgBuffer;
-    final int MIN_OPPONENTS = 1, MAX_OPPONENTS = 3;
+    public static final int MIN_OPPONENTS = 1, MAX_OPPONENTS = 3;
     private Game mGame;
 
     //stores the bots and the threads they are playing on
     private Bot[] allBots = new Bot[MAX_OPPONENTS];
 
+    //stores the progress of human players
+    private GameUpdate[] updates = new GameUpdate[MAX_OPPONENTS];
+
     private GameMode mode;
-    private GoogleApiClient client;
     boolean isBotGame = false;
 
     public enum GameMode {
@@ -69,12 +58,78 @@ public class MultiGame implements GoogleApiClient.ConnectionCallbacks, GoogleApi
     }
 
     public enum ConnectType{
-            BOT_GAME,
-            QUICK_GAME,
-            SEND_INVITE,
-            ACCEPT_INVITE
+        BOT_GAME,
+        HUMAN_GAME
     }
 
+    public enum MessageType{
+        GAME_OBJ,
+        GAME_UPDATE,
+        DEBUG
+    }
+
+    protected class GameUpdate implements java.io.Serializable
+    {
+        private String mGamerId;
+        private float mGameProgress;
+        protected GameUpdate(String gamerId, float gameProgress)
+        {
+            mGamerId = gamerId;
+            mGameProgress = gameProgress;
+        }
+
+        protected float getGameProgress() {
+            return mGameProgress;
+        }
+
+        protected String getGamerId() {
+            return mGamerId.toString();
+        }
+
+        private void writeObject(java.io.ObjectOutputStream stream)
+                throws IOException {
+
+            char[] charArr = mGamerId.toCharArray();
+            stream.writeInt(charArr.length);
+            for(int i = 0; i < charArr.length; i++)
+            {
+                stream.writeChar(charArr[i]);
+            }
+
+            stream.writeFloat(mGameProgress);
+
+        }
+
+        private void readObject(java.io.ObjectInputStream stream)
+                throws IOException, ClassNotFoundException {
+
+            int strLen = stream.readInt();
+
+            char[] charArr = new char[strLen];
+
+            for(int i = 0; i < strLen; i++)
+            {
+                charArr[i] = stream.readChar();
+            }
+
+            mGamerId = new String(charArr);
+            mGameProgress = stream.readFloat();
+        }
+
+
+    }
+
+
+
+    // The participants in the currently active game
+    private ArrayList<Participant> mParticipants = null;
+    // My participant ID in the currently active game
+    private String mMyId = null;
+    // Client used to interact with Google APIs.
+    private GameHelper gameHelper = null;
+    // Room ID where the currently active game is taking place; null if we're
+    // not playing.
+    String mRoomId = null;
 
     /****************************************
      * start functions already implemented
@@ -87,29 +142,31 @@ public class MultiGame implements GoogleApiClient.ConnectionCallbacks, GoogleApi
      * @param level difficulty of board
      * @param ctx
      */
-    public MultiGame(GameMode mode, ConnectType cType, int level, Context ctx)
+    public MultiGame(GameMode mode,
+                     ConnectType cType,
+                     int level,
+                     Context ctx,
+                     ArrayList<Participant> mParticipants,
+                     String mMyId,
+                     GameHelper gameHelper,
+                     String mRoomId)
     {
 
-
+        this.mParticipants = mParticipants;
+        this.mMyId = mMyId;
+        this.gameHelper = gameHelper;
+        this.mRoomId = mRoomId;
 
         this.mode = mode;
         switch (cType)
         {
             case BOT_GAME:
                 isBotGame = true;
-                botGame(level, ctx);
+                sendGameState(level, ctx);
                 break;
-            case QUICK_GAME:
-                Log.d(TAG, "QUICK_GAME is not coded yet");
-                exit(1);
-                break;
-            case SEND_INVITE:
-                Log.d(TAG, "SEND_INVITE is not coded yet");
-                exit(1);
-                break;
-            case ACCEPT_INVITE:
-                Log.d(TAG, "ACCEPT_INVITE is not coded yet");
-                exit(1);
+            case HUMAN_GAME:
+                isBotGame = false;
+                sendGameState(level, ctx);
                 break;
             default:
                 Log.d(TAG, "Invalid ConnectionType Used");
@@ -119,68 +176,230 @@ public class MultiGame implements GoogleApiClient.ConnectionCallbacks, GoogleApi
 
     }
 
+    private MultiGame(Game mGame,
+                      ArrayList<Participant> mParticipants,
+                      String mMyId,
+                      GameHelper gameHelper,
+                      String mRoomId)
+    {
+        this.mParticipants = mParticipants;
+        this.mMyId = mMyId;
+        this.gameHelper = gameHelper;
+        this.mRoomId = mRoomId;
+
+        this.mGame = mGame;
+        isBotGame = false;
+    }
+
+
+    public static MultiGame byteToObj(byte[] msgBuffer,
+                                      ArrayList<Participant> mParticipants,
+                                      String mMyId,
+                                      GameHelper gameHelper,
+                                      String mRoomId)
+    {
+        Game curGame;
+
+        //done to check and see if the byte array is working
+        try(ByteArrayInputStream b = new ByteArrayInputStream(msgBuffer)){
+
+            ObjectInputStream o = new ObjectInputStream(b);
+            MessageType temp =(MessageType)o.readObject();
+            curGame = (Game)o.readObject();
+
+
+        }
+        catch(IOException e)
+        {
+            Log.d(TAG, "Failed to load the game from byte array!");
+            return null;
+        }
+        catch(ClassNotFoundException e)
+        {
+            Log.d(TAG, "What class are you talking about?");
+            return null;
+        }
+
+        return new MultiGame(curGame,
+                mParticipants,
+                mMyId,
+                gameHelper,
+                mRoomId);
+
+    }
+
+
+
     //send byte array with game state in buffer
     private void sendGameState(int level, Context ctx)
     {
         mGame = new Game(level, ctx);
+
+        //debug multiplayer UI using bots
+        if(isBotGame)
+        {
+            //done to check and see if the byte array is working
+
+            for(int i = 0; i < allBots.length; i++)
+            {
+                allBots[i] = new Bot(new Game(mGame), "SudokuBot" + Integer.toString(i) + "000", 5);
+            }
+        }
+        else
+        {
+            byte[] msgBuffer = null;
+
+            try(ByteArrayOutputStream b = new ByteArrayOutputStream()){
+                ObjectOutputStream o = new ObjectOutputStream(b);
+
+
+                o.writeObject(mGame);
+
+                msgBuffer = b.toByteArray();
+                o.close();
+            }
+            catch(IOException e)
+            {
+                Log.d(TAG, "Failed to make mgame a byte array");
+            }
+
+            //send game state away to other clients
+            Log.d(TAG, "Sending Game...");
+            sendMessage(MessageType.GAME_OBJ, mGame);
+        }
+    }
+
+
+    /************************************************************
+     * Puts together a byte array and sends it to all opponents
+     * ATTACH ONLY THE MESSAGE BEING SENT
+     * EXAMPLE: For progress send the floating point number 0.5 as a byte array
+     * do not add anything else to it. This method will add all necessary bytes
+     * for readMessage to be able to understand what was sent.
+     * @param msgType
+     * @param msgObj object being sent
+     */
+    private void sendMessage(MessageType msgType, Object msgObj)
+    {
+        boolean sendReliably = true;
+        byte[] msgBuffer;
+
         try(ByteArrayOutputStream b = new ByteArrayOutputStream()){
             ObjectOutputStream o = new ObjectOutputStream(b);
 
-            //header = G to indicate game being sent
-            o.writeByte('G');
-            o.writeObject(mGame);
+            //write message type as the header
+            o.writeObject(msgType);
+
+            //create message
+            switch (msgType)
+            {
+                case GAME_OBJ:
+                    o.writeObject((Game)msgObj);
+                    sendReliably = true;
+                    break;
+                case GAME_UPDATE:
+                    o.writeObject((GameUpdate)msgObj);
+                    // this message does not always need to reach the other players
+                    sendReliably = false;
+                    break;
+                case DEBUG:
+                    o.writeObject((String)msgObj);
+                    sendReliably = true;
+                    break;
+                default:
+                    Log.d(TAG, "Invalid MessageType Used");
+                    return;
+            }
+
+
 
             msgBuffer = b.toByteArray();
             o.close();
         }
         catch(IOException e)
         {
-            Log.d(TAG, "Failed to save the game!");
+            Log.d(TAG, "Failed to create the message!");
+            return;
         }
 
-        //debug multiplayer UI using bots
-        if(isBotGame)
-        {
-            //done to check and see if the byte array is working
-            try(ByteArrayInputStream b = new ByteArrayInputStream(msgBuffer)){
-
-                ObjectInputStream o = new ObjectInputStream(b);
-                o.readByte();
-                Game curGame = (Game)o.readObject();
-                for(int i = 0; i < allBots.length; i++)
-                {
-                    allBots[i] = new Bot(new Game(curGame), "SudokuBot" + Integer.toString(i) + "000", 5);
-                }
 
 
-            }
-            catch(IOException e)
-            {
-                Log.d(TAG, "Failed to load the game from byte array!");
-                exit(1);
-            }
-            catch(ClassNotFoundException e)
-            {
-                Log.d(TAG, "What class are you talking about?");
-                exit(1);
+
+        //send message
+        for (Participant p : mParticipants) {
+            if (p.getParticipantId().equals(mMyId))
+                continue;
+            if (p.getStatus() != Participant.STATUS_JOINED)
+                continue;
+            if (sendReliably) {
+                // final score notification must be sent via reliable message
+                Games.RealTimeMultiplayer.sendReliableMessage(gameHelper.getApiClient(), null, msgBuffer,
+                        mRoomId, p.getParticipantId());
+            } else {
+                // it's an interim score notification, so we can use unreliable
+                Games.RealTimeMultiplayer.sendUnreliableMessage(gameHelper.getApiClient(), msgBuffer, mRoomId,
+                        p.getParticipantId());
             }
         }
-        else
-        {
-            //send game state away to other clients
-        }
+
     }
 
-    /**
-     * setup a bot game
-     * @param level difficulty of the board
-     * @param ctx activity context
-     */
-    private void botGame(int level, Context ctx)
+
+
+    public void readMessage(byte[] msgBuffer)
     {
-        isBotGame = true;
-        sendGameState(level, ctx);
+
+
+        try(ByteArrayInputStream b = new ByteArrayInputStream(msgBuffer)){
+
+            ObjectInputStream o = new ObjectInputStream(b);
+            //get the header
+            MessageType msgType = (MessageType)o.readObject();
+
+            switch (msgType)
+            {
+                case GAME_OBJ:
+                    //do nothing for now...
+                    //the game should already be created
+                    //mGame = (Game)o.readObject();
+                    break;
+                case GAME_UPDATE:
+
+                    GameUpdate update = (GameUpdate)o.readObject();
+                    for (int i = 0; i < updates.length; i++) {
+                        if(updates[i] == null ||
+                                updates[i].getGamerId().equals(update.getGamerId())
+                                )
+                        {
+                            updates[i] = update;
+                            break;
+                        }
+                    }
+                    break;
+                case DEBUG:
+                    String debugMessage = (String)o.readObject();
+                    Log.d(TAG, "Debug Message: " + debugMessage);
+                    break;
+                default:
+                    Log.d(TAG, "Invalid MessageType Used");
+                    return;
+            }
+
+
+        }
+        catch(IOException e)
+        {
+            Log.d(TAG, "Failed to load the game from byte array!");
+            return;
+        }
+        catch(ClassNotFoundException e)
+        {
+            Log.d(TAG, "What class are you talking about?");
+            return;
+        }
     }
+
+
 
     /*****
      *
@@ -194,7 +413,8 @@ public class MultiGame implements GoogleApiClient.ConnectionCallbacks, GoogleApi
         }
         else
         {
-            return 0;
+            // don't include yourself
+            return mParticipants.size() - 1;
         }
     }
 
@@ -230,7 +450,16 @@ public class MultiGame implements GoogleApiClient.ConnectionCallbacks, GoogleApi
 
     public boolean isOpponentGameFinished(int i)
     {
-        return this.allBots[i].getGameObj().isGameFinished();
+        if(isBotGame)
+        {
+            return this.allBots[i].getGameObj().isGameFinished();
+        }
+        else
+        {
+            return updates[i] != null && updates[i].getGameProgress() == 1;
+
+        }
+
     }
 
     /***********************************************
@@ -274,13 +503,29 @@ public class MultiGame implements GoogleApiClient.ConnectionCallbacks, GoogleApi
      * @param i index of opponent
      * @return the progress of the opponent as a fraction
      */
-    public float getOpponetProgress(int i)
+    public float getOpponentProgress(int i)
     {
-        return (float)1.0 - ((float)allBots[i].getGameObj().getNumberOpenSquares()
-                / (float)allBots[i].getGameObj().getStartingOpenSquares());
+        if(isBotGame)
+        {
+            return (float)1.0 - ((float)allBots[i].getGameObj().getNumberOpenSquares()
+                    / (float)allBots[i].getGameObj().getStartingOpenSquares());
+        }
+        else if(updates[i] != null)
+        {
+            return updates[i].getGameProgress();
+        }
+        else
+        {
+            return 0;
+        }
+
     }
 
-
+    private float getMyProgress()
+    {
+        return (float)1.0 - ((float)getNumberOpenSquares()
+                / (float)this.getStartingOpenSquares());
+    }
 
     /****
      *
@@ -305,321 +550,6 @@ public class MultiGame implements GoogleApiClient.ConnectionCallbacks, GoogleApi
      * end of functions already implemented
      **************************************/
 
-    // TODO: quickGame
-    private void quickGame(int level, Context ctx)
-    {
-
-
-        Bundle autoMatchCriteria = RoomConfig.createAutoMatchCriteria(MIN_OPPONENTS,
-                MAX_OPPONENTS, 0);
-
-        RoomConfig.Builder rtmConfigBuilder = RoomConfig.builder(this);
-        rtmConfigBuilder.setMessageReceivedListener(this);
-        rtmConfigBuilder.setRoomStatusUpdateListener(this);
-        rtmConfigBuilder.setAutoMatchCriteria(autoMatchCriteria);
-    }
-
-
-
-    //TODO onRealTimeMessageReceived
-    // Called when we receive a real-time message from the network.
-    // Messages in our game are made up of 2 bytes: the first one is 'F' or 'U'
-    // indicating
-    // whether it's a final or interim score. The second byte is the score.
-    // There is also the
-    // 'S' message, which indicates that the game should start.
-    @Override
-    public void onRealTimeMessageReceived(RealTimeMessage rtm) {
-        byte[] buf = rtm.getMessageData();
-        String sender = rtm.getSenderParticipantId();
-        Log.d(TAG, "Message received: " + (char) buf[0] + "/" + (int) buf[1]);
-        /*
-        if (buf[0] == 'F' || buf[0] == 'U') {
-            // score update.
-            int existingScore = mParticipantScore.containsKey(sender) ?
-                    mParticipantScore.get(sender) : 0;
-            int thisScore = (int) buf[1];
-            if (thisScore > existingScore) {
-                // this check is necessary because packets may arrive out of
-                // order, so we
-                // should only ever consider the highest score we received, as
-                // we know in our
-                // game there is no way to lose points. If there was a way to
-                // lose points,
-                // we'd have to add a "serial number" to the packet.
-                mParticipantScore.put(sender, thisScore);
-            }
-
-            // update the scores on the screen
-            updatePeerScoresDisplay();
-
-            // if it's a final score, mark this participant as having finished
-            // the game
-            if ((char) buf[0] == 'F') {
-                mFinishedParticipants.add(rtm.getSenderParticipantId());
-            }
-        }
-        */
-    }
-
-
-    //TODO write code for onInvitationReceived
-    // Called when we get an invitation to play a game. We react by showing that to the user.
-    @Override
-    public void onInvitationReceived(Invitation invitation) {
-        // We got an invitation to play a game! So, store it in
-        // mIncomingInvitationId
-        // and show the popup on the screen.
-        /*
-        mIncomingInvitationId = invitation.getInvitationId();
-        ((TextView) findViewById(R.id.incoming_invitation_text)).setText(
-                invitation.getInviter().getDisplayName() + " " +
-                        getString(R.string.is_inviting_you));
-        switchToScreen(mCurScreen); // This will show the invitation popup
-        */
-    }
-
-    //TODO write code for onInvitationRemoved
-    @Override
-    public void onInvitationRemoved(String invitationId) {
-
-        /*
-        if (mIncomingInvitationId.equals(invitationId)&&mIncomingInvitationId!=null) {
-            mIncomingInvitationId = null;
-            switchToScreen(mCurScreen); // This will hide the invitation popup
-        }
-        */
-
-    }
-
-    /*
-     * CALLBACKS SECTION. This section shows how we implement the several games
-     * API callbacks.
-     */
-
-    //TODO wite code for onConnected
-    @Override
-    public void onConnected(Bundle connectionHint) {
-        Log.d(TAG, "onConnected() called. Sign in successful!");
-
-        Log.d(TAG, "Sign-in succeeded.");
-
-        // register listener so we are notified if we receive an invitation to play
-        // while we are in the game
-        /*
-        Games.Invitations.registerInvitationListener(mGoogleApiClient, this);
-
-        if (connectionHint != null) {
-            Log.d(TAG, "onConnected: connection hint provided. Checking for invite.");
-            Invitation inv = connectionHint
-                    .getParcelable(Multiplayer.EXTRA_INVITATION);
-            if (inv != null && inv.getInvitationId() != null) {
-                // retrieve and cache the invitation ID
-                Log.d(TAG,"onConnected: connection hint has a room invite!");
-                acceptInviteToRoom(inv.getInvitationId());
-                return;
-            }
-        }
-        switchToMainScreen();
-        */
-    }
-
-    //TODO onConnectionSuspended
-    @Override
-    public void onConnectionSuspended(int i) {
-        /*
-        Log.d(TAG, "onConnectionSuspended() called. Trying to reconnect.");
-        mGoogleApiClient.connect();
-        */
-    }
-
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-        Log.d(TAG, "onConnectionFailed() called, result: " + connectionResult);
-        /*
-        if (mResolvingConnectionFailure) {
-            Log.d(TAG, "onConnectionFailed() ignoring connection failure; already resolving.");
-            return;
-        }
-
-        if (mSignInClicked || mAutoStartSignInFlow) {
-            mAutoStartSignInFlow = false;
-            mSignInClicked = false;
-            mResolvingConnectionFailure = BaseGameUtils.resolveConnectionFailure(this, mGoogleApiClient,
-                    connectionResult, RC_SIGN_IN, getString(R.string.signin_other_error));
-        }
-
-        switchToScreen(R.id.screen_sign_in);
-        */
-    }
-
-
-    //TODO write code for onConnectedToRoom
-    // Called when we are connected to the room. We're not ready to play yet! (maybe not everybody
-    // is connected yet).
-    @Override
-    public void onConnectedToRoom(Room room) {
-        Log.d(TAG, "onConnectedToRoom.");
-        /*
-        //get participants and my ID:
-        mParticipants = room.getParticipants();
-        mMyId = room.getParticipantId(Games.Players.getCurrentPlayerId(mGoogleApiClient));
-
-        // save room ID if its not initialized in onRoomCreated() so we can leave cleanly before the game starts.
-        if(mRoomId==null)
-            mRoomId = room.getRoomId();
-
-        // print out the list of participants (for debug purposes)
-        Log.d(TAG, "Room ID: " + mRoomId);
-        Log.d(TAG, "My ID " + mMyId);
-        Log.d(TAG, "<< CONNECTED TO ROOM>>");
-        */
-    }
-
-    //TODO onLeftRoom
-    // Called when we've successfully left the room (this happens a result of voluntarily leaving
-    // via a call to leaveRoom(). If we get disconnected, we get onDisconnectedFromRoom()).
-    @Override
-    public void onLeftRoom(int statusCode, String roomId) {
-        // we have left the room; return to main screen.
-        Log.d(TAG, "onLeftRoom, code " + statusCode);
-        /*
-        switchToMainScreen();
-        */
-    }
-
-    //TODO onDisconnectedFromRoom
-    // Called when we get disconnected from the room. We return to the main screen.
-    @Override
-    public void onDisconnectedFromRoom(Room room) {
-        /*
-        mRoomId = null;
-        showGameError();
-        */
-    }
-
-    //TODO showGameError
-    // Show error message about game being cancelled and return to main screen.
-    void showGameError() {
-        /*
-        BaseGameUtils.makeSimpleDialog(this, getString(R.string.game_problem));
-        switchToMainScreen();
-        */
-    }
-
-    // Called when room has been created
-    @Override
-    public void onRoomCreated(int statusCode, Room room) {
-        Log.d(TAG, "onRoomCreated(" + statusCode + ", " + room + ")");
-        /*
-        if (statusCode != GamesStatusCodes.STATUS_OK) {
-            Log.e(TAG, "*** Error: onRoomCreated, status " + statusCode);
-            showGameError();
-            return;
-        }
-
-        // save room ID so we can leave cleanly before the game starts.
-        mRoomId = room.getRoomId();
-
-        // show the waiting room UI
-        showWaitingRoom(room);
-        */
-    }
-
-    // Called when room is fully connected.
-    @Override
-    public void onRoomConnected(int statusCode, Room room) {
-        Log.d(TAG, "onRoomConnected(" + statusCode + ", " + room + ")");
-        /*
-        if (statusCode != GamesStatusCodes.STATUS_OK) {
-            Log.e(TAG, "*** Error: onRoomConnected, status " + statusCode);
-            showGameError();
-            return;
-        }
-        updateRoom(room);
-        */
-    }
-
-    //TODO onJoinedRoom
-    @Override
-    public void onJoinedRoom(int statusCode, Room room) {
-        Log.d(TAG, "onJoinedRoom(" + statusCode + ", " + room + ")");
-        /*
-        if (statusCode != GamesStatusCodes.STATUS_OK) {
-            Log.e(TAG, "*** Error: onRoomConnected, status " + statusCode);
-            showGameError();
-            return;
-        }
-
-        // show the waiting room UI
-        showWaitingRoom(room);
-        */
-    }
-
-
-
-
-    @Override
-    public void onPeerDeclined(Room room, List<String> arg1) {
-        updateRoom(room);
-    }
-
-    @Override
-    public void onPeerInvitedToRoom(Room room, List<String> arg1) {
-        updateRoom(room);
-    }
-
-
-
-    @Override
-    public void onP2PDisconnected(String participant) {
-    }
-
-    @Override
-    public void onP2PConnected(String participant) {
-    }
-
-    @Override
-    public void onPeerJoined(Room room, List<String> arg1) {
-        updateRoom(room);
-    }
-
-    @Override
-    public void onPeerLeft(Room room, List<String> peersWhoLeft) {
-        updateRoom(room);
-    }
-
-    @Override
-    public void onRoomAutoMatching(Room room) {
-        updateRoom(room);
-    }
-
-    @Override
-    public void onRoomConnecting(Room room) {
-        updateRoom(room);
-    }
-
-    @Override
-    public void onPeersConnected(Room room, List<String> peers) {
-        updateRoom(room);
-    }
-
-    @Override
-    public void onPeersDisconnected(Room room, List<String> peers) {
-        updateRoom(room);
-    }
-
-
-    void updateRoom(Room room) {
-        /*
-        if (room != null) {
-            mParticipants = room.getParticipants();
-        }
-        if (mParticipants != null) {
-            updatePeerScoresDisplay();
-        }
-        */
-    }
 
 
     /****************************************************
@@ -644,14 +574,18 @@ public class MultiGame implements GoogleApiClient.ConnectionCallbacks, GoogleApi
     //returns empty stack if successful
     //returns ids of problem squares in stack if failed
     public Set<Integer> setBoardValueAt(int row, int col, int value) {
-        return mGame.setBoardValueAt(row, col, value);
+        Set<Integer> tempSet = mGame.setBoardValueAt(row, col, value);
+        sendMessage(MessageType.GAME_UPDATE, new GameUpdate(mMyId, this.getMyProgress()));
+        return tempSet;
     }
 
     //sets value of square given the index
     //returns empty stack if successful
     //returns ids of problem squares in stack if failed
     public Set<Integer> setBoardValueAt(int idx, int value) {
-        return mGame.setBoardValueAt(idx, value);
+        Set<Integer> tempSet = mGame.setBoardValueAt(idx, value);
+        sendMessage(MessageType.GAME_UPDATE, new GameUpdate(mMyId, this.getMyProgress()));
+        return tempSet;
     }
 
     //gets value of square given row and col

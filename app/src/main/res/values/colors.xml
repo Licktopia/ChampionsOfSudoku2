@@ -32,6 +32,9 @@
     <color name="red">#ff3333</color>
     <color name="sudokublue">#2979ff</color>
     <color name="icongrey">#bdc3c6</color>
-
+    <color name="PopupColor">@color/colorAccent</color>
+    <color name="PopupTextColor">#ffffff</color>
+    <color name="ButtonTextColor">#ffffff</color>
+    <color name="BlurbColor">#a0a0a0</color>
 
 </resources>

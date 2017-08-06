@@ -89,5 +89,6 @@
     <string name="gamesavedwithalias">Game saved with alias\u0020</string>
     <string name="must_be_logged_in">You must be logged in to use this feature</string>
     <string name="invite_dialog_title">Invite Players</string>
-
+    <string name="accept_popup_invite">Accept!</string>
+    <string name="inv_popup_text">Incoming invitation!</string>
 </resources>
