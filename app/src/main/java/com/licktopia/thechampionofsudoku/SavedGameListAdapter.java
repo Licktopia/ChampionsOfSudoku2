@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -28,6 +29,8 @@ import com.licktopia.thechampionofsudoku.Sudoku.SavedGame;
 
 import java.util.List;
 
+import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.BOARD_FRAGMENT;
+
 /**
  * Created by do_de on 3/30/2017.
  */
@@ -40,8 +43,14 @@ public class SavedGameListAdapter extends RecyclerView.Adapter<SavedGameListAdap
     private CognitoCachingCredentialsProvider credentialsProvider;
     private AmazonDynamoDBClient ddbClient;
     private DynamoDBMapper mapper;
+    private SavedGameLAListener callback;
 
 
+    //Interface to be implemented by containing activity.
+    public interface SavedGameLAListener {
+        void swapFragment(String fragmentName, Bundle args);
+
+    }
 
     public SavedGameListAdapter(List<SavedGameListItem> savedGameListItem, Context context) {
         this.savedGameListItems = savedGameListItem;
@@ -106,21 +115,29 @@ public class SavedGameListAdapter extends RecyclerView.Adapter<SavedGameListAdap
                             public void onClick(DialogInterface dialog, int id) {
                                     /***** Maybe we should tell the user that the game is loading... *****/
                                     /******* FOR THE PURPOSE OF DEBUGGING THE FIRST GAME ON THE LIST GETS PICKED******************/
-                                    Intent intent = new Intent(context, BoardFragment.class);
+                                    Bundle args = new Bundle();
+
+
+
                                     //Make level less than zero so that activity knows to load a game
                                     boolean resume = true;
-                                    intent.putExtra("RESUME", resume);
-                                    intent.putExtra("COLOR_MODE", savedGameListItem.isColor());
-                                    intent.putExtra("LEVEL", savedGameListItem.getLevel());
+                                    args.putBoolean("RESUME", resume);
+                                    args.putBoolean("COLOR_MODE", savedGameListItem.isColor());
+                                    args.putInt("LEVEL", savedGameListItem.getLevel());
 
                                     //intent.putExtra("SAVE_FILE", savedGameListItem.getSavedGame());
 
-                                    intent.putExtra("STOPPED_TIME", savedGameListItem.getStoppedTime());
-                                    intent.putExtra("EXACT_TIME", savedGameListItem.getExactTime());
-                                    intent.putExtra("SAVED_NAME", savedGameListItem.getTime());
-                                    intent.putExtra("SAVED_DATE", savedGameListItem.getDate());
-
-                                    context.startActivity(intent);
+                                    args.putLong("STOPPED_TIME", savedGameListItem.getStoppedTime());
+                                    args.putString("EXACT_TIME", savedGameListItem.getExactTime());
+                                    args.putString("SAVED_NAME", savedGameListItem.getTime());
+                                    args.putString("SAVED_DATE", savedGameListItem.getDate());
+                                    try {
+                                        callback = (SavedGameLAListener) context;
+                                    } catch (ClassCastException e) {
+                                        throw new ClassCastException(context.toString() +
+                                                " must implement SavedGameLAFragmentListener");
+                                    }
+                                    callback.swapFragment(BOARD_FRAGMENT, args);
 
 
 

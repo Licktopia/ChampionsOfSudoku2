@@ -469,6 +469,27 @@ public class BoardFragment extends Fragment {
         }
     }
 
+    private void deleteSavedGame(){
+        if(isInternet() && resume) {
+            final SavedGame sg = new SavedGame();
+            sg.setGamerID(BaseActivity.getId());
+            sg.setExactTime(exactTime);
+
+
+
+            // id field is null at this point
+            Runnable runnable = new Runnable() {
+                public void run() {
+                    //DynamoDB calls go here
+                    mapper.delete(sg);
+
+                }
+            };
+            Thread mythread = new Thread(runnable);
+            mythread.start();
+        }
+    }
+
     private void uploadCompletedGame(int xp){
         if(isInternet()&&gameHelper.getApiClient().isConnected()) {
             Date dt = new Date();
@@ -558,6 +579,7 @@ public class BoardFragment extends Fragment {
             boolean levelUp = BaseActivity.addExperience(gameXP);
             if(!solveClicked) {
                 uploadCompletedGame((int) gameXP);
+                deleteSavedGame();
                 sendToLeaderBoard(gameXP);
                 handleAchievements(gameXP);
                 setStatsBox(gameXP);
