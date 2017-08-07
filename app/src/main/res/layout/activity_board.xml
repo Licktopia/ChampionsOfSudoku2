@@ -34,6 +34,7 @@
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_centerVertical="false"
+            android:padding="2dp"
             android:scaleType="fitCenter"
             android:visibility="gone"
             app:srcCompat="@drawable/cbut_bluedot" />
@@ -43,6 +44,7 @@
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_centerVertical="false"
+            android:padding="2dp"
             android:scaleType="fitCenter"
             android:visibility="gone"
             app:srcCompat="@drawable/cbut_lightreddot" />
@@ -52,6 +54,7 @@
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_centerVertical="false"
+            android:padding="2dp"
             android:scaleType="fitCenter"
             android:visibility="gone"
             app:srcCompat="@drawable/cbut_darkreddot" />
@@ -61,6 +64,7 @@
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_centerVertical="false"
+            android:padding="2dp"
             android:scaleType="fitCenter"
             android:visibility="gone"
             app:srcCompat="@drawable/cbut_silverdot" />
@@ -70,6 +74,7 @@
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_centerVertical="false"
+            android:padding="2dp"
             android:scaleType="fitCenter"
             android:visibility="gone"
             app:srcCompat="@drawable/cbut_orangedot" />
@@ -79,6 +84,7 @@
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_centerVertical="false"
+            android:padding="2dp"
             android:scaleType="fitCenter"
             android:visibility="gone"
             app:srcCompat="@drawable/cbut_purpledot" />
@@ -88,6 +94,7 @@
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_centerVertical="false"
+            android:padding="2dp"
             android:scaleType="fitCenter"
             android:visibility="gone"
             app:srcCompat="@drawable/cbut_yellowdot" />
@@ -97,6 +104,7 @@
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_centerVertical="false"
+            android:padding="2dp"
             android:scaleType="fitCenter"
             android:visibility="gone"
             app:srcCompat="@drawable/cbut_darkgreendot"
