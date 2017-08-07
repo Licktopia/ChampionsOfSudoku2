@@ -563,16 +563,15 @@ public class BaseActivity extends BaseGameActivity
     @Override
     public void onRealTimeMessageReceived(RealTimeMessage rtm) {
         byte[] buf = rtm.getMessageData();
-        Log.d(TAG, "Message received: " + (char) buf[0]);
         Log.d(TAG, "We got a message!");
 
         if(mMultiGame != null)
         {
-            Log.d(TAG, "mMultiGame was not null!");
             mMultiGame.readMessage(buf);
         }
         else
         {
+            Log.d(TAG, "Creating game object...");
             mMultiGame = MultiGame.byteToObj(buf, mParticipants,
                     mMyId, gameHelper, mRoomId);
             if(mMultiGame != null)
@@ -759,7 +758,7 @@ public class BaseActivity extends BaseGameActivity
         updateRoom(room);
 
         if (shouldStartGame(room)) {
-            Log.d(TAG, "Start the game!");
+            Log.d(TAG, "Starting the game");
 
             for(int i = 0; i < mParticipants.size(); i++)
             {
@@ -767,6 +766,8 @@ public class BaseActivity extends BaseGameActivity
                     if(mParticipants.get(i).getParticipantId().equals(mMyId))
 
                     {
+                        Log.d(TAG, "You are the host");
+                        Log.d(TAG, "Creating the game");
                         mMultiGame = new MultiGame(MultiGame.GameMode.RACE,
                                 MultiGame.ConnectType.HUMAN_GAME, 0, this,
                                 mParticipants,
@@ -778,6 +779,7 @@ public class BaseActivity extends BaseGameActivity
                     }
                     else
                     {
+                        Log.d(TAG, "You are the guest");
                         break;
                     }
             }

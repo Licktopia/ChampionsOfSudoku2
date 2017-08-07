@@ -309,6 +309,7 @@ public class MultiGame implements GameInterface, java.io.Serializable {
         {
             byte[] msgBuffer = null;
 
+            Log.d(TAG, "Sending the game object");
             try(ByteArrayOutputStream b = new ByteArrayOutputStream()){
                 ObjectOutputStream o = new ObjectOutputStream(b);
 
