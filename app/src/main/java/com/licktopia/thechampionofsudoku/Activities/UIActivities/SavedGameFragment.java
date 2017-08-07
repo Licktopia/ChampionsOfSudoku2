@@ -33,6 +33,7 @@ public class SavedGameFragment extends Fragment {
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
     private ProgressBar mProgressIndicator;
+    private TextView mLoadingText;
     private TextView savedUser;
     public static List<SavedGameListItem> savedGameListItems;
 
@@ -47,7 +48,9 @@ public class SavedGameFragment extends Fragment {
         View view = inflater.inflate(R.layout.activity_savedgame, container, false);
 
         mProgressIndicator = (ProgressBar)view.findViewById(R.id.progressBar2);
+        mLoadingText = (TextView)view.findViewById(R.id.loading);
         mProgressIndicator.setVisibility(View.VISIBLE);
+        mLoadingText.setVisibility(View.VISIBLE);
         recyclerView = (RecyclerView)view.findViewById(R.id.savedrecyclerView);
 
         recyclerView.setHasFixedSize(true);
@@ -112,23 +115,33 @@ public class SavedGameFragment extends Fragment {
         Runnable runnable = new Runnable() {
             public void run() {
                 //DynamoDB calls go here
-                list[0] = BaseActivity.mapper.query(SavedGame.class, queryExpression);
+                try {
+                    list[0] = BaseActivity.mapper.query(SavedGame.class, queryExpression);
+                }
+                catch (Exception e){
+
+                }
                 ArrayList<SavedGame> sGames = new ArrayList<SavedGame>();
                 for (int i = 0; i < list[0].size(); i++) {
                     sGames.add(list[0].get(i));
                 }
                 BaseActivity.setSavedGames(sGames);
+                try {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            //execute code on main thread
+                            fillListItems();
+                            adapter = new SavedGameListAdapter(savedGameListItems, getContext());
+                            recyclerView.setAdapter(adapter);
+                            mProgressIndicator.setVisibility(View.GONE);
+                            mLoadingText.setVisibility(View.GONE);
+                        }
+                    });
+                }catch(Exception e){
 
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        //execute code on main thread
-                        fillListItems();
-                        adapter = new SavedGameListAdapter(savedGameListItems, getContext());
-                        recyclerView.setAdapter(adapter);
-                        mProgressIndicator.setVisibility(View.GONE);
-                    }
-                });
+                }
+
             }
         };
 

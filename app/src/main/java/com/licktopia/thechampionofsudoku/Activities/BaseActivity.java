@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
@@ -167,7 +168,7 @@ public class BaseActivity extends BaseGameActivity
         transaction.replace(R.id.fragment_container, fragment);
         transaction.addToBackStack(null);
 
-        transaction.commit();
+        transaction.commitAllowingStateLoss();
     }
 
 

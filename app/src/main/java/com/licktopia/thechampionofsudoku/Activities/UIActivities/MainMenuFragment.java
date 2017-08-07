@@ -273,6 +273,10 @@ public class MainMenuFragment extends Fragment {
         }
        //userBadge.setImageDrawable(getResources().getDrawable(callback.getBadgetag(), null));
         setMessage();
+        screenWait.setVisibility(GONE);
+        mLevelSelect.setVisibility(VISIBLE);
+        mModeSelect.setVisibility(GONE);
+
     }
 
     private void loadPlayer(){

@@ -36,5 +36,6 @@
     <color name="PopupTextColor">#ffffff</color>
     <color name="ButtonTextColor">#ffffff</color>
     <color name="BlurbColor">#a0a0a0</color>
+    <color name="transparent_white">#4bffffff</color>
 
 </resources>

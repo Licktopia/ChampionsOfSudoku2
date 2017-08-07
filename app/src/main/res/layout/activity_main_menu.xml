@@ -154,11 +154,40 @@
                             style="@style/AppTheme"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:visibility="gone">
+                            android:background="@color/transparent_white"
+                            android:orientation="vertical"
+                            android:visibility="gone"
+                            tools:visibility="visible">
+
+                            <ImageView
+                                android:id="@+id/connect"
+                                android:layout_width="match_parent"
+                                android:layout_height="0dp"
+                                android:layout_alignParentTop="false"
+                                android:layout_centerHorizontal="false"
+                                android:layout_centerInParent="false"
+                                android:layout_weight="75"
+                                android:scaleType="fitCenter"
+                                app:srcCompat="@drawable/mpholder" />
 
                             <TextView
-                                style="@style/Blurb"
-                                android:text="Please Wait" />
+                                android:id="@+id/textView12"
+                                android:layout_width="match_parent"
+                                android:layout_height="0dp"
+                                android:layout_weight="10"
+                                android:gravity="center"
+                                android:text="connecting"
+                                android:textSize="18sp" />
+
+                            <ProgressBar
+                                android:id="@+id/progressBar4"
+                                style="?android:attr/progressBarStyleHorizontal"
+                                android:layout_width="match_parent"
+                                android:layout_height="0dp"
+                                android:layout_gravity="center"
+                                android:layout_weight="15"
+                                android:indeterminate="true" />
+
                         </LinearLayout>
 
 
@@ -170,7 +199,7 @@
                             android:orientation="vertical"
                             android:visibility="visible"
                             android:weightSum="12"
-                            tools:visibility="visible">
+                            tools:visibility="gone">
 
                             <RelativeLayout
 
