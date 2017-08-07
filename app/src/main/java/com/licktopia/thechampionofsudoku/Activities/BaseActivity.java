@@ -773,6 +773,7 @@ public class BaseActivity extends BaseGameActivity
                                 mRoomId);
 
                         switchToBoard = true;
+                        break;
                     }
                     else
                     {
