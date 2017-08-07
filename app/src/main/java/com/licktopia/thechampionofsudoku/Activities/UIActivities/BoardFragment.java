@@ -1812,10 +1812,8 @@ public class BoardFragment extends Fragment {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-
         if (id == R.id.settingsMenu) {
-            Intent intent = new Intent(getActivity(), SudokuSettingsActivity.class); //TODO Leave settings as activity??
-                startActivity(intent);
+            callback.swapFragment(BaseActivity.SETTINGS_FRAGMENT, new Bundle());
         }
 
         if (id == R.id.action_instructions) {

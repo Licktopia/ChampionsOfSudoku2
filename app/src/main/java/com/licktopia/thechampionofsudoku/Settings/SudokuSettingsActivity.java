@@ -15,11 +15,11 @@ public class SudokuSettingsActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        /*
         getFragmentManager().beginTransaction()
                 .replace(android.R.id.content, new SudokuSettingsFragment())
                 .commit();
-
+        */
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
