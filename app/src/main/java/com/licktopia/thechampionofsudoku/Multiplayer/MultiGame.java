@@ -66,6 +66,7 @@ public class MultiGame implements GameInterface, java.io.Serializable {
     public enum MessageType{
         GAME_OBJ,
         GAME_UPDATE,
+        GAME_OVER,
         DEBUG
     }
 
@@ -73,6 +74,7 @@ public class MultiGame implements GameInterface, java.io.Serializable {
     {
         private String mGamerId;
         private float mGameProgress;
+        private boolean mGameFinished;
         private String mImageUri;
 
         protected Opponent(String gamerId, String imageUri)
@@ -83,7 +85,7 @@ public class MultiGame implements GameInterface, java.io.Serializable {
         }
 
         protected GameUpdate getGameUpdate() {
-            return new GameUpdate(mGamerId, mGameProgress);
+            return new GameUpdate(mGamerId, mGameProgress, mGameFinished);
         }
 
         protected float getGameProgress() {
@@ -93,11 +95,14 @@ public class MultiGame implements GameInterface, java.io.Serializable {
         protected void updateProgress(GameUpdate update)
         {
             mGameProgress = update.getGameProgress();
+            mGameFinished = update.isGameFinished();
         }
 
         protected String getGamerId() {
             return mGamerId.toString();
         }
+
+        protected boolean isGameFinished() { return mGameFinished; }
 
         protected String getImageUri() { return mImageUri;}
     }
@@ -107,10 +112,13 @@ public class MultiGame implements GameInterface, java.io.Serializable {
     {
         private String mGamerId;
         private float mGameProgress;
-        protected GameUpdate(String gamerId, float gameProgress)
+        private boolean mGameFinished;
+
+        protected GameUpdate(String gamerId, float gameProgress, boolean gameFinished)
         {
             mGamerId = gamerId;
             mGameProgress = gameProgress;
+            mGameFinished = gameFinished;
         }
 
         protected float getGameProgress() {
@@ -120,6 +128,8 @@ public class MultiGame implements GameInterface, java.io.Serializable {
         protected String getGamerId() {
             return mGamerId.toString();
         }
+
+        protected boolean isGameFinished() { return mGameFinished; }
 
         private void writeObject(java.io.ObjectOutputStream stream)
                 throws IOException {
@@ -132,6 +142,7 @@ public class MultiGame implements GameInterface, java.io.Serializable {
             }
 
             stream.writeFloat(mGameProgress);
+            stream.writeBoolean(mGameFinished);
 
         }
 
@@ -149,6 +160,7 @@ public class MultiGame implements GameInterface, java.io.Serializable {
 
             mGamerId = new String(charArr);
             mGameProgress = stream.readFloat();
+            mGameFinished = stream.readBoolean();
         }
 
 
@@ -242,6 +254,11 @@ public class MultiGame implements GameInterface, java.io.Serializable {
 
             ObjectInputStream o = new ObjectInputStream(b);
             MessageType temp =(MessageType)o.readObject();
+
+            // This message is not a game object so prevent an error from happening
+            if(temp != MessageType.GAME_OBJ)
+                return null;
+
             curGame = (Game)o.readObject();
 
 
@@ -367,6 +384,10 @@ public class MultiGame implements GameInterface, java.io.Serializable {
                     o.writeObject((String)msgObj);
                     sendReliably = true;
                     break;
+                case GAME_OVER:
+                    o.writeObject((GameUpdate)msgObj);
+                    sendReliably = true;
+                    break;
                 default:
                     Log.d(TAG, "Invalid MessageType Used");
                     return;
@@ -434,6 +455,19 @@ public class MultiGame implements GameInterface, java.io.Serializable {
                                 )
                         {
                             humanOpps[i].updateProgress(update);
+                            break;
+                        }
+                    }
+                    break;
+                case GAME_OVER:
+                    Log.d(TAG, "An opponent has finished their game!");
+                    GameUpdate endGameUpdate = (GameUpdate)o.readObject();
+                    for (int i = 0; i < humanOpps.length; i++) {
+                        if(humanOpps[i] == null ||
+                                humanOpps[i].getGamerId().equals(endGameUpdate.getGamerId())
+                                )
+                        {
+                            humanOpps[i].updateProgress(endGameUpdate);
                             break;
                         }
                     }
@@ -547,7 +581,7 @@ public class MultiGame implements GameInterface, java.io.Serializable {
         }
         else
         {
-            return humanOpps[i] != null && humanOpps[i].getGameProgress() == 1;
+            return humanOpps[i] != null && humanOpps[i].isGameFinished();
 
         }
 
@@ -666,7 +700,7 @@ public class MultiGame implements GameInterface, java.io.Serializable {
     //returns ids of problem squares in stack if failed
     public Set<Integer> setBoardValueAt(int row, int col, int value) {
         Set<Integer> tempSet = mGame.setBoardValueAt(row, col, value);
-        sendMessage(MessageType.GAME_UPDATE, new GameUpdate(mMyId, this.getMyProgress()));
+        sendGameUpdate(tempSet);
         return tempSet;
     }
 
@@ -675,8 +709,21 @@ public class MultiGame implements GameInterface, java.io.Serializable {
     //returns ids of problem squares in stack if failed
     public Set<Integer> setBoardValueAt(int idx, int value) {
         Set<Integer> tempSet = mGame.setBoardValueAt(idx, value);
-        sendMessage(MessageType.GAME_UPDATE, new GameUpdate(mMyId, this.getMyProgress()));
+        sendGameUpdate(tempSet);
         return tempSet;
+    }
+
+    private void sendGameUpdate(Set<Integer> tempSet)
+    {
+        if(this.isGameFinished())
+        {
+            sendMessage(MessageType.GAME_OVER, new GameUpdate(mMyId, this.getMyProgress(), this.isGameFinished()));
+        }
+        else
+        {
+            sendMessage(MessageType.GAME_UPDATE, new GameUpdate(mMyId, this.getMyProgress(), this.isGameFinished()));
+        }
+
     }
 
     //gets value of square given row and col
