@@ -6,12 +6,15 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -60,7 +63,10 @@ import com.licktopia.thechampionofsudoku.Sudoku.Square;
 import com.licktopia.thechampionofsudoku.Sudoku.Strategies;
 import com.licktopia.thechampionofsudoku.GameInterface;
 import com.licktopia.thechampionofsudoku.Tags;
+import com.squareup.picasso.Picasso;
 
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -76,6 +82,7 @@ import main.java.com.maximeroussy.invitrode.RandomWord;
 
 import static android.view.View.GONE;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.gameHelper;
+
 
 public class BoardFragment extends Fragment {
 
@@ -244,7 +251,7 @@ public class BoardFragment extends Fragment {
                         MultiGame.ConnectType.BOT_GAME,
                         level, getContext(), null, null, null, null);
             }
-
+            initializePlayerTokens();
         }
         //START NEW GAME HERE
         else
@@ -270,7 +277,6 @@ public class BoardFragment extends Fragment {
             initializeBoard();//get starting board
         }
         customizeLayout(resume);
-        initializePlayerTokens();
         listeners(toolbar);//set all listeners for BoardFragment layout
         updateScore();
         mChronometer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
@@ -307,8 +313,17 @@ public class BoardFragment extends Fragment {
     private void initializePlayerTokens(){
         if(multiplayer) {
             numPlayers = ((MultiGame) mGame).getTotalOpponents();
-            for (int i = 0; i < Opponents.length; i++) {
+            for (int i = 0; i < ((MultiGame) mGame).getAllImgUri().length; i++) {
+
                 Opponents[i] = (ImageView) view.findViewById(Tags.PlayerTags[i]);
+                try {
+                    String uri = ((MultiGame) mGame).getAllImgUri()[i];
+                    Picasso.with(getActivity()).load(uri).into(Opponents[i]);
+                } catch (Exception e) {
+
+                    Opponents[i].setImageDrawable(getResources().getDrawable(Tags.colorButtonTags[i]));
+                }
+
                 if (i < numPlayers) {
                     Opponents[i].setVisibility(View.VISIBLE);
                     //Opponents[i].setX(0);
@@ -319,7 +334,7 @@ public class BoardFragment extends Fragment {
 
             ViewGroup.LayoutParams paramsBar = botBar.getLayoutParams();
             int view_height = d.getHeight();
-            paramsBar.height = (int)(view_height*(numPlayers*.015));
+            paramsBar.height = (int)(view_height*(numPlayers*.03));
             botBar.setLayoutParams(paramsBar);
 
 

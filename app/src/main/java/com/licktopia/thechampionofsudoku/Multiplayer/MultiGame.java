@@ -73,9 +73,9 @@ public class MultiGame implements GameInterface, java.io.Serializable {
     {
         private String mGamerId;
         private float mGameProgress;
-        private Uri mImageUri;
+        private String mImageUri;
 
-        protected Opponent(String gamerId, Uri imageUri)
+        protected Opponent(String gamerId, String imageUri)
         {
             mGameProgress = 0;
             mGamerId = gamerId;
@@ -99,7 +99,7 @@ public class MultiGame implements GameInterface, java.io.Serializable {
             return mGamerId.toString();
         }
 
-        protected Uri getImageUri() { return mImageUri;}
+        protected String getImageUri() { return mImageUri;}
     }
 
 
@@ -282,7 +282,7 @@ public class MultiGame implements GameInterface, java.io.Serializable {
                     continue;
                 if (p.getStatus() != Participant.STATUS_JOINED)
                     continue;
-                humanOpps[i] = new Opponent(p.getParticipantId(), p.getIconImageUri());
+                humanOpps[i] = new Opponent(p.getParticipantId(), p.getIconImageUrl());
             }
 
         }
@@ -467,13 +467,13 @@ public class MultiGame implements GameInterface, java.io.Serializable {
      *
      * @return An array of the image uri's of all the opponents
      */
-    public Uri[] getAllImgUri()
+    public String[] getAllImgUri()
     {
-        Uri[] uris;
+        String[] uris;
 
         if(isBotGame)
         {
-            uris = new Uri[allBots.length];
+            uris = new String[allBots.length];
             for(int i = 0; i < allBots.length; i++)
             {
                 uris[i] = null;
@@ -481,7 +481,7 @@ public class MultiGame implements GameInterface, java.io.Serializable {
         }
         else
         {
-            uris = new Uri[humanOpps.length];
+            uris = new String[humanOpps.length];
             for(int i = 0; i < humanOpps.length; i++)
             {
                 uris[i] = humanOpps[i].getImageUri();
