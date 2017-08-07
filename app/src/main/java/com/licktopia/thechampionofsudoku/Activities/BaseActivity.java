@@ -97,6 +97,7 @@ public class BaseActivity extends BaseGameActivity
 
     //will store the multiplayer game information
     private MultiGame mMultiGame = null;
+    private boolean peersConnected = false;
 
 
     public static int[] CUTOFF = {0,250,5000,11000,18000,30000,42000,55000,70000,90000,115000,140000,167000,195000,225000,262000,305000,355000,413000,480000,560000,650000,
@@ -173,7 +174,7 @@ public class BaseActivity extends BaseGameActivity
         transaction.replace(R.id.fragment_container, fragment);
         transaction.addToBackStack(null);
 
-        transaction.commitAllowingStateLoss();
+        transaction.commit();
     }
 
 
@@ -707,7 +708,11 @@ public class BaseActivity extends BaseGameActivity
     }
 
 
-
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Log.i("INSTANCE", "Called onSaveInstanceState");
+    }
 
     @Override
     public void onPeerDeclined(Room room, List<String> arg1) {
@@ -769,7 +774,7 @@ public class BaseActivity extends BaseGameActivity
                                 gameHelper,
                                 mRoomId);
 
-                        switchToBoardFrag();
+                        peersConnected = true;
                     }
                     else
                     {
@@ -777,6 +782,15 @@ public class BaseActivity extends BaseGameActivity
                     }
             }
 
+        }
+    }
+
+    @Override
+    public void onPostResume() {
+        super.onPostResume();
+        if (peersConnected) {
+            peersConnected = false;
+            switchToBoardFrag();
         }
     }
 
