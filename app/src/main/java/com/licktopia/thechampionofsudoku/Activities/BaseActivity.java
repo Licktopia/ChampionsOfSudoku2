@@ -14,7 +14,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
@@ -45,7 +44,6 @@ import com.licktopia.thechampionofsudoku.Activities.UIActivities.InstructionsFra
 import com.licktopia.thechampionofsudoku.Activities.UIActivities.InviteDialogFragment;
 import com.licktopia.thechampionofsudoku.Activities.UIActivities.MainMenuFragment;
 import com.licktopia.thechampionofsudoku.Activities.UIActivities.SavedGameFragment;
-import com.licktopia.thechampionofsudoku.GameInterface;
 import com.licktopia.thechampionofsudoku.Multiplayer.MultiGame;
 import com.licktopia.thechampionofsudoku.R;
 import com.licktopia.thechampionofsudoku.SavedGameListAdapter;
@@ -54,7 +52,6 @@ import com.licktopia.thechampionofsudoku.Sudoku.CompletedGame;
 import com.licktopia.thechampionofsudoku.Sudoku.SavedGame;
 
 import java.lang.reflect.Type;
-import java.security.PrivateKey;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -97,7 +94,7 @@ public class BaseActivity extends BaseGameActivity
 
     //will store the multiplayer game information
     private MultiGame mMultiGame = null;
-    private boolean peersConnected = false;
+    private boolean switchToBoard = false;
 
 
     public static int[] CUTOFF = {0,250,5000,11000,18000,30000,42000,55000,70000,90000,115000,140000,167000,195000,225000,262000,305000,355000,413000,480000,560000,650000,
@@ -576,7 +573,7 @@ public class BaseActivity extends BaseGameActivity
                     mMyId, gameHelper, mRoomId);
             if(mMultiGame != null)
             {
-                switchToBoardFrag();
+                switchToBoard = true;
             }
         }
 
@@ -775,7 +772,7 @@ public class BaseActivity extends BaseGameActivity
                                 gameHelper,
                                 mRoomId);
 
-                        peersConnected = true;
+                        switchToBoard = true;
                     }
                     else
                     {
@@ -790,8 +787,8 @@ public class BaseActivity extends BaseGameActivity
     @Override
     public void onPostResume() {
         super.onPostResume();
-        if (peersConnected) {
-            peersConnected = false;
+        if (switchToBoard) {
+            switchToBoard = false;
             switchToBoardFrag();
         }
     }
