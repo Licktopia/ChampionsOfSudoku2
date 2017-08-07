@@ -6,6 +6,7 @@ package com.licktopia.thechampionofsudoku.Multiplayer;
 
 import android.content.Context;
 import android.util.Log;
+import android.net.Uri;
 
 import android.os.Bundle;
 
@@ -43,10 +44,10 @@ public class MultiGame implements GameInterface, java.io.Serializable {
     private Game mGame;
 
     //stores the bots and the threads they are playing on
-    private Bot[] allBots = new Bot[MAX_OPPONENTS];
+    private Bot[] allBots;
 
     //stores the progress of human players
-    private GameUpdate[] updates = new GameUpdate[MAX_OPPONENTS];
+    private Opponent[] humanOpps;
 
     private GameMode mode;
     boolean isBotGame = false;
@@ -67,6 +68,40 @@ public class MultiGame implements GameInterface, java.io.Serializable {
         GAME_UPDATE,
         DEBUG
     }
+
+    private class Opponent
+    {
+        private String mGamerId;
+        private float mGameProgress;
+        private Uri mImageUri;
+
+        protected Opponent(String gamerId, Uri imageUri)
+        {
+            mGameProgress = 0;
+            mGamerId = gamerId;
+            mImageUri = imageUri;
+        }
+
+        protected GameUpdate getGameUpdate() {
+            return new GameUpdate(mGamerId, mGameProgress);
+        }
+
+        protected float getGameProgress() {
+            return mGameProgress;
+        }
+
+        protected void updateProgress(GameUpdate update)
+        {
+            mGameProgress = update.getGameProgress();
+        }
+
+        protected String getGamerId() {
+            return mGamerId.toString();
+        }
+
+        protected Uri getImageUri() { return mImageUri;}
+    }
+
 
     protected class GameUpdate implements java.io.Serializable
     {
@@ -156,7 +191,7 @@ public class MultiGame implements GameInterface, java.io.Serializable {
         this.mMyId = mMyId;
         this.gameHelper = gameHelper;
         this.mRoomId = mRoomId;
-
+        initializePlayerArray();
         this.mode = mode;
         switch (cType)
         {
@@ -174,6 +209,7 @@ public class MultiGame implements GameInterface, java.io.Serializable {
                 break;
         }
 
+
     }
 
     private MultiGame(Game mGame,
@@ -186,9 +222,10 @@ public class MultiGame implements GameInterface, java.io.Serializable {
         this.mMyId = mMyId;
         this.gameHelper = gameHelper;
         this.mRoomId = mRoomId;
-
+        initializePlayerArray();
         this.mGame = mGame;
         isBotGame = false;
+
     }
 
 
@@ -226,6 +263,29 @@ public class MultiGame implements GameInterface, java.io.Serializable {
                 gameHelper,
                 mRoomId);
 
+    }
+
+    void initializePlayerArray()
+    {
+        if(isBotGame)
+        {
+            allBots = new Bot[MAX_OPPONENTS];
+        }
+        else
+        {
+            // don't include yourself
+            humanOpps = new Opponent[mParticipants.size() - 1];
+            int i = 0;
+            for (Participant p : mParticipants) {
+
+                if (p.getParticipantId().equals(mMyId))
+                    continue;
+                if (p.getStatus() != Participant.STATUS_JOINED)
+                    continue;
+                humanOpps[i] = new Opponent(p.getParticipantId(), p.getIconImageUri());
+            }
+
+        }
     }
 
 
@@ -359,24 +419,26 @@ public class MultiGame implements GameInterface, java.io.Serializable {
             switch (msgType)
             {
                 case GAME_OBJ:
+                    Log.d(TAG, "I received a game object!");
                     //do nothing for now...
                     //the game should already be created
                     //mGame = (Game)o.readObject();
                     break;
                 case GAME_UPDATE:
-
+                    Log.d(TAG, "I received a game update!");
                     GameUpdate update = (GameUpdate)o.readObject();
-                    for (int i = 0; i < updates.length; i++) {
-                        if(updates[i] == null ||
-                                updates[i].getGamerId().equals(update.getGamerId())
+                    for (int i = 0; i < humanOpps.length; i++) {
+                        if(humanOpps[i] == null ||
+                                humanOpps[i].getGamerId().equals(update.getGamerId())
                                 )
                         {
-                            updates[i] = update;
+                            humanOpps[i].updateProgress(update);
                             break;
                         }
                     }
                     break;
                 case DEBUG:
+                    Log.d(TAG, "I received a debug message!");
                     String debugMessage = (String)o.readObject();
                     Log.d(TAG, "Debug Message: " + debugMessage);
                     break;
@@ -400,6 +462,35 @@ public class MultiGame implements GameInterface, java.io.Serializable {
     }
 
 
+    /*********************************************************************
+     *
+     * @return An array of the image uri's of all the opponents
+     */
+    public Uri[] getAllImgUri()
+    {
+        Uri[] uris;
+
+        if(isBotGame)
+        {
+            uris = new Uri[allBots.length];
+            for(int i = 0; i < allBots.length; i++)
+            {
+                uris[i] = null;
+            }
+        }
+        else
+        {
+            uris = new Uri[humanOpps.length];
+            for(int i = 0; i < humanOpps.length; i++)
+            {
+                uris[i] = humanOpps[i].getImageUri();
+            }
+        }
+
+        return uris;
+
+    }
+
 
     /*****
      *
@@ -413,8 +504,7 @@ public class MultiGame implements GameInterface, java.io.Serializable {
         }
         else
         {
-            // don't include yourself
-            return mParticipants.size() - 1;
+            return humanOpps.length;
         }
     }
 
@@ -456,7 +546,7 @@ public class MultiGame implements GameInterface, java.io.Serializable {
         }
         else
         {
-            return updates[i] != null && updates[i].getGameProgress() == 1;
+            return humanOpps[i] != null && humanOpps[i].getGameProgress() == 1;
 
         }
 
@@ -510,9 +600,9 @@ public class MultiGame implements GameInterface, java.io.Serializable {
             return (float)1.0 - ((float)allBots[i].getGameObj().getNumberOpenSquares()
                     / (float)allBots[i].getGameObj().getStartingOpenSquares());
         }
-        else if(updates[i] != null)
+        else if(humanOpps[i] != null)
         {
-            return updates[i].getGameProgress();
+            return humanOpps[i].getGameProgress();
         }
         else
         {
