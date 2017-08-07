@@ -30,6 +30,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support:support-v4:25.3.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.0-beta4'
+    compile 'com.android.support:preference-v14:25.3.1'
     compile 'com.google.android.gms:play-services-games:11.0.2'
     compile 'com.google.android.gms:play-services-drive:11.0.2'
     compile 'com.android.support:support-v4:25.3.1'

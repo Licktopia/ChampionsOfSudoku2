@@ -48,6 +48,7 @@ import com.licktopia.thechampionofsudoku.GameInterface;
 import com.licktopia.thechampionofsudoku.Multiplayer.MultiGame;
 import com.licktopia.thechampionofsudoku.R;
 import com.licktopia.thechampionofsudoku.SavedGameListAdapter;
+import com.licktopia.thechampionofsudoku.Settings.SudokuSettingsFragment;
 import com.licktopia.thechampionofsudoku.Sudoku.CompletedGame;
 import com.licktopia.thechampionofsudoku.Sudoku.SavedGame;
 
@@ -88,6 +89,7 @@ public class BaseActivity extends BaseGameActivity
     public static final String INSTRUCTIONS_FRAGMENT = "INSTRUCTIONS_FRAGMENT";
     public static final String SAVED_GAME_FRAGMENT = "SAVED_GAME_FRAGMENT";
     public static final String INVITE_DIALOG_FRAGMENT = "INVITE_DIALOG_FRAGMENT";
+    public static final String SETTINGS_FRAGMENT = "SETTINGS_FRAGMENT";
     public static  GameHelper gameHelper;
     public static boolean clickedOut = false;
     public static boolean userSignIn=false;
@@ -147,6 +149,9 @@ public class BaseActivity extends BaseGameActivity
                 break;
             case SAVED_GAME_FRAGMENT:
                 fragment = SavedGameFragment.newInstance();
+                break;
+            case SETTINGS_FRAGMENT:
+                fragment = SudokuSettingsFragment.newInstance();
                 break;
             case INVITE_DIALOG_FRAGMENT:
                 DialogFragment dialog = InviteDialogFragment.newInstance();
