@@ -91,4 +91,5 @@
     <string name="invite_dialog_title">Invite Players</string>
     <string name="accept_popup_invite">Accept!</string>
     <string name="inv_popup_text">Incoming invitation!</string>
+    <string name="game_not_saved">Game not saved</string>
 </resources>

@@ -465,7 +465,7 @@ public class BoardFragment extends Fragment {
                             @Override
                             public void run() {
                                 //execute code on main thread
-                                Toast.makeText(getActivity(),  e.toString(),Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity(),  R.string.game_not_saved,Toast.LENGTH_SHORT).show();
                             }
                         });
                     }
@@ -590,6 +590,8 @@ public class BoardFragment extends Fragment {
             final LinearLayout mLevelUpBox = (LinearLayout) view.findViewById(R.id.level_up_view);
             final ImageButton mCloseLevelUp = (ImageButton) view.findViewById(R.id.close_levelup);
             ImageButton mCloseStats = (ImageButton) view.findViewById(R.id.close_stats);
+            userBadge.setImageDrawable(getResources().getDrawable(callback.getBadgetag(), null));
+            userText.setText(BaseActivity.getUsername());
             int sound;
             updateScore();
             long gameXP = (long) (mGame.getScore()* callback.getMultiplier());
