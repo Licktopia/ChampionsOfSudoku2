@@ -49,6 +49,7 @@ import com.facebook.share.widget.ShareDialog;
 import com.google.android.gms.games.Games;
 import com.licktopia.thechampionofsudoku.Activities.BaseActivity;
 import com.licktopia.thechampionofsudoku.BackgroundImages;
+import com.licktopia.thechampionofsudoku.CircleTransform;
 import com.licktopia.thechampionofsudoku.Multiplayer.MultiGame;
 import com.licktopia.thechampionofsudoku.PlaySounds;
 import com.licktopia.thechampionofsudoku.R;
@@ -312,13 +313,14 @@ public class BoardFragment extends Fragment {
 
     private void initializePlayerTokens(){
         if(multiplayer) {
+            CircleTransform cf = new CircleTransform();
             numPlayers = ((MultiGame) mGame).getTotalOpponents();
             for (int i = 0; i < ((MultiGame) mGame).getAllImgUri().length; i++) {
 
                 Opponents[i] = (ImageView) view.findViewById(Tags.PlayerTags[i]);
                 try {
                     String uri = ((MultiGame) mGame).getAllImgUri()[i];
-                    Picasso.with(getActivity()).load(uri).into(Opponents[i]);
+                    Picasso.with(getActivity()).load(uri).transform(cf).into(Opponents[i]);
                 } catch (Exception e) {
 
                     Opponents[i].setImageDrawable(getResources().getDrawable(Tags.colorButtonTags[i]));
