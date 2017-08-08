@@ -1178,6 +1178,7 @@ public class BoardFragment extends Fragment {
         clearButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                removeAllHighlights();
                 numberCommands(0);
             }
         });
@@ -1623,8 +1624,10 @@ public class BoardFragment extends Fragment {
             }
 
             // If number clicked matches value already in square, remove number
-            if (mGame.getBoardValueAt(selectedSquare) == keypadNumber)
+            if (mGame.getBoardValueAt(selectedSquare) == keypadNumber) {
                 keypadNumber = 0;
+                removeAllHighlights();
+            }
 
             Set<Integer> conflicts = mGame.setBoardValueAt(selectedSquare, keypadNumber);  // Set board value to number
             if (conflicts.isEmpty()) {
