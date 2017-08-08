@@ -575,7 +575,6 @@ public class BaseActivity extends BaseGameActivity
                 switchToBoard = true;
             }
         }
-
     }
 
 
