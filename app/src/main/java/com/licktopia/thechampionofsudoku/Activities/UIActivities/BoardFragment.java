@@ -361,45 +361,46 @@ public class BoardFragment extends Fragment {
     }
 
     private void upDatePositions(){
-        int thisViewWidth = d.getWidth();
-        ObjectAnimator animX;
-        ObjectAnimator fadeOut;
-        ObjectAnimator fadeIn;
-        AnimatorSet animatorSet;
-        for(int i = 0; i < numPlayers; i++){
+        if(multiplayer) {
+            int thisViewWidth = d.getWidth();
+            ObjectAnimator animX;
+            ObjectAnimator fadeOut;
+            ObjectAnimator fadeIn;
+            AnimatorSet animatorSet;
+            for (int i = 0; i < numPlayers; i++) {
+                animatorSet = new AnimatorSet();
+                ViewGroup.LayoutParams params = Opponents[i].getLayoutParams();
+                float oldPos = Opponents[i].getX();
+                float newPos = ((MultiGame) mGame).getOpponentProgress(i) * (thisViewWidth - params.width);
+                if (newPos != oldPos) {
+                    animX = ObjectAnimator.ofFloat(Opponents[i], "x", newPos);
+                    animX.setDuration(800);
+                    fadeOut = ObjectAnimator.ofFloat(Opponents[i], "alpha", .5f);
+                    fadeOut.setDuration(100);
+                    fadeIn = ObjectAnimator.ofFloat(Opponents[i], "alpha", 1);
+                    fadeIn.setDuration(100);
+                    animatorSet.playSequentially(fadeOut, animX, fadeIn);
+                    animatorSet.start();
+                }
+                //animX.start();
+                //Opponents[i].setX(newPos);
+            }
             animatorSet = new AnimatorSet();
-            ViewGroup.LayoutParams params=Opponents[i].getLayoutParams();
-            float oldPos = Opponents[i].getX();
-            float newPos = ((MultiGame)mGame).getOpponentProgress(i) * (thisViewWidth-params.width);
-            if(newPos!=oldPos) {
-                animX = ObjectAnimator.ofFloat(Opponents[i], "x", newPos);
+            ViewGroup.LayoutParams params = playerOpponent.getLayoutParams();
+            float oldPos = playerOpponent.getX();
+            float newPos = ((MultiGame) mGame).getMyProgress() * (thisViewWidth - params.width);
+            if (newPos != oldPos) {
+                animX = ObjectAnimator.ofFloat(playerOpponent, "x", newPos);
                 animX.setDuration(800);
-                fadeOut = ObjectAnimator.ofFloat(Opponents[i], "alpha", .5f);
+                fadeOut = ObjectAnimator.ofFloat(playerOpponent, "alpha", .5f);
                 fadeOut.setDuration(100);
-                fadeIn = ObjectAnimator.ofFloat(Opponents[i], "alpha", 1);
+                fadeIn = ObjectAnimator.ofFloat(playerOpponent, "alpha", 1);
                 fadeIn.setDuration(100);
                 animatorSet.playSequentially(fadeOut, animX, fadeIn);
                 animatorSet.start();
             }
-            //animX.start();
-            //Opponents[i].setX(newPos);
-        }
-        animatorSet = new AnimatorSet();
-        ViewGroup.LayoutParams params=playerOpponent.getLayoutParams();
-        float oldPos = playerOpponent.getX();
-        float newPos = ((MultiGame)mGame).getMyProgress() * (thisViewWidth-params.width);
-        if(newPos!=oldPos) {
-            animX = ObjectAnimator.ofFloat(playerOpponent, "x", newPos);
-            animX.setDuration(800);
-            fadeOut = ObjectAnimator.ofFloat(playerOpponent, "alpha", .5f);
-            fadeOut.setDuration(100);
-            fadeIn = ObjectAnimator.ofFloat(playerOpponent, "alpha", 1);
-            fadeIn.setDuration(100);
-            animatorSet.playSequentially(fadeOut, animX, fadeIn);
-            animatorSet.start();
-        }
 
-
+        }
     }
 
     private boolean isInternet(){
