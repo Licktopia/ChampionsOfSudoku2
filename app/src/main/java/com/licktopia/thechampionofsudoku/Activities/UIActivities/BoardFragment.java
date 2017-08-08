@@ -143,6 +143,7 @@ public class BoardFragment extends Fragment {
     private WindowManager wm;
     private Display d;
     private ImageView[] Opponents;
+    private ImageView playerOpponent;
     private int numPlayers;
     private ShareDialog shareDialog;
     private CognitoCachingCredentialsProvider credentialsProvider;
@@ -152,6 +153,7 @@ public class BoardFragment extends Fragment {
     private GameInterface mGame;
     private View view;
     private BoardFragmentListener callback;
+    ;
 
     public static BoardFragment newInstance() {
         return new BoardFragment();
@@ -333,10 +335,11 @@ public class BoardFragment extends Fragment {
                     Opponents[i].setVisibility(GONE);
                 }
             }
-
+            playerOpponent = (ImageView)view.findViewById(Tags.PlayerTags[7]);
+            playerOpponent.setVisibility(View.VISIBLE);
             ViewGroup.LayoutParams paramsBar = botBar.getLayoutParams();
             int view_height = d.getHeight();
-            paramsBar.height = (int)(view_height*(numPlayers*.03));
+            paramsBar.height = (int)(view_height*((numPlayers+1)*.02));
             botBar.setLayoutParams(paramsBar);
 
 
@@ -353,6 +356,7 @@ public class BoardFragment extends Fragment {
             for(int i = 0; i < numPlayers; i++){
                 Opponents[i].setY(i*offset);
             }
+            playerOpponent.setY(numPlayers*offset);
         }
     }
 
@@ -362,8 +366,8 @@ public class BoardFragment extends Fragment {
         ObjectAnimator fadeOut;
         ObjectAnimator fadeIn;
         AnimatorSet animatorSet;
-        animatorSet = new AnimatorSet();
         for(int i = 0; i < numPlayers; i++){
+            animatorSet = new AnimatorSet();
             ViewGroup.LayoutParams params=Opponents[i].getLayoutParams();
             float oldPos = Opponents[i].getX();
             float newPos = ((MultiGame)mGame).getOpponentProgress(i) * (thisViewWidth-params.width);
@@ -380,6 +384,22 @@ public class BoardFragment extends Fragment {
             //animX.start();
             //Opponents[i].setX(newPos);
         }
+        animatorSet = new AnimatorSet();
+        ViewGroup.LayoutParams params=playerOpponent.getLayoutParams();
+        float oldPos = playerOpponent.getX();
+        float newPos = ((MultiGame)mGame).getMyProgress() * (thisViewWidth-params.width);
+        if(newPos!=oldPos) {
+            animX = ObjectAnimator.ofFloat(playerOpponent, "x", newPos);
+            animX.setDuration(800);
+            fadeOut = ObjectAnimator.ofFloat(playerOpponent, "alpha", .5f);
+            fadeOut.setDuration(100);
+            fadeIn = ObjectAnimator.ofFloat(playerOpponent, "alpha", 1);
+            fadeIn.setDuration(100);
+            animatorSet.playSequentially(fadeOut, animX, fadeIn);
+            animatorSet.start();
+        }
+
+
     }
 
     private boolean isInternet(){

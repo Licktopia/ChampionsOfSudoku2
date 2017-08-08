@@ -562,7 +562,6 @@ public class BaseActivity extends BaseGameActivity
     }
 
 
-
     @Override
     public void onRealTimeMessageReceived(RealTimeMessage rtm) {
         byte[] buf = rtm.getMessageData();
@@ -582,7 +581,6 @@ public class BaseActivity extends BaseGameActivity
                 switchToBoard = true;
             }
         }
-
     }
 
 
@@ -632,6 +630,7 @@ public class BaseActivity extends BaseGameActivity
         if(mRoomId==null)
             mRoomId = room.getRoomId();
 
+        mMultiGame = null;
         // print out the list of participants (for debug purposes)
         Log.d(TAG, "Room ID: " + mRoomId);
         Log.d(TAG, "My ID " + mMyId);
@@ -701,8 +700,9 @@ public class BaseActivity extends BaseGameActivity
     @Override
     public void onJoinedRoom(int statusCode, Room room) {
         Log.d(TAG, "onJoinedRoom(" + statusCode + ", " + room + ")");
+        mMultiGame = null;
         if (statusCode != GamesStatusCodes.STATUS_OK) {
-            Log.e(TAG, "*** Error: onRoomConnected, status " + statusCode);
+            Log.e(TAG, "*** Error: onJoinedRoom, status " + statusCode);
             showGameError();
             return;
         }

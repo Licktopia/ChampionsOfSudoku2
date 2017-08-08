@@ -107,7 +107,7 @@
             android:padding="2dp"
             android:scaleType="fitCenter"
             android:visibility="gone"
-            app:srcCompat="@drawable/cbut_darkgreendot"
+            app:srcCompat="@drawable/circlestar"
             tools:visibility="visible" />
 
     </RelativeLayout>

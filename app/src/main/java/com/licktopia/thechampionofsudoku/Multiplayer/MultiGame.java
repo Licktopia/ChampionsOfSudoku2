@@ -300,6 +300,7 @@ public class MultiGame implements GameInterface, java.io.Serializable {
                 if (p.getStatus() != Participant.STATUS_JOINED)
                     continue;
                 humanOpps[i] = new Opponent(p.getParticipantId(), p.getIconImageUrl());
+                i++;
             }
 
         }
@@ -646,7 +647,7 @@ public class MultiGame implements GameInterface, java.io.Serializable {
 
     }
 
-    private float getMyProgress()
+    public float getMyProgress()
     {
         return (float)1.0 - ((float)getNumberOpenSquares()
                 / (float)this.getStartingOpenSquares());
