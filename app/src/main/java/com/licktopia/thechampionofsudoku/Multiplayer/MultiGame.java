@@ -297,7 +297,10 @@ public class MultiGame implements GameInterface, java.io.Serializable {
 
                 if (p.getParticipantId().equals(mMyId))
                     continue;
+                if (p.getStatus() != Participant.STATUS_JOINED)
+                    continue;
                 humanOpps[i] = new Opponent(p.getParticipantId(), p.getIconImageUrl());
+                i++;
             }
 
         }
