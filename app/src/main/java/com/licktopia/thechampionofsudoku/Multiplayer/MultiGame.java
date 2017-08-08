@@ -701,7 +701,7 @@ public class MultiGame implements GameInterface, java.io.Serializable {
     //returns ids of problem squares in stack if failed
     public Set<Integer> setBoardValueAt(int row, int col, int value) {
         Set<Integer> tempSet = mGame.setBoardValueAt(row, col, value);
-        sendGameUpdate(tempSet);
+        sendGameUpdate();
         return tempSet;
     }
 
@@ -710,11 +710,11 @@ public class MultiGame implements GameInterface, java.io.Serializable {
     //returns ids of problem squares in stack if failed
     public Set<Integer> setBoardValueAt(int idx, int value) {
         Set<Integer> tempSet = mGame.setBoardValueAt(idx, value);
-        sendGameUpdate(tempSet);
+        sendGameUpdate();
         return tempSet;
     }
 
-    private void sendGameUpdate(Set<Integer> tempSet)
+    private void sendGameUpdate()
     {
         if(this.isGameFinished())
         {
@@ -795,7 +795,9 @@ public class MultiGame implements GameInterface, java.io.Serializable {
     //returns -1 if no undo occurred
     public int undo()
     {
-        return mGame.undo();
+        int temp = mGame.undo();
+        sendGameUpdate();
+        return temp;
     }
 
     //returns true if a undo can occur
@@ -808,7 +810,9 @@ public class MultiGame implements GameInterface, java.io.Serializable {
     //returns -1 if no redo occurred
     public int redo()
     {
-        return mGame.redo();
+        int temp = mGame.redo();
+        sendGameUpdate();
+        return temp;
     }
 
     //returns true if a redo can occur

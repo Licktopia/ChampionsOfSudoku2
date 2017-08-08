@@ -1,5 +1,6 @@
 package com.licktopia.thechampionofsudoku.Activities;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -23,6 +24,7 @@ import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.google.android.gms.games.Games;
+import com.google.android.gms.games.GamesActivityResultCodes;
 import com.google.android.gms.games.GamesStatusCodes;
 import com.google.android.gms.games.multiplayer.Invitation;
 import com.google.android.gms.games.multiplayer.OnInvitationReceivedListener;
@@ -57,6 +59,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -500,6 +503,39 @@ public class BaseActivity extends BaseGameActivity
     public void onActivityResult(int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode,resultCode,data);
         gameHelper.onActivityResult(requestCode, resultCode, data);
+
+
+        /************************************************************************
+         * From:
+         * https://github.com/playgameservices/android-basic-samples/blob/master/BasicSamples/ButtonClicker/src/main/java/com/google/example/games/bc/MainActivity.java
+         */
+        switch (requestCode) {
+            case RC_SELECT_PLAYERS:
+                // we got the result from the "select players" UI -- ready to create the room
+                break;
+            case RC_INVITATION_INBOX:
+                // we got the result from the "select invitation" UI (invitation inbox). We're
+                break;
+            case RC_WAITING_ROOM:
+                // we got the result from the "waiting room" UI.
+                if (resultCode == Activity.RESULT_OK) {
+                    // ready to start playing
+                    Log.d(TAG, "Starting game (waiting room returned OK).");
+                    startMultiGame();
+                } else if (resultCode == GamesActivityResultCodes.RESULT_LEFT_ROOM) {
+                    // player indicated that they want to leave the room
+                    leaveRoom();
+                } else if (resultCode == Activity.RESULT_CANCELED) {
+                    // Dialog was cancelled (user pressed back key, for instance). In our game,
+                    // this means leaving the room too. In more elaborate games, this could mean
+                    // something else (like minimizing the waiting room UI).
+                    leaveRoom();
+                }
+                break;
+        }
+
+
+
     }
 
     @Override
@@ -569,6 +605,7 @@ public class BaseActivity extends BaseGameActivity
 
         if(mMultiGame != null)
         {
+            Log.d(TAG, "mMultigame is null");
             mMultiGame.readMessage(buf);
         }
         else
@@ -578,7 +615,13 @@ public class BaseActivity extends BaseGameActivity
                     mMyId, gameHelper, mRoomId);
             if(mMultiGame != null)
             {
-                switchToBoard = true;
+                //Looks like post resume gets called before we get to this statement
+                //switchToBoard = true;
+                switchToBoardFrag();
+            }
+            else
+            {
+                Log.d(TAG, "mMultigame is still null");
             }
         }
     }
@@ -760,40 +803,49 @@ public class BaseActivity extends BaseGameActivity
     public void onPeersConnected(Room room, List<String> peers) {
         updateRoom(room);
 
+
+    }
+
+    private void startMultiGame()
+    {
+        /*
         if (shouldStartGame(room)) {
-            Log.d(TAG, "Starting the game");
 
-            for(int i = 0; i < mParticipants.size(); i++)
-            {
-                if(mParticipants.get(i).isConnectedToRoom())
-                    if(mParticipants.get(i).getParticipantId().equals(mMyId))
 
-                    {
-                        Log.d(TAG, "You are the host");
-                        Log.d(TAG, "Creating the game");
-                        mMultiGame = new MultiGame(MultiGame.GameMode.RACE,
-                                MultiGame.ConnectType.HUMAN_GAME, 0, this,
-                                mParticipants,
-                                mMyId,
-                                gameHelper,
-                                mRoomId);
+        }
+        */
+        Log.d(TAG, "Starting the game");
 
-                        switchToBoard = true;
-                        break;
-                    }
-                    else
-                    {
-                        Log.d(TAG, "You are the guest");
-                        break;
-                    }
-            }
+        for(int i = 0; i < mParticipants.size(); i++)
+        {
+            if(mParticipants.get(i).isConnectedToRoom())
+                if(mParticipants.get(i).getParticipantId().equals(mMyId))
 
+                {
+                    Log.d(TAG, "You are the host");
+                    Log.d(TAG, "Creating the game");
+                    mMultiGame = new MultiGame(MultiGame.GameMode.RACE,
+                            MultiGame.ConnectType.HUMAN_GAME, 0, this,
+                            mParticipants,
+                            mMyId,
+                            gameHelper,
+                            mRoomId);
+
+                    switchToBoard = true;
+                    break;
+                }
+                else
+                {
+                    Log.d(TAG, "You are the guest");
+                    break;
+                }
         }
     }
 
     @Override
     public void onPostResume() {
         super.onPostResume();
+        Log.d(TAG, "In post resume");
         if (switchToBoard) {
             switchToBoard = false;
             switchToBoardFrag();
@@ -844,7 +896,8 @@ public class BaseActivity extends BaseGameActivity
         for (Participant p : room.getParticipants()) {
             if (p.isConnectedToRoom()) ++connectedPlayers;
         }
-        return connectedPlayers >= (MultiGame.MIN_OPPONENTS + 1);
+
+        return (connectedPlayers >= MultiGame.MIN_OPPONENTS + 1);
     }
 
     void keepScreenOn() {
@@ -853,9 +906,28 @@ public class BaseActivity extends BaseGameActivity
 
     void switchToBoardFrag()
     {
+        Log.d(TAG, "Switching to board fragment");
         Bundle args = new Bundle();
         args.putBoolean("MULTIPLAYER", true);
         swapFragment(BOARD_FRAGMENT, args);
+    }
+
+    void switchToMainMenuFrag()
+    {
+        Bundle args = new Bundle();
+        swapFragment(MAIN_MENU_FRAGMENT, args);
+    }
+
+    void leaveRoom() {
+        Log.d(TAG, "Leaving room.");
+        mMultiGame = null;
+        if (mRoomId != null) {
+            Games.RealTimeMultiplayer.leave(this.getApiClient(), this, mRoomId);
+            mRoomId = null;
+            switchToWaitScreen();
+        } else {
+            switchToMainMenuFrag();
+        }
     }
 
 
