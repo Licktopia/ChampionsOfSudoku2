@@ -40,7 +40,7 @@ public class MultiGame implements GameInterface, java.io.Serializable {
 
     final static String TAG = "MultiGame";
 
-    public static final int MIN_OPPONENTS = 1, MAX_OPPONENTS = 3;
+    public static final int MIN_OPPONENTS = 3, MAX_OPPONENTS = 3;
     private Game mGame;
 
     //stores the bots and the threads they are playing on
@@ -296,8 +296,6 @@ public class MultiGame implements GameInterface, java.io.Serializable {
             for (Participant p : mParticipants) {
 
                 if (p.getParticipantId().equals(mMyId))
-                    continue;
-                if (p.getStatus() != Participant.STATUS_JOINED)
                     continue;
                 humanOpps[i] = new Opponent(p.getParticipantId(), p.getIconImageUrl());
             }
