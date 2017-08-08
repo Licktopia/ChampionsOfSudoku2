@@ -3,6 +3,7 @@ package com.licktopia.thechampionofsudoku.Activities;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.location.SettingInjectorService;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
@@ -125,15 +126,17 @@ public class BaseActivity extends BaseGameActivity
 
     final static String TAG = "BaseActivity";
 
-
     public void swapFragment(String fragmentName, Bundle args) {
 
         Fragment fragment = null;
+        DialogFragment dialog = null;
 
         switch(fragmentName) {
             case ABOUT_FRAGMENT:
-                fragment = AboutFragment.newInstance();
-                break;
+                dialog = AboutFragment.newInstance();
+                dialog.setArguments(args);
+                dialog.show(getSupportFragmentManager(), ABOUT_FRAGMENT);
+                return;
             case BOARD_FRAGMENT:
                 fragment = BoardFragment.newInstance();
                 break;
@@ -153,9 +156,9 @@ public class BaseActivity extends BaseGameActivity
                 fragment = SudokuSettingsFragment.newInstance();
                 break;
             case INVITE_DIALOG_FRAGMENT:
-                DialogFragment dialog = InviteDialogFragment.newInstance();
+                dialog = InviteDialogFragment.newInstance();
                 dialog.setArguments(args);
-                dialog.show(getSupportFragmentManager(), "choose dialog");
+                dialog.show(getSupportFragmentManager(), INVITE_DIALOG_FRAGMENT);
                 return;
             case MAIN_MENU_FRAGMENT:
             default:
@@ -364,7 +367,7 @@ public class BaseActivity extends BaseGameActivity
 
             MainMenuFragment menuFragment = MainMenuFragment.newInstance();
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.fragment_container, menuFragment).commit();
+                    .add(R.id.fragment_container, menuFragment, MAIN_MENU_FRAGMENT).commit();
         }
 
         credentialsProvider = new CognitoCachingCredentialsProvider(
@@ -499,7 +502,7 @@ public class BaseActivity extends BaseGameActivity
         gameHelper.onActivityResult(requestCode, resultCode, data);
     }
 
-    //@Override //TODO Not a fragment function, need to implement in Activity possibly
+    @Override
     public void onBackPressed() {
         Fragment f = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
         if (f instanceof BoardFragment) {
@@ -518,7 +521,10 @@ public class BaseActivity extends BaseGameActivity
             } else {
                 swapFragment(BaseActivity.MAIN_MENU_FRAGMENT, new Bundle());
             }
-        }else{
+        } else if (f instanceof SudokuSettingsFragment) {
+            getSupportFragmentManager().popBackStack();
+        }
+        else{
             super.onBackPressed();
         }
     }
