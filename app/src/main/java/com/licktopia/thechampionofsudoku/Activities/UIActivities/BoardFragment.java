@@ -154,6 +154,7 @@ public class BoardFragment extends Fragment {
     private View view;
     private BoardFragmentListener callback;
     private long sTime =0;
+    private long mpStartTime;
 
 
     public static BoardFragment newInstance() {
@@ -264,6 +265,9 @@ public class BoardFragment extends Fragment {
                         level, getContext(), null, null, null, null);
             }
             initializePlayerTokens();
+            if(!comeBackFlag){
+                mpStartTime = SystemClock.elapsedRealtime();
+            }
         }
         //START NEW GAME HERE
         else
@@ -1033,7 +1037,7 @@ public class BoardFragment extends Fragment {
            }
        }
        else{
-           mChronometer.setBase(mChronometer.getBase() - SystemClock.elapsedRealtime());
+           mChronometer.setBase(SystemClock.elapsedRealtime()- (SystemClock.elapsedRealtime()-mpStartTime));
            mChronometer.start();
        }
         if(solvedState){//if back buttoned into after game is completed
