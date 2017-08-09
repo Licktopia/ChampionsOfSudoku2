@@ -897,7 +897,7 @@ public class BoardFragment extends Fragment {
             }
         }
 
-        if(animationFinished) {
+        if(animationFinished && !multiplayer) {
             if(!fromResume) {
                 mChronometer.setBase(SystemClock.elapsedRealtime() + timeWhenStopped);
             }
@@ -919,9 +919,11 @@ public class BoardFragment extends Fragment {
         settings = new SudokuSettings(getContext());
         rowColHighlights= settings.getHighlightPreference();
         mPlaySounds.setMute(settings.getSoundPreference());
-        mGame.pauseTimer();
-        timeWhenStopped = mChronometer.getBase() - SystemClock.elapsedRealtime();
-        mChronometer.stop();
+        if(!multiplayer) {
+            mGame.pauseTimer();
+            timeWhenStopped = mChronometer.getBase() - SystemClock.elapsedRealtime();
+            mChronometer.stop();
+        }
         super.onPause();
     }
 
