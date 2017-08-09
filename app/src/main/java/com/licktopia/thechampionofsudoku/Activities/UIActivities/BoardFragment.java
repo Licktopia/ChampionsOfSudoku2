@@ -153,7 +153,9 @@ public class BoardFragment extends Fragment {
     private GameInterface mGame;
     private View view;
     private BoardFragmentListener callback;
-    ;
+    private long sTime =0;
+    private long mpStartTime;
+
 
     public static BoardFragment newInstance() {
         return new BoardFragment();
@@ -168,16 +170,18 @@ public class BoardFragment extends Fragment {
         //pass in mode and level
         wm = getActivity().getWindowManager();
         d = wm.getDefaultDisplay();
-        colorGame = getArguments().getBoolean("COLOR_MODE");
-        level = getArguments().getInt("LEVEL");
-        resume = getArguments().getBoolean("RESUME");
-        level = getArguments().getInt("LEVEL");
-        long sTime = getArguments().getLong("STOPPED_TIME");
-        multiplayer = getArguments().getBoolean("MULTIPLAYER");
-        //multiplayer = true;
-        exactTime = getArguments().getString("EXACT_TIME");
-        savedName = getArguments().getString("SAVED_NAME");
-        savedDate = getArguments().getString("SAVED_DATE");
+        if(mGame==null) {
+            colorGame = getArguments().getBoolean("COLOR_MODE");
+            level = getArguments().getInt("LEVEL");
+            resume = getArguments().getBoolean("RESUME");
+            level = getArguments().getInt("LEVEL");
+            sTime = getArguments().getLong("STOPPED_TIME");
+            multiplayer = getArguments().getBoolean("MULTIPLAYER");
+            //multiplayer = true;
+            exactTime = getArguments().getString("EXACT_TIME");
+            savedName = getArguments().getString("SAVED_NAME");
+            savedDate = getArguments().getString("SAVED_DATE");
+        }
         //initialize action bar
         Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
@@ -222,10 +226,16 @@ public class BoardFragment extends Fragment {
         Opponents = new ImageView[8];
 
         mPlaySounds = new PlaySounds();
-
+        ////if we are coming back from back press
+        boolean comeBackFlag = false;
+        if(mGame!=null){
+            comeBackFlag = true;
+            sTime = timeWhenStopped;
+        }
+        //////then mGame isn't null, set comeback flag
         //Game instance
         //LOAD GAME STUFF IS HERE
-        if(resume)
+        if(resume && mGame == null)
         {
            // byte[] temp = getIntent().getExtras().getByteArray("SAVE_FILE");
 
@@ -255,11 +265,16 @@ public class BoardFragment extends Fragment {
                         level, getContext(), null, null, null, null);
             }
             initializePlayerTokens();
+            if(!comeBackFlag){
+                mpStartTime = SystemClock.elapsedRealtime();
+            }
         }
         //START NEW GAME HERE
         else
         {
-            mGame = new Game(level, getContext());
+            if(mGame == null) {
+                mGame = new Game(level, getContext());
+            }
         }
 
         size = mGame.totalBoardRows();
@@ -272,7 +287,7 @@ public class BoardFragment extends Fragment {
 
         updateUndoRedoButtons();
         initializeButtons();
-        if(resume){
+        if(resume || comeBackFlag){
             initializeBoardFromResume(sTime);
             alreadySaved = true;
         }
@@ -361,45 +376,46 @@ public class BoardFragment extends Fragment {
     }
 
     private void upDatePositions(){
-        int thisViewWidth = d.getWidth();
-        ObjectAnimator animX;
-        ObjectAnimator fadeOut;
-        ObjectAnimator fadeIn;
-        AnimatorSet animatorSet;
-        for(int i = 0; i < numPlayers; i++){
+        if(multiplayer) {
+            int thisViewWidth = d.getWidth();
+            ObjectAnimator animX;
+            ObjectAnimator fadeOut;
+            ObjectAnimator fadeIn;
+            AnimatorSet animatorSet;
+            for (int i = 0; i < numPlayers; i++) {
+                animatorSet = new AnimatorSet();
+                ViewGroup.LayoutParams params = Opponents[i].getLayoutParams();
+                float oldPos = Opponents[i].getX();
+                float newPos = ((MultiGame) mGame).getOpponentProgress(i) * (thisViewWidth - params.width);
+                if (newPos != oldPos) {
+                    animX = ObjectAnimator.ofFloat(Opponents[i], "x", newPos);
+                    animX.setDuration(800);
+                    fadeOut = ObjectAnimator.ofFloat(Opponents[i], "alpha", .5f);
+                    fadeOut.setDuration(100);
+                    fadeIn = ObjectAnimator.ofFloat(Opponents[i], "alpha", 1);
+                    fadeIn.setDuration(100);
+                    animatorSet.playSequentially(fadeOut, animX, fadeIn);
+                    animatorSet.start();
+                }
+                //animX.start();
+                //Opponents[i].setX(newPos);
+            }
             animatorSet = new AnimatorSet();
-            ViewGroup.LayoutParams params=Opponents[i].getLayoutParams();
-            float oldPos = Opponents[i].getX();
-            float newPos = ((MultiGame)mGame).getOpponentProgress(i) * (thisViewWidth-params.width);
-            if(newPos!=oldPos) {
-                animX = ObjectAnimator.ofFloat(Opponents[i], "x", newPos);
+            ViewGroup.LayoutParams params = playerOpponent.getLayoutParams();
+            float oldPos = playerOpponent.getX();
+            float newPos = ((MultiGame) mGame).getMyProgress() * (thisViewWidth - params.width);
+            if (newPos != oldPos) {
+                animX = ObjectAnimator.ofFloat(playerOpponent, "x", newPos);
                 animX.setDuration(800);
-                fadeOut = ObjectAnimator.ofFloat(Opponents[i], "alpha", .5f);
+                fadeOut = ObjectAnimator.ofFloat(playerOpponent, "alpha", .5f);
                 fadeOut.setDuration(100);
-                fadeIn = ObjectAnimator.ofFloat(Opponents[i], "alpha", 1);
+                fadeIn = ObjectAnimator.ofFloat(playerOpponent, "alpha", 1);
                 fadeIn.setDuration(100);
                 animatorSet.playSequentially(fadeOut, animX, fadeIn);
                 animatorSet.start();
             }
-            //animX.start();
-            //Opponents[i].setX(newPos);
-        }
-        animatorSet = new AnimatorSet();
-        ViewGroup.LayoutParams params=playerOpponent.getLayoutParams();
-        float oldPos = playerOpponent.getX();
-        float newPos = ((MultiGame)mGame).getMyProgress() * (thisViewWidth-params.width);
-        if(newPos!=oldPos) {
-            animX = ObjectAnimator.ofFloat(playerOpponent, "x", newPos);
-            animX.setDuration(800);
-            fadeOut = ObjectAnimator.ofFloat(playerOpponent, "alpha", .5f);
-            fadeOut.setDuration(100);
-            fadeIn = ObjectAnimator.ofFloat(playerOpponent, "alpha", 1);
-            fadeIn.setDuration(100);
-            animatorSet.playSequentially(fadeOut, animX, fadeIn);
-            animatorSet.start();
-        }
 
-
+        }
     }
 
     private boolean isInternet(){
@@ -596,7 +612,8 @@ public class BoardFragment extends Fragment {
             notepadIcon.performClick();
         //make board unclickable
         allClickable(false);
-
+        userBadge.setImageDrawable(getResources().getDrawable(callback.getBadgetag(), null));
+        userText.setText(BaseActivity.getUsername());
         if(wasSolvedButtonClicked){
             solveClicked = true;
             solvePuzzle();
@@ -884,7 +901,7 @@ public class BoardFragment extends Fragment {
             }
         }
 
-        if(animationFinished) {
+        if(animationFinished && !multiplayer) {
             if(!fromResume) {
                 mChronometer.setBase(SystemClock.elapsedRealtime() + timeWhenStopped);
             }
@@ -906,9 +923,11 @@ public class BoardFragment extends Fragment {
         settings = new SudokuSettings(getContext());
         rowColHighlights= settings.getHighlightPreference();
         mPlaySounds.setMute(settings.getSoundPreference());
-        mGame.pauseTimer();
-        timeWhenStopped = mChronometer.getBase() - SystemClock.elapsedRealtime();
-        mChronometer.stop();
+        if(!multiplayer) {
+            mGame.pauseTimer();
+            timeWhenStopped = mChronometer.getBase() - SystemClock.elapsedRealtime();
+            mChronometer.stop();
+        }
         super.onPause();
     }
 
@@ -983,6 +1002,14 @@ public class BoardFragment extends Fragment {
     }
     private void initializeBoardFromResume(Long stoppedTime) {
         fromResume = true;
+        if(gameHelper.isSignedIn()){
+            userBadge.setImageDrawable(getResources().getDrawable(callback.getBadgetag(), null));
+            userText.setText(BaseActivity.getUsername());
+        }
+        else{
+            userBadge.setImageDrawable(getResources().getDrawable(callback.getBadgetag(), null));
+            userText.setText("Me");
+        }
         for (int i = 0; i < squareViews.length; i++){
             RelativeLayout rl = (RelativeLayout) view.findViewById(Tags.squareTags[i]); // get Relative layout
             squareViews[i] = new SquareView(getContext(), rl,colorGame);
@@ -1002,10 +1029,28 @@ public class BoardFragment extends Fragment {
             }
         }
 
-        mGame.unpauseTimer();
+       if(!multiplayer) {
+           mGame.unpauseTimer();
+           mChronometer.setBase(SystemClock.elapsedRealtime() + stoppedTime);
+           if (!solvedState) {
+               mChronometer.start();
+           }
+       }
+       else{
+           mChronometer.setBase(SystemClock.elapsedRealtime()- (SystemClock.elapsedRealtime()-mpStartTime));
+           mChronometer.start();
+       }
+        if(solvedState){//if back buttoned into after game is completed
+            allClickable(false);
+            LinearLayout mBottomLayout = (LinearLayout)view.findViewById(R.id.bottomLayout);
+            RelativeLayout mKeypad = (RelativeLayout) view.findViewById(R.id.keypad);
+            mBottomLayout.setScaleY(1);
+            mBottomLayout.setVisibility(View.VISIBLE);
+            mKeypad.setVisibility(GONE);
+            mHintsLayout.setVisibility(GONE);
+            mEndGameLayout.setVisibility(View.VISIBLE);
 
-        mChronometer.setBase(SystemClock.elapsedRealtime() + stoppedTime);
-        mChronometer.start();
+        }
 
         updateScore();
         animationFinished = true;
@@ -1177,6 +1222,7 @@ public class BoardFragment extends Fragment {
         clearButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                removeAllHighlights();
                 numberCommands(0);
             }
         });
@@ -1622,8 +1668,10 @@ public class BoardFragment extends Fragment {
             }
 
             // If number clicked matches value already in square, remove number
-            if (mGame.getBoardValueAt(selectedSquare) == keypadNumber)
+            if (mGame.getBoardValueAt(selectedSquare) == keypadNumber) {
                 keypadNumber = 0;
+                removeAllHighlights();
+            }
 
             Set<Integer> conflicts = mGame.setBoardValueAt(selectedSquare, keypadNumber);  // Set board value to number
             if (conflicts.isEmpty()) {

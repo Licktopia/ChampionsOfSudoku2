@@ -344,6 +344,15 @@ public class Board implements java.io.Serializable {
         }
         Square temp = undoStk.pop();
 
+        if(temp.getValue() == 0 && contents[temp.getRow()][temp.getCol()].getValue() != 0)
+        {
+            openSquares++;
+        }
+        else if(temp.getValue() != 0 && contents[temp.getRow()][temp.getCol()].getValue() == 0)
+        {
+            openSquares--;
+        }
+
         redoStk.push(new Square(contents[temp.getRow()][temp.getCol()]));
 
         contents[temp.getRow()][temp.getCol()] = temp;
@@ -366,6 +375,16 @@ public class Board implements java.io.Serializable {
         }
 
         Square temp = redoStk.pop();
+
+        if(temp.getValue() == 0 && contents[temp.getRow()][temp.getCol()].getValue() != 0)
+        {
+            openSquares++;
+        }
+        else if(temp.getValue() != 0 && contents[temp.getRow()][temp.getCol()].getValue() == 0)
+        {
+            openSquares--;
+        }
+
 
         undoStk.push(new Square(contents[temp.getRow()][temp.getCol()]));
 
