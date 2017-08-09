@@ -129,14 +129,11 @@ public class BaseActivity extends BaseGameActivity
     public void swapFragment(String fragmentName, Bundle args) {
 
         Fragment fragment = null;
-        DialogFragment dialog = null;
 
         switch(fragmentName) {
             case ABOUT_FRAGMENT:
-                dialog = AboutFragment.newInstance();
-                dialog.setArguments(args);
-                dialog.show(getSupportFragmentManager(), ABOUT_FRAGMENT);
-                return;
+                fragment = AboutFragment.newInstance();
+                break;
             case BOARD_FRAGMENT:
                 fragment = BoardFragment.newInstance();
                 break;
@@ -156,7 +153,7 @@ public class BaseActivity extends BaseGameActivity
                 fragment = SudokuSettingsFragment.newInstance();
                 break;
             case INVITE_DIALOG_FRAGMENT:
-                dialog = InviteDialogFragment.newInstance();
+                DialogFragment dialog = InviteDialogFragment.newInstance();
                 dialog.setArguments(args);
                 dialog.show(getSupportFragmentManager(), INVITE_DIALOG_FRAGMENT);
                 return;

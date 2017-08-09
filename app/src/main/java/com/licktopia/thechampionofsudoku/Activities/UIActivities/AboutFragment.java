@@ -12,22 +12,18 @@ import android.view.ViewGroup;
 
 import com.licktopia.thechampionofsudoku.R;
 
-public class AboutFragment extends DialogFragment {
+public class AboutFragment extends Fragment {
 
     public static AboutFragment newInstance() {
         return new AboutFragment();
     }
 
     @Override
-    public Dialog onCreateDialog(Bundle bundle) {
-        super.onCreateDialog(bundle);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        View aboutDialogFragment = getActivity().getLayoutInflater()
-                .inflate(R.layout.activity_about, null);
-        builder.setView(aboutDialogFragment);
-        builder.setTitle(getString(R.string.about_dialog_title));
-
-        return builder.create();
+        View view = inflater.inflate(R.layout.activity_about, container, false);
+        return view;
     }
+
 }
