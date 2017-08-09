@@ -1025,12 +1025,17 @@ public class BoardFragment extends Fragment {
             }
         }
 
-        mGame.unpauseTimer();
-
-        mChronometer.setBase(SystemClock.elapsedRealtime() + stoppedTime);
-        if(!solvedState) {
-            mChronometer.start();
-        }
+       if(!multiplayer) {
+           mGame.unpauseTimer();
+           mChronometer.setBase(SystemClock.elapsedRealtime() + stoppedTime);
+           if (!solvedState) {
+               mChronometer.start();
+           }
+       }
+       else{
+           mChronometer.setBase(mChronometer.getBase() - SystemClock.elapsedRealtime());
+           mChronometer.start();
+       }
         if(solvedState){//if back buttoned into after game is completed
             allClickable(false);
             LinearLayout mBottomLayout = (LinearLayout)view.findViewById(R.id.bottomLayout);
