@@ -153,7 +153,8 @@ public class BoardFragment extends Fragment {
     private GameInterface mGame;
     private View view;
     private BoardFragmentListener callback;
-    ;
+    private long sTime =0;
+
 
     public static BoardFragment newInstance() {
         return new BoardFragment();
@@ -168,16 +169,18 @@ public class BoardFragment extends Fragment {
         //pass in mode and level
         wm = getActivity().getWindowManager();
         d = wm.getDefaultDisplay();
-        colorGame = getArguments().getBoolean("COLOR_MODE");
-        level = getArguments().getInt("LEVEL");
-        resume = getArguments().getBoolean("RESUME");
-        level = getArguments().getInt("LEVEL");
-        long sTime = getArguments().getLong("STOPPED_TIME");
-        multiplayer = getArguments().getBoolean("MULTIPLAYER");
-        //multiplayer = true;
-        exactTime = getArguments().getString("EXACT_TIME");
-        savedName = getArguments().getString("SAVED_NAME");
-        savedDate = getArguments().getString("SAVED_DATE");
+        if(mGame==null) {
+            colorGame = getArguments().getBoolean("COLOR_MODE");
+            level = getArguments().getInt("LEVEL");
+            resume = getArguments().getBoolean("RESUME");
+            level = getArguments().getInt("LEVEL");
+            sTime = getArguments().getLong("STOPPED_TIME");
+            multiplayer = getArguments().getBoolean("MULTIPLAYER");
+            //multiplayer = true;
+            exactTime = getArguments().getString("EXACT_TIME");
+            savedName = getArguments().getString("SAVED_NAME");
+            savedDate = getArguments().getString("SAVED_DATE");
+        }
         //initialize action bar
         Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
@@ -222,10 +225,16 @@ public class BoardFragment extends Fragment {
         Opponents = new ImageView[8];
 
         mPlaySounds = new PlaySounds();
-
+        ////if we are coming back from back press
+        boolean comeBackFlag = false;
+        if(mGame!=null){
+            comeBackFlag = true;
+            sTime = timeWhenStopped;
+        }
+        //////then mGame isn't null, set comeback flag
         //Game instance
         //LOAD GAME STUFF IS HERE
-        if(resume)
+        if(resume && mGame == null)
         {
            // byte[] temp = getIntent().getExtras().getByteArray("SAVE_FILE");
 
@@ -259,7 +268,9 @@ public class BoardFragment extends Fragment {
         //START NEW GAME HERE
         else
         {
-            mGame = new Game(level, getContext());
+            if(mGame == null) {
+                mGame = new Game(level, getContext());
+            }
         }
 
         size = mGame.totalBoardRows();
@@ -272,7 +283,7 @@ public class BoardFragment extends Fragment {
 
         updateUndoRedoButtons();
         initializeButtons();
-        if(resume){
+        if(resume || comeBackFlag){
             initializeBoardFromResume(sTime);
             alreadySaved = true;
         }
@@ -597,7 +608,8 @@ public class BoardFragment extends Fragment {
             notepadIcon.performClick();
         //make board unclickable
         allClickable(false);
-
+        userBadge.setImageDrawable(getResources().getDrawable(callback.getBadgetag(), null));
+        userText.setText(BaseActivity.getUsername());
         if(wasSolvedButtonClicked){
             solveClicked = true;
             solvePuzzle();
@@ -984,6 +996,14 @@ public class BoardFragment extends Fragment {
     }
     private void initializeBoardFromResume(Long stoppedTime) {
         fromResume = true;
+        if(gameHelper.isSignedIn()){
+            userBadge.setImageDrawable(getResources().getDrawable(callback.getBadgetag(), null));
+            userText.setText(BaseActivity.getUsername());
+        }
+        else{
+            userBadge.setImageDrawable(getResources().getDrawable(callback.getBadgetag(), null));
+            userText.setText("Me");
+        }
         for (int i = 0; i < squareViews.length; i++){
             RelativeLayout rl = (RelativeLayout) view.findViewById(Tags.squareTags[i]); // get Relative layout
             squareViews[i] = new SquareView(getContext(), rl,colorGame);
@@ -1006,7 +1026,20 @@ public class BoardFragment extends Fragment {
         mGame.unpauseTimer();
 
         mChronometer.setBase(SystemClock.elapsedRealtime() + stoppedTime);
-        mChronometer.start();
+        if(!solvedState) {
+            mChronometer.start();
+        }
+        if(solvedState){//if back buttoned into after game is completed
+            allClickable(false);
+            LinearLayout mBottomLayout = (LinearLayout)view.findViewById(R.id.bottomLayout);
+            RelativeLayout mKeypad = (RelativeLayout) view.findViewById(R.id.keypad);
+            mBottomLayout.setScaleY(1);
+            mBottomLayout.setVisibility(View.VISIBLE);
+            mKeypad.setVisibility(GONE);
+            mHintsLayout.setVisibility(GONE);
+            mEndGameLayout.setVisibility(View.VISIBLE);
+
+        }
 
         updateScore();
         animationFinished = true;
