@@ -1,0 +1,11 @@
+<android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/user_board_rv"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color1"
+    tools:context="com.licktopia.thechampionofsudoku.Activities.UIActivities.UserBoardFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+
+</android.support.v7.widget.RecyclerView>

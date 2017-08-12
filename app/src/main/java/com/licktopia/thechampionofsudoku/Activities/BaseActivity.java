@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.location.SettingInjectorService;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
@@ -47,19 +46,19 @@ import com.licktopia.thechampionofsudoku.Activities.UIActivities.InstructionsFra
 import com.licktopia.thechampionofsudoku.Activities.UIActivities.InviteDialogFragment;
 import com.licktopia.thechampionofsudoku.Activities.UIActivities.MainMenuFragment;
 import com.licktopia.thechampionofsudoku.Activities.UIActivities.SavedGameFragment;
+import com.licktopia.thechampionofsudoku.Activities.UIActivities.UserBoardFragment;
 import com.licktopia.thechampionofsudoku.Multiplayer.MultiGame;
 import com.licktopia.thechampionofsudoku.R;
-import com.licktopia.thechampionofsudoku.SavedGameListAdapter;
+import com.licktopia.thechampionofsudoku.Adapters.SavedGameListAdapter;
 import com.licktopia.thechampionofsudoku.Settings.SudokuSettingsFragment;
-import com.licktopia.thechampionofsudoku.Sudoku.CompletedGame;
-import com.licktopia.thechampionofsudoku.Sudoku.SavedGame;
+import com.licktopia.thechampionofsudoku.DBOjects.CompletedGame;
+import com.licktopia.thechampionofsudoku.DBOjects.SavedGame;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -92,6 +91,7 @@ public class BaseActivity extends BaseGameActivity
     public static final String SAVED_GAME_FRAGMENT = "SAVED_GAME_FRAGMENT";
     public static final String INVITE_DIALOG_FRAGMENT = "INVITE_DIALOG_FRAGMENT";
     public static final String SETTINGS_FRAGMENT = "SETTINGS_FRAGMENT";
+    public static final String USER_BOARD_FRAGMENT = "USER_BOARD_FRAGMENT";
     public static  GameHelper gameHelper;
     public static boolean clickedOut = false;
     public static boolean userSignIn=false;
@@ -151,6 +151,9 @@ public class BaseActivity extends BaseGameActivity
                 break;
             case SAVED_GAME_FRAGMENT:
                 fragment = SavedGameFragment.newInstance();
+                break;
+            case USER_BOARD_FRAGMENT:
+                fragment = UserBoardFragment.newInstance();
                 break;
             case SETTINGS_FRAGMENT:
                 fragment = SudokuSettingsFragment.newInstance();

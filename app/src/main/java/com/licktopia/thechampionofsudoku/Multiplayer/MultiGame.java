@@ -6,14 +6,10 @@ package com.licktopia.thechampionofsudoku.Multiplayer;
 
 import android.content.Context;
 import android.util.Log;
-import android.net.Uri;
-
-import android.os.Bundle;
 
 import com.google.example.games.basegameutils.GameHelper;
 import com.licktopia.thechampionofsudoku.GameInterface;
 import com.licktopia.thechampionofsudoku.Sudoku.Game;
-import com.licktopia.thechampionofsudoku.Sudoku.SavedGame;
 import com.licktopia.thechampionofsudoku.Sudoku.Solver;
 import com.licktopia.thechampionofsudoku.Sudoku.Square;
 import com.licktopia.thechampionofsudoku.Sudoku.Strategies;
@@ -24,9 +20,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Queue;
-import java.util.List;
 import java.util.Set;
 
 

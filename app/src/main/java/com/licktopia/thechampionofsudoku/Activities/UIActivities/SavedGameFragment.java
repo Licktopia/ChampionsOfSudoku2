@@ -9,16 +9,15 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBQueryExpression;
 import com.licktopia.thechampionofsudoku.Activities.BaseActivity;
 import com.licktopia.thechampionofsudoku.R;
-import com.licktopia.thechampionofsudoku.SavedGameListAdapter;
-import com.licktopia.thechampionofsudoku.SavedGameListItem;
-import com.licktopia.thechampionofsudoku.Sudoku.SavedGame;
+import com.licktopia.thechampionofsudoku.Adapters.SavedGameListAdapter;
+import com.licktopia.thechampionofsudoku.ListItems.SavedGameListItem;
+import com.licktopia.thechampionofsudoku.DBOjects.SavedGame;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import java.util.ArrayList;

@@ -93,4 +93,7 @@
     <string name="accept_popup_invite">Accept!</string>
     <string name="inv_popup_text">Incoming invitation!</string>
     <string name="game_not_saved">Game not saved</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

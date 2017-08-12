@@ -33,27 +33,22 @@ import com.google.android.gms.games.Games;
 import com.google.android.gms.games.GamesStatusCodes;
 import com.google.android.gms.games.leaderboard.LeaderboardVariant;
 import com.google.android.gms.games.leaderboard.Leaderboards;
-import com.google.android.gms.games.snapshot.SnapshotMetadata;
-import com.google.android.gms.games.snapshot.Snapshots;
 
 
-import com.google.example.games.basegameutils.GameHelper;
 import com.licktopia.thechampionofsudoku.Activities.BaseActivity;
 import com.licktopia.thechampionofsudoku.PlaySounds;
 import com.licktopia.thechampionofsudoku.R;
-import com.licktopia.thechampionofsudoku.Sudoku.CompletedGame;
-import com.licktopia.thechampionofsudoku.Sudoku.DifficultyClassifier;
+import com.licktopia.thechampionofsudoku.DBOjects.CompletedGame;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.BOARD_FRAGMENT;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.GAMER_PROFILE_FRAGMENT;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.SAVED_GAME_FRAGMENT;
+import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.USER_BOARD_FRAGMENT;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.clickedOut;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.gameHelper;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.getUsername;
@@ -427,6 +422,8 @@ public class MainMenuFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 playLickSound();
+                Bundle args = new Bundle();
+                callback.swapFragment(USER_BOARD_FRAGMENT, args);
             }
         });
 

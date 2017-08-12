@@ -1,9 +1,8 @@
-package com.licktopia.thechampionofsudoku;
+package com.licktopia.thechampionofsudoku.Adapters;
 
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
@@ -24,8 +23,9 @@ import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
 import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
-import com.licktopia.thechampionofsudoku.Activities.UIActivities.BoardFragment;
-import com.licktopia.thechampionofsudoku.Sudoku.SavedGame;
+import com.licktopia.thechampionofsudoku.R;
+import com.licktopia.thechampionofsudoku.ListItems.SavedGameListItem;
+import com.licktopia.thechampionofsudoku.DBOjects.SavedGame;
 
 import java.util.List;
 

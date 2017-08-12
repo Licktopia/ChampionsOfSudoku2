@@ -1,4 +1,4 @@
-package com.licktopia.thechampionofsudoku;
+package com.licktopia.thechampionofsudoku.ListItems;
 
 
 

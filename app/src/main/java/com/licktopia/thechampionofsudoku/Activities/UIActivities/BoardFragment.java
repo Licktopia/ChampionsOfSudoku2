@@ -6,15 +6,12 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -54,20 +51,17 @@ import com.licktopia.thechampionofsudoku.Multiplayer.MultiGame;
 import com.licktopia.thechampionofsudoku.PlaySounds;
 import com.licktopia.thechampionofsudoku.R;
 import com.licktopia.thechampionofsudoku.Settings.SudokuSettings;
-import com.licktopia.thechampionofsudoku.Settings.SudokuSettingsActivity;
 import com.licktopia.thechampionofsudoku.SquareView;
-import com.licktopia.thechampionofsudoku.Sudoku.CompletedGame;
+import com.licktopia.thechampionofsudoku.DBOjects.CompletedGame;
 
 import com.licktopia.thechampionofsudoku.Sudoku.Game;
-import com.licktopia.thechampionofsudoku.Sudoku.SavedGame;
+import com.licktopia.thechampionofsudoku.DBOjects.SavedGame;
 import com.licktopia.thechampionofsudoku.Sudoku.Square;
 import com.licktopia.thechampionofsudoku.Sudoku.Strategies;
 import com.licktopia.thechampionofsudoku.GameInterface;
 import com.licktopia.thechampionofsudoku.Tags;
 import com.squareup.picasso.Picasso;
 
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -354,7 +348,7 @@ public class BoardFragment extends Fragment {
             playerOpponent.setVisibility(View.VISIBLE);
             ViewGroup.LayoutParams paramsBar = botBar.getLayoutParams();
             int view_height = d.getHeight();
-            paramsBar.height = (int)(view_height*((numPlayers+1)*.02));
+            paramsBar.height = (int)(view_height*((numPlayers+1)*.025));
             botBar.setLayoutParams(paramsBar);
 
 

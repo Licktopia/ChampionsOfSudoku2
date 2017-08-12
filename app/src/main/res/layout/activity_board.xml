@@ -17,17 +17,23 @@
         android:id="@+id/botbar"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginLeft="4dp"
-        android:layout_marginRight="4dp"
-        android:layout_marginTop="4dp"
-        tools:layout_height="100dp">
+        tools:layout_height="75dp">
 
         <ImageView
             android:id="@+id/imageView14"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            app:srcCompat="@drawable/road" />
+
+        <ImageView
+            android:id="@+id/imageView15"
+            android:layout_width="20dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
             android:scaleType="centerCrop"
-            app:srcCompat="@drawable/footballfieldbackground" />
+            app:srcCompat="@drawable/checkers" />
 
         <ImageView
             android:id="@+id/player1"

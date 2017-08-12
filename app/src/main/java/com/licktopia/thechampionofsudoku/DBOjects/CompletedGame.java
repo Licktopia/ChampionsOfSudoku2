@@ -1,4 +1,4 @@
-package com.licktopia.thechampionofsudoku.Sudoku;
+package com.licktopia.thechampionofsudoku.DBOjects;
 
 /**
  * Created by do_de on 6/29/2017.

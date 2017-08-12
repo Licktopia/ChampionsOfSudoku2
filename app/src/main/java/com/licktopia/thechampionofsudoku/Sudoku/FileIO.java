@@ -12,7 +12,7 @@ import android.content.Context;
  * Created by John Konecny on 6/19/2017.
  */
 
-class FileIO {
+public class FileIO {
     private static ThreadLocalRandom _Rand = ThreadLocalRandom.current();
 
     public static int getRandomNum() {
@@ -28,7 +28,7 @@ class FileIO {
     }
 
     //loads a board from row 'boardIndex' from the given level
-    protected static int[] loadSpecificBoard(int level, Context ctx, int totalBoardElements, int boardIndex) {
+    public static int[] loadSpecificBoard(int level, Context ctx, int totalBoardElements, int boardIndex) {
         String filename = "boards/" + String.valueOf(level) +".txt";
 
         BufferedReader reader = null;

@@ -1,4 +1,4 @@
-package com.licktopia.thechampionofsudoku;
+package com.licktopia.thechampionofsudoku.Adapters;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -19,13 +19,13 @@ import android.widget.Toast;
 
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
-import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBQueryExpression;
 import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
-import com.licktopia.thechampionofsudoku.Sudoku.CompletedGame;
+import com.licktopia.thechampionofsudoku.ListItems.CompletedGameListItem;
+import com.licktopia.thechampionofsudoku.R;
+import com.licktopia.thechampionofsudoku.DBOjects.CompletedGame;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

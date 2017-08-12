@@ -12,11 +12,11 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.licktopia.thechampionofsudoku.Activities.BaseActivity;
-import com.licktopia.thechampionofsudoku.CompletedGameListAdapter;
+import com.licktopia.thechampionofsudoku.Adapters.CompletedGameListAdapter;
 
-import com.licktopia.thechampionofsudoku.CompletedGameListItem;
+import com.licktopia.thechampionofsudoku.ListItems.CompletedGameListItem;
 import com.licktopia.thechampionofsudoku.R;
-import com.licktopia.thechampionofsudoku.Sudoku.CompletedGame;
+import com.licktopia.thechampionofsudoku.DBOjects.CompletedGame;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import java.util.ArrayList;

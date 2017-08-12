@@ -27,11 +27,10 @@ import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.google.android.gms.games.Games;
-import com.google.example.games.basegameutils.GameHelper;
 import com.licktopia.thechampionofsudoku.Activities.BaseActivity;
 import com.licktopia.thechampionofsudoku.PlaySounds;
 import com.licktopia.thechampionofsudoku.R;
-import com.licktopia.thechampionofsudoku.Sudoku.CompletedGame;
+import com.licktopia.thechampionofsudoku.DBOjects.CompletedGame;
 import com.licktopia.thechampionofsudoku.SudokuFacts;
 import com.licktopia.thechampionofsudoku.Tags;
 

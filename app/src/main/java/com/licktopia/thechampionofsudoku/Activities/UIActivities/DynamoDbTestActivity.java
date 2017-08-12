@@ -16,7 +16,7 @@ import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.licktopia.thechampionofsudoku.Activities.BaseActivity;
 import com.licktopia.thechampionofsudoku.R;
-import com.licktopia.thechampionofsudoku.Sudoku.SavedGame;
+import com.licktopia.thechampionofsudoku.DBOjects.SavedGame;
 
 import java.util.ArrayList;
 import java.util.List;
