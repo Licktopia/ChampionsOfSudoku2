@@ -164,7 +164,22 @@ public class MainMenuFragment extends Fragment {
         hostButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                callback.swapFragment(BaseActivity.INVITE_DIALOG_FRAGMENT, new Bundle());
+                //callback.swapFragment(BaseActivity.INVITE_DIALOG_FRAGMENT, new Bundle());
+                ((BaseActivity)getActivity()).hostGame();
+            }
+        });
+
+        ((Button)view.findViewById(R.id.join_button)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((BaseActivity)getActivity()).acceptInviteToRoom(null);
+            }
+        });
+
+        ((Button)view.findViewById(R.id.button_accept_popup_invitation)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((BaseActivity)getActivity()).acceptInviteToRoom(null);
             }
         });
 

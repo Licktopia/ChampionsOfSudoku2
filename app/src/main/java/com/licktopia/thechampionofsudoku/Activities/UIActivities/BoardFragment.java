@@ -425,6 +425,13 @@ public class BoardFragment extends Fragment {
     }
 
     private void uploadSavedGame(boolean autosave){
+        // fileSaveName wican be null if autosave checkbox is checked mid way through the game
+        if(fileSaveName == null)
+        {
+            alreadySaved = false;
+        }
+
+
         if(isInternet() && gameHelper.getApiClient().isConnected() && !multiplayer) {
             if(!alreadySaved){
                 try {
@@ -448,6 +455,7 @@ public class BoardFragment extends Fragment {
             String now = sdf.format(dt);
             final SavedGame obj = new SavedGame();
             obj.setGamerID(BaseActivity.getId());
+
             if(!alreadySaved) {
                 Long exactoTime = System.currentTimeMillis();
                 exactTime = String.format("%,d", exactoTime);
@@ -491,6 +499,7 @@ public class BoardFragment extends Fragment {
                         });
                     }
                     catch(final Exception e){
+                        e.printStackTrace();
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -616,6 +625,15 @@ public class BoardFragment extends Fragment {
             mEndGameLayout.setVisibility(View.VISIBLE);
 
         }
+        else if(multiplayer)
+        {
+            mHintsLayout.setVisibility(GONE);
+            mEndGameLayout.setVisibility(View.VISIBLE);
+            final RelativeLayout mStatsBox = (RelativeLayout) view.findViewById(R.id.game_stats_box);
+            setStatsBox(0);
+            mStatsBox.setVisibility(View.VISIBLE);
+            closeKeyboard();
+        }
         else{
             final RelativeLayout mStatsBox = (RelativeLayout) view.findViewById(R.id.game_stats_box);
             final LinearLayout mLevelUpBox = (LinearLayout) view.findViewById(R.id.level_up_view);
@@ -678,6 +696,7 @@ public class BoardFragment extends Fragment {
         }
 
     }
+
 
     /********************************
     * Updates Little numbers on keyboard that track number of values on board
@@ -764,7 +783,22 @@ public class BoardFragment extends Fragment {
         TextView mGoodSquaresStats = (TextView)view.findViewById(R.id.goodsquares_stats);
         TextView mAccuracyStats = (TextView)view.findViewById(R.id.accurracy_stats);
         TextView mPenalty = (TextView)view.findViewById(R.id.penalty_stats);
-        mTitleStats.setText(BaseActivity.getUsername());
+        if(multiplayer)
+        {
+            if(mGame.isGameFinished())
+            {
+                mTitleStats.setText("You win :)");
+            }
+            else
+            {
+                mTitleStats.setText("You are not a winner :(");
+            }
+        }
+        else
+        {
+            mTitleStats.setText(BaseActivity.getUsername());
+        }
+
         mTotalXpStats.setText(String.format("%,d",(int) gameXP)+ " XP");
         mRpStats.setText("Multiplier: " + String.format("%,d",(int) mGame.getScore())+ " x " + String.format("%2.1f", callback.getMultiplier()));
         mLevelBonusStats.setText("Level Bonus: " + String.format("%,d",(int) mGame.getLevelBonus()));
@@ -784,6 +818,8 @@ public class BoardFragment extends Fragment {
 
 
     }
+
+
     /************************************
      * Initialize undo redo buttons and sets
      *********************************/
