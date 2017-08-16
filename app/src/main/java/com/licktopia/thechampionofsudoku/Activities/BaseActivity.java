@@ -695,7 +695,7 @@ public class BaseActivity extends BaseGameActivity
     public void onLeftRoom(int statusCode, String roomId) {
         // we have left the room; return to main screen.
         Log.d(TAG, "onLeftRoom, code " + statusCode);
-        switchToWaitScreen();
+        //switchToWaitScreen();
     }
 
     //TODO onDisconnectedFromRoom
@@ -983,6 +983,7 @@ public class BaseActivity extends BaseGameActivity
 
         // show waiting room UI
         startActivityForResult(i, RC_WAITING_ROOM);
+        setupMultiplayer();
     }
 
     void showSelectOpponentsIntent()
