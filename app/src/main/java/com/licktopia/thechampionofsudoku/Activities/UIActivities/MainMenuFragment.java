@@ -173,30 +173,45 @@ public class MainMenuFragment extends Fragment {
         hostButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //callback.swapFragment(BaseActivity.INVITE_DIALOG_FRAGMENT, new Bundle());
-                ((BaseActivity)getActivity()).hostGame();
-            }
-        });
-/*
-        ((Button)view.findViewById(R.id.join_button)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ((BaseActivity)getActivity()).acceptInviteToRoom(null);
+                if(gameHelper.getApiClient().isConnected()) {
+                    //callback.swapFragment(BaseActivity.INVITE_DIALOG_FRAGMENT, new Bundle());
+                    ((BaseActivity)getActivity()).hostGame();
+                }
+                else{
+                    Toast.makeText(getContext(), R.string.must_be_logged_in,Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
-        ((Button)view.findViewById(R.id.button_accept_popup_invitation)).setOnClickListener(new View.OnClickListener() {
+        //Button is not necessary since the join is done with a google play notification
+        ((Button)view.findViewById(R.id.join_button)).setVisibility(GONE);
+        /*
+        ((Button)view.findViewById(R.id.join_button)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((BaseActivity)getActivity()).acceptInviteToRoom(null);
+
+                if(gameHelper.getApiClient().isConnected()) {
+                    ((BaseActivity)getActivity()).acceptInviteToRoom(null);
+                }
+                else{
+                    Toast.makeText(getContext(), R.string.must_be_logged_in,Toast.LENGTH_SHORT).show();
+                }
             }
         });
-*/
+        */
+
+
+
         quickButton = (Button)view.findViewById(R.id.quick_button);
         quickButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((BaseActivity)getActivity()).startQuickGame();
+                if(gameHelper.getApiClient().isConnected()) {
+                    ((BaseActivity)getActivity()).startQuickGame();
+                }
+                else{
+                    Toast.makeText(getContext(), R.string.must_be_logged_in,Toast.LENGTH_SHORT).show();
+                }
             }
         });
 

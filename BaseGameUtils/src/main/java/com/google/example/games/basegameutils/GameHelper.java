@@ -679,9 +679,13 @@ public class GameHelper implements GoogleApiClient.ConnectionCallbacks,
         }
         debugLog("Starting connection.");
         mConnecting = true;
-        mInvitation = null;
+        //commented out because on a fresh start of the game an invitation will
+        //be null even if there is one due to the the api client being connected twice
+        //the first call to connect makes it not null and the second call makes it null.
+        //mInvitation = null;
         mTurnBasedMatch = null;
         mGoogleApiClient.connect();
+
     }
 
     /**
@@ -730,6 +734,7 @@ public class GameHelper implements GoogleApiClient.ConnectionCallbacks,
 
         // we're good to go
         succeedSignIn();
+
     }
 
     void succeedSignIn() {

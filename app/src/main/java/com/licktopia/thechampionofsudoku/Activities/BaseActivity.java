@@ -408,6 +408,7 @@ public class BaseActivity extends BaseGameActivity
         //TODO Remove this for production
         gameHelper.enableDebugLog(true);
         gameHelper.setup(this);
+
         //completedGames = new ArrayList<>();
         //savedGames = new ArrayList<>();
 
@@ -505,7 +506,11 @@ public class BaseActivity extends BaseGameActivity
     @Override
     public void onSignInSucceeded() {
         Fragment f = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-        if (f instanceof MainMenuFragment) {
+        if(gameHelper.hasInvitation())
+        {
+            acceptInviteToRoom(null);
+        }
+        else if (f instanceof MainMenuFragment) {
             MainMenuFragment mmf = (MainMenuFragment)f;
             mmf.updateUI(true);
             return;
@@ -520,6 +525,7 @@ public class BaseActivity extends BaseGameActivity
             gpf.signInSucceeded();
             return;
         }
+
     }
 
     @Override
@@ -663,6 +669,8 @@ public class BaseActivity extends BaseGameActivity
 
         ((TextView) findViewById(R.id.incoming_invitation_text)).setText(
                 invitation.getInviter().getDisplayName());
+
+        swapFragment(BaseActivity.INVITE_DIALOG_FRAGMENT, new Bundle());
         //findViewById(R.id.invitation_popup).setVisibility(View.VISIBLE);
         //switchToScreen(mCurScreen); // This will show the invitation popup
 
@@ -1088,13 +1096,19 @@ public class BaseActivity extends BaseGameActivity
     public void acceptInviteToRoom(String invId) {
         if(invId == null)
         {
-            if(mIncomingInvitationId != null)
+            if(gameHelper.hasInvitation() && mIncomingInvitationId != null)
             {
-                invId = mIncomingInvitationId;
+                if(mIncomingInvitationId.equals(gameHelper.getInvitationId()))
+                {
+                    Log.d(TAG, "Invite already sent!");
+                    return;
+                }
             }
-            else if(gameHelper.getInvitationId() != null)
+
+            if(gameHelper.getInvitationId() != null)
             {
                 invId = gameHelper.getInvitationId();
+                mIncomingInvitationId = invId;
             }
             else
             {
@@ -1112,7 +1126,6 @@ public class BaseActivity extends BaseGameActivity
         switchToWaitScreen();
         keepScreenOn();
         Games.RealTimeMultiplayer.join(gameHelper.getApiClient(), roomConfigBuilder.build());
-        mIncomingInvitationId = null;
     }
 
 }
