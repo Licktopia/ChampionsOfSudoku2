@@ -13,15 +13,13 @@ import android.view.ViewGroup;
 
 import com.licktopia.thechampionofsudoku.Activities.BaseActivity;
 import com.licktopia.thechampionofsudoku.Adapters.UserGameListAdapter;
-import com.licktopia.thechampionofsudoku.DBOjects.CompletedGame;
-import com.licktopia.thechampionofsudoku.ListItems.CompletedGameListItem;
 import com.licktopia.thechampionofsudoku.ListItems.UserGameListItem;
 import com.licktopia.thechampionofsudoku.R;
-import com.licktopia.thechampionofsudoku.ListItems.SavedGameListItem;
 import com.licktopia.thechampionofsudoku.Sudoku.FileIO;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+
+import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.phoneSize;
 
 
 public class UserBoardFragment extends Fragment {
@@ -29,14 +27,8 @@ public class UserBoardFragment extends Fragment {
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
     public static List<UserGameListItem> userGameListItems;
-
-
-
-
-
-
-
     public static UserBoardFragment newInstance() {return new UserBoardFragment();}
+    private View view;
 
 
 
@@ -44,7 +36,15 @@ public class UserBoardFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        View view = inflater.inflate(R.layout.fragment_user_board, container, false);
+        if(phoneSize==1) {
+            view = inflater.inflate(R.layout.fragment_user_board_small, container, false);
+        }
+        else if(phoneSize == 3){
+            view = inflater.inflate(R.layout.fragment_user_board_large, container, false);
+        }
+        else{
+            view = inflater.inflate(R.layout.fragment_user_board, container, false);
+        }
         recyclerView = (RecyclerView)view.findViewById(R.id.user_board_rv);
         recyclerView.setLayoutManager((new GridLayoutManager(getContext(),2)));
         fillListItems();

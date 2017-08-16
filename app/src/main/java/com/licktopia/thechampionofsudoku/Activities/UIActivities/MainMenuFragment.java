@@ -8,6 +8,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -289,7 +290,7 @@ public class MainMenuFragment extends Fragment {
             queryCompletedGameDb();
             // callback.querySavedGameDb();
         }
-       //userBadge.setImageDrawable(getResources().getDrawable(callback.getBadgetag(), null));
+       //userBadge.setImageDrawable(ContextCompat.getDrawable(callback.getBadgetag(), null));
         setMessage();
         screenWait.setVisibility(GONE);
         mLevelSelect.setVisibility(VISIBLE);
@@ -385,7 +386,7 @@ public class MainMenuFragment extends Fragment {
             mSignInButton.setVisibility(VISIBLE);
             mSignOutButton.setVisibility(View.INVISIBLE);
             mBadge.setVisibility(GONE);
-            userBadge.setImageDrawable(getResources().getDrawable(callback.getBadgetag(), null));
+            userBadge.setImageDrawable(ContextCompat.getDrawable(getActivity(), callback.getBadgetag()));
         }
         setMessage();
         mProgressBar.setVisibility(GONE);
@@ -406,7 +407,7 @@ public class MainMenuFragment extends Fragment {
                         && result.getScore() != null) {
                     long highestScore = result.getScore().getRawScore();
                     BaseActivity.setXp(highestScore);
-                    userBadge.setImageDrawable(getResources().getDrawable(callback.getBadgetag(), null));
+                    userBadge.setImageDrawable(ContextCompat.getDrawable(getActivity(), callback.getBadgetag()));
                 }
 
             }
@@ -515,7 +516,7 @@ public class MainMenuFragment extends Fragment {
     }
 
     private void mBadgeButtonInitialize(final String gamername, final String gamerID){
-        userBadge.setImageDrawable(getResources().getDrawable(callback.getBadgetag(), null));
+        userBadge.setImageDrawable(ContextCompat.getDrawable(getActivity(), callback.getBadgetag()));
         mBadge.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

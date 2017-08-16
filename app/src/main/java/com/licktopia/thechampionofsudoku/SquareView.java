@@ -71,10 +71,10 @@ public class SquareView {
         notepadNums[8] = (ImageView) v.findViewById(R.id.squareNotepad9);
         for (int i = 0; i < notepadNums.length; i++) {
             if(!colorMode) {
-                notepadNums[i].setImageDrawable(context.getDrawable(Tags.numberImageTags[i]));
+                notepadNums[i].setImageDrawable(ContextCompat.getDrawable(context, Tags.numberImageTags[i]));
             }
             else{
-                notepadNums[i].setImageDrawable(context.getDrawable(Tags.colorButtonTags[i]));
+                notepadNums[i].setImageDrawable(ContextCompat.getDrawable(context, Tags.colorButtonTags[i]));
             }
         }
 
@@ -91,10 +91,10 @@ public class SquareView {
         }
         else {
             if(isStartingSquare) {
-                number.setImageDrawable(context.getDrawable(Tags.numberImageTags[n - 1])); // Set background image
+                number.setImageDrawable(ContextCompat.getDrawable(context, Tags.numberImageTags[n - 1])); // Set background image
             }
             else{
-                number.setImageDrawable(context.getDrawable(Tags.greyNumberImageTags[n - 1])); // Set background image
+                number.setImageDrawable(ContextCompat.getDrawable(context, Tags.greyNumberImageTags[n - 1])); // Set background image
             }
             number.setVisibility(View.VISIBLE);
             notepad.setVisibility(View.INVISIBLE);
@@ -108,7 +108,7 @@ public class SquareView {
             squareHolder.setAlpha(1);
         }
         else {
-            color.setBackground(context.getDrawable(Tags.colors[n - 1])); // Set background image
+            color.setBackground(ContextCompat.getDrawable(context, Tags.colors[n - 1])); // Set background image
             squareHolder.setAlpha(COLOR_SQUARE_TRANSPARENCY);
             if(!startSquare){
                 color.setScaleX(COLOR_SQUARE_SCALE_FACTOR);
@@ -123,7 +123,7 @@ public class SquareView {
             number.setImageDrawable(null);   // Remove display object
         else {
             number.setAlpha(0f);
-            number.setImageDrawable(context.getDrawable(Tags.numberImageTags[n - 1])); // Set background image
+            number.setImageDrawable(ContextCompat.getDrawable(context, Tags.numberImageTags[n - 1])); // Set background image
             ObjectAnimator mainFade = ObjectAnimator.ofFloat(number, "alpha", 0, 1);
             mainFade.setDuration(700);
             mainFade.start();
@@ -139,7 +139,7 @@ public class SquareView {
         }
         else {
             color.setAlpha(0f);
-            color.setBackground(context.getDrawable(Tags.colors[n - 1])); // Set background image
+            color.setBackground(ContextCompat.getDrawable(context, Tags.colors[n - 1])); // Set background image
             ObjectAnimator mainFade = ObjectAnimator.ofFloat(color, "alpha", 0, 1);
             ObjectAnimator mainFade2 = ObjectAnimator.ofFloat(squareHolder, "alpha", 1, COLOR_SQUARE_TRANSPARENCY);
             mainFade.setDuration(700);
@@ -196,10 +196,10 @@ public class SquareView {
         else{
             if (highlighted) {
                 if (color.getBackground() == null) {
-                    squareTexture.setImageDrawable(context.getDrawable(R.drawable.grey_highlight));
+                    squareTexture.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.grey_highlight));
                 }
                 else{
-                    squareTexture.setImageDrawable(context.getDrawable(R.drawable.white_highlight));
+                    squareTexture.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.white_highlight));
 
                 }
                 squareTexture.setVisibility(View.VISIBLE); // Set to generic highlighted
@@ -222,7 +222,7 @@ public class SquareView {
 
     public void clearNotepadHighlights() {
         for (ImageView np : notepadNums) {
-            np.setBackgroundColor(context.getColor(R.color.white));
+            np.setBackgroundColor(ContextCompat.getColor(context, R.color.white));
         }
     }
 
@@ -265,7 +265,7 @@ public class SquareView {
 
     /* Sets highlight layout to given selected marker */
     private void setHighlightMarker() {
-       selectedSquare.setBackground(context.getDrawable(R.drawable.selected_square_marker));
+       selectedSquare.setBackground(ContextCompat.getDrawable(context, R.drawable.selected_square_marker));
 
     }
     /* Sets Alpha back to full */

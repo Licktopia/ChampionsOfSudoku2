@@ -43,7 +43,6 @@
             android:label="Settings"
             android:theme="@style/Base.Theme.AppCompat.Light" />
         <activity android:name=".Activities.UIActivities.GamerProfileFragment" />
-        <activity android:name=".Activities.UIActivities.DynamoDbTestActivity"></activity>
     </application>
 
 </manifest>

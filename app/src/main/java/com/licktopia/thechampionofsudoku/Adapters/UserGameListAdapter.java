@@ -28,6 +28,8 @@ import com.licktopia.thechampionofsudoku.Tags;
 
 import java.util.List;
 
+import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.phoneSize;
+
 /**
  * Created by do_de on 3/30/2017.
  */
@@ -52,8 +54,19 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext())
+        View v;
+        if(phoneSize==1) {
+            v = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.user_game_list_item_small, parent, false);
+        }
+        else if(phoneSize == 3){
+            v = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.user_game_list_item_large, parent, false);
+        }
+        else{
+            v = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.user_game_list_item, parent, false);
+        }
 
         squares = new TextView[81];
         for(int i = 0; i < 81; i++) {

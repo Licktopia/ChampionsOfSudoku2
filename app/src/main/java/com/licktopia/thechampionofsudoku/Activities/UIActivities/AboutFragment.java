@@ -12,17 +12,27 @@ import android.view.ViewGroup;
 
 import com.licktopia.thechampionofsudoku.R;
 
+import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.phoneSize;
+
 public class AboutFragment extends Fragment {
 
     public static AboutFragment newInstance() {
         return new AboutFragment();
     }
-
+    private View view;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(phoneSize==1) {
+            view = inflater.inflate(R.layout.activity_about_small, container, false);
+        }
+        else if(phoneSize == 3){
+            view = inflater.inflate(R.layout.activity_about_large, container, false);
+        }
+        else{
+            view = inflater.inflate(R.layout.activity_about, container, false);
+        }
 
-        View view = inflater.inflate(R.layout.activity_about, container, false);
         return view;
     }
 

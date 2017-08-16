@@ -26,6 +26,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.formatExactTime;
+import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.phoneSize;
 
 
 public class SavedGameFragment extends Fragment {
@@ -35,7 +36,7 @@ public class SavedGameFragment extends Fragment {
     private TextView mLoadingText;
     private TextView savedUser;
     public static List<SavedGameListItem> savedGameListItems;
-
+    private View view;
     public static SavedGameFragment newInstance() {
         return new SavedGameFragment();
     }
@@ -43,8 +44,15 @@ public class SavedGameFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        View view = inflater.inflate(R.layout.activity_savedgame, container, false);
+        if(phoneSize==1) {
+            view = inflater.inflate(R.layout.activity_savedgame_small, container, false);
+        }
+        else if(phoneSize == 3){
+            view = inflater.inflate(R.layout.activity_savedgame_large, container, false);
+        }
+        else{
+            view = inflater.inflate(R.layout.activity_savedgame, container, false);
+        }
 
         mProgressIndicator = (ProgressBar)view.findViewById(R.id.progressBar2);
         mLoadingText = (TextView)view.findViewById(R.id.loading);

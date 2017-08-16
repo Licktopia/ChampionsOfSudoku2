@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,6 +43,7 @@ import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.GAMER_PR
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.MAIN_MENU_FRAGMENT;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.completedGames;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.gameHelper;
+import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.phoneSize;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.setNullUser;
 
 public class GamerProfileFragment extends Fragment {
@@ -64,8 +66,15 @@ public class GamerProfileFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        view = inflater.inflate(R.layout.activity_gamer_profile, container, false);
+        if(phoneSize==1) {
+            view = inflater.inflate(R.layout.activity_gamer_profile_small, container, false);
+        }
+        else if(phoneSize == 3){
+            view = inflater.inflate(R.layout.activity_gamer_profile_large, container, false);
+        }
+        else{
+            view = inflater.inflate(R.layout.activity_gamer_profile, container, false);
+        }
 
         mHistoryButton = (Button) view.findViewById(R.id.history_button);
         credentialsProvider = new CognitoCachingCredentialsProvider(
@@ -206,11 +215,11 @@ public class GamerProfileFragment extends Fragment {
         }
         xpDisplay.setText(new StringBuilder().append(String.format("%,d", Integer.parseInt(String.valueOf(BaseActivity.getXp())))).append(" XP").toString());
         nextPowerUpDisplay.setText(new StringBuilder().append(getString(R.string.next_levelup)).append(" ").append(String.format("%,d", callback.getNextCutoff() - BaseActivity.getXp())).append(" XP").toString());
-        mRankDisplay.setImageDrawable(getResources().getDrawable(callback.getBadgetag(), null));
+        mRankDisplay.setImageDrawable(ContextCompat.getDrawable(getActivity(), callback.getBadgetag()));
         ImageView[] verticalBadges = new ImageView[52];
         for(int i = 0; i< Tags.verticalBadges.length;i++){
             verticalBadges[i]=(ImageView)view.findViewById(Tags.verticalBadges[i]);
-            verticalBadges[i].setImageDrawable(getResources().getDrawable(Tags.badgeTags[i]));
+            verticalBadges[i].setImageDrawable(ContextCompat.getDrawable(getActivity(), Tags.badgeTags[i]));
             if(i<=BaseActivity.getLevel()){
                 verticalBadges[i].setVisibility(View.VISIBLE);
             }

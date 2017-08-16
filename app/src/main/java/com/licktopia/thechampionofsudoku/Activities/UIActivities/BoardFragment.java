@@ -150,6 +150,7 @@ public class BoardFragment extends Fragment {
     private BoardFragmentListener callback;
     private long sTime =0;
     private long mpStartTime;
+    public Toolbar toolbar;
 
 
     public static BoardFragment newInstance() {
@@ -173,7 +174,18 @@ public class BoardFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        view = inflater.inflate(R.layout.activity_board, container, false);
+
+        if(phoneSize==1) {
+            view = inflater.inflate(R.layout.activity_board_small, container, false);
+        }
+        else if(phoneSize == 3){
+            view = inflater.inflate(R.layout.activity_board_large, container, false);
+        }
+        else{
+            view = inflater.inflate(R.layout.activity_board, container, false);
+        }
+
+
 
         //pass in mode and level
         wm = getActivity().getWindowManager();
@@ -182,8 +194,18 @@ public class BoardFragment extends Fragment {
 
 
         //initialize action bar
-        Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
-        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
+        if(phoneSize==1) {
+            toolbar = (Toolbar) view.findViewById(R.id.toolbar_small);
+            ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
+        }
+        else if(phoneSize == 3){
+            toolbar = (Toolbar) view.findViewById(R.id.toolbar_large);
+            ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
+        }
+        else{
+            toolbar = (Toolbar) view.findViewById(R.id.toolbar);
+            ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
+        }
 
         shareDialog = new ShareDialog(BoardFragment.this);
 

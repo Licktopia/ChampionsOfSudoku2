@@ -25,6 +25,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.formatExactTime;
+import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.phoneSize;
 
 
 public class CompletedGameFragment extends Fragment {
@@ -36,6 +37,7 @@ public class CompletedGameFragment extends Fragment {
     private Button tvSortTime;
     private TextView tvGpDisplay;
     public static List<CompletedGameListItem> completedGameListItems;
+    private View view;
 
     public static CompletedGameFragment newInstance() {
         return new CompletedGameFragment();
@@ -44,8 +46,15 @@ public class CompletedGameFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        View view = inflater.inflate(R.layout.activity_completedgame, container, false);
+        if(phoneSize==1) {
+            view = inflater.inflate(R.layout.activity_completedgame_small, container, false);
+        }
+        else if(phoneSize == 3){
+            view = inflater.inflate(R.layout.activity_completedgame_large, container, false);
+        }
+        else{
+            view = inflater.inflate(R.layout.activity_completedgame, container, false);
+        }
 
         tvSortRecent = (Button)view.findViewById(R.id.sort_recent);
         tvSortBest = (Button)view.findViewById(R.id.sort_best);

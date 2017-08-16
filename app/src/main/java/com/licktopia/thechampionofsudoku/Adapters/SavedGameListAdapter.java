@@ -30,6 +30,7 @@ import com.licktopia.thechampionofsudoku.DBOjects.SavedGame;
 import java.util.List;
 
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.BOARD_FRAGMENT;
+import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.phoneSize;
 
 /**
  * Created by do_de on 3/30/2017.
@@ -59,15 +60,21 @@ public class SavedGameListAdapter extends RecyclerView.Adapter<SavedGameListAdap
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
-
-        View v = LayoutInflater.from(parent.getContext())
+        View v;
+        if(phoneSize==1) {
+            v = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.saved_game_list_item_small, parent, false);
+        }
+        else if(phoneSize == 3){
+            v = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.saved_game_list_item_large, parent, false);
+        }
+        else{
+            v = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.saved_game_list_item, parent, false);
+        }
 
-            return new ViewHolder(v);
-
-
-
+        return new ViewHolder(v);
     }
 
     @Override
