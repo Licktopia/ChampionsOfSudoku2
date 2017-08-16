@@ -154,7 +154,21 @@ public class BoardFragment extends Fragment {
     public static BoardFragment newInstance() {
         return new BoardFragment();
     }
+    @Override
+    public void onCreate(Bundle savedInstanceState){
+        super.onCreate(savedInstanceState);
 
+        colorGame = getArguments().getBoolean("COLOR_MODE");
+        level = getArguments().getInt("LEVEL");
+        resume = getArguments().getBoolean("RESUME");
+        level = getArguments().getInt("LEVEL");
+        sTime = getArguments().getLong("STOPPED_TIME");
+        multiplayer = getArguments().getBoolean("MULTIPLAYER");
+        //multiplayer = true;
+        exactTime = getArguments().getString("EXACT_TIME");
+        savedName = getArguments().getString("SAVED_NAME");
+        savedDate = getArguments().getString("SAVED_DATE");
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -164,18 +178,9 @@ public class BoardFragment extends Fragment {
         //pass in mode and level
         wm = getActivity().getWindowManager();
         d = wm.getDefaultDisplay();
-        if(mGame==null) {
-            colorGame = getArguments().getBoolean("COLOR_MODE");
-            level = getArguments().getInt("LEVEL");
-            resume = getArguments().getBoolean("RESUME");
-            level = getArguments().getInt("LEVEL");
-            sTime = getArguments().getLong("STOPPED_TIME");
-            multiplayer = getArguments().getBoolean("MULTIPLAYER");
-            //multiplayer = true;
-            exactTime = getArguments().getString("EXACT_TIME");
-            savedName = getArguments().getString("SAVED_NAME");
-            savedDate = getArguments().getString("SAVED_DATE");
-        }
+
+
+
         //initialize action bar
         Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
@@ -288,7 +293,12 @@ public class BoardFragment extends Fragment {
         else {
             initializeBoard();//get starting board
         }
-        customizeLayout(resume);
+        if(comeBackFlag){
+            customizeLayout(true);
+        }
+        else {
+            customizeLayout(resume);
+        }
         listeners(toolbar);//set all listeners for BoardFragment layout
         updateScore();
         mChronometer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
@@ -426,7 +436,7 @@ public class BoardFragment extends Fragment {
 
     private void uploadSavedGame(boolean autosave){
         // fileSaveName wican be null if autosave checkbox is checked mid way through the game
-        if(fileSaveName == null)
+        if(fileSaveName == null && savedName == null)
         {
             alreadySaved = false;
         }
@@ -1822,12 +1832,13 @@ public class BoardFragment extends Fragment {
         } else {
             notepadIcon.setImageDrawable(getResources().getDrawable(R.drawable.colors));
             BackgroundImages mBackgroundImages = new BackgroundImages();
-            mGame.setImageNumber(mBackgroundImages.getPictureNumber());
+
             if(resume){
                 artHolder.setImageDrawable(getResources().getDrawable(mBackgroundImages.getImage(mGame.getImageNumber())));
             }
             else {
                 artHolder.setImageDrawable(getResources().getDrawable(mBackgroundImages.getImage()));
+                mGame.setImageNumber(mBackgroundImages.getPictureNumber());
             }
             //int imageNumber = mBackgroundImages.getPictureNumber();
         }
