@@ -369,20 +369,17 @@ public class BaseActivity extends BaseGameActivity
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         boolean isTablet = getResources().getBoolean(R.bool.is_tablet);
         boolean isNormalPhone = getResources().getBoolean(R.bool.is_normal_phone);
-        boolean isSmallPhone = getResources().getBoolean(R.bool.is_small_phone);
-        boolean isVerySmallPhone = getResources().getBoolean(R.bool.is_very_small_phone);
-        if(isVerySmallPhone || isSmallPhone){
-            phoneSize = 1;
+
+        if(isTablet){
+            phoneSize = 3;
         }
         else if(isNormalPhone){
             phoneSize = 2;
         }
-        else if(isTablet){
-            phoneSize =3;
+        else {
+            phoneSize =1;
         }
-        else{
-            phoneSize = 2;
-        }
+
         //Check if there is a fragment container
         if (findViewById(R.id.fragment_container) != null) {
 
@@ -666,7 +663,7 @@ public class BaseActivity extends BaseGameActivity
 
         ((TextView) findViewById(R.id.incoming_invitation_text)).setText(
                 invitation.getInviter().getDisplayName());
-        findViewById(R.id.invitation_popup).setVisibility(View.VISIBLE);
+        //findViewById(R.id.invitation_popup).setVisibility(View.VISIBLE);
         //switchToScreen(mCurScreen); // This will show the invitation popup
 
     }
@@ -989,7 +986,7 @@ public class BaseActivity extends BaseGameActivity
             // if in multiplayer, only show invitation on main screen
             showInvPopup = true;
         }
-        findViewById(R.id.invitation_popup).setVisibility(showInvPopup ? View.VISIBLE : View.GONE);
+        //findViewById(R.id.invitation_popup).setVisibility(showInvPopup ? View.VISIBLE : View.GONE);
     }
 
 

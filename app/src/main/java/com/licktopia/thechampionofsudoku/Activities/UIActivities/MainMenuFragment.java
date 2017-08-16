@@ -176,7 +176,7 @@ public class MainMenuFragment extends Fragment {
                 ((BaseActivity)getActivity()).hostGame();
             }
         });
-
+/*
         ((Button)view.findViewById(R.id.join_button)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -190,7 +190,7 @@ public class MainMenuFragment extends Fragment {
                 ((BaseActivity)getActivity()).acceptInviteToRoom(null);
             }
         });
-
+*/
         quickButton = (Button)view.findViewById(R.id.quick_button);
         quickButton.setOnClickListener(new View.OnClickListener() {
             @Override

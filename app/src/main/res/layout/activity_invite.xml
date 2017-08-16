@@ -7,7 +7,7 @@
     android:weightSum="100">
 
     <TextView
-        android:id="@+id/join_text"
+        android:id="@+id/incoming_invitation_text"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="50"
@@ -27,7 +27,7 @@
         android:textColor="@color/white" />
 
     <Button
-        android:id="@+id/accept_button"
+        android:id="@+id/button_accept_popup_invitation"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="25"
