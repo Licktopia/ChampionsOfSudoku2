@@ -63,12 +63,12 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, final int position) {
+    public void onBindViewHolder(ViewHolder holder,int position) {
 
         UserGameListItem userGameListItem = userGameListItems.get(position);
-        final int[] board = userGameListItem.getBoard();
-        final String gamerName = userGameListItem.getGamerName();
-        final int difficulty = userGameListItem.getDifficulty();
+        int[] board = userGameListItem.getBoard();
+        String gamerName = userGameListItem.getGamerName();
+        int difficulty = userGameListItem.getDifficulty();
         String date = userGameListItem.getDate();
         int level = userGameListItem.getLevel();
         for(int i =0; i<81; i++){
@@ -83,6 +83,7 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
         holder.usUser.setText(gamerName);
         holder.usDate.setText(date);
         holder.usDiff.setText(String.format("%d",difficulty));
+        holder.usNumb.setText(String.format("%d",position+1));
 
 
         if(level==0) {
@@ -107,7 +108,6 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
             holder.usBackground.setBackgroundColor(Color.parseColor(mColors[1]));
         }
         else if(level==3) {
-
 
             Drawable drawable = ContextCompat.getDrawable(context,R.drawable.hardicon);
             holder.usLevel.setImageDrawable(drawable);
@@ -137,10 +137,16 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
         return userGameListItems.size();
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder{
         TextView usUser;
         TextView usDate;
         TextView usDiff;
+        TextView usNumb;
         ImageView usLevel;
         LinearLayout usBackground;
         
@@ -151,6 +157,7 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
             usUser = (TextView)itemView.findViewById(R.id.us_user);
             usDate = (TextView)itemView.findViewById(R.id.us_date);
             usDiff = (TextView)itemView.findViewById(R.id.us_diff);
+            usNumb = (TextView)itemView.findViewById(R.id.us_number);
             usLevel = (ImageView) itemView.findViewById(R.id.us_level);
             usBackground = (LinearLayout)itemView.findViewById(R.id.us_background);
             
