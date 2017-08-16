@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
@@ -97,6 +98,7 @@ public class BaseActivity extends BaseGameActivity
     public static  GameHelper gameHelper;
     public static boolean clickedOut = false;
     public static boolean userSignIn=false;
+    public static int phoneSize = 2;
 
     //will store the multiplayer game information
     private MultiGame mMultiGame = null;
@@ -364,6 +366,23 @@ public class BaseActivity extends BaseGameActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        boolean isTablet = getResources().getBoolean(R.bool.is_tablet);
+        boolean isNormalPhone = getResources().getBoolean(R.bool.is_normal_phone);
+        boolean isSmallPhone = getResources().getBoolean(R.bool.is_small_phone);
+        boolean isVerySmallPhone = getResources().getBoolean(R.bool.is_very_small_phone);
+        if(isVerySmallPhone || isSmallPhone){
+            phoneSize = 1;
+        }
+        else if(isNormalPhone){
+            phoneSize = 2;
+        }
+        else if(isTablet){
+            phoneSize =3;
+        }
+        else{
+            phoneSize = 2;
+        }
         //Check if there is a fragment container
         if (findViewById(R.id.fragment_container) != null) {
 

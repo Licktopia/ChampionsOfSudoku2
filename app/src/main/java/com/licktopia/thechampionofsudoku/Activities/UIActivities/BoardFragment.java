@@ -77,6 +77,7 @@ import main.java.com.maximeroussy.invitrode.RandomWord;
 
 import static android.view.View.GONE;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.gameHelper;
+import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.phoneSize;
 
 
 public class BoardFragment extends Fragment {
@@ -172,7 +173,6 @@ public class BoardFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         view = inflater.inflate(R.layout.activity_board, container, false);
 
         //pass in mode and level

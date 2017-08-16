@@ -52,6 +52,7 @@ import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.USER_BOA
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.clickedOut;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.gameHelper;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.getUsername;
+import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.phoneSize;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.setId;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.setUsername;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.userSignIn;
@@ -108,8 +109,15 @@ public class MainMenuFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                 Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        view = inflater.inflate(R.layout.activity_main_menu, container, false);
+        if(phoneSize==1) {
+            view = inflater.inflate(R.layout.activity_main_menu_small, container, false);
+        }
+        else if(phoneSize == 3){
+            view = inflater.inflate(R.layout.activity_main_menu_large, container, false);
+        }
+        else{
+            view = inflater.inflate(R.layout.activity_main_menu, container, false);
+        }
 
         scrollView = (HorizontalScrollView)view.findViewById(R.id.gestures);
         mLevelSelect = (LinearLayout)view.findViewById(R.id.level_select);

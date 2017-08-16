@@ -16,23 +16,6 @@
         android:weightSum="100"
         tools:visibility="visible">
 
-        <LinearLayout
-            android:id="@+id/invitation_popup"
-            style="@style/InvPopup"
-            android:visibility="gone">
-
-            <TextView
-                android:id="@+id/incoming_invitation_text"
-                style="@style/InvPopupText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-            <Button
-                android:id="@+id/button_accept_popup_invitation"
-                style="@style/InvPopupButton"
-                android:text="@string/accept_popup_invite" />
-        </LinearLayout>
-
 
         <TextView
             android:id="@+id/message"
