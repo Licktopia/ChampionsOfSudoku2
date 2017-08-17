@@ -1321,16 +1321,20 @@ public class BoardFragment extends Fragment {
      * Listener keboardDownButton
      *********************************/
     private void hintButtonListener() {
-        hintButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                selectedSquare = -1;
-                closeKeyboard();
-                highlightHandler.removeCallbacksAndMessages(null);
-                mGame.updateSolver();
-                removeAllHighlights();
-            }
-        });
+        if(!multiplayer) {
+            hintButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!multiplayer) {
+                        selectedSquare = -1;
+                        closeKeyboard();
+                        highlightHandler.removeCallbacksAndMessages(null);
+                        mGame.updateSolver();
+                        removeAllHighlights();
+                    }
+                }
+            });
+        }
 
     }
 
@@ -1826,7 +1830,8 @@ public class BoardFragment extends Fragment {
         /////make board unclickable, made clickable after start animation
         allClickable(false);
         if(multiplayer){
-
+            hintButton.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
+            mHintsLayout.setClickable(false);
         }
         /////set keypad colors
         for (int i = 0; i < size; i++) {
