@@ -2,6 +2,7 @@ package com.licktopia.thechampionofsudoku.Sudoku;
 
 import android.content.Context;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -498,6 +499,39 @@ public class Board implements java.io.Serializable {
         if (isSameCluster(idx1, idx2))
             return 3;
         else return -1;
+    }
+
+    protected boolean isNotepadInTriple(int notepad, int idx1, int idx2, int idx3) {
+        return getNotepadAt(idx1, notepad) || getNotepadAt(idx2, notepad) || getNotepadAt(idx3, notepad);
+    }
+
+    // Get first instance of both indices having same notepad number
+    protected int getMatchingNotepadNum(int idx1, int idx2) {
+        for (int i = 1; i <= 9; i++) {
+            if (getNotepadAt(idx1, i) && getNotepadAt(idx2, i))
+                return i;
+        }
+        return -1;
+    }
+
+    // Get first instance of notepad number present in idx2 but not idx1
+    protected int getMismatchingNotepadNum(int idx1, int idx2) {
+        for (int i = 1; i <= 9; i++) {
+            if (!getNotepadAt(idx1, i) && getNotepadAt(idx2, i))
+                return i;
+        }
+        return -1;
+    }
+
+    // Get set of square indices that are connected to both idx1 and idx2
+    protected ArrayList<Integer> getSharedConnections(int idx1, int idx2) {
+        ArrayList<Integer> connections = new ArrayList<>();
+        for (int i = 0; i < totalBoardElements(); i++) {
+            if (i != idx1 && i != idx2 && isConnected(idx1, i) > 0 && isConnected(idx2, i) > 0) {
+                connections.add(i);
+            }
+        }
+        return connections;
     }
 
     // Returns an array of indices of all squares in same row as idx

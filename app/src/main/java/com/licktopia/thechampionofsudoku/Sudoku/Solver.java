@@ -100,10 +100,14 @@ public class Solver implements java.io.Serializable {
         while (squaresToComplete > 0 && !cannotSolve) {
             int beforeStrategiesUsed = strategiesUsed;
             switch(strategyNumber) {
+                case Strategies.YWING:
+                    strategiesUsed += Strategies.removeRandomYWingValues(curBoard);
                 case Strategies.XWING:
                     strategiesUsed += Strategies.removeRandomXWingValues(curBoard);
                 case Strategies.LOCKED_CANDIDATE:
                     strategiesUsed += Strategies.removeRandomLockedCandidateValues(curBoard);
+                case Strategies.NAKED_TRIPLE:
+                    strategiesUsed += Strategies.removeRandomNakedTripleValues(curBoard);
                 case Strategies.HIDDEN_PAIR:
                     strategiesUsed += Strategies.removeRandomHiddenPairValues(curBoard);
                 case Strategies.HIDDEN_SINGLE:
