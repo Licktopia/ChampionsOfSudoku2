@@ -14,7 +14,9 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:weightSum="100"
-        tools:visibility="visible">
+        tools:visibility="visible"
+        android:layout_alignParentTop="true"
+        android:layout_toEndOf="@+id/main_progress">
 
 
         <TextView
@@ -491,15 +493,17 @@
                             <RelativeLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="0dp"
-                                android:layout_marginBottom="22dp"
+                                android:layout_margin="20dp"
                                 android:layout_weight="50">
 
                                 <ImageButton
                                     android:id="@+id/topiaChoice"
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
+                                    android:layout_alignParentStart="true"
+                                    android:layout_alignParentTop="true"
                                     android:background="?attr/selectableItemBackgroundBorderless"
-                                    android:src="@drawable/art_buttontablet"
+                                    android:src="@drawable/rounded_buttontablet"
                                     android:text="Colortopia"
                                     android:textColor="@android:color/black"
                                     android:textSize="14sp" />
@@ -515,11 +519,11 @@
                                     android:gravity="bottom"
                                     android:text="@string/art_mode"
                                     android:textColor="@color/colorPrimaryDark"
-                                    android:textSize="36sp" />
+                                    android:textSize="44sp" />
 
                                 <ImageView
                                     android:id="@+id/imageView3"
-                                    android:layout_width="150dp"
+                                    android:layout_width="180dp"
                                     android:layout_height="match_parent"
                                     android:layout_alignParentRight="true"
                                     android:layout_centerVertical="true"
@@ -535,8 +539,9 @@
                             <RelativeLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="0dp"
+                                android:layout_margin="20dp"
                                 android:layout_weight="50"
-                                android:background="@drawable/rounded_button2">
+                                android:background="@drawable/rounded_buttontablet">
 
                                 <ImageButton
                                     android:id="@+id/numberChoice"
@@ -550,7 +555,7 @@
 
                                 <ImageView
                                     android:id="@+id/imageView3"
-                                    android:layout_width="150dp"
+                                    android:layout_width="180dp"
                                     android:layout_height="match_parent"
                                     android:layout_alignParentLeft="true"
                                     android:layout_alignParentRight="false"
@@ -562,7 +567,7 @@
 
                                 <TextView
                                     android:id="@+id/textView7"
-                                    android:layout_width="150dp"
+                                    android:layout_width="200dp"
                                     android:layout_height="match_parent"
                                     android:layout_alignParentBottom="true"
                                     android:layout_alignParentRight="true"
@@ -574,7 +579,7 @@
                                     android:maxLines="2"
                                     android:text="@string/classic_numbers"
                                     android:textColor="@color/colorPrimaryDark"
-                                    android:textSize="36sp" />
+                                    android:textSize="44sp" />
                             </RelativeLayout>
 
                             <ImageButton
@@ -641,7 +646,7 @@
                     android:orientation="horizontal"
                     android:visibility="visible"
                     android:weightSum="100"
-                    tools:layout_width="0dp"
+                    tools:layout_width="800dp"
                     tools:visibility="visible">
 
                     <ImageView
@@ -661,7 +666,7 @@
                         android:layout_weight="30"
                         android:clickable="true"
                         android:orientation="vertical"
-                        android:padding="8dp"
+                        android:padding="10dp"
                         android:visibility="visible"
                         android:weightSum="100"
                         tools:visibility="visible">
@@ -695,43 +700,41 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginBottom="8dp"
+                        android:layout_marginBottom="14dp"
                         android:layout_weight="30">
 
                         <LinearLayout
 
                             android:id="@+id/signin_button"
-                            android:layout_width="100dp"
-                            android:layout_height="100dp"
+                            android:layout_width="125dp"
+                            android:layout_height="125dp"
                             android:layout_centerInParent="true"
                             android:layout_gravity="center"
                             android:background="@drawable/back_button"
                             android:orientation="vertical"
                             android:visibility="visible"
                             android:weightSum="100"
-                            tools:visibility="gone">
+                            tools:visibility="visible">
 
                             <ImageView
                                 android:id="@+id/imageView4"
-                                android:layout_width="40dp"
-                                android:layout_height="40dp"
+                                android:layout_width="50dp"
+                                android:layout_height="50dp"
                                 android:layout_alignParentLeft="false"
                                 android:layout_alignParentStart="false"
                                 android:layout_gravity="center"
-                                android:layout_marginTop="20dp"
+                                android:layout_marginTop="25dp"
                                 android:src="@drawable/googlelogo" />
 
                             <TextView
                                 android:id="@+id/textView8"
-                                android:layout_width="60dp"
+                                android:layout_width="80dp"
                                 android:layout_height="match_parent"
                                 android:layout_gravity="center"
                                 android:layout_marginBottom="12dp"
-                                android:layout_marginLeft="12dp"
-                                android:layout_marginRight="12dp"
                                 android:gravity="center"
                                 android:text="@string/sign_in_button"
-                                android:textSize="18sp" />
+                                android:textSize="20sp" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -741,7 +744,7 @@
                             android:orientation="vertical"
                             android:visibility="gone"
                             android:weightSum="100"
-                            tools:visibility="visible">
+                            tools:visibility="gone">
 
                             <ImageView
                                 android:id="@+id/user_badge_level"
@@ -778,7 +781,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="30"
                         android:orientation="vertical"
-                        android:padding="5dp"
+                        android:padding="7dp"
                         android:weightSum="100">
 
                         <ImageView
@@ -824,7 +827,7 @@
                     android:visibility="visible"
                     android:weightSum="100"
                     tools:layout_width="800dp"
-                    tools:visibility="visible">
+                    tools:visibility="gone">
 
                     <TextView
                         android:id="@+id/textView9"
@@ -834,7 +837,7 @@
                         android:gravity="center"
                         android:text="Multiplayer Game"
                         android:textColor="@color/colorPrimaryDark"
-                        android:textSize="30sp" />
+                        android:textSize="36sp" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -866,7 +869,7 @@
                             android:clickable="true"
                             android:text="Host "
                             android:textColor="@color/white"
-                            android:textSize="22sp"
+                            android:textSize="24sp"
                             android:visibility="visible"
                             android:weightSum="100"
                             tools:clickable="true"
@@ -885,7 +888,7 @@
                             android:clickable="true"
                             android:text="Quick "
                             android:textColor="@color/white"
-                            android:textSize="22sp"
+                            android:textSize="24sp"
                             android:visibility="visible"
                             tools:clickable="true">
 
@@ -902,7 +905,7 @@
                             android:clickable="true"
                             android:text="Join "
                             android:textColor="@color/white"
-                            android:textSize="22sp"
+                            android:textSize="24sp"
                             android:visibility="visible"
                             android:weightSum="100"
                             tools:clickable="true">

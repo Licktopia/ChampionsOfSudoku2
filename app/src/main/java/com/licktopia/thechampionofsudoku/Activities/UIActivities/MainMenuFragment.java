@@ -113,11 +113,14 @@ public class MainMenuFragment extends Fragment {
         if(phoneSize==1) {
             view = inflater.inflate(R.layout.activity_main_menu_small, container, false);
         }
-        else if(phoneSize == 3){
-            view = inflater.inflate(R.layout.activity_main_menu_large, container, false);
-        }
-        else{
+        else if(phoneSize == 2){
             view = inflater.inflate(R.layout.activity_main_menu, container, false);
+        }
+        else if(phoneSize ==3){
+            view = inflater.inflate(R.layout.activity_main_menu_phablet, container, false);
+        }
+        else if(phoneSize == 4){
+            view = inflater.inflate(R.layout.activity_main_menu_large, container, false);
         }
 
         scrollView = (HorizontalScrollView)view.findViewById(R.id.gestures);

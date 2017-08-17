@@ -46,7 +46,7 @@ public abstract class BaseGameActivity extends AppCompatActivity implements
 
 
     // The game helper object. This class is mainly a wrapper around this object.
-    protected GameHelper mHelper;
+    public static GameHelper mHelper;
 
     // We expose these constants here because we don't want users of this class
     // to have to know about GameHelper at all.

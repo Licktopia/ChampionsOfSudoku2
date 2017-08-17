@@ -49,11 +49,14 @@ public class CompletedGameFragment extends Fragment {
         if(phoneSize==1) {
             view = inflater.inflate(R.layout.activity_completedgame_small, container, false);
         }
+        else if(phoneSize == 2){
+            view = inflater.inflate(R.layout.activity_completedgame, container, false);
+        }
         else if(phoneSize == 3){
-            view = inflater.inflate(R.layout.activity_completedgame_large, container, false);
+            view = inflater.inflate(R.layout.activity_completedgame_phablet, container, false);
         }
         else{
-            view = inflater.inflate(R.layout.activity_completedgame, container, false);
+            view = inflater.inflate(R.layout.activity_completedgame_large, container, false);
         }
 
         tvSortRecent = (Button)view.findViewById(R.id.sort_recent);

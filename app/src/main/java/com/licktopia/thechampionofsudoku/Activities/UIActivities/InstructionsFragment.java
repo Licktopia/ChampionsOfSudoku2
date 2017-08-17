@@ -23,11 +23,14 @@ public class InstructionsFragment extends Fragment {
         if(phoneSize==1) {
             view = inflater.inflate(R.layout.activity_instructions_small, container, false);
         }
+        else if(phoneSize == 2){
+            view = inflater.inflate(R.layout.activity_instructions, container, false);
+        }
         else if(phoneSize == 3){
-            view = inflater.inflate(R.layout.activity_instructions_large, container, false);
+            view = inflater.inflate(R.layout.activity_instructions_phablet, container, false);
         }
         else{
-            view = inflater.inflate(R.layout.activity_instructions, container, false);
+            view = inflater.inflate(R.layout.activity_instructions_large, container, false);
         }
         return view;
     }

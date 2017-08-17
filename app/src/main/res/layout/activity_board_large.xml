@@ -127,8 +127,8 @@
         tools:visibility="visible">
 
         <include
-            android:id="@+id/toolbar"
-            layout="@layout/toolbar_main"
+            android:id="@+id/toolbar_large"
+            layout="@layout/toolbar_main_large"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:visibility="invisible" />

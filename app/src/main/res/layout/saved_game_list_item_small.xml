@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:card_view="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="80dp"
+    android:layout_height="70dp"
     android:background="@android:color/transparent"
     android:orientation="vertical">
 
@@ -43,7 +43,8 @@
                     android:layout_margin="5dp"
                     android:layout_weight="1"
                     android:background="@drawable/rounded_button"
-                    android:text="Resume" />
+                    android:text="Resume"
+                    android:textSize="10sp" />
 
                 <Button
                     android:id="@+id/delete_savedgame"
@@ -52,7 +53,8 @@
                     android:layout_margin="5dp"
                     android:layout_weight="1"
                     android:background="@drawable/rounded_button"
-                    android:text="Delete" />
+                    android:text="Delete"
+                    android:textSize="10sp" />
 
             </LinearLayout>
 
@@ -75,7 +77,7 @@
                     android:gravity="center|clip_vertical"
                     android:text="Jul, 12 2017"
                     android:textColor="@color/white"
-                    android:textSize="12sp"
+                    android:textSize="10sp"
                     android:typeface="monospace" />
 
                 <TextView
@@ -86,7 +88,7 @@
                     android:gravity="center|clip_vertical"
                     android:text="09:45 PM -autosave"
                     android:textColor="@color/white"
-                    android:textSize="12sp" />
+                    android:textSize="10sp" />
 
             </LinearLayout>
 
@@ -97,12 +99,14 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_gravity="center"
+            android:layout_margin="5dp"
             android:layout_weight="15"
             android:gravity="center_vertical|center_horizontal"
             android:scaleType="fitCenter"
             android:text="Number"
             android:textColor="@color/white"
-            android:typeface="monospace" />
+            android:typeface="monospace"
+            card_view:background="@drawable/peacock" />
 
         <ImageView
             android:id="@+id/savedgame_level"
@@ -117,7 +121,8 @@
             android:text="Medium"
             android:textAllCaps="true"
             android:textColor="@color/white"
-            android:typeface="monospace" />
+            android:typeface="monospace"
+            card_view:background="@drawable/experticon" />
 
     </LinearLayout>
 </LinearLayout>

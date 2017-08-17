@@ -47,11 +47,14 @@ public class SavedGameFragment extends Fragment {
         if(phoneSize==1) {
             view = inflater.inflate(R.layout.activity_savedgame_small, container, false);
         }
+        else if(phoneSize == 2){
+            view = inflater.inflate(R.layout.activity_savedgame, container, false);
+        }
         else if(phoneSize == 3){
-            view = inflater.inflate(R.layout.activity_savedgame_large, container, false);
+            view = inflater.inflate(R.layout.activity_savedgame_phablet, container, false);
         }
         else{
-            view = inflater.inflate(R.layout.activity_savedgame, container, false);
+            view = inflater.inflate(R.layout.activity_savedgame_large, container, false);
         }
 
         mProgressIndicator = (ProgressBar)view.findViewById(R.id.progressBar2);

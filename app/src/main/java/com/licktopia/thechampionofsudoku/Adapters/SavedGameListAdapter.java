@@ -65,13 +65,17 @@ public class SavedGameListAdapter extends RecyclerView.Adapter<SavedGameListAdap
             v = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.saved_game_list_item_small, parent, false);
         }
+        else if(phoneSize == 2){
+            v = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.saved_game_list_item, parent, false);
+        }
         else if(phoneSize == 3){
             v = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.saved_game_list_item_large, parent, false);
+                    .inflate(R.layout.saved_game_list_item_phablet, parent, false);
         }
         else{
             v = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.saved_game_list_item, parent, false);
+                    .inflate(R.layout.saved_game_list_item_large, parent, false);
         }
 
         return new ViewHolder(v);

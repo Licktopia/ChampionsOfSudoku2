@@ -44,6 +44,7 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
 import com.google.android.gms.games.Games;
+import com.google.example.games.basegameutils.BaseGameActivity;
 import com.licktopia.thechampionofsudoku.Activities.BaseActivity;
 import com.licktopia.thechampionofsudoku.BackgroundImages;
 import com.licktopia.thechampionofsudoku.CircleTransform;
@@ -178,11 +179,14 @@ public class BoardFragment extends Fragment {
         if(phoneSize==1) {
             view = inflater.inflate(R.layout.activity_board_small, container, false);
         }
+        else if(phoneSize == 2){
+            view = inflater.inflate(R.layout.activity_board, container, false);
+        }
         else if(phoneSize == 3){
-            view = inflater.inflate(R.layout.activity_board_large, container, false);
+            view = inflater.inflate(R.layout.activity_board_phablet, container, false);
         }
         else{
-            view = inflater.inflate(R.layout.activity_board, container, false);
+            view = inflater.inflate(R.layout.activity_board_large, container, false);
         }
 
 
@@ -198,12 +202,16 @@ public class BoardFragment extends Fragment {
             toolbar = (Toolbar) view.findViewById(R.id.toolbar_small);
             ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
         }
+        else if(phoneSize == 2){
+            toolbar = (Toolbar) view.findViewById(R.id.toolbar);
+            ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
+        }
         else if(phoneSize == 3){
-            toolbar = (Toolbar) view.findViewById(R.id.toolbar_large);
+            toolbar = (Toolbar) view.findViewById(R.id.toolbar_phablet);
             ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
         }
         else{
-            toolbar = (Toolbar) view.findViewById(R.id.toolbar);
+            toolbar = (Toolbar) view.findViewById(R.id.toolbar_large);
             ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
         }
 

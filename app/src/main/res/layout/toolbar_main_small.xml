@@ -30,7 +30,7 @@
 
         <ImageView
             android:id="@+id/home_menu_button"
-            android:layout_width="45dp"
+            android:layout_width="40dp"
             android:layout_height="match_parent"
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="5dp"
@@ -52,7 +52,7 @@
             android:gravity="center_vertical|center"
             android:text="Score"
             android:textColor="@android:color/white"
-            android:textSize="22sp"
+            android:textSize="18sp"
             android:visibility="visible" />
 
         <Chronometer
@@ -64,7 +64,7 @@
             android:layout_centerInParent="true"
             android:gravity="center"
             android:textColor="@android:color/white"
-            android:textSize="22sp"
+            android:textSize="18sp"
             android:visibility="visible" />
 
         <LinearLayout
@@ -85,7 +85,7 @@
 
             <ImageButton
                 android:id="@+id/backButton"
-                android:layout_width="30dp"
+                android:layout_width="26dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:layout_marginRight="6dp"
@@ -98,7 +98,7 @@
 
             <ImageButton
                 android:id="@+id/forwardButton"
-                android:layout_width="30dp"
+                android:layout_width="26dp"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="6dp"
                 android:background="@android:color/transparent"

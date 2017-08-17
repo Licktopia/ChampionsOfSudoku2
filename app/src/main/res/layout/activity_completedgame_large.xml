@@ -38,7 +38,7 @@
                 android:text="Games Played By Jeffrey Michael Lichtman 564"
                 android:textAllCaps="true"
                 android:textColor="@android:color/black"
-                android:textSize="16sp" />
+                android:textSize="26sp" />
         </LinearLayout>
 
         <android.support.v7.widget.RecyclerView
@@ -65,7 +65,8 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="Recent" />
+                android:text="Recent"
+                android:textSize="20sp" />
 
             <Button
                 android:id="@+id/sort_best"
@@ -74,7 +75,8 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="Best" />
+                android:text="Best"
+                android:textSize="20sp" />
 
             <Button
                 android:id="@+id/sort_highscore"
@@ -83,7 +85,8 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="High Score" />
+                android:text="High Score"
+                android:textSize="20sp" />
 
             <Button
                 android:id="@+id/sort_time"
@@ -92,7 +95,8 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="Time" />
+                android:text="Time"
+                android:textSize="20sp" />
 
         </LinearLayout>
     </LinearLayout>

@@ -184,10 +184,6 @@ public class BaseActivity extends BaseGameActivity
         transaction.commit();
     }
 
-
-
-
-
     public static ArrayList<SavedGame> getSavedGames() {
         return savedGames;
     }
@@ -369,8 +365,12 @@ public class BaseActivity extends BaseGameActivity
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         boolean isTablet = getResources().getBoolean(R.bool.is_tablet);
         boolean isNormalPhone = getResources().getBoolean(R.bool.is_normal_phone);
+        boolean isPhablet = getResources().getBoolean(R.bool.is_phablet);
 
         if(isTablet){
+            phoneSize = 4;
+        }
+        else if(isPhablet){
             phoneSize = 3;
         }
         else if(isNormalPhone){
@@ -419,39 +419,9 @@ public class BaseActivity extends BaseGameActivity
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        mProgressBar.setVisibility(VISIBLE);
-        mainScreen.setAlpha(.6f);
-        gameHelper.onStart(this);
-        Type type = new TypeToken<ArrayList<SavedGame>>() {}.getType();
-        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        Gson gson = new Gson();
-        if(sharedPrefs.getString(SAVED_KEY,null)!=null) {
-            String json = sharedPrefs.getString(SAVED_KEY, null);
-            savedGames = gson.fromJson(json, type);
-        }
-        if(sharedPrefs.getLong(XP_KEY, 0)!=0) {
-            setXp(sharedPrefs.getLong(XP_KEY, 0));
-        }
-        type = new TypeToken<ArrayList<CompletedGame>>() {}.getType();
-        if(sharedPrefs.getString(COMPLETED_KEY,null)!=null) {
-            String json = sharedPrefs.getString(COMPLETED_KEY, null);
-            completedGames = gson.fromJson(json, type);
-        }
-        if(sharedPrefs.getInt(LEVEL_KEY, 0)!=0) {
-            level = sharedPrefs.getInt(LEVEL_KEY, 0);
-        }
-        if(sharedPrefs.getString(USERNAME_KEY, null)!=null) {
-            username = sharedPrefs.getString(USERNAME_KEY, null);
-        }
-
-    }
-
-    @Override
     protected void onStop() {
         super.onStop();
-        gameHelper.onStop();
+       // gameHelper.onStop();
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = sharedPrefs.edit();
         Gson gson = new Gson();

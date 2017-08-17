@@ -38,7 +38,7 @@
                 android:text="Games Played By Jeffrey Michael Lichtman 564"
                 android:textAllCaps="true"
                 android:textColor="@android:color/black"
-                android:textSize="16sp" />
+                android:textSize="12sp" />
         </LinearLayout>
 
         <android.support.v7.widget.RecyclerView
@@ -72,6 +72,6 @@
         android:layout_centerHorizontal="true"
         android:layout_centerInParent="false"
         android:text="Loading..."
-        android:textSize="18sp" />
+        android:textSize="16sp" />
 
 </RelativeLayout>

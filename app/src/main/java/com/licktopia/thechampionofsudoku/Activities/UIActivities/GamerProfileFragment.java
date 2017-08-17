@@ -69,11 +69,14 @@ public class GamerProfileFragment extends Fragment {
         if(phoneSize==1) {
             view = inflater.inflate(R.layout.activity_gamer_profile_small, container, false);
         }
+        else if(phoneSize == 2){
+            view = inflater.inflate(R.layout.activity_gamer_profile, container, false);
+        }
         else if(phoneSize == 3){
-            view = inflater.inflate(R.layout.activity_gamer_profile_large, container, false);
+            view = inflater.inflate(R.layout.activity_gamer_profile_phablet, container, false);
         }
         else{
-            view = inflater.inflate(R.layout.activity_gamer_profile, container, false);
+            view = inflater.inflate(R.layout.activity_gamer_profile_large, container, false);
         }
 
         mHistoryButton = (Button) view.findViewById(R.id.history_button);

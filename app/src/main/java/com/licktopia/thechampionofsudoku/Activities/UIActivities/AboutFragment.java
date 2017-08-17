@@ -26,11 +26,14 @@ public class AboutFragment extends Fragment {
         if(phoneSize==1) {
             view = inflater.inflate(R.layout.activity_about_small, container, false);
         }
+        else if(phoneSize == 2){
+            view = inflater.inflate(R.layout.activity_about, container, false);
+        }
         else if(phoneSize == 3){
-            view = inflater.inflate(R.layout.activity_about_large, container, false);
+            view = inflater.inflate(R.layout.activity_about_phablet, container, false);
         }
         else{
-            view = inflater.inflate(R.layout.activity_about, container, false);
+            view = inflater.inflate(R.layout.activity_about_large, container, false);
         }
 
         return view;
