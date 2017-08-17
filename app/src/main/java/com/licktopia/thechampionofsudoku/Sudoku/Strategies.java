@@ -37,11 +37,11 @@ public class Strategies {
     public static final int NAKED_DOUBLE = 2;
     public static final int HIDDEN_SINGLE = 3;
     public static final int HIDDEN_PAIR = 4;
-    public static final int LOCKED_CANDIDATE = 5;
-    public static final int XWING = 6;
-    public static final int YWING =7;
-
-    public static final int NUM_STRATEGIES = 6;
+    public static final int NAKED_TRIPLE = 5;
+    public static final int LOCKED_CANDIDATE = 6;
+    public static final int XWING = 7;
+    public static final int YWING = 8;
+    public static final int NUM_STRATEGIES = 7;
 
     /* Returns a single random element of type <T> from a list */
     public static <T> T getRandomElement(List<T> list) {
@@ -224,6 +224,83 @@ public class Strategies {
         return hiddenPairs;
     }
 
+    /****** NAKED TRIPLE ********/
+
+    public static List<Hint> getNakedTriples(Board board) {
+
+        ArrayList<Hint> nakedTriples = new ArrayList<>();
+
+        // Mark all squares that have 2 or 3 notepad values
+        int size = board.getSize();
+        boolean[] qualified = new boolean[size * size];
+        for (int i = 0; i < board.totalBoardElements(); i++) {
+            int npVals =  board.getTotalNotepadValues(i);
+            qualified[i] = npVals == 2 || npVals == 3;
+        }
+
+        int[][] groups = board.getAllIndexGroups();
+        for (int[] group : groups) {
+
+            // Get all indices within group that qualify
+            ArrayList<Integer> candidates = new ArrayList<>();
+            for (int cnt = 0; cnt < group.length; cnt++) {
+                int index = group[cnt];
+                if (qualified[index]) candidates.add(index);
+            }
+
+            // Not enough possible candidates in group
+            if (candidates.size() < 3) continue;
+
+            // Compare sets of triplets for a naked triple
+            int idx1, idx2, idx3;
+            for (int x = 0; x < candidates.size() - 2; x++) {
+                idx1 = candidates.get(x);
+                for (int y = x + 1; y < candidates.size() - 1; y++) {
+                    idx2 = candidates.get(y);
+                    for (int z = y + 1; z < candidates.size(); z++) {
+                        idx3 = candidates.get(z);
+                        int count = 0;
+                        int[] nums = new int[3];
+                        for (int num = 1; num <= size; num++) {
+                            if (board.isNotepadInTriple(num, idx1, idx2, idx3)) {
+                                if (count < 3) nums[count++] = num;
+                                else count++;
+                            }
+                        }
+
+                        // Found a set of three squares that contain only 3 notepad numbers total
+                        if (count == 3) {
+                            // Check if triple is valid (will remove numbers from other squares)
+                            boolean valid = false;
+                            for (int index : group) {
+                                if (index == idx1 || index == idx2 || index == idx3) continue;
+                                else if (board.getNotepadAt(index, nums[0]) ||
+                                        board.getNotepadAt(index, nums[1]) ||
+                                        board.getNotepadAt(index, nums[2])) {
+                                    valid = true;
+                                    break;
+                                }
+                            }
+                            if (valid) {
+                                // Create hint object
+                                int[][] hintInfo = new int[NUM_CATEGORIES][];
+                                hintInfo[REMOVE_FROM] = new int[]{CONNECTED};
+                                hintInfo[SELECTED] = new int[]{idx1, idx2, idx3};
+                                hintInfo[CONNECTED] = group;
+                                hintInfo[NOTEPAD] = nums;
+                                nakedTriples.add(new Hint(hintInfo));
+                            }
+                        }
+                    }
+                }
+            }
+
+        }
+
+        return nakedTriples;
+    }
+
+
     /****** LOCKED CANDIDATE *******/
 
     // Search CLUSTERS for notepad candidates that are restricted to single row or column
@@ -375,24 +452,64 @@ public class Strategies {
         ArrayList<Hint> yWings = new ArrayList<>();
         int size = board.getSize() * board.getSize();
 
-        // Track which square notepads have two values only
-        boolean[] notepadCheck = new boolean[size];
+        // Get list of squares whose notepads have two values only
+        ArrayList<Integer> twoNotepadSquares = new ArrayList<>();
         for (int i = 0; i < size; i++) {
-            int notepadNums = board.getTotalNotepadValues(i);
-            notepadCheck[i] = notepadNums == 2;
+            if (board.getTotalNotepadValues(i) == 2)
+                twoNotepadSquares.add(i);
         }
 
         // Iterate through all qualifying squares
-        for (int i = 0; i < size; i++) {
-            if (notepadCheck[i]) {
+        for (int i = 0; i < twoNotepadSquares.size() - 2; i++) {
+            int idx1 = twoNotepadSquares.get(i);
+            for (int j = i + 1; j < twoNotepadSquares.size() - 1; j++) {
+                int idx2 = twoNotepadSquares.get(j);
+                int connectionOne =  board.isConnected(idx1, idx2);           // Check if connected
+                if (connectionOne < 0) continue;
+                int notepadA = board.getMatchingNotepadNum(idx1, idx2);       // Get candidate "A"
+                if (notepadA < 0) continue;
+                int notepadC = board.getMismatchingNotepadNum(idx1, idx2);    // Get candidate "C"
+                if (notepadC < 0) continue;
+                int notepadB = board.getMismatchingNotepadNum(idx2, idx1);    // Get candidate "B"
+                for (int k = j + 1; k < twoNotepadSquares.size(); k++) {
+                    int idx3 = twoNotepadSquares.get(k);
+                    int connectionTwo = board.isConnected(idx1, idx3);                  // Check if connected
+                    if (connectionTwo < 0 || connectionOne == connectionTwo) continue;  // Skip if same connection as one
+                    // Check if third square has numbers "BC"
+                    if (board.getNotepadAt(idx3, notepadB) && board.getNotepadAt(idx3, notepadC)) {
+                        // Found eligible YWing
+                        ArrayList<Integer> connectedSquares = board.getSharedConnections(idx2, idx3);
+                        connectedSquares.remove(new Integer(idx1)); // Remove original square AB from connected list
 
+                        // Check if strategy will remove a number
+                        boolean valid = false;
+                        for (int index : connectedSquares) {
+                            if (board.getNotepadAt(index, notepadC)) valid = true;
+                            break;
+                        }
+
+                        // Create hint object
+                        if (valid) {
+                            int[][] hintInfo = new int[NUM_CATEGORIES][];
+                            hintInfo[REMOVE_FROM] = new int[]{CONNECTED};
+                            hintInfo[SELECTED] = new int[] {idx1, idx2, idx3};
+                            int[] connected = new int[connectedSquares.size()];
+                            for (int x = 0; x < connected.length; x++) {
+                                connected[x] = connectedSquares.get(x);
+                            }
+                            hintInfo[CONNECTED] = connected;
+                            hintInfo[NOTEPAD] = new int[]{notepadC};
+                            yWings.add(new Hint(hintInfo));
+                        }
+                    }
+                }
             }
         }
 
         return yWings;
     }
 
-        public static int executeStrategyFromList(Board board, List<Hint> hints) {
+    public static int executeStrategyFromList(Board board, List<Hint> hints) {
         if (!hints.isEmpty()) {
             Hint hint = getRandomElement(hints);
             executeStrategy(board, hint);
@@ -415,11 +532,20 @@ public class Strategies {
         return executeStrategyFromList(board, getHiddenPairs(board));
     }
 
+    /* Finds, selects, and executes naked triple strategy on one random existing instance */
+    public static int removeRandomNakedTripleValues(Board board) {
+        return executeStrategyFromList(board, getNakedTriples(board));
+    }
+
     public static int removeRandomLockedCandidateValues(Board board) {
         return executeStrategyFromList(board, getLockedCandidates(board));
     }
 
     public static int removeRandomXWingValues(Board board) {
+        return executeStrategyFromList(board, getXWings(board));
+    }
+
+    public static int removeRandomYWingValues(Board board) {
         return executeStrategyFromList(board, getXWings(board));
     }
 
