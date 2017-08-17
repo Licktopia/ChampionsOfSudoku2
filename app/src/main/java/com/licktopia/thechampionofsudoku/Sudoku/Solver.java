@@ -100,6 +100,8 @@ public class Solver implements java.io.Serializable {
         while (squaresToComplete > 0 && !cannotSolve) {
             int beforeStrategiesUsed = strategiesUsed;
             switch(strategyNumber) {
+                case Strategies.YWING:
+                    strategiesUsed += Strategies.removeRandomYWingValues(curBoard);
                 case Strategies.XWING:
                     strategiesUsed += Strategies.removeRandomXWingValues(curBoard);
                 case Strategies.LOCKED_CANDIDATE:

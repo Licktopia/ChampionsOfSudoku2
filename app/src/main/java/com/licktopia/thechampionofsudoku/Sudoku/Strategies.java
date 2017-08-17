@@ -41,7 +41,7 @@ public class Strategies {
     public static final int LOCKED_CANDIDATE = 6;
     public static final int XWING = 7;
     public static final int YWING = 8;
-    public static final int NUM_STRATEGIES = 7;
+    public static final int NUM_STRATEGIES = 8;
 
     /* Returns a single random element of type <T> from a list */
     public static <T> T getRandomElement(List<T> list) {
@@ -484,8 +484,10 @@ public class Strategies {
                         // Check if strategy will remove a number
                         boolean valid = false;
                         for (int index : connectedSquares) {
-                            if (board.getNotepadAt(index, notepadC)) valid = true;
-                            break;
+                            if (board.getNotepadAt(index, notepadC)) {
+                                valid = true;
+                                break;
+                            }
                         }
 
                         // Create hint object
