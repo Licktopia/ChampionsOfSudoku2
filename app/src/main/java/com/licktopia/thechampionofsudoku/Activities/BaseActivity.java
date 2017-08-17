@@ -559,6 +559,19 @@ public class BaseActivity extends BaseGameActivity
             }
         } else if (f instanceof SudokuSettingsFragment) {
             getSupportFragmentManager().popBackStack();
+        } else if (f instanceof MainMenuFragment) {
+            new AlertDialog.Builder(this)
+                    .setMessage(R.string.sure_exit)
+                    .setCancelable(true)
+                    .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            finish();
+                            moveTaskToBack(true);
+                            System.exit(0);
+                        }
+                    })
+                    .setNegativeButton(getString(R.string.no), null)
+                    .show();
         }
         else{
             super.onBackPressed();
