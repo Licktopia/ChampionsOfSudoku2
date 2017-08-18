@@ -1655,6 +1655,7 @@ public class BoardFragment extends Fragment {
             }
             else{
                 squareViews[i].setHighlighted(false, false);
+                squareViews[i].clearNotepadHighlights();
             }
             squareViews[i].setFullAlpha();
         }

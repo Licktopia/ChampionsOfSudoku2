@@ -206,6 +206,7 @@ public class SquareView {
             }
             else {
                 squareTexture.setVisibility(View.GONE); // Remove highlight
+                setHighlightColor(ContextCompat.getColor(context, R.color.white)); // Remove highlight
                 selectedSquare.setBackground(null);
             }
             whiteX.setVisibility(View.GONE);
