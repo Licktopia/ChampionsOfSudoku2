@@ -174,6 +174,9 @@ public class MainMenuFragment extends Fragment {
 
         // IGNORE, TESTING FOR CLASSIFIER, SWITCH TO REAL HOST FUNCTION WHEN MERGEz
         hostButton = (Button)view.findViewById(R.id.host_button);
+        ((Button)view.findViewById(R.id.host_button)).setEnabled(false);
+        ((Button)view.findViewById(R.id.host_button)).setAlpha(.5f);
+        /*
         final Context context = getContext();
         hostButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -187,7 +190,7 @@ public class MainMenuFragment extends Fragment {
                 }
             }
         });
-
+        */
         //Button is not necessary since the join is done with a google play notification
         ((Button)view.findViewById(R.id.join_button)).setEnabled(false);
         ((Button)view.findViewById(R.id.join_button)).setAlpha(.5f);
