@@ -123,7 +123,7 @@ public class BoardFragment extends Fragment {
     private long timeWhenStopped;
     private Handler highlightHandler;
 
-    private HorizontalScrollView mHintsLayout;
+    private LinearLayout mHintsLayout;
     private LinearLayout mEndGameLayout;
     private ImageView userBadge;
     private TextView userText;
@@ -250,7 +250,7 @@ public class BoardFragment extends Fragment {
         mRedoButton = (ImageButton)view.findViewById(R.id.forwardButton);
         notepadIcon = (ImageButton) view.findViewById(R.id.scratch);
         scoreBoard = (TextView)view.findViewById(R.id.score);
-        mHintsLayout = (HorizontalScrollView)view.findViewById(R.id.hints_layout);
+        mHintsLayout = (LinearLayout) view.findViewById(R.id.hints_layout);
         mEndGameLayout = (LinearLayout)view.findViewById(R.id.end_game_layout);
         userBadge = (ImageView)view.findViewById(R.id.user_image);
         userText = (TextView)view.findViewById(R.id.user_text);
@@ -1173,7 +1173,7 @@ public class BoardFragment extends Fragment {
         userBadgeListener();
         leaderBoardsListener();
         facebookListener();
-        onScrollHintsListener();
+        //onScrollHintsListener();
     }
 
     private void continueListener(){
@@ -1552,7 +1552,7 @@ public class BoardFragment extends Fragment {
     /************************************
      * Listeners onScrollHints
      *********************************/
-    private void onScrollHintsListener() {
+   /* private void onScrollHintsListener() {
         mHintsLayout.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
             @Override
             public void onScrollChanged() {
@@ -1560,7 +1560,7 @@ public class BoardFragment extends Fragment {
             }
         });
     }
-
+*/
     /************************************
      * Update board
      *********************************/
