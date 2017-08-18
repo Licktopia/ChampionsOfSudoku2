@@ -390,18 +390,28 @@ public class BoardFragment extends Fragment {
             }
             playerOpponent = (ImageView)view.findViewById(Tags.PlayerTags[7]);
             playerOpponent.setVisibility(View.VISIBLE);
+
+
             ViewGroup.LayoutParams paramsBar = botBar.getLayoutParams();
+
             int view_height = d.getHeight();
-            paramsBar.height = (int)(view_height*((numPlayers+1)*.025));
+
+            ViewGroup.LayoutParams params2=Opponents[0].getLayoutParams();
+
+            int playerTokenHeight = params2.height;
+
+            paramsBar.height = (numPlayers+1)*playerTokenHeight;
+
             botBar.setLayoutParams(paramsBar);
 
 
-
-
             ViewGroup.LayoutParams params=botBar.getLayoutParams();
+
             int botBarHeight = params.height;
-            ViewGroup.LayoutParams params2=Opponents[0].getLayoutParams();
-            int playerTokenHeight = params2.height;
+
+
+
+
 
             // WAS: float offset = (botBarHeight-playerTokenHeight)/(numPlayers - 1)
             // if numPlayers = 1 we'll divide by zero
