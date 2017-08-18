@@ -213,11 +213,11 @@ public class SquareView {
     }
 
     public void setNotepadHighlightRed(int num) {
-        notepadNums[num - 1].setBackgroundColor(context.getColor(R.color.red));
+        notepadNums[num - 1].setBackgroundColor(ContextCompat.getColor(context, R.color.red));
     }
 
     public void setNotepadHighlightGreen(int num) {
-        notepadNums[num - 1].setBackgroundColor(context.getColor(R.color.color1));
+        notepadNums[num - 1].setBackgroundColor(ContextCompat.getColor(context, R.color.color1));
     }
 
     public void clearNotepadHighlights() {
@@ -237,7 +237,7 @@ public class SquareView {
     }
 
     public void setDarkHighlight() {
-        setHighlightColor(context.getColor(R.color.silver));
+        setHighlightColor(ContextCompat.getColor(context, R.color.silver));
     }
 
     public void setSelectedHighlight() {
