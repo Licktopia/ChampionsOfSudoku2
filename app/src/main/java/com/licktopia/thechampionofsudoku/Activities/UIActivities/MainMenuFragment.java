@@ -189,7 +189,8 @@ public class MainMenuFragment extends Fragment {
         });
 
         //Button is not necessary since the join is done with a google play notification
-        ((Button)view.findViewById(R.id.join_button)).setVisibility(GONE);
+        ((Button)view.findViewById(R.id.join_button)).setEnabled(false);
+        ((Button)view.findViewById(R.id.join_button)).setAlpha(.5f);
         /*
         ((Button)view.findViewById(R.id.join_button)).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -466,8 +467,8 @@ public class MainMenuFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 playLickSound();
-                Bundle args = new Bundle();
-                callback.swapFragment(USER_BOARD_FRAGMENT, args);
+                //Bundle args = new Bundle();
+               // callback.swapFragment(USER_BOARD_FRAGMENT, args);
             }
         });
 

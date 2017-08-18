@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">TheChampionOfSudoku</string>
+    <string name="app_name">Champion Of Sudoku</string>
     <string name="new_board">Main Menu</string>
     <string name="action_share">Show/Share</string>
     <string name="action_instructions">Instructions</string>
