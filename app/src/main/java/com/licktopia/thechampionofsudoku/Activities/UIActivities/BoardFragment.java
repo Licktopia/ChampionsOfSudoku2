@@ -25,9 +25,11 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Chronometer;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -111,6 +113,8 @@ public class BoardFragment extends Fragment {
     private Button hiddenPairButton;
     private Button lockedCandidateButton;
     private Button xWingButton;
+    private Button nakedTripleButton;
+    private Button yWingButton;
     private ImageButton mUndoButton;
     private ImageButton mRedoButton;
     private ImageButton notepadIcon;
@@ -119,7 +123,7 @@ public class BoardFragment extends Fragment {
     private long timeWhenStopped;
     private Handler highlightHandler;
 
-    private LinearLayout mHintsLayout;
+    private HorizontalScrollView mHintsLayout;
     private LinearLayout mEndGameLayout;
     private ImageView userBadge;
     private TextView userText;
@@ -246,7 +250,7 @@ public class BoardFragment extends Fragment {
         mRedoButton = (ImageButton)view.findViewById(R.id.forwardButton);
         notepadIcon = (ImageButton) view.findViewById(R.id.scratch);
         scoreBoard = (TextView)view.findViewById(R.id.score);
-        mHintsLayout = (LinearLayout)view.findViewById(R.id.hints_layout);
+        mHintsLayout = (HorizontalScrollView)view.findViewById(R.id.hints_layout);
         mEndGameLayout = (LinearLayout)view.findViewById(R.id.end_game_layout);
         userBadge = (ImageView)view.findViewById(R.id.user_image);
         userText = (TextView)view.findViewById(R.id.user_text);
@@ -1017,6 +1021,8 @@ public class BoardFragment extends Fragment {
         hiddenPairButton = (Button) view.findViewById(R.id.hidden_pair);
         lockedCandidateButton = (Button) view.findViewById(R.id.locked_candidate);
         xWingButton = (Button) view.findViewById(R.id.x_wing);
+        nakedTripleButton = (Button) view.findViewById(R.id.naked_triple);
+        yWingButton = (Button) view.findViewById(R.id.y_wing);
         hintButton = (Button) view.findViewById(R.id.hints);
     }
 
@@ -1149,12 +1155,15 @@ public class BoardFragment extends Fragment {
         hiddenPairButtonListener();
         lockedCandidateListener();
         xWingListener();
+        nakedTripleButtonListener();
+        yWingListener();
         solveButtonListener();
         undoRedoListener();
         continueListener();
         userBadgeListener();
         leaderBoardsListener();
         facebookListener();
+        onScrollHintsListener();
     }
 
     private void continueListener(){
@@ -1486,6 +1495,58 @@ public class BoardFragment extends Fragment {
                     removeAllHighlights();
                 }
                 return true;
+            }
+        });
+    }
+
+    /************************************
+     * Listeners nakedTripleButton
+     *********************************/
+    private void nakedTripleButtonListener() {
+        nakedTripleButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    nakedTripleButton.setBackground(getResources().getDrawable(R.drawable.hint_button_pressed));
+                    showHint(Strategies.NAKED_TRIPLE);
+                }
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    nakedTripleButton.setBackground(getResources().getDrawable(R.drawable.hint_rounded_button));
+                    removeAllHighlights();
+                }
+                return true;
+            }
+        });
+    }
+
+    /************************************
+     * Listeners yWingButton
+     *********************************/
+    private void yWingListener() {
+        yWingButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    yWingButton.setBackground(getResources().getDrawable(R.drawable.hint_button_pressed));
+                    showHint(Strategies.YWING);
+                }
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    yWingButton.setBackground(getResources().getDrawable(R.drawable.hint_rounded_button));
+                    removeAllHighlights();
+                }
+                return true;
+            }
+        });
+    }
+
+    /************************************
+     * Listeners onScrollHints
+     *********************************/
+    private void onScrollHintsListener() {
+        mHintsLayout.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+            @Override
+            public void onScrollChanged() {
+
             }
         });
     }
