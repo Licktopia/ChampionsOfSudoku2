@@ -1632,7 +1632,7 @@
                             android:hapticFeedbackEnabled="true"
                             android:text="1"
                             android:textColor="@android:color/white"
-                            android:textSize="24sp"
+                            android:textSize="46sp"
                             android:textStyle="normal|bold" />
 
                         <TextView
@@ -1644,11 +1644,13 @@
                             android:layout_alignParentEnd="false"
                             android:layout_alignParentRight="false"
                             android:layout_alignRight="@+id/one"
-                            android:layout_marginBottom="5dp"
-                            android:layout_marginRight="10dp"
+                            android:layout_marginBottom="20dp"
+                            android:layout_marginRight="30dp"
                             android:textColor="@color/white"
-                            android:textSize="11sp"
-                            android:visibility="invisible" />
+                            android:textSize="24sp"
+                            android:visibility="invisible"
+                            tools:text="5"
+                            tools:visibility="visible" />
                     </RelativeLayout>
 
                     <RelativeLayout
@@ -1667,7 +1669,7 @@
                             android:hapticFeedbackEnabled="true"
                             android:text="2"
                             android:textColor="@android:color/white"
-                            android:textSize="24sp"
+                            android:textSize="46sp"
                             android:textStyle="normal|bold" />
 
                         <TextView
@@ -1677,11 +1679,13 @@
                             android:layout_alignParentBottom="true"
                             android:layout_alignParentEnd="true"
                             android:layout_alignParentRight="true"
-                            android:layout_marginBottom="5dp"
-                            android:layout_marginRight="10dp"
+                            android:layout_marginBottom="20dp"
+                            android:layout_marginRight="30dp"
                             android:textColor="@color/white"
-                            android:textSize="11sp"
-                            android:visibility="invisible" />
+                            android:textSize="24sp"
+                            android:visibility="invisible"
+                            tools:text="5"
+                            tools:visibility="visible" />
                     </RelativeLayout>
 
                     <RelativeLayout
@@ -1700,7 +1704,7 @@
                             android:hapticFeedbackEnabled="true"
                             android:text="3"
                             android:textColor="@android:color/white"
-                            android:textSize="24sp"
+                            android:textSize="46sp"
                             android:textStyle="normal|bold" />
 
                         <TextView
@@ -1710,11 +1714,13 @@
                             android:layout_alignParentBottom="true"
                             android:layout_alignParentEnd="true"
                             android:layout_alignParentRight="true"
-                            android:layout_marginBottom="5dp"
-                            android:layout_marginRight="10dp"
+                            android:layout_marginBottom="20dp"
+                            android:layout_marginRight="30dp"
                             android:textColor="@color/white"
-                            android:textSize="11sp"
-                            android:visibility="invisible" />
+                            android:textSize="24sp"
+                            android:visibility="invisible"
+                            tools:text="5"
+                            tools:visibility="visible" />
                     </RelativeLayout>
 
                     <RelativeLayout
@@ -1733,7 +1739,7 @@
                             android:hapticFeedbackEnabled="true"
                             android:text="4"
                             android:textColor="@android:color/white"
-                            android:textSize="24sp"
+                            android:textSize="46sp"
                             android:textStyle="normal|bold" />
 
                         <TextView
@@ -1743,11 +1749,13 @@
                             android:layout_alignParentBottom="true"
                             android:layout_alignParentEnd="true"
                             android:layout_alignParentRight="true"
-                            android:layout_marginBottom="5dp"
-                            android:layout_marginRight="10dp"
+                            android:layout_marginBottom="20dp"
+                            android:layout_marginRight="30dp"
                             android:textColor="@color/white"
-                            android:textSize="11sp"
-                            android:visibility="invisible" />
+                            android:textSize="24sp"
+                            android:visibility="invisible"
+                            tools:text="5"
+                            tools:visibility="visible" />
                     </RelativeLayout>
 
                     <RelativeLayout
@@ -1767,7 +1775,7 @@
                             android:lines="3"
                             android:text="5"
                             android:textColor="@android:color/white"
-                            android:textSize="24sp"
+                            android:textSize="46sp"
                             android:textStyle="normal|bold" />
 
                         <TextView
@@ -1777,11 +1785,13 @@
                             android:layout_alignParentBottom="true"
                             android:layout_alignParentEnd="true"
                             android:layout_alignParentRight="true"
-                            android:layout_marginBottom="5dp"
-                            android:layout_marginRight="10dp"
+                            android:layout_marginBottom="20dp"
+                            android:layout_marginRight="30dp"
                             android:textColor="@color/white"
-                            android:textSize="11sp"
-                            android:visibility="invisible" />
+                            android:textSize="24sp"
+                            android:visibility="invisible"
+                            tools:text="5"
+                            tools:visibility="visible" />
                     </RelativeLayout>
 
                     <RelativeLayout
@@ -1835,7 +1845,7 @@
                             android:hapticFeedbackEnabled="true"
                             android:text="6"
                             android:textColor="@android:color/white"
-                            android:textSize="24sp"
+                            android:textSize="46sp"
                             android:textStyle="normal|bold" />
 
                         <TextView
@@ -1845,12 +1855,14 @@
                             android:layout_alignParentBottom="true"
                             android:layout_alignParentEnd="true"
                             android:layout_alignParentRight="true"
-                            android:layout_marginBottom="5dp"
-                            android:layout_marginRight="10dp"
+                            android:layout_marginBottom="20dp"
+                            android:layout_marginRight="30dp"
                             android:layout_weight="10"
                             android:textColor="@color/white"
-                            android:textSize="11sp"
-                            android:visibility="invisible" />
+                            android:textSize="24sp"
+                            android:visibility="invisible"
+                            tools:text="5"
+                            tools:visibility="visible" />
                     </RelativeLayout>
 
                     <RelativeLayout
@@ -1869,7 +1881,7 @@
                             android:hapticFeedbackEnabled="true"
                             android:text="7"
                             android:textColor="@android:color/white"
-                            android:textSize="24sp"
+                            android:textSize="46sp"
                             android:textStyle="normal|bold" />
 
                         <TextView
@@ -1879,11 +1891,13 @@
                             android:layout_alignParentBottom="true"
                             android:layout_alignParentEnd="true"
                             android:layout_alignParentRight="true"
-                            android:layout_marginBottom="5dp"
-                            android:layout_marginRight="10dp"
+                            android:layout_marginBottom="20dp"
+                            android:layout_marginRight="30dp"
                             android:textColor="@color/white"
-                            android:textSize="11sp"
-                            android:visibility="invisible" />
+                            android:textSize="24sp"
+                            android:visibility="invisible"
+                            tools:text="5"
+                            tools:visibility="visible" />
                     </RelativeLayout>
 
                     <RelativeLayout
@@ -1902,7 +1916,7 @@
                             android:hapticFeedbackEnabled="true"
                             android:text="8"
                             android:textColor="@android:color/white"
-                            android:textSize="24sp"
+                            android:textSize="46sp"
                             android:textStyle="normal|bold" />
 
                         <TextView
@@ -1912,11 +1926,13 @@
                             android:layout_alignParentBottom="true"
                             android:layout_alignParentEnd="true"
                             android:layout_alignParentRight="true"
-                            android:layout_marginBottom="5dp"
-                            android:layout_marginRight="10dp"
+                            android:layout_marginBottom="20dp"
+                            android:layout_marginRight="30dp"
                             android:textColor="@color/white"
-                            android:textSize="11sp"
-                            android:visibility="invisible" />
+                            android:textSize="24sp"
+                            android:visibility="invisible"
+                            tools:text="5"
+                            tools:visibility="visible" />
                     </RelativeLayout>
 
                     <RelativeLayout
@@ -1936,7 +1952,7 @@
                             android:hapticFeedbackEnabled="true"
                             android:text="9"
                             android:textColor="@android:color/white"
-                            android:textSize="24sp"
+                            android:textSize="46sp"
                             android:textStyle="normal|bold" />
 
                         <TextView
@@ -1946,11 +1962,13 @@
                             android:layout_alignParentBottom="true"
                             android:layout_alignParentEnd="true"
                             android:layout_alignParentRight="true"
-                            android:layout_marginBottom="5dp"
-                            android:layout_marginRight="10dp"
+                            android:layout_marginBottom="20dp"
+                            android:layout_marginRight="30dp"
                             android:textColor="@color/white"
-                            android:textSize="11sp"
-                            android:visibility="invisible" />
+                            android:textSize="24sp"
+                            android:visibility="invisible"
+                            tools:text="5"
+                            tools:visibility="visible" />
                     </RelativeLayout>
 
                     <Button
@@ -1965,7 +1983,7 @@
                         android:hapticFeedbackEnabled="true"
                         android:text="Clear"
                         android:textColor="#d3d3d3"
-                        android:textSize="13sp"
+                        android:textSize="24sp"
                         android:visibility="visible" />
 
                     <Button
@@ -1980,7 +1998,7 @@
                         android:hapticFeedbackEnabled="true"
                         android:text="Hints"
                         android:textColor="#d3d3d3"
-                        android:textSize="13sp"
+                        android:textSize="24sp"
                         android:visibility="visible" />
 
 
@@ -2054,7 +2072,7 @@
                         android:gravity="top|center_horizontal"
                         android:text="Share Rank"
                         android:textColor="@color/white"
-                        android:textSize="10sp"
+                        android:textSize="24sp"
                         android:textStyle="bold" />
                 </LinearLayout>
 
@@ -2087,7 +2105,7 @@
                         android:gravity="top|center_horizontal"
                         android:text="Leaderboards"
                         android:textColor="#F2CA08"
-                        android:textSize="10sp"
+                        android:textSize="24sp"
                         android:textStyle="bold" />
                 </LinearLayout>
 
@@ -2120,7 +2138,7 @@
                         android:gravity="top|center_horizontal"
                         android:text="Me"
                         android:textColor="#e5e6e7"
-                        android:textSize="10sp"
+                        android:textSize="24sp"
                         android:textStyle="bold" />
 
                 </LinearLayout>
@@ -2153,7 +2171,7 @@
                         android:gravity="top|center_horizontal"
                         android:text="Continue"
                         android:textColor="#E18335"
-                        android:textSize="10sp"
+                        android:textSize="24sp"
                         android:textStyle="bold" />
                 </LinearLayout>
 
@@ -2168,7 +2186,8 @@
                 android:orientation="horizontal"
                 android:scrollbars="none"
                 android:visibility="visible"
-                android:weightSum="4">
+                android:weightSum="4"
+                tools:visibility="visible">
 
                 <LinearLayout
                     android:layout_width="match_parent"
