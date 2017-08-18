@@ -477,8 +477,8 @@ public class MainMenuFragment extends Fragment {
                 switch(event.getAction())
                 {
                     case MotionEvent.ACTION_DOWN:
-                        Log.i("X value:", "" + x1);
                         x1 = event.getX();
+                        Log.i("ScrollInfo", "" + x1);
                         return true;
                     case MotionEvent.ACTION_UP:
                         x2 = event.getX();
