@@ -104,9 +104,9 @@ public class DifficultyClassifier {
 
     public static void runStrategies(Context context) {
 
-        for (int level = 5; level < 6; level++) {
+        for (int level = 0; level < 6; level++) {
             int unsolved = 0;
-            for (int index = 0; index < 1000; index++) {
+            for (int index = 0; index < 10000; index++) {
                 Board board = new Board(level, context, index);
                 Solver solutionSolver = new Solver(board);
                 solutionSolver.solveWithStrategies();

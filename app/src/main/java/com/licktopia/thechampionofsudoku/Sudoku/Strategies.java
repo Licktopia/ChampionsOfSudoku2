@@ -460,9 +460,10 @@ public class Strategies {
         }
 
         // Iterate through all qualifying squares
-        for (int i = 0; i < twoNotepadSquares.size() - 2; i++) {
+        for (int i = 0; i < twoNotepadSquares.size(); i++) {
             int idx1 = twoNotepadSquares.get(i);
-            for (int j = i + 1; j < twoNotepadSquares.size() - 1; j++) {
+            for (int j = 0; j < twoNotepadSquares.size(); j++) {
+                if (j == i) continue;
                 int idx2 = twoNotepadSquares.get(j);
                 int connectionOne =  board.isConnected(idx1, idx2);           // Check if connected
                 if (connectionOne < 0) continue;
@@ -471,7 +472,8 @@ public class Strategies {
                 int notepadC = board.getMismatchingNotepadNum(idx1, idx2);    // Get candidate "C"
                 if (notepadC < 0) continue;
                 int notepadB = board.getMismatchingNotepadNum(idx2, idx1);    // Get candidate "B"
-                for (int k = j + 1; k < twoNotepadSquares.size(); k++) {
+                for (int k = 0; k < twoNotepadSquares.size(); k++) {
+                    if (k == i || k == j) continue;
                     int idx3 = twoNotepadSquares.get(k);
                     int connectionTwo = board.isConnected(idx1, idx3);                  // Check if connected
                     if (connectionTwo < 0 || connectionOne == connectionTwo) continue;  // Skip if same connection as one
