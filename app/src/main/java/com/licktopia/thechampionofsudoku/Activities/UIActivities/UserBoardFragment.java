@@ -15,6 +15,7 @@ import com.licktopia.thechampionofsudoku.Activities.BaseActivity;
 import com.licktopia.thechampionofsudoku.Adapters.UserGameListAdapter;
 import com.licktopia.thechampionofsudoku.ListItems.UserGameListItem;
 import com.licktopia.thechampionofsudoku.R;
+import com.licktopia.thechampionofsudoku.RawBoards;
 import com.licktopia.thechampionofsudoku.Sudoku.FileIO;
 import java.util.ArrayList;
 import java.util.List;
@@ -64,13 +65,21 @@ public class UserBoardFragment extends Fragment {
                     BaseActivity.getId(),
                     String.format("%d",SystemClock.elapsedRealtime()),
                     BaseActivity.getUsername(),
-                    fileIO.loadSpecificBoard(3, getActivity(),81,i),
+                    convert(RawBoards.easyBoard[i].toCharArray()),
                     507,
                     "Aug 11, 2017",
                     3);
             userGameListItems.add(uGLI);
         }
 
+    }
+
+    private int[] convert(char[] board){
+        int newBoard[] = new int[81];
+        for(int i =0; i < 81; i++){
+            newBoard[i] = Character.getNumericValue(board[i]);
+        }
+        return newBoard;
     }
 
 }

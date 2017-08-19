@@ -2441,6 +2441,8 @@
                 android:layout_weight="70"
                 android:background="#f0abd03a"
                 android:elevation="10dp"
+                android:paddingLeft="30dp"
+                android:paddingRight="30dp"
                 android:visibility="invisible"
                 tools:visibility="visible">
 
@@ -2479,7 +2481,7 @@
                         android:layout_centerHorizontal="true"
                         android:layout_gravity="center"
                         android:layout_marginBottom="5dp"
-                        android:layout_weight="14"
+                        android:layout_weight="12"
                         android:gravity="center"
                         android:textColor="@color/white"
                         android:textSize="48sp"
@@ -2493,7 +2495,7 @@
                         android:layout_centerHorizontal="true"
                         android:layout_gravity="center_horizontal"
                         android:layout_marginBottom="5dp"
-                        android:layout_weight="14"
+                        android:layout_weight="12"
                         android:gravity="center"
                         android:text="Multiplier: 4600 x 1.5"
                         android:textColor="@color/white"
@@ -2508,7 +2510,7 @@
                         android:layout_centerHorizontal="true"
                         android:layout_gravity="center"
                         android:layout_marginBottom="5dp"
-                        android:layout_weight="14"
+                        android:layout_weight="12"
                         android:gravity="center"
                         android:text="Level Bonus: 200"
                         android:textColor="@color/white"
@@ -2522,7 +2524,7 @@
                         android:layout_centerHorizontal="true"
                         android:layout_gravity="center"
                         android:layout_marginBottom="5dp"
-                        android:layout_weight="14"
+                        android:layout_weight="12"
                         android:gravity="center"
                         android:text="Time Bonus: 800"
                         android:textColor="@color/white"
@@ -2536,7 +2538,7 @@
                         android:layout_centerHorizontal="true"
                         android:layout_gravity="center"
                         android:layout_marginBottom="5dp"
-                        android:layout_weight="14"
+                        android:layout_weight="12"
                         android:gravity="center"
                         android:text="Square points 25 x 100"
                         android:textColor="@color/white"
@@ -2550,7 +2552,7 @@
                         android:layout_centerHorizontal="true"
                         android:layout_gravity="center"
                         android:layout_marginBottom="5dp"
-                        android:layout_weight="14"
+                        android:layout_weight="12"
                         android:gravity="center"
                         android:text="Penalty: 500"
                         android:textColor="@color/white"
@@ -2564,27 +2566,28 @@
                         android:layout_centerHorizontal="true"
                         android:layout_gravity="center"
                         android:layout_marginBottom="5dp"
-                        android:layout_weight="14"
+                        android:layout_weight="12"
                         android:gravity="center"
                         android:text="Accuracy 85%"
                         android:textColor="@color/white"
                         android:textSize="36sp"
                         android:textStyle="bold" />
 
-                </LinearLayout>
+                    <Button
+                        android:id="@+id/close_stats"
+                        style="@style/Widget.AppCompat.ImageButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="0dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_weight="12"
+                        android:background="@drawable/rounded_button"
+                        android:paddingLeft="20dp"
+                        android:paddingRight="20dp"
+                        android:text="Close"
+                        android:textSize="24sp" />
 
-                <ImageButton
-                    android:id="@+id/close_stats"
-                    style="@style/Widget.AppCompat.ImageButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:layout_marginBottom="30dp"
-                    android:layout_marginRight="30dp"
-                    android:layout_toEndOf="@+id/title_stats"
-                    android:layout_toRightOf="@+id/title_stats"
-                    android:background="@android:color/transparent"
-                    app:srcCompat="@android:drawable/btn_dialog" />
+                </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/level_up_view"
@@ -2607,7 +2610,7 @@
                     android:paddingTop="10dp"
                     android:visibility="gone"
                     android:weightSum="100"
-                    tools:visibility="visible">
+                    tools:visibility="gone">
 
                     <TextView
                         android:id="@+id/level_up_text"
@@ -2684,7 +2687,7 @@
                             android:elevation="0dp"
                             android:orientation="horizontal">
 
-                            <ImageButton
+                            <Button
                                 android:id="@+id/close_levelup"
                                 style="@style/Widget.AppCompat.ImageButton"
                                 android:layout_width="match_parent"
@@ -2693,9 +2696,10 @@
                                 android:layout_alignParentEnd="false"
                                 android:layout_alignParentRight="false"
                                 android:layout_gravity="right|center_vertical|end"
-                                android:layout_marginLeft="50dp"
-                                android:background="@android:color/transparent"
-                                app:srcCompat="@android:drawable/btn_dialog" />
+                                android:layout_marginRight="10dp"
+                                android:background="@drawable/rounded_button"
+                                android:text="Close"
+                                android:textSize="24sp" />
                         </LinearLayout>
 
                     </LinearLayout>

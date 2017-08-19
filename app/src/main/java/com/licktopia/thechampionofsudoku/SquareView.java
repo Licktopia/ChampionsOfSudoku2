@@ -2,6 +2,7 @@ package com.licktopia.thechampionofsudoku;
 
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -106,6 +107,7 @@ public class SquareView {
         if (n == 0) {
             color.setBackground(null);   // Remove display object
             squareHolder.setAlpha(1);
+            notepad.setVisibility(View.VISIBLE);
         }
         else {
             color.setBackground(ContextCompat.getDrawable(context, Tags.colors[n - 1])); // Set background image
@@ -114,6 +116,7 @@ public class SquareView {
                 color.setScaleX(COLOR_SQUARE_SCALE_FACTOR);
                 color.setScaleY(COLOR_SQUARE_SCALE_FACTOR);
             }
+            notepad.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -223,7 +226,7 @@ public class SquareView {
 
     public void clearNotepadHighlights() {
         for (ImageView np : notepadNums) {
-            np.setBackgroundColor(ContextCompat.getColor(context, R.color.white));
+            np.setBackgroundColor(ContextCompat.getColor(context, R.color.transparent));
         }
     }
 

@@ -48,6 +48,7 @@ import java.util.List;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
+import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.BADGETAGS;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.BOARD_FRAGMENT;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.GAMER_PROFILE_FRAGMENT;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.SAVED_GAME_FRAGMENT;
@@ -55,6 +56,7 @@ import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.USER_BOA
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.clickedOut;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.gameHelper;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.getUsername;
+import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.level;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.phoneSize;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.setId;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.setUsername;
@@ -470,8 +472,8 @@ public class MainMenuFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 playLickSound();
-                //Bundle args = new Bundle();
-               // callback.swapFragment(USER_BOARD_FRAGMENT, args);
+                Bundle args = new Bundle();
+                callback.swapFragment(USER_BOARD_FRAGMENT, args);
             }
         });
 
@@ -541,7 +543,7 @@ public class MainMenuFragment extends Fragment {
     }
 
     private void mBadgeButtonInitialize(final String gamername, final String gamerID){
-        userBadge.setImageDrawable(ContextCompat.getDrawable(getActivity(), callback.getBadgetag()));
+        userBadge.setImageDrawable(ContextCompat.getDrawable(getActivity(), BADGETAGS[level]));
         mBadge.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
