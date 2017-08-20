@@ -22,15 +22,14 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="10"
+            android:layout_weight="8"
             android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/us_user"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
-                android:layout_weight="65"
                 android:background="@android:color/transparent"
                 android:gravity="center"
                 android:text="Licktopia"
@@ -51,7 +50,7 @@
                 android:layout_height="0dp"
                 android:layout_above="@+id/bottomLayout"
                 android:layout_centerHorizontal="true"
-                android:layout_weight="80"
+                android:layout_weight="82"
                 android:background="@android:color/transparent"
                 android:orientation="horizontal"
                 android:paddingBottom="6dp"
@@ -1608,12 +1607,13 @@
                 android:layout_height="0dp"
                 android:layout_weight="20"
                 android:elevation="1dp"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:weightSum="100">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
+                    android:layout_height="0dp"
+                    android:layout_weight="35"
                     android:orientation="horizontal"
                     android:weightSum="100">
 
@@ -1646,14 +1646,16 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
+                    android:layout_height="0dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_weight="65"
                     android:orientation="horizontal">
 
                     <ImageView
                         android:id="@+id/us_level"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
                         android:layout_weight="1"
                         app:srcCompat="@drawable/experticon" />
 
@@ -1662,8 +1664,11 @@
                         style="@android:style/Widget.Holo.Light.ImageButton"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
+                        android:layout_gravity="center_vertical"
+                        android:layout_margin="3dp"
                         android:layout_weight="1"
-                        android:padding="5dp"
+                        android:background="@drawable/rounded_button"
+                        android:padding="3dp"
                         android:scaleType="fitCenter"
                         app:srcCompat="@drawable/rocket" />
 
@@ -1672,7 +1677,11 @@
                         style="@android:style/Widget.Holo.Light.ImageButton"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
+                        android:layout_gravity="center_vertical"
+                        android:layout_margin="3dp"
                         android:layout_weight="1"
+                        android:background="@drawable/hint_rounded_button"
+                        android:padding="3dp"
                         android:scaleType="fitCenter"
                         app:srcCompat="@drawable/peacock" />
 

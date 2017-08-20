@@ -52,6 +52,7 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
     private DynamoDBMapper mapper;
     TextView[] squares;
     private UserGameLAListener callback;
+    public static boolean color = false;
 
     //Interface to be implemented by containing activity.
     public interface UserGameLAListener {
@@ -62,9 +63,10 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
 
 
 
-    public UserGameListAdapter(List<UserGameListItem> userGameListItem, Context context) {
+    public UserGameListAdapter(List<UserGameListItem> userGameListItem, Context context, boolean color) {
         this.userGameListItems = userGameListItem;
         this.context = context;
+        this.color = color;
     }
 
     @Override
@@ -94,6 +96,14 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
             return new ViewHolder(v);
     }
 
+    public void toggleColor(boolean col){
+        if(col==false){
+            this.color = false;
+        }
+        else{
+            this.color = true;
+        }
+    }
     @Override
     public void onBindViewHolder(ViewHolder holder,int position) {
 
@@ -105,10 +115,20 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
         final int level = userGameListItem.getLevel();
         for(int i =0; i<81; i++){
             if(board[i]!=0) {
-                squares[i].setText(String.format("%s",board[i]));
+                if(!color) {
+                    squares[i].setText(String.format("%s", board[i]));
+                }
+                else{
+                    squares[i].setBackgroundColor(ContextCompat.getColor(context, Tags.colors[board[i]-1]));
+                }
             }
             else{
-                squares[i].setText("");
+                if(!color) {
+                    squares[i].setText("");
+                }
+                else{
+                    squares[i].setBackgroundColor(Color.WHITE);
+                }
             }
         }
     

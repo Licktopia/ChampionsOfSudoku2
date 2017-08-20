@@ -54,7 +54,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginBottom="1dp"
                     android:layout_weight="1"
-                    android:background="@color/color2"
+                    android:background="@drawable/begbuttonfinal"
                     android:gravity="center"
                     android:padding="5dp"
                     android:scaleType="fitCenter"
@@ -67,7 +67,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginTop="1dp"
                     android:layout_weight="1"
-                    android:background="@color/color4"
+                    android:background="@drawable/expbuttonfinal"
                     android:gravity="center"
                     android:padding="5dp"
                     android:scaleType="fitCenter"
@@ -89,7 +89,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginBottom="1dp"
                     android:layout_weight="1"
-                    android:background="@color/color8"
+                    android:background="@drawable/easbuttonfinal"
                     android:gravity="center"
                     android:padding="5dp"
                     android:scaleType="fitCenter"
@@ -102,7 +102,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginTop="1dp"
                     android:layout_weight="1"
-                    android:background="@color/color6"
+                    android:background="@drawable/masbuttonfinal"
                     android:gravity="center"
                     android:padding="5dp"
                     android:scaleType="fitCenter"
@@ -124,7 +124,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginBottom="1dp"
                     android:layout_weight="1"
-                    android:background="@color/color3"
+                    android:background="@drawable/leaderbuttonfinal"
                     android:gravity="center"
                     android:padding="5dp"
                     android:scaleType="fitCenter"
@@ -137,7 +137,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginTop="1dp"
                     android:layout_weight="1"
-                    android:background="@color/color9"
+                    android:background="@drawable/exitbuttonfinal"
                     android:gravity="center"
                     android:padding="5dp"
                     android:scaleType="fitCenter"
@@ -158,7 +158,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginBottom="1dp"
                     android:layout_weight="1"
-                    android:background="@color/color7"
+                    android:background="@drawable/harbuttonfinal"
                     android:gravity="center"
                     android:padding="5dp"
                     android:scaleType="fitCenter"
@@ -171,7 +171,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginTop="1dp"
                     android:layout_weight="1"
-                    android:background="@color/color5"
+                    android:background="@drawable/morbuttonfinal"
                     android:gravity="center"
                     android:padding="5dp"
                     android:scaleType="fitCenter"
@@ -183,9 +183,25 @@
 
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal"></LinearLayout>
+    <ProgressBar
+        android:id="@+id/usr_progress"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true" />
+
+    <ImageButton
+        android:id="@+id/color_switcher"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp"
+        android:alpha=".6"
+        android:background="@android:color/white"
+        android:padding="5dp"
+        android:scaleType="fitCenter"
+        app:srcCompat="@drawable/peacock" />
 
 </RelativeLayout>

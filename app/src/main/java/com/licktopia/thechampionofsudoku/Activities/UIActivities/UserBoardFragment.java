@@ -9,8 +9,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 
+import com.licktopia.thechampionofsudoku.Activities.BaseActivity;
+import com.licktopia.thechampionofsudoku.Adapters.SavedGameListAdapter;
 import com.licktopia.thechampionofsudoku.Adapters.UserGameListAdapter;
+import com.licktopia.thechampionofsudoku.DBOjects.SavedGame;
 import com.licktopia.thechampionofsudoku.Database.DatabaseAccess;
 import com.licktopia.thechampionofsudoku.ListItems.UserGameListItem;
 import com.licktopia.thechampionofsudoku.R;
@@ -43,6 +47,9 @@ public class UserBoardFragment extends Fragment {
     private View view;
     private int levelNow = 6;
     private DatabaseAccess databaseAccess;
+    private ProgressBar mProgressBar;
+    private boolean color = false;
+    private ImageButton colorSwitcher;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -61,17 +68,39 @@ public class UserBoardFragment extends Fragment {
             view = inflater.inflate(R.layout.fragment_user_board_large, container, false);
         }
 
-        recyclerView = (RecyclerView)view.findViewById(R.id.user_board_rv);
-        recyclerView.setLayoutManager((new GridLayoutManager(getContext(),2)));
-        databaseAccess = DatabaseAccess.getInstance(getContext());
-        databaseAccess.open();
-        assignAllLists();
-        ShuffledList = userGameListItems;
-        Collections.shuffle(ShuffledList);
-        DisplayNowList = ShuffledList.subList(0,DISPLAY_AT_A_TIME);
-        adapter = new UserGameListAdapter(DisplayNowList, getContext());
-        initializeButtons();
-        recyclerView.setAdapter(adapter);
+        mProgressBar = (ProgressBar)view.findViewById(R.id.usr_progress);
+        Runnable runnable = new Runnable() {
+            public void run() {
+                recyclerView = (RecyclerView)view.findViewById(R.id.user_board_rv);
+                recyclerView.setLayoutManager((new GridLayoutManager(getContext(),2)));
+                databaseAccess = DatabaseAccess.getInstance(getContext());
+                databaseAccess.open();
+                assignAllLists();
+
+
+                ShuffledList = userGameListItems;
+                Collections.shuffle(ShuffledList);
+                DisplayNowList = ShuffledList.subList(0,DISPLAY_AT_A_TIME);
+                adapter = new UserGameListAdapter(DisplayNowList, getContext(), color);
+                initializeButtons();
+                try {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            //execute code on main thread
+                            mProgressBar.setVisibility(View.GONE);
+                            recyclerView.setAdapter(adapter);
+                        }
+                    });
+                }catch(Exception e){
+
+                }
+            }
+        };
+        Thread mythread = new Thread(runnable);
+        mythread.start();
+
+
         return view;
     }
 
@@ -98,7 +127,7 @@ public class UserBoardFragment extends Fragment {
                     Collections.shuffle(LevelLists[finalI]);
                     DisplayNowList = LevelLists[finalI].subList(0,DISPLAY_AT_A_TIME);
                     adapter = null;
-                    adapter = new UserGameListAdapter(DisplayNowList, getContext());
+                    adapter = new UserGameListAdapter(DisplayNowList, getContext(), color);
                     recyclerView.setAdapter(adapter);
                 }
             });
@@ -110,7 +139,7 @@ public class UserBoardFragment extends Fragment {
                 levelNow = 6;
                 Collections.shuffle(ShuffledList);
                 DisplayNowList = ShuffledList.subList(0, DISPLAY_AT_A_TIME);
-                adapter = new UserGameListAdapter(DisplayNowList, getContext());
+                adapter = new UserGameListAdapter(DisplayNowList, getContext(), color);
                 recyclerView.setAdapter(adapter);
             }
         });
@@ -128,8 +157,28 @@ public class UserBoardFragment extends Fragment {
                     DisplayNowList = ShuffledList.subList(0, DISPLAY_AT_A_TIME);
                 }
                 adapter = null;
-                adapter = new UserGameListAdapter(DisplayNowList, getContext());
+                adapter = new UserGameListAdapter(DisplayNowList, getContext(), color);
                 recyclerView.setAdapter(adapter);
+            }
+        });
+        colorSwitcher = (ImageButton)view.findViewById(R.id.color_switcher);
+        colorSwitcher.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(color){
+                    color = false;
+                    adapter = null;
+                    adapter = new UserGameListAdapter(DisplayNowList, getContext(), color);
+                    colorSwitcher.setImageDrawable(getResources().getDrawable(R.drawable.peacock));
+                    recyclerView.setAdapter(adapter);
+                }
+                else{
+                    color = true;
+                    adapter = null;
+                    adapter = new UserGameListAdapter(DisplayNowList, getContext(), color);
+                    colorSwitcher.setImageDrawable(getResources().getDrawable(R.drawable.rocket));
+                    recyclerView.setAdapter(adapter);
+                }
             }
         });
     }
