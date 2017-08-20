@@ -1665,7 +1665,7 @@
                         app:srcCompat="@drawable/experticon" />
 
                     <ImageButton
-                        android:id="@+id/imageButton"
+                        android:id="@+id/numb"
                         style="@android:style/Widget.Holo.Light.ImageButton"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
@@ -1675,7 +1675,7 @@
                         app:srcCompat="@drawable/rocket" />
 
                     <ImageButton
-                        android:id="@+id/imageButton2"
+                        android:id="@+id/colb"
                         style="@android:style/Widget.Holo.Light.ImageButton"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"

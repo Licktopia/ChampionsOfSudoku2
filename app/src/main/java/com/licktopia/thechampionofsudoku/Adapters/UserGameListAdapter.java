@@ -7,11 +7,14 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -28,6 +31,7 @@ import com.licktopia.thechampionofsudoku.Tags;
 
 import java.util.List;
 
+import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.BOARD_FRAGMENT;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.phoneSize;
 
 /**
@@ -36,13 +40,24 @@ import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.phoneSiz
 
 public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapter.ViewHolder> {
 
-    private List<UserGameListItem> userGameListItems;
+    public void setUserGameListItems(List<UserGameListItem> userGameListItems) {
+        this.userGameListItems = userGameListItems;
+    }
+
+    public List<UserGameListItem> userGameListItems;
     private Context context;
     private String[] mColors = {"#1E91D6","#ea3f6a","#7D1538","#7c8597","#E18335","#4A2772","#F2CA08","#329d53"};
     private CognitoCachingCredentialsProvider credentialsProvider;
     private AmazonDynamoDBClient ddbClient;
     private DynamoDBMapper mapper;
     TextView[] squares;
+    private UserGameLAListener callback;
+
+    //Interface to be implemented by containing activity.
+    public interface UserGameLAListener {
+        void swapFragment(String fragmentName, Bundle args);
+
+    }
 
 
 
@@ -59,13 +74,17 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
             v = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.user_game_list_item_small, parent, false);
         }
+        else if(phoneSize == 2){
+            v = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.user_game_list_item, parent, false);
+        }
         else if(phoneSize == 3){
             v = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.user_game_list_item_large, parent, false);
+                    .inflate(R.layout.user_game_list_item_phablet, parent, false);
         }
         else{
             v = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.user_game_list_item, parent, false);
+                    .inflate(R.layout.user_game_list_item_large, parent, false);
         }
 
         squares = new TextView[81];
@@ -79,11 +98,11 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
     public void onBindViewHolder(ViewHolder holder,int position) {
 
         UserGameListItem userGameListItem = userGameListItems.get(position);
-        int[] board = userGameListItem.getBoard();
+        final int[] board = userGameListItem.getBoard();
         String gamerName = userGameListItem.getGamerName();
         int difficulty = userGameListItem.getDifficulty();
         String date = userGameListItem.getDate();
-        int level = userGameListItem.getLevel();
+        final int level = userGameListItem.getLevel();
         for(int i =0; i<81; i++){
             if(board[i]!=0) {
                 squares[i].setText(String.format("%s",board[i]));
@@ -93,10 +112,10 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
             }
         }
     
-        holder.usUser.setText(gamerName);
+        holder.usUser.setText(new StringBuilder().append("Creator").append(": ").append(" ").append(gamerName).toString());
         holder.usDate.setText(date);
-        holder.usDiff.setText(String.format("%d",difficulty));
-        holder.usNumb.setText(String.format("%d",position+1));
+        holder.usDiff.setText(String.format(new StringBuilder().append("Diff.").append(" %d").toString(),difficulty));
+
 
 
         if(level==0) {
@@ -141,9 +160,11 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
             holder.usLevel.setImageDrawable(drawable);
             holder.usBackground.setBackgroundColor(Color.parseColor(mColors[4]));
         }
+
+
     }
 
-   
+
 
     @Override
     public int getItemCount() {
@@ -162,6 +183,8 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
         TextView usNumb;
         ImageView usLevel;
         LinearLayout usBackground;
+        ImageButton colorButton;
+        ImageButton numberButton;
         
 
 
@@ -173,7 +196,9 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
             usNumb = (TextView)itemView.findViewById(R.id.us_number);
             usLevel = (ImageView) itemView.findViewById(R.id.us_level);
             usBackground = (LinearLayout)itemView.findViewById(R.id.us_background);
-            
+            numberButton = (ImageButton)itemView.findViewById(R.id.numb);
+            colorButton = (ImageButton)itemView.findViewById(R.id.colb);
+
         }
 
     }

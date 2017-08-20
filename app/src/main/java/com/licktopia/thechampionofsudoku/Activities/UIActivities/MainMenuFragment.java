@@ -312,6 +312,10 @@ public class MainMenuFragment extends Fragment {
             loadPlayer();
 
         }
+        else{
+            mProgressBar.setVisibility(GONE);
+            mainScreen.setAlpha(1);
+        }
         if(isInternet()) {
             queryCompletedGameDb();
             // callback.querySavedGameDb();
@@ -413,32 +417,41 @@ public class MainMenuFragment extends Fragment {
             mSignOutButton.setVisibility(View.INVISIBLE);
             mBadge.setVisibility(GONE);
             userBadge.setImageDrawable(ContextCompat.getDrawable(getActivity(), callback.getBadgetag()));
+            mProgressBar.setVisibility(GONE);
+            mainScreen.setAlpha(1);
         }
         setMessage();
-        mProgressBar.setVisibility(GONE);
-        mainScreen.setAlpha(1);
+
     }
 
     private void getHighestScoreFromLeaderBoard(){
-        PendingResult result = Games.Leaderboards.loadCurrentPlayerLeaderboardScore(gameHelper.getApiClient(),
-               getString(R.string.leaderboard_most_total_xp), LeaderboardVariant.TIME_SPAN_ALL_TIME,
-                LeaderboardVariant.COLLECTION_PUBLIC);
+        if(isInternet()) {
+            PendingResult result = Games.Leaderboards.loadCurrentPlayerLeaderboardScore(gameHelper.getApiClient(),
+                    getString(R.string.leaderboard_most_total_xp), LeaderboardVariant.TIME_SPAN_ALL_TIME,
+                    LeaderboardVariant.COLLECTION_PUBLIC);
 
-        result.setResultCallback(new ResultCallback<Leaderboards.LoadPlayerScoreResult>() {
-            @Override
-            public void onResult(Leaderboards.LoadPlayerScoreResult result) {
-                // check if valid score
-                if (result != null
-                        && GamesStatusCodes.STATUS_OK == result.getStatus().getStatusCode()
-                        && result.getScore() != null) {
-                    long highestScore = result.getScore().getRawScore();
-                    BaseActivity.setXp(highestScore);
-                    userBadge.setImageDrawable(ContextCompat.getDrawable(getActivity(), callback.getBadgetag()));
+            result.setResultCallback(new ResultCallback<Leaderboards.LoadPlayerScoreResult>() {
+                @Override
+                public void onResult(Leaderboards.LoadPlayerScoreResult result) {
+                    // check if valid score
+                    if (result != null
+                            && GamesStatusCodes.STATUS_OK == result.getStatus().getStatusCode()
+                            && result.getScore() != null) {
+                        long highestScore = result.getScore().getRawScore();
+                        BaseActivity.setXp(highestScore);
+                        userBadge.setImageDrawable(ContextCompat.getDrawable(getActivity(), callback.getBadgetag()));
+                        mProgressBar.setVisibility(GONE);
+                        mainScreen.setAlpha(1);
+                    }
+
                 }
 
-            }
-
-        });
+            });
+        }
+        else{
+            mProgressBar.setVisibility(GONE);
+            mainScreen.setAlpha(1);
+        }
     }
 
     // Call when the sign-in button is clicked

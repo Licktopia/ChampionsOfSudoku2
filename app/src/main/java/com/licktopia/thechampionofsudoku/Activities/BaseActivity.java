@@ -50,6 +50,7 @@ import com.licktopia.thechampionofsudoku.Activities.UIActivities.InviteDialogFra
 import com.licktopia.thechampionofsudoku.Activities.UIActivities.MainMenuFragment;
 import com.licktopia.thechampionofsudoku.Activities.UIActivities.SavedGameFragment;
 import com.licktopia.thechampionofsudoku.Activities.UIActivities.UserBoardFragment;
+import com.licktopia.thechampionofsudoku.Adapters.UserGameListAdapter;
 import com.licktopia.thechampionofsudoku.Multiplayer.MultiGame;
 import com.licktopia.thechampionofsudoku.R;
 import com.licktopia.thechampionofsudoku.Adapters.SavedGameListAdapter;
@@ -76,7 +77,7 @@ public class BaseActivity extends BaseGameActivity
         implements MainMenuFragment.MainMenuFragmentListener,
         GamerProfileFragment.GamerProfileFragmentListener,
         BoardFragment.BoardFragmentListener,
-        RealTimeMessageReceivedListener, SavedGameListAdapter.SavedGameLAListener,
+        RealTimeMessageReceivedListener, SavedGameListAdapter.SavedGameLAListener, UserGameListAdapter.UserGameLAListener,
         RoomStatusUpdateListener, RoomUpdateListener, OnInvitationReceivedListener {
 
     public static final String SAVED_KEY = "SAVED_KEY";
