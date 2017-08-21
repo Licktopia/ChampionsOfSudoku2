@@ -394,6 +394,8 @@ public class BaseActivity extends BaseGameActivity
                     .add(R.id.fragment_container, menuFragment, MAIN_MENU_FRAGMENT).commit();
         }
 
+
+
         credentialsProvider = new CognitoCachingCredentialsProvider(
                 getApplicationContext(),
                 "us-east-2:40802ef0-7537-4910-8442-31e2b30c5a7d", // Identity Pool ID
@@ -423,7 +425,7 @@ public class BaseActivity extends BaseGameActivity
     protected void onStop() {
         super.onStop();
        // gameHelper.onStop();
-        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        /*SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = sharedPrefs.edit();
         Gson gson = new Gson();
         String json = gson.toJson(savedGames);
@@ -433,7 +435,7 @@ public class BaseActivity extends BaseGameActivity
         editor.putLong(XP_KEY, xp);
         editor.putString(USERNAME_KEY, username);
         editor.putInt(LEVEL_KEY, level);
-        editor.apply();
+        editor.apply();*/
 
     }
 

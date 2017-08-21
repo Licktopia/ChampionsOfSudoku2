@@ -103,6 +103,8 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
         else{
             this.color = true;
         }
+
+
     }
     @Override
     public void onBindViewHolder(ViewHolder holder,int position) {
@@ -132,7 +134,7 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
             }
         }
     
-        holder.usUser.setText(new StringBuilder().append("Creator").append(": ").append(" ").append(gamerName).toString());
+        holder.usUser.setText(new StringBuilder().append(gamerName).toString());
         holder.usDate.setText(date);
         holder.usDiff.setText(String.format(new StringBuilder().append("Diff.").append(" %d").toString(),difficulty));
 
@@ -181,6 +183,24 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
             holder.usBackground.setBackgroundColor(Color.parseColor(mColors[4]));
         }
 
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new AlertDialog.Builder(context)
+                        .setMessage("")
+                        .setCancelable(true)
+                        .setPositiveButton("", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+
+
+
+                            }
+                        })
+                        .setNegativeButton("Keep Record", null)
+                        .show();
+            }
+        });
+
 
     }
 
@@ -200,11 +220,9 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
         TextView usUser;
         TextView usDate;
         TextView usDiff;
-        TextView usNumb;
         ImageView usLevel;
         LinearLayout usBackground;
-        ImageButton colorButton;
-        ImageButton numberButton;
+
         
 
 
@@ -213,12 +231,8 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
             usUser = (TextView)itemView.findViewById(R.id.us_user);
             usDate = (TextView)itemView.findViewById(R.id.us_date);
             usDiff = (TextView)itemView.findViewById(R.id.us_diff);
-            usNumb = (TextView)itemView.findViewById(R.id.us_number);
             usLevel = (ImageView) itemView.findViewById(R.id.us_level);
             usBackground = (LinearLayout)itemView.findViewById(R.id.us_background);
-            numberButton = (ImageButton)itemView.findViewById(R.id.numb);
-            colorButton = (ImageButton)itemView.findViewById(R.id.colb);
-
         }
 
     }

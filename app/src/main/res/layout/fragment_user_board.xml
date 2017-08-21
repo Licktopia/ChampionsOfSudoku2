@@ -12,7 +12,17 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        app:srcCompat="@drawable/historybackground" />
+        app:srcCompat="@android:color/black" />
+
+    <ImageView
+        android:id="@+id/imageView17"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:alpha=".4"
+        android:scaleType="fitCenter"
+        app:srcCompat="@drawable/licktopia_centered" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -26,9 +36,9 @@
             android:id="@+id/user_board_rv"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginBottom="2dp"
-            android:layout_weight="82"
+            android:layout_margin="6dp"
 
+            android:layout_weight="82"
             android:background="@android:color/transparent" />
 
         <LinearLayout

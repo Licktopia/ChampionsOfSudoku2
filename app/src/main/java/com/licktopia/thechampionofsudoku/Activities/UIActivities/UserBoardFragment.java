@@ -30,7 +30,7 @@ import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.phoneSiz
 
 public class UserBoardFragment extends Fragment {
 
-    private static final int DISPLAY_AT_A_TIME = 20;
+    private int DISPLAY_AT_A_TIME = 20;
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
     private ArrayList<UserGameListItem> userGameListItems;
@@ -50,6 +50,8 @@ public class UserBoardFragment extends Fragment {
     private ProgressBar mProgressBar;
     private boolean color = false;
     private ImageButton colorSwitcher;
+    private int gridNum = 2;
+    private GridLayoutManager gridLayoutManager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -63,16 +65,21 @@ public class UserBoardFragment extends Fragment {
         }
         else if(phoneSize == 3){
             view = inflater.inflate(R.layout.fragment_user_board_phablet, container, false);
+            gridNum = 3;
+            DISPLAY_AT_A_TIME++;
         }
         else{
             view = inflater.inflate(R.layout.fragment_user_board_large, container, false);
+            gridNum = 4;
         }
 
         mProgressBar = (ProgressBar)view.findViewById(R.id.usr_progress);
+        recyclerView = (RecyclerView)view.findViewById(R.id.user_board_rv);
+        gridLayoutManager = new GridLayoutManager(getContext(),gridNum);
+        recyclerView.setLayoutManager((gridLayoutManager));
         Runnable runnable = new Runnable() {
             public void run() {
-                recyclerView = (RecyclerView)view.findViewById(R.id.user_board_rv);
-                recyclerView.setLayoutManager((new GridLayoutManager(getContext(),2)));
+
                 databaseAccess = DatabaseAccess.getInstance(getContext());
                 databaseAccess.open();
                 assignAllLists();
@@ -165,6 +172,7 @@ public class UserBoardFragment extends Fragment {
         colorSwitcher.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 if(color){
                     color = false;
                     adapter = null;
@@ -179,6 +187,7 @@ public class UserBoardFragment extends Fragment {
                     colorSwitcher.setImageDrawable(getResources().getDrawable(R.drawable.rocket));
                     recyclerView.setAdapter(adapter);
                 }
+
             }
         });
     }

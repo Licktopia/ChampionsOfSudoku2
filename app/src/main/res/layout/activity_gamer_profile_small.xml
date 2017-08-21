@@ -205,7 +205,7 @@ android:fitsSystemWindows="false">
                 android:layout_weight="50"
                 android:lines="2"
                 android:maxLines="2"
-                android:text="Leader Boards"
+                android:text="Leaderboards"
                 android:textColor="@android:color/black"
                 android:textSize="10sp" />
 
