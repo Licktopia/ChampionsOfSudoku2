@@ -763,6 +763,12 @@ public class MultiGame implements GameInterface, java.io.Serializable {
 
     }
 
+    // Returns a set of the squares in the current board that are wrong
+    public Set<Integer> checkCurrentProgress() {
+        Set<Integer> incorrectSquares = mGame.checkCurrentProgress();
+        return incorrectSquares;
+    }
+
     //gets value of square given row and col
     public int getBoardValueAt(int row, int col) {
         return mGame.getBoardValueAt(row, col);

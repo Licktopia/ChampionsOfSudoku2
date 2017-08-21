@@ -23,7 +23,7 @@ public class Square implements java.io.Serializable
         buildSquare(entry, isStartingValue, boardSize, row, col);
     }
 
-    protected Square(int entry, boolean isStartingValue, int boardSize, int idx)
+    public Square(int entry, boolean isStartingValue, int boardSize, int idx)
     {
         buildSquare(entry, isStartingValue, boardSize, idx / boardSize, idx % boardSize);
     }
