@@ -65,6 +65,7 @@ import com.licktopia.thechampionofsudoku.GameInterface;
 import com.licktopia.thechampionofsudoku.Tags;
 import com.squareup.picasso.Picasso;
 
+import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -1372,7 +1373,7 @@ public class BoardFragment extends Fragment {
         solveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               endOfGame(true);
+                endOfGame(true);
             }
         });
     }
@@ -1890,11 +1891,19 @@ public class BoardFragment extends Fragment {
 
         // Get solution steps
 
-        final ArrayList<Square> newSteps = new ArrayList(mGame.getSolutionSteps());
+        Set<Integer> incorrect = mGame.checkCurrentProgress();
+        for (Integer i : incorrect) {
+            mGame.setBoardValueAt(i, 0);
+        }
+        removeAllHighlights();
+        mGame.updateAllNotepads(false);
+        final ArrayList<Square> newSteps = new ArrayList<>(mGame.getSolutionSteps());
 
         if (newSteps.isEmpty()) {
             return;
         }
+
+
 
         double regression = 1340100 * Math.pow(.88316, 81-mGame.getNumberOpenSquares());
         int speedControl = (int) regression;
