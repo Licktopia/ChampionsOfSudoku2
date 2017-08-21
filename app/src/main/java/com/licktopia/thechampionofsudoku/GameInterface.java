@@ -383,4 +383,9 @@ public interface GameInterface {
      */
     public int getStartingOpenSquares();
 
+    /*************************************************************
+     * gets the total number of starting open squares
+     * @return total number of starting open squares
+     */
+    public Set<Integer> checkCurrentProgress();
 }

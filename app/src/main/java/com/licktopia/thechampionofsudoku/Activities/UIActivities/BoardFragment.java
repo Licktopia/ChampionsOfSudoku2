@@ -1384,7 +1384,32 @@ public class BoardFragment extends Fragment {
         checkProgressButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                updateBoard();
+                Set<Integer> conflicts = mGame.checkCurrentProgress();  // Set board value to number
+                if (conflicts.isEmpty()) {
+                    if(!solveClicked&&!mGame.isGameFinished()) {
+                        mPlaySounds.playSounds(getContext(), 1);
+                        Toast.makeText(getContext(), "Board is currently correct!", Toast.LENGTH_LONG).show();
+                    }
+                }
+                else {
+                    if(!solveClicked) {
+                        mPlaySounds.playSounds(getContext(), 2);
+                    }
+                    for (int conflict : conflicts) {
+                        squareViews[conflict].setErrorHighlight(colorGame);     // Display error highlight
+                        highlightHandler.postDelayed(new Runnable() {  // Wait then remove error color
+                            @Override
+                            public void run() {
+                                // Reset to regular selection highlights
+                                removeAllHighlights();
+                                if (selectedSquare != -1) {
+                                    squareViews[selectedSquare].setSelectedHighlight();
+                                    highlightConnected();
+                                }
+                            }
+                        }, 2000);
+                    }
+                }
             }
         });
     }

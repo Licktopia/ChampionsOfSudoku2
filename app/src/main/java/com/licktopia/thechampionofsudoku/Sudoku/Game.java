@@ -3,6 +3,7 @@ package com.licktopia.thechampionofsudoku.Sudoku;
 import android.content.Context;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Queue;
 import java.util.Set;
@@ -42,6 +43,8 @@ public class Game implements GameInterface, java.io.Serializable
     //stores the total bonus given for the score
     private int level = -1;
 
+    private Board solvedBoard;
+
     //context is need to load from assets folder
     public Game(int level, Context ctx)
     {
@@ -49,7 +52,8 @@ public class Game implements GameInterface, java.io.Serializable
         curBoard = new Board(level, ctx, -1);
         solutionSolver = new Solver(curBoard);
         scoreWeights = FileIO.loadScoreWeights(level, ctx);
-        if(solutionSolver.solve() == null)
+        solvedBoard = solutionSolver.solve();
+        if(solvedBoard == null)
         {
             System.out.printf("Game cannot be solved!\n");
         }
@@ -319,6 +323,19 @@ public class Game implements GameInterface, java.io.Serializable
         updateSolver();
         solutionSolver.solveWithStrategies();
         return solutionSolver.getExactSolution();
+    }
+
+    // Returns a set of the squares in the current board that are wrong
+    public Set<Integer> checkCurrentProgress() {
+        Set<Integer> incorrectSquares = new HashSet<>();
+
+        for (int i = 0; i < totalBoardElements(); i++) {
+            if (curBoard.getValueAt(i) != 0 && curBoard.getValueAt(i) != solvedBoard.getValueAt(i)) {
+                incorrectSquares.add(i);
+            }
+        }
+
+        return incorrectSquares;
     }
 
     public void updateAllNotepads(boolean removeOnly) {

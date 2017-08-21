@@ -534,6 +534,29 @@ public class Board implements java.io.Serializable {
         return connections;
     }
 
+    protected int getSinglesChainInRow(int idx, int np) {
+        return getSinglesChain(idx, np, getRowIndicesByIndex(idx));
+    }
+
+    protected int getSinglesChainInCol(int idx, int np) {
+        return getSinglesChain(idx, np, getColIndicesByIndex(idx));
+    }
+
+    protected int getSinglesChainInCluster(int idx, int np) {
+        return getSinglesChain(idx, np, getClusterIndicesByIndex(idx));
+    }
+
+    // Returns index in group that forms a singles chain with idx and notepad provided
+    protected int getSinglesChain(int idx, int np, int[] group) {
+        if (getTotalNotepadOccurrences(group, np) == 2) {
+            for (int chain : group) {
+                if (chain != idx && getNotepadAt(chain, np))
+                    return chain;
+            }
+        }
+        return -1;
+    }
+
     // Returns an array of indices of all squares in same row as idx
     protected int[] getRowIndicesByIndex(int idx) {
         return getRowIndices(idxToRow(idx));
