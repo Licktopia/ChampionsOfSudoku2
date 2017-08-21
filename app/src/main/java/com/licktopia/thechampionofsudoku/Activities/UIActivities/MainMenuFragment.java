@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -48,6 +49,7 @@ import java.util.List;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
+import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.BADGETAGS;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.BOARD_FRAGMENT;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.GAMER_PROFILE_FRAGMENT;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.SAVED_GAME_FRAGMENT;
@@ -55,6 +57,7 @@ import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.USER_BOA
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.clickedOut;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.gameHelper;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.getUsername;
+import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.level;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.phoneSize;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.setId;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.setUsername;
@@ -108,6 +111,7 @@ public class MainMenuFragment extends Fragment {
         return new MainMenuFragment();
     }
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                 Bundle savedInstanceState) {
@@ -157,6 +161,7 @@ public class MainMenuFragment extends Fragment {
         ed = mSharedPreferences.edit();
         ed.apply();
         userBadge = (ImageView)view.findViewById(R.id.user_badge_level);
+       // userBadge.setVisibility(GONE);
         mResumeButton = (LinearLayout)view.findViewById(R.id.resume);
 
         // Initialize the Amazon Cognito credentials provider
@@ -273,7 +278,12 @@ public class MainMenuFragment extends Fragment {
         mSignInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                signInClicked();
+                if(isInternet()) {
+                    signInClicked();
+                }
+                else{
+                    Toast.makeText(getContext(), R.string.check_your_internet, Toast.LENGTH_SHORT).show();
+                }
             }
         });
         mSignOutButton = (Button)view.findViewById(R.id.sign_out_button);
@@ -303,12 +313,17 @@ public class MainMenuFragment extends Fragment {
         super.onResume();
         //updateUI(gameHelper.isSignedIn());
         if(gameHelper.getApiClient().isConnected()) {
+            if(isInternet()) {
+                mSignInButton.setVisibility(GONE);
+            }
 
-            mSignInButton.setVisibility(GONE);
-            mBadge.setVisibility(VISIBLE);
+            //mBadge.setVisibility(VISIBLE);
             getHighestScoreFromLeaderBoard();
-            loadPlayer();
 
+        }
+        else{
+            //mProgressBar.setVisibility(GONE);
+            //mainScreen.setAlpha(1);
         }
         if(isInternet()) {
             queryCompletedGameDb();
@@ -327,6 +342,9 @@ public class MainMenuFragment extends Fragment {
             setUsername(Games.Players.getCurrentPlayer(gameHelper.getApiClient()).getDisplayName());
             setId(Games.Players.getCurrentPlayer(gameHelper.getApiClient()).getPlayerId());
             mBadgeButtonInitialize(getUsername(), BaseActivity.getId());
+            if(isInternet()) {
+                mBadge.setVisibility(VISIBLE);
+            }
         }
     }
 
@@ -387,10 +405,9 @@ public class MainMenuFragment extends Fragment {
                 mPlaySounds.playSounds(getContext(),7);
                 userSignIn = false;
             }
-
-            mSignInButton.setVisibility(GONE);
-            mBadge.setVisibility(VISIBLE);
-            loadPlayer();
+            if(isInternet()) {
+                mSignInButton.setVisibility(GONE);
+            }
             gameHelper.getApiClient().connect();
             if(gameHelper.getApiClient().isConnected()) {
                 getHighestScoreFromLeaderBoard();
@@ -399,6 +416,8 @@ public class MainMenuFragment extends Fragment {
                 queryCompletedGameDb();
                // callback.querySavedGameDb();
             }
+
+
         }
         else{
             BaseActivity.setNullUser();
@@ -409,34 +428,54 @@ public class MainMenuFragment extends Fragment {
             clickedOut = false;
             mSignInButton.setVisibility(VISIBLE);
             mSignOutButton.setVisibility(View.INVISIBLE);
-            mBadge.setVisibility(GONE);
             userBadge.setImageDrawable(ContextCompat.getDrawable(getActivity(), callback.getBadgetag()));
+
         }
         setMessage();
-        mProgressBar.setVisibility(GONE);
-        mainScreen.setAlpha(1);
+
+        //userBadge.setVisibility(VISIBLE);
+
     }
 
     private void getHighestScoreFromLeaderBoard(){
-        PendingResult result = Games.Leaderboards.loadCurrentPlayerLeaderboardScore(gameHelper.getApiClient(),
-               getString(R.string.leaderboard_most_total_xp), LeaderboardVariant.TIME_SPAN_ALL_TIME,
-                LeaderboardVariant.COLLECTION_PUBLIC);
+        if(isInternet()) {
+            PendingResult result = Games.Leaderboards.loadCurrentPlayerLeaderboardScore(gameHelper.getApiClient(),
+                    getString(R.string.leaderboard_most_total_xp), LeaderboardVariant.TIME_SPAN_ALL_TIME,
+                    LeaderboardVariant.COLLECTION_PUBLIC);
 
-        result.setResultCallback(new ResultCallback<Leaderboards.LoadPlayerScoreResult>() {
-            @Override
-            public void onResult(Leaderboards.LoadPlayerScoreResult result) {
-                // check if valid score
-                if (result != null
-                        && GamesStatusCodes.STATUS_OK == result.getStatus().getStatusCode()
-                        && result.getScore() != null) {
-                    long highestScore = result.getScore().getRawScore();
-                    BaseActivity.setXp(highestScore);
-                    userBadge.setImageDrawable(ContextCompat.getDrawable(getActivity(), callback.getBadgetag()));
+            result.setResultCallback(new ResultCallback<Leaderboards.LoadPlayerScoreResult>() {
+                @Override
+                public void onResult(Leaderboards.LoadPlayerScoreResult result) {
+                    // check if valid score
+                    if (result != null
+                            && GamesStatusCodes.STATUS_OK == result.getStatus().getStatusCode()
+                            && result.getScore() != null) {
+                        long highestScore = result.getScore().getRawScore();
+                        if(highestScore>=BaseActivity.getXp()) {
+                            BaseActivity.setXp(highestScore);
+                            loadPlayer();
+
+                            //userBadge.setImageDrawable(ContextCompat.getDrawable(getActivity(), callback.getBadgetag()));
+                        }
+
+                        //userBadge.setVisibility(VISIBLE);
+
+                    }
+                    else{
+                        loadPlayer();
+                    }
+
+
                 }
 
-            }
+            });
+        }
+        else{
 
-        });
+            //userBadge.setVisibility(VISIBLE);
+            loadPlayer();
+        }
+
     }
 
     // Call when the sign-in button is clicked
@@ -470,8 +509,8 @@ public class MainMenuFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 playLickSound();
-                //Bundle args = new Bundle();
-               // callback.swapFragment(USER_BOARD_FRAGMENT, args);
+                Bundle args = new Bundle();
+                callback.swapFragment(USER_BOARD_FRAGMENT, args);
             }
         });
 
@@ -541,7 +580,7 @@ public class MainMenuFragment extends Fragment {
     }
 
     private void mBadgeButtonInitialize(final String gamername, final String gamerID){
-        userBadge.setImageDrawable(ContextCompat.getDrawable(getActivity(), callback.getBadgetag()));
+        userBadge.setImageDrawable(ContextCompat.getDrawable(getActivity(), BADGETAGS[BaseActivity.level]));
         mBadge.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

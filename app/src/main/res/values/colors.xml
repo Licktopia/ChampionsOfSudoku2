@@ -24,9 +24,9 @@
     <color name="color3">#ea3f6a</color>
     <color name="color4">#7d1538</color>
     <color name="color5">#7c8597</color>
-    <color name="color6">#E18335</color>
-    <color name="color7">#4A2772</color>
-    <color name="color8">#F2CA08</color>
+    <color name="color6">#e18335</color>
+    <color name="color7">#4a2772</color>
+    <color name="color8">#f2ca08</color>
     <color name="color9">#329d53</color>
     <color name="samecolorhiglight">#fff176</color>
     <color name="red">#ff3333</color>
@@ -37,5 +37,7 @@
     <color name="ButtonTextColor">#ffffff</color>
     <color name="BlurbColor">#a0a0a0</color>
     <color name="transparent_white">#4bffffff</color>
+    <color name="transparent">#00ffffff</color>
+    <color name="icon_color">#bdc3c6</color>
 
 </resources>

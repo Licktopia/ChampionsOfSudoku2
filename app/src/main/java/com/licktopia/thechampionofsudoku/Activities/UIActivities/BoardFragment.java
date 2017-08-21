@@ -691,8 +691,8 @@ public class BoardFragment extends Fragment {
         else{
             final RelativeLayout mStatsBox = (RelativeLayout) view.findViewById(R.id.game_stats_box);
             final LinearLayout mLevelUpBox = (LinearLayout) view.findViewById(R.id.level_up_view);
-            final ImageButton mCloseLevelUp = (ImageButton) view.findViewById(R.id.close_levelup);
-            ImageButton mCloseStats = (ImageButton) view.findViewById(R.id.close_stats);
+            final Button mCloseLevelUp = (Button) view.findViewById(R.id.close_levelup);
+            Button mCloseStats = (Button) view.findViewById(R.id.close_stats);
             userBadge.setImageDrawable(getResources().getDrawable(callback.getBadgetag(), null));
             userText.setText(BaseActivity.getUsername());
             int sound;
@@ -1754,7 +1754,7 @@ public class BoardFragment extends Fragment {
                 else{
                     if(colorGame){
                         squareViews[i].setSameColorHighlight();
-                        squareViews[i].setSameColorHighlightNotepad();
+                        //squareViews[i].setSameColorHighlightNotepad();
                     }
                 }
             }

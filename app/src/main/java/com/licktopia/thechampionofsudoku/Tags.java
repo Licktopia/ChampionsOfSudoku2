@@ -87,4 +87,6 @@ public class Tags {
             R.drawable.rank32,R.drawable.rank33,R.drawable.rank34,R.drawable.rank35,R.drawable.rank36,R.drawable.rank37,R.drawable.rank38,R.drawable.rank39,
             R.drawable.rank40,R.drawable.rank41,R.drawable.rank42,R.drawable.rank43,R.drawable.rank44,R.drawable.rank45,R.drawable.rank46,R.drawable.rank47,R.drawable.rank48,R.drawable.rank49,R.drawable.rank50,R.drawable.rank51};
     public static int[] PlayerTags = {R.id.player1,R.id.player2,R.id.player3,R.id.player4,R.id.player5,R.id.player6,R.id.player7,R.id.player8};
+    public static String[] Levels = {"Beginner","Easy","Medium","Hard","Expert","Master"};
+    public static int [] levelSorter = {R.id.beg, R.id.eas, R.id.med, R.id.har, R.id.exp, R.id.mas};
 }
