@@ -62,6 +62,37 @@ public class Board implements java.io.Serializable {
         }
     }
 
+    /* Constructor*/
+    protected Board(int boardNumber, int[] values) {
+
+        this.boardNumber = boardNumber;
+        // Check parameter has correct number of values
+        if (values.length != SIZE * SIZE) {
+            System.out.printf("The loaded game contains %d elements but needs to have %d elements\n", values.length, SIZE * SIZE);
+        }
+
+        contents = new Square[SIZE][SIZE];
+        openSquares = 0;
+
+        // Copy parameter values into contents array
+        for (int i = 0; i < values.length; i++) {
+            if (values[i] != 0) {   // Non-empty square
+                contents[i / SIZE][i % SIZE] = new Square(values[i], true, SIZE, i);
+            }
+            else                    // Empty square
+            {
+                contents[i / SIZE][i % SIZE] = new Square(values[i], false, SIZE, i);
+                openSquares++;
+            }
+            startingOpenSquares = openSquares;
+
+        }
+    }
+
+
+
+
+
     //creates exact copy of passed board
     protected Board(Board oldBoard)
     {

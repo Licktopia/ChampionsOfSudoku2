@@ -269,6 +269,20 @@ public interface GameInterface {
      */
     public long totalIncorrectGuesses();
 
+
+    /*****************************************************************************
+     * the penalty for using a hint, in points per hint
+     * @return
+     */
+
+    public long getHintPenalty();
+
+    /**************************************************
+     * The total number of hints used
+     * @return
+     */
+    public int  getTotalHintsUsed();
+
     /****************************************************************************
      * The percentage, as a fraction, of one time guesses to total user input squares
      * @return The percentage, as a fraction, of one time guesses to total user input squares

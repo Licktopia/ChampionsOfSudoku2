@@ -199,15 +199,16 @@ public class MultiGame implements GameInterface, java.io.Serializable {
         this.mRoomId = mRoomId;
         initializePlayerArray();
         this.mode = mode;
+        this.mGame = new Game(level, ctx);
         switch (cType)
         {
             case BOT_GAME:
                 isBotGame = true;
-                sendGameState(level, ctx);
+                sendGameState();
                 break;
             case HUMAN_GAME:
                 isBotGame = false;
-                sendGameState(level, ctx);
+                sendGameState();
                 break;
             default:
                 Log.d(TAG, "Invalid ConnectionType Used");
@@ -217,6 +218,47 @@ public class MultiGame implements GameInterface, java.io.Serializable {
 
 
     }
+
+
+    public MultiGame(GameMode mode,
+                     ConnectType cType,
+                     int level,
+                     int boardNumber,
+                     int[] values,
+                     ArrayList<Participant> mParticipants,
+                     String mMyId,
+                     GameHelper gameHelper,
+                     String mRoomId)
+    {
+
+        this.mParticipants = mParticipants;
+        this.mMyId = mMyId;
+        this.gameHelper = gameHelper;
+        this.mRoomId = mRoomId;
+        initializePlayerArray();
+        this.mode = mode;
+        this.mGame = new Game(boardNumber, level, values);
+        switch (cType)
+        {
+            case BOT_GAME:
+                isBotGame = true;
+                sendGameState();
+                break;
+            case HUMAN_GAME:
+                isBotGame = false;
+                sendGameState();
+                break;
+            default:
+                Log.d(TAG, "Invalid ConnectionType Used");
+                exit(1);
+                break;
+        }
+
+
+    }
+
+
+
 
     private MultiGame(Game mGame,
                       ArrayList<Participant> mParticipants,
@@ -303,9 +345,9 @@ public class MultiGame implements GameInterface, java.io.Serializable {
 
 
     //send byte array with game state in buffer
-    private void sendGameState(int level, Context ctx)
+    //mgame cannot be null!
+    private void sendGameState()
     {
-        mGame = new Game(level, ctx);
 
         //debug multiplayer UI using bots
         if(isBotGame)
@@ -899,6 +941,8 @@ public class MultiGame implements GameInterface, java.io.Serializable {
 
     public long getEarlyFinishTime() {return  mGame.getEarlyFinishTime();}
 
+    public int getTotalHintsUsed() {return mGame.getTotalHintsUsed();}
+    public long getHintPenalty() {return mGame.getHintPenalty();}
 
     //passes current state of game to new solver
     public void updateSolver() {

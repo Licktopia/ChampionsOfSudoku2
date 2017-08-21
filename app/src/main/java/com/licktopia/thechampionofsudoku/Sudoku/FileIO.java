@@ -152,7 +152,7 @@ public class FileIO {
                 runningTimeRemovalInterval,
                 incorrectGuessPenalty,
                 earlyFinishBonus,
-                earlyFinishTime);
+                earlyFinishTime, 0);
 
     }
 }
