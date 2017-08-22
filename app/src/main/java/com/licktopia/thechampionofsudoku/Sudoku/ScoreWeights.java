@@ -15,6 +15,9 @@ class ScoreWeights implements java.io.Serializable {
             earlyFinishTime = -1;
     private double incorrectGuessPenalty = -1;
 
+    // points removed for each hint used, in points per hint
+    private long hintPenalty = -1;
+
     //all time must be in seconds
     protected ScoreWeights(long basePoints,
                            long oneTimeGuessBonus,
@@ -22,7 +25,8 @@ class ScoreWeights implements java.io.Serializable {
                            long runningTimeRemovalInterval,
                            double incorrectGuessPenalty,
                            long earlyFinishBonus,
-                           long earlyFinishTime)
+                           long earlyFinishTime,
+                           long hintPenalty)
     {
         this.basePoints = basePoints;
         this.oneTimeGuessBonus = oneTimeGuessBonus;
@@ -37,6 +41,7 @@ class ScoreWeights implements java.io.Serializable {
             this.runningTimeRemovalInterval = runningTimeRemovalInterval;
         }
 
+        this.hintPenalty = hintPenalty;
         this.earlyFinishBonus = earlyFinishBonus;
         this.earlyFinishTime = earlyFinishTime;
         this.incorrectGuessPenalty = incorrectGuessPenalty;
@@ -62,5 +67,8 @@ class ScoreWeights implements java.io.Serializable {
 
     protected double getIncorrectGuessPenalty() {
         return incorrectGuessPenalty;
+    }
+    protected long getHintPenalty() {
+        return hintPenalty;
     }
 }

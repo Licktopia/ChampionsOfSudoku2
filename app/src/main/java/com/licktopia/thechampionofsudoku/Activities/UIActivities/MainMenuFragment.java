@@ -49,6 +49,7 @@ import java.util.List;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
+import static com.google.example.games.basegameutils.BaseGameActivity.mHelper;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.BADGETAGS;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.BOARD_FRAGMENT;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.GAMER_PROFILE_FRAGMENT;

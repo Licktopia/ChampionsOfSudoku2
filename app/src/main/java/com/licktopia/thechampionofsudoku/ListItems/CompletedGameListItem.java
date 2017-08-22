@@ -11,7 +11,7 @@ public class CompletedGameListItem {
 
     private String date;
     private int level;
-    private int puzzleNumber;
+    private long puzzleNumber;
     private int realScore;
     private String time;
     private int xp;
@@ -25,7 +25,7 @@ public class CompletedGameListItem {
 
     private boolean color;
 
-    public CompletedGameListItem(double accuracy, String date, int level, int puzzleNumber, int realScore, String time, int xp, String gamerId, boolean color, String exactTime) {
+    public CompletedGameListItem(double accuracy, String date, int level, long puzzleNumber, int realScore, String time, int xp, String gamerId, boolean color, String exactTime) {
         this.accuracy = accuracy;
         this.date = date;
         this.level = level;
@@ -55,7 +55,7 @@ public class CompletedGameListItem {
         return level;
     }
 
-    public int getPuzzleNumber() {
+    public long getPuzzleNumber() {
         return puzzleNumber;
     }
 

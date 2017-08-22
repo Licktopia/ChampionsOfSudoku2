@@ -2,12 +2,10 @@ package com.licktopia.thechampionofsudoku;
 
 import android.content.Context;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import com.licktopia.thechampionofsudoku.Sudoku.Board;
+
 import java.util.Arrays;
 import java.util.Vector;
-import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Created by jeff on 12/15/16.
@@ -43,12 +41,12 @@ public class SudokuSolver {
     public int[] getSolution(){return fin;}
 
     /************************************
-     * getBoardNumber Returns board number
+     * getBoardIdentifier Returns board number
      *********************************/
     public int getBoardNumber(){return boardNumber;}
 
     /************************************
-     * getBoardNumber Returns starting board
+     * getBoardIdentifier Returns starting board
      *********************************/
     public int[] getStartBoard(){return startBoard;}
 
@@ -75,8 +73,8 @@ public class SudokuSolver {
         int colEnd;
     };
 
-    private class Board {
-        public Board() { openSquares = 0; }
+    private class BoardofClass {
+        public BoardofClass() { openSquares = 0; }
         public int[][] contents = new int[9][9]; //this is sudoku puzzle we are solving
         private int openSquares; //num of open spots avail.
         private LocationBoard [] corrLoStor = new LocationBoard[81];//1D index of squares an array of x and y coordinates for a given position
@@ -84,7 +82,7 @@ public class SudokuSolver {
     private LocationBoard[] openSpots = new LocationBoard[81];
     private int correctValues[] = new int[81];
     private int currCorrVal;
-    private Board sudokuBoard = new Board();
+    private BoardofClass sudokuBoardofClass = new BoardofClass();
     private boolean finished;
     private int NUM_OF_ELEMENTS;
     private int MAX_ROWS;
@@ -102,11 +100,9 @@ public class SudokuSolver {
 
 
 
-    public SudokuSolver(int level, Context ctx)
+    public SudokuSolver(Board curBoard)
     {
         while(fin == null) {
-            context = ctx;
-            startBoard = readFileFromAssets(level);
             NUM_OF_ELEMENTS = 81;
             MAX_ROWS = 9;
             MAX_COLS = 9;
@@ -118,15 +114,15 @@ public class SudokuSolver {
             MakeUnmake = new Vector<>();
             NumberList = new Vector<>();
 
-            //open file and read it into the Board
+            //open file and read it into the BoardofClass
 
             for (int row = 0; row < MAX_ROWS; row++) {
                 for (int col = 0; col < MAX_COLS; col++) {
-                    sudokuBoard.contents[row][col] = startBoard[p];
-                    if (sudokuBoard.contents[row][col] == 0) {
+                    sudokuBoardofClass.contents[row][col] = curBoard.getValueAt(row,col);
+                    if (sudokuBoardofClass.contents[row][col] == 0) {
 
-                        openSpots[sudokuBoard.openSquares] = new LocationBoard(row, col);
-                        sudokuBoard.openSquares++;
+                        openSpots[sudokuBoardofClass.openSquares] = new LocationBoard(row, col);
+                        sudokuBoardofClass.openSquares++;
 
                     }
                     p++;
@@ -150,7 +146,7 @@ public class SudokuSolver {
             int num[] = new int[81];
             for (int i = 0; i < 9; i++) {
                 for (int j = 0; j < 9; j++) {
-                    num[count] = sudokuBoard.contents[i][j];
+                    num[count] = sudokuBoardofClass.contents[i][j];
                     count++;
                 }
             }
@@ -187,7 +183,7 @@ public class SudokuSolver {
 
     }
     private boolean isSolution(){
-        if (sudokuBoard.openSquares != 0) { return false; }//if the board isn't full
+        if (sudokuBoardofClass.openSquares != 0) { return false; }//if the board isn't full
         else//if the board is full
         {
             for (int i = 0; i < 9; i++)//for each row, column and cluster - outer of nested loop
@@ -214,18 +210,18 @@ public class SudokuSolver {
                     for (int p = 0; p < 3; p++)
                     {
                         //copying current cluster into flat cluster Array
-                        clusterArray[val] = sudokuBoard.contents[m + edgerow][p+edgecol];
+                        clusterArray[val] = sudokuBoardofClass.contents[m + edgerow][p+edgecol];
                         val++;
                     }
                 }
 
                 for (int j = 0; j < 9; j++)//puts number 1-9 into bank slot of number
                 {
-                    if(sudokuBoard.contents[i][j]!=0) {
-                        rowbank[sudokuBoard.contents[i][j] - 1] = sudokuBoard.contents[i][j];
+                    if(sudokuBoardofClass.contents[i][j]!=0) {
+                        rowbank[sudokuBoardofClass.contents[i][j] - 1] = sudokuBoardofClass.contents[i][j];
                     }
-                    if(sudokuBoard.contents[j][i]!=0) {
-                        colbank[sudokuBoard.contents[j][i] - 1] = sudokuBoard.contents[j][i];
+                    if(sudokuBoardofClass.contents[j][i]!=0) {
+                        colbank[sudokuBoardofClass.contents[j][i] - 1] = sudokuBoardofClass.contents[j][i];
                     }
                     //put value found in clustArrray[j] into empty cluster vector
                     if(clusterArray[j]!=0) {
@@ -262,7 +258,7 @@ public class SudokuSolver {
         col = locationBoard.y;
 
         //store the current row and column into the correct location storage
-        sudokuBoard.corrLoStor[currCorrVal] = new LocationBoard(row, col);
+        sudokuBoardofClass.corrLoStor[currCorrVal] = new LocationBoard(row, col);
 
 
 
@@ -295,18 +291,18 @@ public class SudokuSolver {
         Arrays.fill(possible, true);
         for(int i = 0; i < 9; i++)
         {
-            if(sudokuBoard.contents[row][i] != 0)
+            if(sudokuBoardofClass.contents[row][i] != 0)
             {
-                possible[sudokuBoard.contents[row][i]] = false;
+                possible[sudokuBoardofClass.contents[row][i]] = false;
             }
         }
 
         //check current column
         for(int i = 0; i < 9; i++ )
         {
-            if(sudokuBoard.contents[i][col] != 0)
+            if(sudokuBoardofClass.contents[i][col] != 0)
             {
-                possible[sudokuBoard.contents[i][col]] = false;
+                possible[sudokuBoardofClass.contents[i][col]] = false;
             }
         }
 
@@ -324,9 +320,9 @@ public class SudokuSolver {
         {
             for(int j = colBegin; j < colEnd; j++)
             {
-                if(sudokuBoard.contents[i][j] != 0)
+                if(sudokuBoardofClass.contents[i][j] != 0)
                 {
-                    possible[sudokuBoard.contents[i][j]] = false;
+                    possible[sudokuBoardofClass.contents[i][j]] = false;
 
                 }
             }
@@ -402,10 +398,10 @@ public class SudokuSolver {
     }
 
     private void makeMove(){
-        int correctRow = sudokuBoard.corrLoStor[currCorrVal].x;
-        int correctCol = sudokuBoard.corrLoStor[currCorrVal].y;
-        sudokuBoard.contents[correctRow][correctCol] = correctValues[currCorrVal];
-        sudokuBoard.openSquares--;
+        int correctRow = sudokuBoardofClass.corrLoStor[currCorrVal].x;
+        int correctCol = sudokuBoardofClass.corrLoStor[currCorrVal].y;
+        sudokuBoardofClass.contents[correctRow][correctCol] = correctValues[currCorrVal];
+        sudokuBoardofClass.openSquares--;
         XCoord.add(correctRow);
         YCoord.add(correctCol);
         NumberList.add(correctValues[currCorrVal]);
@@ -413,10 +409,10 @@ public class SudokuSolver {
 
     }
     private void unmakeMove(){
-        int correctRow = sudokuBoard.corrLoStor[currCorrVal].x;
-        int correctCol = sudokuBoard.corrLoStor[currCorrVal].y;
-        sudokuBoard.contents[correctRow][correctCol] = 0;
-        sudokuBoard.openSquares++;
+        int correctRow = sudokuBoardofClass.corrLoStor[currCorrVal].x;
+        int correctCol = sudokuBoardofClass.corrLoStor[currCorrVal].y;
+        sudokuBoardofClass.contents[correctRow][correctCol] = 0;
+        sudokuBoardofClass.openSquares++;
         XCoord.add(correctRow);
         YCoord.add(correctCol);
         NumberList.add(0);
@@ -447,7 +443,7 @@ public class SudokuSolver {
             {
                 for (int p = 0; p < 3; p++)
                 {
-                    clusterArray[val] = sudokuBoard.contents[m + edgerow][p + edgecol];
+                    clusterArray[val] = sudokuBoardofClass.contents[m + edgerow][p + edgecol];
                     val++;
                 }
             }
@@ -460,8 +456,8 @@ public class SudokuSolver {
             for (int j = 0; j < 9; j++)//process through row, column and cluster  - inner of nest loop
             {
                 //if spot in row is 0, add to 0 counter for row
-                if (sudokuBoard.contents[i][j] == 0) { rowcount++; }
-                if (sudokuBoard.contents[j][i] == 0) { colcount++; }
+                if (sudokuBoardofClass.contents[i][j] == 0) { rowcount++; }
+                if (sudokuBoardofClass.contents[j][i] == 0) { colcount++; }
                 if (clusterArray[j] == 0) { cluscount++; }
             }
 
@@ -488,37 +484,37 @@ public class SudokuSolver {
 
                 int totalzeros = 0;//initialize total zeros counter
                 int samezeros = 0;//initialze same zeros counter (to not double count 0s from the same cluster, if in the same row/col)
-                if (sudokuBoard.contents[k][h] == 0)//if the spot on the board is a zero
+                if (sudokuBoardofClass.contents[k][h] == 0)//if the spot on the board is a zero
                 {
                     if ((h + 4) % 3 == 1)//get same zeros
                     {
-                        if (sudokuBoard.contents[k][h+1] == 0) {	samezeros++;}
-                        if (sudokuBoard.contents[k][h+2] == 0) {	samezeros++;}
+                        if (sudokuBoardofClass.contents[k][h+1] == 0) {	samezeros++;}
+                        if (sudokuBoardofClass.contents[k][h+2] == 0) {	samezeros++;}
                     }
                     else if ((h + 4) % 3 == 2)//get same zeros
                     {
-                        if (sudokuBoard.contents[k][h + 1] == 0) { samezeros++;}
-                        if (sudokuBoard.contents[k][h - 1] == 0) { samezeros++;}
+                        if (sudokuBoardofClass.contents[k][h + 1] == 0) { samezeros++;}
+                        if (sudokuBoardofClass.contents[k][h - 1] == 0) { samezeros++;}
                     }
                     else //get same zeros
                     {
-                        if (sudokuBoard.contents[k][h - 1] == 0) { samezeros++;}
-                        if (sudokuBoard.contents[k][h - 2] == 0) {	samezeros++;}
+                        if (sudokuBoardofClass.contents[k][h - 1] == 0) { samezeros++;}
+                        if (sudokuBoardofClass.contents[k][h - 2] == 0) {	samezeros++;}
                     }
                     if ((k + 4) % 3 == 1)//get same zeros
                     {
-                        if (sudokuBoard.contents[k + 1][h] == 0) {samezeros++;}
-                        if (sudokuBoard.contents[k + 2][h] == 0) {samezeros++;}
+                        if (sudokuBoardofClass.contents[k + 1][h] == 0) {samezeros++;}
+                        if (sudokuBoardofClass.contents[k + 2][h] == 0) {samezeros++;}
                     }
                     else if ((k + 4) % 3 == 2)//get same zeros
                     {
-                        if (sudokuBoard.contents[k + 1][h] == 0) {samezeros++;}
-                        if (sudokuBoard.contents[k - 1][h] == 0) {samezeros++;}
+                        if (sudokuBoardofClass.contents[k + 1][h] == 0) {samezeros++;}
+                        if (sudokuBoardofClass.contents[k - 1][h] == 0) {samezeros++;}
                     }
                     else//get same zeros
                     {
-                        if (sudokuBoard.contents[k - 1][h] == 0) {samezeros++;}
-                        if (sudokuBoard.contents[k - 2][h] == 0) {samezeros++;}
+                        if (sudokuBoardofClass.contents[k - 1][h] == 0) {samezeros++;}
+                        if (sudokuBoardofClass.contents[k - 2][h] == 0) {samezeros++;}
                     }
                     totalzeros = rowzeros[k] + colzeros[h] + clusterzeros[cluster] - samezeros -3;//calculates how many other 0s are in the same row, column, and cluster,
                     if (totalzeros < minzeros)//if minimum zeros found so far is less than total zeros													  //not counting itself or other 0s in the same row and column of the cluster
@@ -536,65 +532,7 @@ public class SudokuSolver {
         return bestSquare;
 
     }
-    private int[] readFileFromAssets(int level) {
-        String filename;
 
-
-        if(level == 0){
-            filename= "boards/0.txt";
-        }
-        else if(level==1){
-            filename= "boards/1.txt";
-        }
-        else if(level==1){
-            filename= "boards/2.txt";
-        }
-        else if(level==1){
-            filename= "boards/3.txt";
-        }
-        else if(level==1){
-            filename= "boards/4.txt";
-        }
-        else {
-            filename= "boards/5.txt";
-        }
-        BufferedReader reader = null;
-        StringBuilder builder = new StringBuilder();
-        int[] values = new int[81];
-
-        try {
-            reader = new BufferedReader(new InputStreamReader(
-                   context.getAssets().open(filename)));
-            String line;
-            int p=0;
-            int randomNum = ThreadLocalRandom.current().nextInt(0, 9999 + 1);
-            while ((line = reader.readLine())!= null){
-                if(p==randomNum) {
-                    builder.append(line);
-                }
-
-                p++;
-            }
-            String text = builder.toString();
-            for(int i =0; i <81; i++)
-            {
-                values[i]= Integer.parseInt(String.valueOf(text.charAt(i)));
-            }
-
-            boardNumber = randomNum;
-            return values;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }finally{
-            try {
-                reader.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return null;
-
-    }
 
 
 

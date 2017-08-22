@@ -157,6 +157,8 @@ public class BoardFragment extends Fragment {
     private long sTime =0;
     private long mpStartTime;
     public Toolbar toolbar;
+    private int[] userBoard = null;
+    private long boardIdentifier;
 
 
     public static BoardFragment newInstance() {
@@ -176,6 +178,8 @@ public class BoardFragment extends Fragment {
         exactTime = getArguments().getString("EXACT_TIME");
         savedName = getArguments().getString("SAVED_NAME");
         savedDate = getArguments().getString("SAVED_DATE");
+        userBoard = getArguments().getIntArray("USER_BOARD");
+        boardIdentifier = getArguments().getLong("BOARD_IDENTIFIER");
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -221,9 +225,6 @@ public class BoardFragment extends Fragment {
         }
 
         shareDialog = new ShareDialog(BoardFragment.this);
-
-
-
 
         // Initialize the Amazon Cognito credentials provider
         credentialsProvider = new CognitoCachingCredentialsProvider(
@@ -307,7 +308,13 @@ public class BoardFragment extends Fragment {
         else
         {
             if(mGame == null) {
-                mGame = new Game(level, getContext());
+                if(userBoard==null) {
+                    mGame = new Game(level, getContext());
+                    boardIdentifier = mGame.getBoardNumber();
+                }
+                else{
+                    mGame = new Game(boardIdentifier ,level, userBoard);
+                }
             }
         }
 
@@ -525,7 +532,7 @@ public class BoardFragment extends Fragment {
                 obj.setTime(savedName);
             }
             obj.setColorMode(colorGame);
-            obj.setPuzzleNumber(mGame.getBoardNumber()+1+level*10000);
+            obj.setPuzzleNumber(mGame.getBoardNumber());
             obj.setLevel(level);
             obj.setStoppedTime(stoppedTime);
             //game object to byte array
@@ -613,7 +620,7 @@ public class BoardFragment extends Fragment {
             obj.setTime(String.format("%,d",(int) mGame.getRunningTime()));
             obj.setDate(today);
             obj.setColor(colorGame);
-            obj.setPuzzleNumber(mGame.getBoardNumber()+1+level*10000);
+            obj.setPuzzleNumber(mGame.getBoardNumber());
             obj.setLevel(level);
             obj.setAccuracy(mGame.getAccuracy());
             obj.setExactTime(String.format("%,d", System.currentTimeMillis()));
@@ -1382,38 +1389,39 @@ public class BoardFragment extends Fragment {
      * Listeners checkProgressButton
      *********************************/
     private void checkProgressButtonListener() {
-        checkProgressButton.setOnClickListener(new View.OnClickListener() {
+        checkProgressButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onClick(View v) {
-                Set<Integer> conflicts = mGame.checkCurrentProgress();  // Set board value to number
-                if (conflicts.isEmpty()) {
-                    if(!solveClicked&&!mGame.isGameFinished()) {
-                        mPlaySounds.playSounds(getContext(), 1);
-                        Toast.makeText(getContext(), "Board is currently correct!", Toast.LENGTH_LONG).show();
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    Set<Integer> conflicts = mGame.checkCurrentProgress();  // Set board value to number
+                    if (conflicts.isEmpty()) {
+                        if(!solveClicked&&!mGame.isGameFinished()) {
+                            mPlaySounds.playSounds(getContext(), 1);
+                            Toast.makeText(getContext(), "BoardofClass is currently correct!", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                    else {
+                        if(!solveClicked) {
+                            mPlaySounds.playSounds(getContext(), 2);
+                        }
+                        for (int conflict : conflicts) {
+                            squareViews[conflict].setErrorHighlight(colorGame);     // Display error highlight
+
+                        }
                     }
                 }
-                else {
-                    if(!solveClicked) {
-                        mPlaySounds.playSounds(getContext(), 2);
-                    }
-                    for (int conflict : conflicts) {
-                        squareViews[conflict].setErrorHighlight(colorGame);     // Display error highlight
-                        highlightHandler.postDelayed(new Runnable() {  // Wait then remove error color
-                            @Override
-                            public void run() {
-                                // Reset to regular selection highlights
-                                removeAllHighlights();
-                                if (selectedSquare != -1) {
-                                    squareViews[selectedSquare].setSelectedHighlight();
-                                    highlightConnected();
-                                }
-                            }
-                        }, 2000);
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    removeAllHighlights();
+                    if (selectedSquare != -1) {
+                        squareViews[selectedSquare].setSelectedHighlight();
+                        //highlightConnected();
                     }
                 }
+                return true;
             }
         });
     }
+
 
     /************************************
      * Listeners nakedSingleButton

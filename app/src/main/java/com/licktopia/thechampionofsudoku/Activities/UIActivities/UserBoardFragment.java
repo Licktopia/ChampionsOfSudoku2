@@ -73,6 +73,16 @@ public class UserBoardFragment extends Fragment {
             gridNum = 4;
         }
 
+
+
+
+
+        return view;
+    }
+
+    @Override
+    public void onStart(){
+        super.onStart();
         mProgressBar = (ProgressBar)view.findViewById(R.id.usr_progress);
         recyclerView = (RecyclerView)view.findViewById(R.id.user_board_rv);
         gridLayoutManager = new GridLayoutManager(getContext(),gridNum);
@@ -106,9 +116,6 @@ public class UserBoardFragment extends Fragment {
         };
         Thread mythread = new Thread(runnable);
         mythread.start();
-
-
-        return view;
     }
 
     private void assignAllLists() {

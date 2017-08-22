@@ -84,7 +84,7 @@ public class SavedGameListAdapter extends RecyclerView.Adapter<SavedGameListAdap
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
         final SavedGameListItem savedGameListItem = savedGameListItems.get(position);
-        final int boardNumber = savedGameListItem.getPuzzleNumber();
+        final long boardNumber = savedGameListItem.getPuzzleNumber();
         final String exactTime = savedGameListItem.getExactTime();
         final String gamerId = savedGameListItem.getGamerId();
 

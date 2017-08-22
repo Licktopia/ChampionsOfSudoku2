@@ -10,7 +10,6 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import com.licktopia.thechampionofsudoku.GameInterface;
-import com.licktopia.thechampionofsudoku.Sudoku.Solver;
 
 /**
  * Created by John Konecny on 6/19/2017.
@@ -43,6 +42,9 @@ public class Game implements GameInterface, java.io.Serializable
     //stores the total bonus given for the score
     private int level = -1;
 
+    private int totalHintsUsed = -1;
+
+
     private Board solvedBoard;
 
     //context is need to load from assets folder
@@ -51,7 +53,8 @@ public class Game implements GameInterface, java.io.Serializable
         this.level = level;
         curBoard = new Board(level, ctx, -1);
         solutionSolver = new Solver(curBoard);
-        scoreWeights = FileIO.loadScoreWeights(level, ctx);
+        scoreWeights = ScoreCSV.getScoreWeights(level);
+        totalHintsUsed = 0;
         solvedBoard = solutionSolver.solve();
         if(solvedBoard == null)
         {
@@ -59,12 +62,27 @@ public class Game implements GameInterface, java.io.Serializable
         }
     }
 
+    public Game(long boardNumber, int level, int[] values)
+    {
+        this.level = level;
+        curBoard = new Board(boardNumber, values);
+        solutionSolver = new Solver(curBoard);
+        scoreWeights = ScoreCSV.getScoreWeights(level);
+        totalHintsUsed = 0;
+        if(solutionSolver.solve() == null)
+        {
+            System.out.printf("Game cannot be solved!\n");
+        }
+    }
+
+
     public Game(Game oldGame)
     {
         this.level = oldGame.level;
         this.curBoard = new Board(oldGame.curBoard);
         this.solutionSolver = new Solver(curBoard);
         this.scoreWeights = oldGame.scoreWeights;
+        this.totalHintsUsed = oldGame.totalHintsUsed;
     }
 
     private Board curBoard;
@@ -89,7 +107,7 @@ public class Game implements GameInterface, java.io.Serializable
     }
 
     //gets board number
-    public int getBoardNumber(){return curBoard.getBoardNumber();}
+    public long getBoardNumber(){return curBoard.getBoardIdentifier();}
 
     //gets value of square given the index
     public int getBoardValueAt(int idx) {
@@ -230,7 +248,8 @@ public class Game implements GameInterface, java.io.Serializable
             return getLevelBonus() +
                     getTotalOneTimeGuesses() * getOneTimeGuessSquareBonus() -
                     (getTimePenalty() * totalPenaltyTimeIntervals()) -
-                    (long)(getIncorrectGuessesPenalty() * (double)totalIncorrectGuesses());
+                    (long)(getIncorrectGuessesPenalty() * (double)totalIncorrectGuesses()) -
+                    (getHintPenalty() * getTotalHintsUsed());
         }
         else
         {
@@ -238,7 +257,8 @@ public class Game implements GameInterface, java.io.Serializable
                     getTotalOneTimeGuesses() * getOneTimeGuessSquareBonus() -
                     (getTimePenalty() * totalPenaltyTimeIntervals()) -
                     (long)(getIncorrectGuessesPenalty() * (double)totalIncorrectGuesses()) +
-                    getEarlyFinishBonus() * (getEarlyFinishTime() - getRunningTime());
+                    getEarlyFinishBonus() * (getEarlyFinishTime() - getRunningTime()) -
+                    (getHintPenalty() * getTotalHintsUsed());
         }
 
     }
@@ -307,6 +327,10 @@ public class Game implements GameInterface, java.io.Serializable
 
     public long getEarlyFinishTime() {return  scoreWeights.getEarlyFinishTime();}
 
+    public long getHintPenalty() {return  scoreWeights.getHintPenalty();}
+
+    public int  getTotalHintsUsed() {return totalHintsUsed;}
+
     //stores solution to game
     private Solver solutionSolver;
 
@@ -344,13 +368,16 @@ public class Game implements GameInterface, java.io.Serializable
 
     public int getNakedSingle() {
         List<Integer> nakedSingles = Strategies.getNakedSingles(curBoard);
+        totalHintsUsed++;
         if (nakedSingles.isEmpty()) return -1;
         Integer i = Strategies.getRandomElement(nakedSingles);
         return i;
     }
 
+
     public Strategies.Hint getHint(int hintType) {
         List<Strategies.Hint> hints;
+        totalHintsUsed++;
         switch(hintType) {
             case Strategies.SINGLES_CHAIN: hints = Strategies.getSinglesChains(curBoard); break;
             case Strategies.YWING: hints = Strategies.getYWings(curBoard); break;

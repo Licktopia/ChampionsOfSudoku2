@@ -61,7 +61,7 @@ public interface GameInterface {
      * gets board number index for Sudoku Game
      * @return board number index for Sudoku Game
      */
-    public int getBoardNumber();
+    public long getBoardNumber();
 
 
     /************************************************
@@ -268,6 +268,20 @@ public interface GameInterface {
      * @return Total incorrect guesses made by the user
      */
     public long totalIncorrectGuesses();
+
+
+    /*****************************************************************************
+     * the penalty for using a hint, in points per hint
+     * @return
+     */
+
+    public long getHintPenalty();
+
+    /**************************************************
+     * The total number of hints used
+     * @return
+     */
+    public int  getTotalHintsUsed();
 
     /****************************************************************************
      * The percentage, as a fraction, of one time guesses to total user input squares

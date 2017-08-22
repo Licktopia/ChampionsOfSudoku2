@@ -8,6 +8,10 @@ import java.util.concurrent.TimeUnit;
 
 import android.content.Context;
 
+import com.licktopia.thechampionofsudoku.Activities.BaseActivity;
+import com.licktopia.thechampionofsudoku.Activities.UIActivities.MainMenuFragment;
+import com.licktopia.thechampionofsudoku.Database.DatabaseAccess;
+
 /**
  * Created by John Konecny on 6/19/2017.
  */
@@ -23,16 +27,26 @@ public class FileIO {
 
     //loads a random board from the given level
     protected static int[] loadBoard(int level, Context ctx, int totalBoardElements) {
-        randomNum = _Rand.nextInt(0, 9999 + 1);
+        randomNum = _Rand.nextInt(1, 10001) + level*10000;
         return loadSpecificBoard(level, ctx, totalBoardElements, randomNum);
     }
 
     //loads a board from row 'boardIndex' from the given level
-    public static int[] loadSpecificBoard(int level, Context ctx, int totalBoardElements, int boardIndex) {
+    public static int[] loadSpecificBoard(int level, Context ctx, int totalBoardElements, long boardIndex) {
+
+        DatabaseAccess databaseAccess = DatabaseAccess.getInstance(ctx);
+        databaseAccess.open();
         String filename = "boards/" + String.valueOf(level) +".txt";
 
         BufferedReader reader = null;
         StringBuilder builder = new StringBuilder();
+        try {
+            int[] values = databaseAccess.getSpecificBoard(level, boardIndex);
+            return values;
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        /*
         int[] values = new int[totalBoardElements];
 
         try {
@@ -57,6 +71,7 @@ public class FileIO {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        */
         return null;
 
     }
@@ -152,7 +167,7 @@ public class FileIO {
                 runningTimeRemovalInterval,
                 incorrectGuessPenalty,
                 earlyFinishBonus,
-                earlyFinishTime);
+                earlyFinishTime, 0);
 
     }
 }
