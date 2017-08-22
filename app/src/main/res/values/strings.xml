@@ -20,7 +20,7 @@
     <string name="sign_in_button">Sign in</string>
     <string name="Scoresummary">The score will always be hidden until the puzzle is solved. It cannot be toggled by clicking on it.</string>
     <string name="harder_puzzle_message">Harder puzzles will earn more XP</string>
-    <string name="app_url">https://play.google.com/apps/testing/com.licktopia.thechampionofsudoku</string>
+    <string name="app_url">https://play.google.com/store/apps/details?id=com.licktopia.thechampionofsudoku</string>
     <string name="quit_to_menu">Quit to main menu?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
