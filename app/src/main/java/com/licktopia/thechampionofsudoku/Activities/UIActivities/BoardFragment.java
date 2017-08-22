@@ -313,7 +313,7 @@ public class BoardFragment extends Fragment {
                     boardIdentifier = mGame.getBoardNumber();
                 }
                 else{
-                    mGame = new Game(boardIdentifier ,level, userBoard);
+                    mGame = new Game(boardIdentifier, level, userBoard);
                 }
             }
         }
@@ -1912,12 +1912,15 @@ public class BoardFragment extends Fragment {
         }
 
 
-
+        /*
         double regression = 1340100 * Math.pow(.88316, 81-mGame.getNumberOpenSquares());
         int speedControl = (int) regression;
-        int speed = speedControl /newSteps.size();
+        int speed = speedControl / newSteps.size();
+        */
+        int speed = 400;
+        Log.i("Speed", "Speed is " + speed);
 
-        for(int i = 0; i<newSteps.size();i++) {
+        for(int i = 0; i < newSteps.size();i++) {
 
 
             final int finalI = i;
