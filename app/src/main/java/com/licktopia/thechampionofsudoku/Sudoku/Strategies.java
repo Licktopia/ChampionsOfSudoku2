@@ -3,7 +3,10 @@ package com.licktopia.thechampionofsudoku.Sudoku;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -41,7 +44,12 @@ public class Strategies {
     public static final int LOCKED_CANDIDATE = 6;
     public static final int XWING = 7;
     public static final int YWING = 8;
-    public static final int NUM_STRATEGIES = 8;
+    public static final int SINGLES_CHAIN = 9;
+    public static final int NUM_STRATEGIES = 9;
+
+    public static final int COLOR_ONE = 100;
+    public static final int COLOR_TWO = 200;
+    public static final int NO_COLOR = 0;
 
     /* Returns a single random element of type <T> from a list */
     public static <T> T getRandomElement(List<T> list) {
@@ -513,7 +521,127 @@ public class Strategies {
         return yWings;
     }
 
-    public static int executeStrategyFromList(Board board, List<Hint> hints) {
+    /****** SINGLES CHAIN *******/
+    //  Connect an eligible list of squares containing a single notepad number and assign them
+    //  one of two colors, alternating the color from the previous square. These chains can be checked
+    //  for different criteria to see if numbers can be removed from the notepad
+
+    public static List<Hint> getSinglesChains(Board board) {
+
+        ArrayList<Hint> singlesChains = new ArrayList<>();
+        int boardSize = board.totalBoardElements();
+
+        for (int np = 1; np <= 9; np++) {
+
+            // Arrays to track visited squares
+            boolean[] visited = new boolean[boardSize];
+            boolean[] hasNumber = new boolean[boardSize];
+
+            // Get all squares with np number
+            for (int i = 0; i < boardSize; i++) {
+                if (board.getNotepadAt(i, np))
+                    hasNumber[i] = true;
+            }
+
+            // Iterate through all squares, forming a queue for each separate chain
+            for (int idx = 0; idx < boardSize; idx++) {
+                if (hasNumber[idx] && !visited[idx]) {
+                    // Create new chain and add current square
+                    Queue<Integer> currentChain = new LinkedList<>();
+                    currentChain.add(idx);
+                    visited[idx] = true;
+                    // Create lists to track colors
+                    ArrayList<Integer> colorOne = new ArrayList<>();
+                    ArrayList<Integer> colorTwo = new ArrayList<>();
+                    colorOne.add(idx);
+                    while (!currentChain.isEmpty()) {
+
+                        // Check current number for unmarked chains
+                        int current = currentChain.poll();
+                        ArrayList nextColor = colorOne.contains(current) ? colorTwo : colorOne;
+                        int rowChain = board.getSinglesChainInRow(current, np);
+                        int colChain = board.getSinglesChainInCol(current, np);
+                        int clusterChain = board.getSinglesChainInCluster(current, np);
+
+                        // If new chains, add to currentChain
+                        if (rowChain >= 0 && !visited[rowChain]) {
+                            currentChain.add(rowChain);
+                            visited[rowChain] = true;
+                            nextColor.add(rowChain);
+                        }
+                        if (colChain >= 0 && !visited[colChain]) {
+                            currentChain.add(colChain);
+                            visited[colChain] = true;
+                            nextColor.add(colChain);
+                        }
+                        if (clusterChain >= 0 && !visited[clusterChain]) {
+                            currentChain.add(clusterChain);
+                            visited[clusterChain] = true;
+                            nextColor.add(clusterChain);
+                        }
+                    }
+                    // Flags to track if we find a correct color
+                    boolean oneCorrect = false;
+                    boolean twoCorrect = false;
+                    outer: for (int i = 0; i < colorOne.size(); i++) {
+                        for (int j = i + 1; j < colorOne.size(); j++) {
+                            if (board.isConnected(colorOne.get(i), colorOne.get(j)) > 0) {
+                                twoCorrect = true;
+                                break outer;
+                            }
+                        }
+                    }
+                    if (!twoCorrect) {
+                    outer: for (int i = 0; i < colorTwo.size(); i++) {
+                            for (int j = i + 1; j < colorTwo.size(); j++) {
+                                if (board.isConnected(colorTwo.get(i), colorTwo.get(j)) > 0) {
+                                    oneCorrect = true;
+                                    break outer;
+                                }
+                            }
+                        }
+                    }
+                    // Found a valid instance of single chain
+                    if (oneCorrect || twoCorrect) {
+                        int[] colorOneArray = new int[colorOne.size()];
+                        int[] colorTwoArray = new int[colorTwo.size()];
+                        for (int i = 0; i < colorOne.size(); i++) {
+                            colorOneArray[i] = colorOne.get(i);
+                        }
+                        for (int i = 0; i < colorTwo.size(); i++) {
+                            colorTwoArray[i] = colorTwo.get(i);
+                        }
+                        int[][] hintInfo = new int[NUM_CATEGORIES][];
+                        hintInfo[REMOVE_FROM] = new int[]{CONNECTED};
+                        hintInfo[SELECTED] = oneCorrect ? colorOneArray : colorTwoArray;
+                        hintInfo[CONNECTED] = oneCorrect ? colorTwoArray : colorOneArray;
+                        hintInfo[NOTEPAD] = new int[]{np};
+                        singlesChains.add(new Hint(hintInfo));
+                    }
+                }
+            }
+
+/*
+                    // TODO CHANGE THIS, NEED TO CHECK CONNECTING SQUARES FOR COLORS TOO BEFORE ASSIGNING
+                    // If both uncolored, assign either color
+                    if (squareColoring[idx1] == NO_COLOR && squareColoring[idx2] == NO_COLOR) {
+                        squareColoring[idx1] = COLOR_ONE;
+                        squareColoring[idx2] = COLOR_TWO;
+                    }
+                    // If only square two uncolored, assign opposite of first
+                    else if (squareColoring[idx2] == NO_COLOR)
+                        squareColoring[idx2] = squareColoring[idx1] == COLOR_ONE ? COLOR_TWO : COLOR_ONE;
+                    // If only square one uncolored, assign opposite of second
+                    else if (squareColoring[idx1] == NO_COLOR)
+                        squareColoring[idx1] = squareColoring[idx2] == COLOR_ONE ? COLOR_TWO : COLOR_ONE;
+                    // Else both are already colored, nothing to do
+                }
+            }*/
+        }
+        return singlesChains;
+    }
+
+        public static int executeStrategyFromList(Board board, List<Hint> hints) {
         if (!hints.isEmpty()) {
             Hint hint = getRandomElement(hints);
             executeStrategy(board, hint);
@@ -550,7 +678,11 @@ public class Strategies {
     }
 
     public static int removeRandomYWingValues(Board board) {
-        return executeStrategyFromList(board, getXWings(board));
+        return executeStrategyFromList(board, getYWings(board));
+    }
+
+    public static int removeRandomSinglesChainValues(Board board) {
+        return executeStrategyFromList(board, getSinglesChains(board));
     }
 
     //updates all squares' notepads so that only valid moves are true

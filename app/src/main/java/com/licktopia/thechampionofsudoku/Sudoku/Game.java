@@ -352,6 +352,7 @@ public class Game implements GameInterface, java.io.Serializable
     public Strategies.Hint getHint(int hintType) {
         List<Strategies.Hint> hints;
         switch(hintType) {
+            case Strategies.SINGLES_CHAIN: hints = Strategies.getSinglesChains(curBoard); break;
             case Strategies.YWING: hints = Strategies.getYWings(curBoard); break;
             case Strategies.NAKED_TRIPLE: hints = Strategies.getNakedTriples(curBoard); break;
             case Strategies.NAKED_DOUBLE: hints = Strategies.getNakedPairs(curBoard); break;

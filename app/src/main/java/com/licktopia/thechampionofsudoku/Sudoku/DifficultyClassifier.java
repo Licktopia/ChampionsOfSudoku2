@@ -3,6 +3,10 @@ package com.licktopia.thechampionofsudoku.Sudoku;
 import android.content.Context;
 import android.util.Log;
 
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.util.Arrays;
+
 /**
  * Created by Matt on 7/5/2017.
  */
@@ -104,12 +108,13 @@ public class DifficultyClassifier {
 
     public static void runStrategies(Context context) {
 
-        for (int level = 0; level < 6; level++) {
+        for (int level = 0; level < 1; level++) {
+            int[] scores = new int[10000];
             int unsolved = 0;
-            for (int index = 0; index < 10000; index++) {
+            for (int index = 9100; index < 10000; index++) {
                 Board board = new Board(level, context, index);
                 Solver solutionSolver = new Solver(board);
-                solutionSolver.solveWithStrategies();
+                scores[index] = solutionSolver.solveWithStrategies();
                 if (solutionSolver.getExactSolution().size() != board.getOpenSquares()) unsolved++;
                 if (index % 50 == 0) {
                     Log.i("BoardResults", "STRAT: Finished board #" + index + " at level " + level);
@@ -117,6 +122,18 @@ public class DifficultyClassifier {
                 }
             }
             Log.i("BoardResults", "Unsolved: " + unsolved + " at level " + level);
+            try {
+                OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput("boardscores0.txt", Context.MODE_PRIVATE));
+                outputStreamWriter.write("Level " + level + " Scores:");
+                for (int score : scores) {
+                    outputStreamWriter.write(String.valueOf(score));
+                    outputStreamWriter.write(",");
+                }
+                outputStreamWriter.close();
+            }
+            catch (IOException e) {
+                Log.e("Exception", "File write failed: " + e.toString());
+            }
         }
     }
 }
