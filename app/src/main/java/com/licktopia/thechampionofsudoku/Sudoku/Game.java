@@ -69,6 +69,7 @@ public class Game implements GameInterface, java.io.Serializable
         solutionSolver = new Solver(curBoard);
         scoreWeights = ScoreCSV.getScoreWeights(level);
         totalHintsUsed = 0;
+        solvedBoard = solutionSolver.solve();
         if(solutionSolver.solve() == null)
         {
             System.out.printf("Game cannot be solved!\n");
@@ -81,6 +82,7 @@ public class Game implements GameInterface, java.io.Serializable
         this.level = oldGame.level;
         this.curBoard = new Board(oldGame.curBoard);
         this.solutionSolver = new Solver(curBoard);
+        this.solvedBoard = solutionSolver.solve();
         this.scoreWeights = oldGame.scoreWeights;
         this.totalHintsUsed = oldGame.totalHintsUsed;
     }
