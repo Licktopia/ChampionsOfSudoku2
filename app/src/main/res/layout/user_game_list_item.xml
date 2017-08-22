@@ -49,12 +49,13 @@
                 android:textStyle="bold" />
 
             <ImageView
-                android:id="@+id/imageView16"
+                android:id="@+id/is_completed"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_weight="10"
-                app:srcCompat="@drawable/experticon" />
+                android:scaleType="fitCenter"
+                app:srcCompat="@drawable/cbut_orangedot" />
         </LinearLayout>
 
         <LinearLayout

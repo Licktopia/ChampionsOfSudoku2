@@ -30,11 +30,11 @@ public class Board implements java.io.Serializable {
 
         int[] values;
         if (index == -1) {
-            values = FileIO.loadBoard(level, ctx, SIZE * SIZE);
-            boardIdentifier = FileIO.getRandomNum();
+            values = DbIO.loadBoard(level, ctx, SIZE * SIZE);
+            boardIdentifier = DbIO.getRandomNum();
         }
         else {
-            values = FileIO.loadSpecificBoard(level, ctx, SIZE * SIZE, index);
+            values = DbIO.loadSpecificBoard(level, ctx, SIZE * SIZE, index);
             boardIdentifier = index;
         }
 

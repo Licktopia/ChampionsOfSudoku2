@@ -84,8 +84,9 @@ public class DatabaseAccess {
         return list;
     }
 
-    public int[] getSpecificBoard(int levelNum, long boardIndex){
+    public int[] getSpecificBoard(long boardIndex){
         String tableName;
+        int levelNum = (int) (boardIndex/10000);
 
         String identifier = Long.toString(boardIndex);
         String rowName = "Identifier";
@@ -121,7 +122,50 @@ public class DatabaseAccess {
         return board;
     }
 
+    public UserGameListItem getSpecificBoardGame(long boardIndex){
+        String tableName;
+        int levelNum = (int) (boardIndex/10000);
 
+        String identifier = Long.toString(boardIndex);
+        String rowName = "Identifier";
+
+        switch(levelNum)
+        {
+            case 0:
+                tableName = "Beginner";
+                break;
+            case 1:
+                tableName = "Easy";
+                break;
+            case 2:
+                tableName = "Medium";
+                break;
+            case 3:
+                tableName = "Hard";
+                break;
+            case 4:
+                tableName = "Expert";
+                break;
+            case 5:
+                tableName = "Master";
+                break;
+            default:
+                tableName = "Medium";
+                break;
+        }
+        Cursor cursor = database.rawQuery("select * from " + tableName + " WHERE " + rowName + "=?", new String[] {identifier});
+        cursor.moveToFirst();
+        UserGameListItem userGameListItem = new UserGameListItem(
+                cursor.getString(2),
+                cursor.getString(0),
+                cursor.getString(3),
+                convert(cursor.getString(1).toCharArray()),
+                Integer.parseInt(cursor.getString(5)),
+                cursor.getString(4),
+                levelNum);
+        cursor.close();
+        return userGameListItem;
+    }
 
 
     private int[] convert(char[] board){

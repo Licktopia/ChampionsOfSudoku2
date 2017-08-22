@@ -5,16 +5,11 @@ import android.util.Log;
 
 import com.licktopia.thechampionofsudoku.SudokuSolver;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
+
 import java.util.Queue;
-import java.util.Stack;
 import java.util.Set;
 import java.util.LinkedList;
-import java.util.concurrent.Phaser;
-import java.util.concurrent.ThreadLocalRandom;
+
 
 /**
  * Created by John Konecny on 6/19/2017.
@@ -31,7 +26,6 @@ public class Solver implements java.io.Serializable {
     {
         this.curBoard = new Board(curBoard);
         initialOpenSquares = curBoard.getOpenSquares();
-        solvingSteps = new LinkedList<Square>();
         solvingStepsStrategies = new LinkedList<>();
     }
 
@@ -46,52 +40,7 @@ public class Solver implements java.io.Serializable {
         for(int i = 0; i < Math.pow(curBoard.getSize(),2); i++){
             curBoard.setValueAt(i,solvedBoard[i]);
         }
-        /*
-        solvingSteps = new LinkedList<Square>();
-        int i = 0;
-        curBoard.resetToStart();
-        updateAllNotepads(false);
 
-        while(i < curBoard.totalBoardElements())
-        {
-            if(!curBoard.isStartingValue(i))
-            {
-                int testVal = curBoard.getValueAt(i);
-                //loop until a valid number can be entered
-                do
-                {
-                    //value which will be tested to see if it is valid
-                    testVal++;
-
-                    //if all options have been tried for this cell then go back
-                    if(testVal > curBoard.getSize())
-                    {
-                        //loop until a non-starting value is found
-                        //which also can have a valid entry
-                        while(i >= 0 && testVal > curBoard.getSize())
-                        {
-                            //blank out the square with all of its options exhausted
-                            curBoard.setValueAt(i, 0);
-                            solvingSteps.add(curBoard.getSquare(i));
-                            i--;
-                            if(!curBoard.isStartingValue(i))
-                            {
-                                testVal = curBoard.getValueAt(i) + 1;
-                            }
-                        }
-
-                        //board can't be solved
-                        if(i < 0)
-                        {
-                            return null;
-                        }
-                    }
-                }while(!curBoard.setValueAt(i, testVal).isEmpty());
-                solvingSteps.add(curBoard.getSquare(i));
-            }
-            i++;
-        }
-*/
         return curBoard;
     }
 

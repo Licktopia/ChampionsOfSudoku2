@@ -25,6 +25,8 @@ import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
 import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
+import com.licktopia.thechampionofsudoku.Activities.BaseActivity;
+import com.licktopia.thechampionofsudoku.DBOjects.CompletedGame;
 import com.licktopia.thechampionofsudoku.ListItems.UserGameListItem;
 import com.licktopia.thechampionofsudoku.R;
 import com.licktopia.thechampionofsudoku.Tags;
@@ -137,6 +139,15 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
         holder.usUser.setText(new StringBuilder().append(gamerName).toString());
         holder.usDate.setText(date);
         holder.usDiff.setText(String.format(new StringBuilder().append("Diff.").append(" %d").toString(),difficulty));
+        for(CompletedGame i : BaseActivity.getCompletedGames()){
+            if(i.getPuzzleNumber() == Long.valueOf(userGameListItem.getBoardIdentifier())){
+                holder.isCompleted.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.cbut_darkgreendot));
+            }
+            else{
+                holder.isCompleted.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.cbut_darkreddot));
+            }
+        }
+
 
 
         setView(holder, level);
@@ -253,6 +264,7 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
         TextView usDate;
         TextView usDiff;
         ImageView usLevel;
+        ImageView isCompleted;
         LinearLayout usBackground;
 
         
@@ -264,6 +276,7 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
             usDate = (TextView)itemView.findViewById(R.id.us_date);
             usDiff = (TextView)itemView.findViewById(R.id.us_diff);
             usLevel = (ImageView) itemView.findViewById(R.id.us_level);
+            isCompleted = (ImageView) itemView.findViewById(R.id.is_completed);
             usBackground = (LinearLayout)itemView.findViewById(R.id.us_background);
         }
 

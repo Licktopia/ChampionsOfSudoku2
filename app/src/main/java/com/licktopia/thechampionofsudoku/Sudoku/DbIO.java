@@ -16,7 +16,7 @@ import com.licktopia.thechampionofsudoku.Database.DatabaseAccess;
  * Created by John Konecny on 6/19/2017.
  */
 
-public class FileIO {
+public class DbIO {
     private static ThreadLocalRandom _Rand = ThreadLocalRandom.current();
 
     public static int getRandomNum() {
@@ -36,42 +36,13 @@ public class FileIO {
 
         DatabaseAccess databaseAccess = DatabaseAccess.getInstance(ctx);
         databaseAccess.open();
-        String filename = "boards/" + String.valueOf(level) +".txt";
-
-        BufferedReader reader = null;
-        StringBuilder builder = new StringBuilder();
         try {
-            int[] values = databaseAccess.getSpecificBoard(level, boardIndex);
+            int[] values = databaseAccess.getSpecificBoard(boardIndex);
             return values;
         }catch (Exception e) {
             e.printStackTrace();
         }
-        /*
-        int[] values = new int[totalBoardElements];
 
-        try {
-            reader = new BufferedReader(new InputStreamReader(
-                    ctx.getAssets().open(filename)));
-            String line;
-            int p=0;
-            while ((line = reader.readLine())!= null){
-                if(p==boardIndex) {
-                    builder.append(line);
-                }
-
-                p++;
-            }
-            String text = builder.toString();
-            for(int i =0; i < totalBoardElements; i++)
-            {
-                values[i]= Integer.parseInt(String.valueOf(text.charAt(i)));
-            }
-            reader.close();
-            return values;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        */
         return null;
 
     }
