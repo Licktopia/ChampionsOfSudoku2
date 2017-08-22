@@ -19,7 +19,7 @@ public class CompletedGame {
     private String time;
     private String date;
     private boolean color;
-    private int puzzleNumber;
+    private long puzzleNumber;
     private int level;
     private double accuracy;
     private int xp;
@@ -89,11 +89,11 @@ public class CompletedGame {
     }
 
     @DynamoDBAttribute(attributeName = "PuzzleNo")
-    public int getPuzzleNumber() {
+    public long getPuzzleNumber() {
         return puzzleNumber;
     }
 
-    public void setPuzzleNumber(int puzzleNumber) {
+    public void setPuzzleNumber(long puzzleNumber) {
         this.puzzleNumber = puzzleNumber;
     }
 

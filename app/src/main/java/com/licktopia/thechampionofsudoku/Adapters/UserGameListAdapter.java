@@ -107,9 +107,9 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
 
     }
     @Override
-    public void onBindViewHolder(ViewHolder holder,int position) {
+    public void onBindViewHolder(final ViewHolder holder, int position) {
 
-        UserGameListItem userGameListItem = userGameListItems.get(position);
+        final UserGameListItem userGameListItem = userGameListItems.get(position);
         final int[] board = userGameListItem.getBoard();
         String gamerName = userGameListItem.getGamerName();
         int difficulty = userGameListItem.getDifficulty();
@@ -139,10 +139,63 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
         holder.usDiff.setText(String.format(new StringBuilder().append("Diff.").append(" %d").toString(),difficulty));
 
 
+        setView(holder, level);
 
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                holder.usBackground.setBackgroundColor(ContextCompat.getColor(context,R.color.color5));
+                String colOrNum;
+                if(!color){
+                    colOrNum = context.getString(R.string.num);
+                }
+                else{
+                    colOrNum = context.getString(R.string.art);
+                }
+                new AlertDialog.Builder(context)
+                        .setMessage(new StringBuilder().append(context.getString(R.string.start_ga)).append(" ").append(colOrNum).append(" ").append(context.getString(R.string.mode)).toString())
+                        .setCancelable(false)
+                        .setPositiveButton(R.string.begin, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                Bundle args = new Bundle();
+
+
+
+                                //Make level less than zero so that activity knows to load a game
+
+                                args.putBoolean("RESUME", false);//resume is false
+                                args.putBoolean("COLOR_MODE", color);
+                                args.putInt("LEVEL", userGameListItem.getLevel());
+                                args.putIntArray("USER_BOARD", userGameListItem.getBoard());
+                                args.putLong("BOARD_IDENTIFIER", userGameListItem.getBoardIdentifierAsLong());
+                                try {
+                                    callback = (UserGameLAListener) context;
+                                } catch (ClassCastException e) {
+                                    throw new ClassCastException(context.toString() +
+                                            " must implement UserGameLAFragmentListener");
+                                }
+                                callback.swapFragment(BOARD_FRAGMENT, args);
+
+
+                            }
+                        })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                setView(holder,level);
+                            }
+                        })
+                        .show();
+            }
+        });
+
+
+    }
+
+    private void setView(ViewHolder holder, int level) {
         if(level==0) {
 
-            Drawable drawable = ContextCompat.getDrawable(context,R.drawable.beginnericon);
+            Drawable drawable = ContextCompat.getDrawable(context, R.drawable.beginnericon);
             holder.usLevel.setImageDrawable(drawable);
             holder.usBackground.setBackgroundColor(Color.parseColor(mColors[0]));
 
@@ -182,28 +235,7 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
             holder.usLevel.setImageDrawable(drawable);
             holder.usBackground.setBackgroundColor(Color.parseColor(mColors[4]));
         }
-
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new AlertDialog.Builder(context)
-                        .setMessage("")
-                        .setCancelable(true)
-                        .setPositiveButton("", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-
-
-
-                            }
-                        })
-                        .setNegativeButton("Keep Record", null)
-                        .show();
-            }
-        });
-
-
     }
-
 
 
     @Override

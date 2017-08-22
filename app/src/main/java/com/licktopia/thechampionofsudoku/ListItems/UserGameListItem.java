@@ -10,7 +10,7 @@ public class UserGameListItem {
 
 
     private String gamerID;
-    private String exactTime;
+    private String boardIdentifier;
     private String gamerName;
     private int[] board;
     private int difficulty;
@@ -18,9 +18,9 @@ public class UserGameListItem {
     private int level;
 
 
-    public UserGameListItem(String gamerID, String exactTime, String gamerName, int[] board, int difficulty, String date, int level) {
+    public UserGameListItem(String gamerID, String boardIdentifier, String gamerName, int[] board, int difficulty, String date, int level) {
         this.gamerID = gamerID;
-        this.exactTime = exactTime;
+        this.boardIdentifier = boardIdentifier;
         this.gamerName = gamerName;
         this.board = board;
         this.difficulty = difficulty;
@@ -36,14 +36,16 @@ public class UserGameListItem {
         this.gamerID = gamerID;
     }
 
-    public String getExactTime() {
-        return exactTime;
+    public String getBoardIdentifier() {
+        return boardIdentifier;
     }
 
-    public void setExactTime(String exactTime) {
-        this.exactTime = exactTime;
+    public void setBoardIdentifier(String boardIdentifier) {
+        this.boardIdentifier = boardIdentifier;
     }
-
+    public Long getBoardIdentifierAsLong() {
+        return Long.valueOf(boardIdentifier);
+    }
     public String getGamerName() {
         return gamerName;
     }

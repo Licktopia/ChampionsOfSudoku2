@@ -99,4 +99,9 @@
     <string name="unavailable_multiplayer">Unavailable for multiplayer game</string>
     <string name="sure_exit">Are you sure you want to exit?</string>
     <string name="check_your_internet">Check your Internet connection and try again</string>
+    <string name="num">number</string>
+    <string name="art">art</string>
+    <string name="start_ga">Start game in</string>
+    <string name="mode">mode?</string>
+    <string name="begin">Begin</string>
 </resources>

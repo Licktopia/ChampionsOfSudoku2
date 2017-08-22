@@ -11,7 +11,7 @@ public class SavedGameListItem {
 
     private String date;
     private int level;
-    private int puzzleNumber;
+    private long puzzleNumber;
     private String time;
     private String exactTime;
     private String gamerID;
@@ -25,7 +25,7 @@ public class SavedGameListItem {
 
 
 
-    public SavedGameListItem(String date, String time, boolean colorMode, String exactTime, int level, int puzzleNumber, String gamerID, long stoppedTIme) {
+    public SavedGameListItem(String date, String time, boolean colorMode, String exactTime, int level, long puzzleNumber, String gamerID, long stoppedTIme) {
 
         this.date = date;
         this.level = level;
@@ -49,7 +49,7 @@ public class SavedGameListItem {
         return level;
     }
 
-    public int getPuzzleNumber() {
+    public long getPuzzleNumber() {
         return puzzleNumber;
     }
 

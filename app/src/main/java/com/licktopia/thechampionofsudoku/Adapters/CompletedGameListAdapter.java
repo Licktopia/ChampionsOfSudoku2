@@ -79,7 +79,7 @@ public class CompletedGameListAdapter extends RecyclerView.Adapter<CompletedGame
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
         CompletedGameListItem completedGameListItem = completedGameListItems.get(position);
-        final int boardNumber = completedGameListItem.getPuzzleNumber();
+        final long boardNumber = completedGameListItem.getPuzzleNumber();
         final String exactTime = completedGameListItem.getExactTime();
         final String gamerId = completedGameListItem.getGamerId();
 

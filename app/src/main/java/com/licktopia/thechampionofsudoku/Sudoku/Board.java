@@ -2,7 +2,6 @@ package com.licktopia.thechampionofsudoku.Sudoku;
 
 import android.content.Context;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -10,12 +9,12 @@ import java.util.Stack;
 import java.util.Set;
 
 /**
- * Board class represents a single instance of a Sudoku puzzle
+ * BoardofClass class represents a single instance of a Sudoku puzzle
  */
 
 public class Board implements java.io.Serializable {
 
-    private static int SIZE = 9;         // Board size
+    private static int SIZE = 9;         // BoardofClass size
     private static int CLUSTER_SIZE = 3; // Size of N x N cluster
     private Square[][] contents;           // Holds values of the sudoku puzzle
     private int startingOpenSquares;     // Tracks the starting amount of open squares
@@ -24,19 +23,19 @@ public class Board implements java.io.Serializable {
 
 
 
-    private int boardNumber;
+    private long boardIdentifier;
 
      /* Constructor*/
-    protected Board(int level, Context ctx, int index) {
+    protected Board(int level, Context ctx, long index) {
 
         int[] values;
         if (index == -1) {
             values = FileIO.loadBoard(level, ctx, SIZE * SIZE);
-            boardNumber = FileIO.getRandomNum();
+            boardIdentifier = FileIO.getRandomNum();
         }
         else {
             values = FileIO.loadSpecificBoard(level, ctx, SIZE * SIZE, index);
-            boardNumber = index;
+            boardIdentifier = index;
         }
 
         // Check parameter has correct number of values
@@ -63,9 +62,9 @@ public class Board implements java.io.Serializable {
     }
 
     /* Constructor*/
-    protected Board(int boardNumber, int[] values) {
+    protected Board(long boardIdentifier, int[] values) {
 
-        this.boardNumber = boardNumber;
+        this.boardIdentifier = boardIdentifier;
         // Check parameter has correct number of values
         if (values.length != SIZE * SIZE) {
             System.out.printf("The loaded game contains %d elements but needs to have %d elements\n", values.length, SIZE * SIZE);
@@ -174,8 +173,8 @@ public class Board implements java.io.Serializable {
         return this.setValueAt(idxToRow(idx), idxToCol(idx), value);
     }
 
-    public int getBoardNumber() {
-        return boardNumber;
+    public long getBoardIdentifier() {
+        return boardIdentifier;
     }
 
     // sets square at idx to it's only possible value
@@ -192,7 +191,7 @@ public class Board implements java.io.Serializable {
 
 
     /* Get value at given row/column */
-    protected int getValueAt(int row, int col) {
+    public int getValueAt(int row, int col) {
         return contents[row][col].getValue();
     }
 
@@ -276,14 +275,14 @@ public class Board implements java.io.Serializable {
         problemSqrs = new HashSet<Integer>();
         for (int i = 0; i < SIZE; i++) {
             if (!isRowValid(i) || !isColumnValid(i) || !isClusterValid(i)){}
-                return false; // Board not correct
+                return false; // BoardofClass not correct
         }
         return true;
     }
 
     /* Checks if board is complete and correct */
     protected boolean isSolution() {
-        return isBoardFull() && isBoardValid(); // Board is complete and correct
+        return isBoardFull() && isBoardValid(); // BoardofClass is complete and correct
     }
 
 

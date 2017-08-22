@@ -3,6 +3,8 @@ package com.licktopia.thechampionofsudoku.Sudoku;
 import android.support.v4.util.Pair;
 import android.util.Log;
 
+import com.licktopia.thechampionofsudoku.SudokuSolver;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -39,6 +41,12 @@ public class Solver implements java.io.Serializable {
     //returns a null board if it cannot be solved
     protected  Board solve()
     {
+        SudokuSolver sudokuSolver = new SudokuSolver(curBoard);
+        int [] solvedBoard = sudokuSolver.getSolution();
+        for(int i = 0; i < Math.pow(curBoard.getSize(),2); i++){
+            curBoard.setValueAt(i,solvedBoard[i]);
+        }
+        /*
         solvingSteps = new LinkedList<Square>();
         int i = 0;
         curBoard.resetToStart();
@@ -83,7 +91,7 @@ public class Solver implements java.io.Serializable {
             }
             i++;
         }
-
+*/
         return curBoard;
     }
 

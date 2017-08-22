@@ -61,7 +61,7 @@ public interface GameInterface {
      * gets board number index for Sudoku Game
      * @return board number index for Sudoku Game
      */
-    public int getBoardNumber();
+    public long getBoardNumber();
 
 
     /************************************************

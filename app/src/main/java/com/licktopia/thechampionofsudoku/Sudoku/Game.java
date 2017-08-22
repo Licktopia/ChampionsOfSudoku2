@@ -10,7 +10,6 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import com.licktopia.thechampionofsudoku.GameInterface;
-import com.licktopia.thechampionofsudoku.Sudoku.Solver;
 
 /**
  * Created by John Konecny on 6/19/2017.
@@ -63,7 +62,7 @@ public class Game implements GameInterface, java.io.Serializable
         }
     }
 
-    public Game(int boardNumber, int level, int[] values)
+    public Game(long boardNumber, int level, int[] values)
     {
         this.level = level;
         curBoard = new Board(boardNumber, values);
@@ -108,7 +107,7 @@ public class Game implements GameInterface, java.io.Serializable
     }
 
     //gets board number
-    public int getBoardNumber(){return curBoard.getBoardNumber();}
+    public long getBoardNumber(){return curBoard.getBoardIdentifier();}
 
     //gets value of square given the index
     public int getBoardValueAt(int idx) {

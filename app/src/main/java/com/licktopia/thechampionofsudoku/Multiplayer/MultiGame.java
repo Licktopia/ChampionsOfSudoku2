@@ -775,7 +775,7 @@ public class MultiGame implements GameInterface, java.io.Serializable {
     }
 
     //gets board number
-    public int getBoardNumber(){return mGame.getBoardNumber();}
+    public long getBoardNumber(){return mGame.getBoardNumber();}
 
     //gets value of square given the index
     public int getBoardValueAt(int idx) {

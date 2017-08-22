@@ -8,6 +8,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.graphics.SweepGradient;
 
 import com.licktopia.thechampionofsudoku.ListItems.UserGameListItem;
 import com.licktopia.thechampionofsudoku.Tags;
@@ -81,6 +82,43 @@ public class DatabaseAccess {
         }
         cursor.close();
         return list;
+    }
+
+    public int[] getSpecificBoard(int levelNum, long boardIndex){
+        String tableName;
+
+        String identifier = Long.toString(boardIndex);
+        String rowName = "Identifier";
+
+        switch(levelNum)
+        {
+            case 0:
+                tableName = "Beginner";
+                break;
+            case 1:
+                tableName = "Easy";
+                break;
+            case 2:
+                tableName = "Medium";
+                break;
+            case 3:
+                tableName = "Hard";
+                break;
+            case 4:
+                tableName = "Expert";
+                break;
+            case 5:
+                tableName = "Master";
+                break;
+            default:
+                tableName = "Medium";
+                break;
+        }
+        Cursor cursor = database.rawQuery("select * from " + tableName + " WHERE " + rowName + "=?", new String[] {identifier});
+        cursor.moveToFirst();
+        int[] board = convert(cursor.getString(1).toCharArray());
+        cursor.close();
+        return board;
     }
 
 
