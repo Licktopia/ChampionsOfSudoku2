@@ -86,7 +86,7 @@ public class DatabaseAccess {
 
     public int[] getSpecificBoard(long boardIndex){
         String tableName;
-        int levelNum = (int) (boardIndex/10000);
+        int levelNum = (int) ((boardIndex - 1)/10000);
 
         String identifier = Long.toString(boardIndex);
         String rowName = "Identifier";
