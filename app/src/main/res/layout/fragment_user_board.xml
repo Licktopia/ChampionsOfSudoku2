@@ -18,14 +18,8 @@
         android:id="@+id/tool_title"
         android:layout_width="match_parent"
         android:layout_height="48dp"
+        android:background="@color/color1"
         android:orientation="horizontal">
-
-        <ImageView
-            android:id="@+id/imageView16"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            app:srcCompat="@drawable/backgroundcroppedsmall" />
 
         <TextView
             android:id="@+id/textView14"
@@ -38,6 +32,15 @@
             android:textColor="@color/white"
             android:textSize="26sp"
             android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/imageView16"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:alpha=".15"
+            android:scaleType="centerCrop"
+            app:srcCompat="@drawable/keyboardbg" />
+
     </RelativeLayout>
 
     <LinearLayout
@@ -53,160 +56,176 @@
             android:id="@+id/user_board_rv"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_margin="6dp"
 
+            android:layout_marginBottom="6dp"
+            android:layout_marginTop="6dp"
             android:layout_weight="82"
             android:background="@android:color/transparent" />
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="18"
-            android:background="@color/white"
-            android:orientation="horizontal"
-            android:paddingTop="2dp"
-            android:weightSum="4">
+            android:layout_weight="18">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginRight="1dp"
-                android:layout_weight="1"
-                android:orientation="vertical">
+                android:layout_weight="18"
+                android:background="@color/white"
+                android:orientation="horizontal"
+                android:paddingTop="2dp"
+                android:weightSum="4">
 
-                <ImageButton
-                    android:id="@+id/beg"
-                    style="@style/Widget.AppCompat.Button.Borderless"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginBottom="1dp"
+                    android:layout_marginRight="1dp"
                     android:layout_weight="1"
-                    android:background="@drawable/begbuttonfinal"
-                    android:gravity="center"
-                    android:padding="5dp"
-                    android:scaleType="fitCenter"
-                    app:srcCompat="@drawable/beginnericon" />
+                    android:orientation="vertical">
 
-                <ImageButton
-                    android:id="@+id/exp"
-                    style="@style/Widget.AppCompat.Button.Borderless"
+                    <ImageButton
+                        android:id="@+id/beg"
+                        style="@style/Widget.AppCompat.Button.Borderless"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="1dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/begbuttonfinal"
+                        android:gravity="center"
+                        android:padding="5dp"
+                        android:scaleType="fitCenter"
+                        app:srcCompat="@drawable/beginnericon" />
+
+                    <ImageButton
+                        android:id="@+id/exp"
+                        style="@style/Widget.AppCompat.Button.Borderless"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="1dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/expbuttonfinal"
+                        android:gravity="center"
+                        android:padding="5dp"
+                        android:scaleType="fitCenter"
+                        app:srcCompat="@drawable/experticon" />
+                </LinearLayout>
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="1dp"
+                    android:layout_marginLeft="1dp"
+                    android:layout_marginRight="1dp"
                     android:layout_weight="1"
-                    android:background="@drawable/expbuttonfinal"
-                    android:gravity="center"
-                    android:padding="5dp"
-                    android:scaleType="fitCenter"
-                    app:srcCompat="@drawable/experticon" />
+                    android:orientation="vertical">
+
+                    <ImageButton
+                        android:id="@+id/eas"
+                        style="@style/Widget.AppCompat.Button.Borderless"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="1dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/easbuttonfinal"
+                        android:gravity="center"
+                        android:padding="5dp"
+                        android:scaleType="fitCenter"
+                        app:srcCompat="@drawable/easyicon" />
+
+                    <ImageButton
+                        android:id="@+id/mas"
+                        style="@style/Widget.AppCompat.Button.Borderless"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="1dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/masbuttonfinal"
+                        android:gravity="center"
+                        android:padding="5dp"
+                        android:scaleType="fitCenter"
+                        app:srcCompat="@drawable/mastericon" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="1dp"
+                    android:layout_marginRight="1dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <ImageButton
+                        android:id="@+id/med"
+                        style="@style/Widget.AppCompat.Button.Borderless"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="1dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/leaderbuttonfinal"
+                        android:gravity="center"
+                        android:padding="5dp"
+                        android:scaleType="fitCenter"
+                        app:srcCompat="@drawable/mediumicon" />
+
+                    <ImageButton
+                        android:id="@+id/ran"
+                        style="@style/Widget.AppCompat.Button.Borderless"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="1dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/exitbuttonfinal"
+                        android:gravity="center"
+                        android:padding="5dp"
+                        android:scaleType="fitCenter"
+                        app:srcCompat="@drawable/question" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="1dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <ImageButton
+                        android:id="@+id/har"
+                        style="@style/Widget.AppCompat.Button.Borderless"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="1dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/harbuttonfinal"
+                        android:gravity="center"
+                        android:padding="5dp"
+                        android:scaleType="fitCenter"
+                        app:srcCompat="@drawable/hardicon" />
+
+                    <ImageButton
+                        android:id="@+id/more"
+                        style="@style/Widget.AppCompat.Button.Borderless"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="1dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/morbuttonfinal"
+                        android:gravity="center"
+                        android:padding="5dp"
+                        android:scaleType="fitCenter"
+                        app:srcCompat="@drawable/more" />
+
+                </LinearLayout>
+
             </LinearLayout>
 
-            <LinearLayout
+            <ImageView
+                android:id="@+id/imageView22"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="1dp"
-                android:layout_marginRight="1dp"
-                android:layout_weight="1"
-                android:orientation="vertical">
+                android:layout_height="wrap_content"
+                android:alpha=".15"
+                android:scaleType="centerCrop"
+                app:srcCompat="@drawable/keyboardbg" />
 
-                <ImageButton
-                    android:id="@+id/eas"
-                    style="@style/Widget.AppCompat.Button.Borderless"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginBottom="1dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/easbuttonfinal"
-                    android:gravity="center"
-                    android:padding="5dp"
-                    android:scaleType="fitCenter"
-                    app:srcCompat="@drawable/easyicon" />
-
-                <ImageButton
-                    android:id="@+id/mas"
-                    style="@style/Widget.AppCompat.Button.Borderless"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="1dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/masbuttonfinal"
-                    android:gravity="center"
-                    android:padding="5dp"
-                    android:scaleType="fitCenter"
-                    app:srcCompat="@drawable/mastericon" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="1dp"
-                android:layout_marginRight="1dp"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <ImageButton
-                    android:id="@+id/med"
-                    style="@style/Widget.AppCompat.Button.Borderless"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginBottom="1dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/leaderbuttonfinal"
-                    android:gravity="center"
-                    android:padding="5dp"
-                    android:scaleType="fitCenter"
-                    app:srcCompat="@drawable/mediumicon" />
-
-                <ImageButton
-                    android:id="@+id/ran"
-                    style="@style/Widget.AppCompat.Button.Borderless"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="1dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/exitbuttonfinal"
-                    android:gravity="center"
-                    android:padding="5dp"
-                    android:scaleType="fitCenter"
-                    app:srcCompat="@drawable/question" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="1dp"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <ImageButton
-                    android:id="@+id/har"
-                    style="@style/Widget.AppCompat.Button.Borderless"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginBottom="1dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/harbuttonfinal"
-                    android:gravity="center"
-                    android:padding="5dp"
-                    android:scaleType="fitCenter"
-                    app:srcCompat="@drawable/hardicon" />
-
-                <ImageButton
-                    android:id="@+id/more"
-                    style="@style/Widget.AppCompat.Button.Borderless"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="1dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/morbuttonfinal"
-                    android:gravity="center"
-                    android:padding="5dp"
-                    android:scaleType="fitCenter"
-                    app:srcCompat="@drawable/more" />
-
-            </LinearLayout>
-
-        </LinearLayout>
+        </RelativeLayout>
 
     </LinearLayout>
 
