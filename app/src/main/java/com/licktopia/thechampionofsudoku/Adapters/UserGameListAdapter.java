@@ -3,6 +3,7 @@ package com.licktopia.thechampionofsudoku.Adapters;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
@@ -33,6 +34,7 @@ import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.Condition;
 import com.amazonaws.services.dynamodbv2.model.QueryRequest;
 import com.amazonaws.services.dynamodbv2.model.QueryResult;
+import com.google.android.gms.games.Games;
 import com.licktopia.thechampionofsudoku.Activities.BaseActivity;
 import com.licktopia.thechampionofsudoku.Activities.UIActivities.UserBoardFragment;
 import com.licktopia.thechampionofsudoku.DBOjects.CompletedGame;
@@ -48,6 +50,7 @@ import java.util.Map;
 
 import static com.amazonaws.services.dynamodbv2.model.ComparisonOperator.EQ;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.BOARD_FRAGMENT;
+import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.gameHelper;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.phoneSize;
 import static com.licktopia.thechampionofsudoku.Activities.UIActivities.MainMenuFragment.mProgressBar;
 
@@ -253,7 +256,7 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
         });
         holder.playNow.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v) {/*
                 holder.usBackground.setBackgroundColor(ContextCompat.getColor(context, R.color.color5));
                 String colOrNum;
                 if(!color){
@@ -296,6 +299,9 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
                             }
                         })
                         .show();
+                */
+            share(userGameListItem);
+
             }
         });
     }
@@ -319,6 +325,24 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
         formattedTime = minutos +  ":" +segundos;
 
         return formattedTime;
+    }
+
+    private void share(UserGameListItem uGLI) {
+
+        Intent i = new Intent(
+
+                Intent.ACTION_SEND);
+
+        i.setType("text/plain");
+        i.putExtra(
+
+                Intent.EXTRA_TEXT, "Sudoku Challenge from " + BaseActivity.getUsername() + ". CODE: " + uGLI.getBoardIdentifier()+ "?" + uGLI.getGamerID());
+
+        context.startActivity(Intent.createChooser(
+
+                i,
+
+                "Share via"));
     }
 
     private void setView(ViewHolder holder, int level) {
