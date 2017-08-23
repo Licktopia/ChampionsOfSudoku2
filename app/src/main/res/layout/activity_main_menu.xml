@@ -141,7 +141,7 @@
                             android:background="@color/transparent_white"
                             android:orientation="vertical"
                             android:visibility="gone"
-                            tools:visibility="visible">
+                            tools:visibility="gone">
 
                             <ImageView
                                 android:id="@+id/connect"
@@ -183,7 +183,7 @@
                             android:orientation="vertical"
                             android:visibility="visible"
                             android:weightSum="12"
-                            tools:visibility="gone">
+                            tools:visibility="visible">
 
                             <RelativeLayout
 
@@ -207,15 +207,26 @@
 
                                 <TextView
                                     android:id="@+id/textView111"
-                                    android:layout_width="match_parent"
+                                    android:layout_width="wrap_content"
                                     android:layout_height="match_parent"
                                     android:layout_centerVertical="false"
+                                    android:layout_toRightOf="@+id/imageView18"
                                     android:gravity="center_vertical"
-                                    android:paddingLeft="20dp"
+                                    android:paddingLeft="10dp"
                                     android:text="@string/beginner"
                                     android:textAllCaps="false"
                                     android:textColor="@color/colorPrimaryDark"
                                     android:textSize="16sp" />
+
+                                <ImageView
+                                    android:id="@+id/imageView18"
+                                    android:layout_width="15dp"
+                                    android:layout_height="15dp"
+                                    android:layout_alignParentLeft="true"
+                                    android:layout_alignParentStart="true"
+                                    android:layout_centerVertical="true"
+                                    android:layout_marginLeft="10dp"
+                                    app:srcCompat="@drawable/cbut_bluedot" />
 
                                 <ImageView
                                     android:id="@+id/imageView"
@@ -256,15 +267,26 @@
                                     android:id="@+id/textView112"
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
-                                    android:layout_alignParentLeft="true"
-                                    android:layout_alignParentStart="true"
-                                    android:layout_alignParentTop="true"
+                                    android:layout_alignParentLeft="false"
+                                    android:layout_alignParentStart="false"
+                                    android:layout_alignParentTop="false"
+                                    android:layout_toEndOf="@+id/imageView19"
+                                    android:layout_toRightOf="@+id/imageView19"
                                     android:gravity="center_vertical"
-                                    android:paddingLeft="20dp"
+                                    android:paddingLeft="10dp"
                                     android:text="@string/easy"
                                     android:textAllCaps="false"
                                     android:textColor="@color/colorPrimaryDark"
                                     android:textSize="16sp" />
+
+                                <ImageView
+                                    android:id="@+id/imageView19"
+                                    android:layout_width="15dp"
+                                    android:layout_height="15dp"
+                                    android:layout_alignParentLeft="true"
+                                    android:layout_centerVertical="true"
+                                    android:layout_marginLeft="10dp"
+                                    app:srcCompat="@drawable/cbut_yellowdot" />
 
                                 <ImageView
                                     android:id="@+id/imageView"
@@ -306,12 +328,23 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
                                     android:layout_centerVertical="false"
+                                    android:layout_toEndOf="@+id/imageView20"
+                                    android:layout_toRightOf="@+id/imageView20"
                                     android:gravity="center_vertical"
-                                    android:paddingLeft="20dp"
+                                    android:paddingLeft="10dp"
                                     android:text="@string/medium"
                                     android:textAllCaps="false"
                                     android:textColor="@color/colorPrimaryDark"
                                     android:textSize="16sp" />
+
+                                <ImageView
+                                    android:id="@+id/imageView20"
+                                    android:layout_width="15dp"
+                                    android:layout_height="15dp"
+                                    android:layout_alignParentLeft="true"
+                                    android:layout_centerVertical="true"
+                                    android:layout_marginLeft="10dp"
+                                    app:srcCompat="@drawable/cbut_lightreddot" />
 
                                 <ImageView
                                     android:id="@+id/imageView"
@@ -353,12 +386,23 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
                                     android:layout_centerVertical="false"
+                                    android:layout_toEndOf="@+id/imageView21"
+                                    android:layout_toRightOf="@+id/imageView21"
                                     android:gravity="center_vertical"
-                                    android:paddingLeft="20dp"
+                                    android:paddingLeft="10dp"
                                     android:text="@string/hard"
                                     android:textAllCaps="false"
                                     android:textColor="@color/colorPrimaryDark"
                                     android:textSize="16sp" />
+
+                                <ImageView
+                                    android:id="@+id/imageView21"
+                                    android:layout_width="15dp"
+                                    android:layout_height="15dp"
+                                    android:layout_alignParentLeft="true"
+                                    android:layout_centerVertical="true"
+                                    android:layout_marginLeft="10dp"
+                                    app:srcCompat="@drawable/cbut_purpledot" />
 
                                 <ImageView
                                     android:id="@+id/imageView"
@@ -400,12 +444,23 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
                                     android:layout_centerVertical="false"
+                                    android:layout_toEndOf="@+id/imageView23"
+                                    android:layout_toRightOf="@+id/imageView23"
                                     android:gravity="center_vertical"
-                                    android:paddingLeft="20dp"
+                                    android:paddingLeft="10dp"
                                     android:text="@string/expert"
                                     android:textAllCaps="false"
                                     android:textColor="@color/colorPrimaryDark"
                                     android:textSize="16sp" />
+
+                                <ImageView
+                                    android:id="@+id/imageView23"
+                                    android:layout_width="15dp"
+                                    android:layout_height="15dp"
+                                    android:layout_alignParentLeft="true"
+                                    android:layout_centerVertical="true"
+                                    android:layout_marginLeft="10dp"
+                                    app:srcCompat="@drawable/cbut_darkreddot" />
 
                                 <ImageView
                                     android:id="@+id/imageView"
@@ -448,12 +503,23 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
                                     android:layout_centerVertical="false"
+                                    android:layout_toEndOf="@+id/imageView25"
+                                    android:layout_toRightOf="@+id/imageView25"
                                     android:gravity="center_vertical"
-                                    android:paddingLeft="20dp"
+                                    android:paddingLeft="10dp"
                                     android:text="@string/master"
                                     android:textAllCaps="false"
                                     android:textColor="@color/colorPrimaryDark"
                                     android:textSize="16sp" />
+
+                                <ImageView
+                                    android:id="@+id/imageView25"
+                                    android:layout_width="15dp"
+                                    android:layout_height="15dp"
+                                    android:layout_alignParentLeft="true"
+                                    android:layout_centerVertical="true"
+                                    android:layout_marginLeft="10dp"
+                                    app:srcCompat="@drawable/cbut_orangedot" />
 
                                 <ImageView
                                     android:id="@+id/master_icon"
@@ -481,7 +547,7 @@
                             android:orientation="vertical"
                             android:visibility="gone"
                             android:weightSum="100"
-                            tools:visibility="visible">
+                            tools:visibility="gone">
 
                             <RelativeLayout
                                 android:layout_width="match_parent"

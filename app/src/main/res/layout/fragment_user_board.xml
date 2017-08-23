@@ -12,21 +12,38 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        app:srcCompat="@android:color/black" />
+        app:srcCompat="@drawable/coolbackground" />
 
-    <ImageView
-        android:id="@+id/imageView17"
+    <RelativeLayout
+        android:id="@+id/tool_title"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:alpha=".4"
-        android:scaleType="fitCenter"
-        app:srcCompat="@drawable/licktopia_centered" />
+        android:layout_height="48dp"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/imageView16"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            app:srcCompat="@drawable/backgroundcroppedsmall" />
+
+        <TextView
+            android:id="@+id/textView14"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="false"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Endless Board Chooser"
+            android:textColor="@color/white"
+            android:textSize="26sp"
+            android:textStyle="bold" />
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@+id/tool_title"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:orientation="vertical"
@@ -205,7 +222,8 @@
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
+        android:layout_alignParentTop="false"
+        android:layout_below="@+id/tool_title"
         android:layout_marginRight="5dp"
         android:layout_marginTop="5dp"
         android:alpha=".6"

@@ -98,7 +98,7 @@ public class CompletedGame {
         this.color = color;
     }
 
-    @DynamoDBIndexHashKey(globalSecondaryIndexName = "PuzzleNo-index-copy", attributeName = "PuzzleNo")
+    @DynamoDBIndexHashKey(globalSecondaryIndexName = "PuzzleNo-index", attributeName = "PuzzleNo")
     public long getPuzzleNumber() {
         return puzzleNumber;
     }

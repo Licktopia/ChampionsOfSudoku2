@@ -11,12 +11,15 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -174,6 +177,83 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {/*
+
+                */
+            getCommunityStatsForBoard(userGameListItem, holder);
+            }
+        });
+    }
+
+    private void getCommunityStatsForBoard(final UserGameListItem thisUserGameListItem, final ViewHolder holder){
+        thisBoardsCompletedGames.clear();
+        holder.progressBar.setVisibility(View.VISIBLE);
+        Runnable runnable = new Runnable() {
+            public void run() {
+                Long puzzleNo = Long.valueOf(4225);
+                CompletedGame cg = new CompletedGame();
+                cg.setPuzzleNumber(puzzleNo);
+
+                final DynamoDBQueryExpression<CompletedGame> queryExpression = new DynamoDBQueryExpression<CompletedGame>()
+                        .withHashKeyValues(cg)
+                        .withIndexName("PuzzleNo-index")
+                        .withConsistentRead(false);
+
+                final List<CompletedGame>[] list = new List[]{new ArrayList<>()};
+                try {
+                    list[0] = BaseActivity.mapper.query(CompletedGame.class, queryExpression);
+                }
+                catch(Exception e){
+                    Log.d("DYNAMO", String.valueOf(e));
+                }
+
+                for (int i = 0; i < list[0].size(); i++) {
+                   thisBoardsCompletedGames.add(list[0].get(i));
+                }
+                try {
+                        ((BaseActivity)context).runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            //execute code on main thread
+                            //mProgressBar.setVisibility(View.GONE);
+                            if(thisBoardsCompletedGames.size()>0) {
+                                holder.progressBar.setVisibility(View.GONE);
+                                showBoardStats(holder, thisUserGameListItem);
+                            }
+
+                        }
+                    });
+                }catch(Exception e){
+
+                }
+            }
+        };
+        Thread mythread = new Thread(runnable);
+        mythread.start();
+    }
+
+    private void showBoardStats(final ViewHolder holder, final UserGameListItem userGameListItem){
+        int size = thisBoardsCompletedGames.size();
+        int totalTime = 0;
+        int totalScore = 0;
+        for(CompletedGame i : thisBoardsCompletedGames){
+            totalTime += getSeconds(i.getTime());
+            totalScore += i.getRealScore();
+        }
+        int avgScore = Math.round(totalScore/size);
+        String avgTime = formatTime(Math.round(totalTime/size));
+        holder.statsBox.setVisibility(View.VISIBLE);
+        holder.timesPlayed.setText(new StringBuilder().append("Times played").append(" ").append(size).toString());
+        holder.averageScore.setText(new StringBuilder().append("Avg score").append(" ").append(avgScore).toString());
+        holder.avgTime.setText(new StringBuilder().append("Avg time").append(" ").append(avgTime));
+        holder.statsBox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                holder.statsBox.setVisibility(View.GONE);
+            }
+        });
+        holder.playNow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 holder.usBackground.setBackgroundColor(ContextCompat.getColor(context, R.color.color5));
                 String colOrNum;
                 if(!color){
@@ -212,69 +292,34 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                setView(holder,level);
+                                holder.statsBox.setVisibility(View.GONE);
                             }
                         })
                         .show();
-                */
-            getCommunityStatsForBoard(userGameListItem);
             }
         });
     }
 
-    private void getCommunityStatsForBoard(final UserGameListItem thisUserGameListItem){
-        Runnable runnable = new Runnable() {
-            public void run() {
-                Map<String,String> expressionAttributesNames = new HashMap<>();
-                expressionAttributesNames.put("#PuzzleNo","PuzzleNo");
-
-
-                Map<String,AttributeValue> expressionAttributeValues = new HashMap<>();
-                expressionAttributeValues.put(":PuzzleNo",new AttributeValue().withS("29130"));
-
-
-
-
-
-                //String queryItem = "29130";//thisUserGameListItem.getBoardIdentifier();
-                //CompletedGame cg = new CompletedGame();
-                //cg.setPuzzleNumber(Long.valueOf(queryItem));
-                final DynamoDBQueryExpression<CompletedGame> queryExpression = new DynamoDBQueryExpression<CompletedGame>()
-                        .withIndexName("PuzzleNo-index-copy")
-                        .withFilterExpression("#PuzzleNo = :PuzzleNo")
-                        .withExpressionAttributeNames(expressionAttributesNames)
-                        .withExpressionAttributeValues(expressionAttributeValues)
-                        .withConsistentRead(false);
-
-                final List<CompletedGame>[] list = new List[]{new ArrayList<>()};
-                try {
-                    list[0] = BaseActivity.mapper.query(CompletedGame.class, queryExpression);
-                }
-                catch(Exception e){
-
-                }
-
-                for (int i = 0; i < list[0].size(); i++) {
-                   thisBoardsCompletedGames.add(list[0].get(i));
-                }
-                try {
-                        ((BaseActivity)context).runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            //execute code on main thread
-                            mProgressBar.setVisibility(View.GONE);
-
-                        }
-                    });
-                }catch(Exception e){
-
-                }
-            }
-        };
-        Thread mythread = new Thread(runnable);
-        mythread.start();
+    private int getSeconds(String seconds) {
+        seconds = seconds.replace(",", "");
+        int intSeconds = Integer.valueOf(seconds);
+        return intSeconds;
     }
 
+
+    private String formatTime(int intSeconds){
+        String formattedTime;
+        int minutes = intSeconds/60;
+        int secs = intSeconds%60;
+        String minutos = String.format("%d",minutes);
+        String segundos = String.format("%d",secs);
+        if(segundos.length()==1){
+            segundos = "0" + segundos;
+        }
+        formattedTime = minutos +  ":" +segundos;
+
+        return formattedTime;
+    }
 
     private void setView(ViewHolder holder, int level) {
         if(level==0) {
@@ -339,8 +384,12 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
         ImageView usLevel;
         ImageView isCompleted;
         LinearLayout usBackground;
-
-        
+        LinearLayout statsBox;
+        TextView averageScore;
+        TextView timesPlayed;
+        TextView avgTime;
+        Button playNow;
+        ProgressBar progressBar;
 
 
         public ViewHolder(View itemView) {
@@ -348,11 +397,15 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
             usUser = (TextView)itemView.findViewById(R.id.us_user);
             usDate = (TextView)itemView.findViewById(R.id.us_date);
             usDiff = (TextView)itemView.findViewById(R.id.us_diff);
+            averageScore = (TextView)itemView.findViewById(R.id.avg_score);
+            timesPlayed = (TextView)itemView.findViewById(R.id.times_played);
+            avgTime = (TextView)itemView.findViewById(R.id.avg_time);
             usLevel = (ImageView) itemView.findViewById(R.id.us_level);
             isCompleted = (ImageView) itemView.findViewById(R.id.is_completed);
             usBackground = (LinearLayout)itemView.findViewById(R.id.us_background);
+            statsBox = (LinearLayout)itemView.findViewById(R.id.board_stats_box);
+            playNow = (Button)itemView.findViewById(R.id.us_play_now);
+            progressBar = (ProgressBar) itemView.findViewById(R.id.us_progress);
         }
-
     }
-
 }
