@@ -104,7 +104,14 @@ public abstract class BaseGameActivity extends AppCompatActivity implements
         if (mHelper == null) {
             getGameHelper();
         }
-        mHelper.setup(this);
+        try
+        {
+            mHelper.setup(this);
+        }
+        catch(Exception e)
+        {
+            Log.d(TAG,  "mHelper Already Setup");
+        }
     }
 
     @Override

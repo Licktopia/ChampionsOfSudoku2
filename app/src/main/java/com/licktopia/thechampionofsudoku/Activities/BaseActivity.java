@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
@@ -132,6 +133,7 @@ public class BaseActivity extends BaseGameActivity
     public static AmazonDynamoDBClient ddbClient;
     public static DynamoDBMapper mapper;
 
+    FragmentManager mFragmentManager = null;
     final static String TAG = "BaseActivity";
 
     public void swapFragment(String fragmentName, Bundle args) {
@@ -166,7 +168,7 @@ public class BaseActivity extends BaseGameActivity
             case INVITE_DIALOG_FRAGMENT:
                 DialogFragment dialog = InviteDialogFragment.newInstance();
                 dialog.setArguments(args);
-                dialog.show(getSupportFragmentManager(), INVITE_DIALOG_FRAGMENT);
+                dialog.show(mFragmentManager, INVITE_DIALOG_FRAGMENT);
                 return;
             case MAIN_MENU_FRAGMENT:
             default:
@@ -177,7 +179,7 @@ public class BaseActivity extends BaseGameActivity
         if (fragment != null)
             fragment.setArguments(args);
 
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        FragmentTransaction transaction = mFragmentManager.beginTransaction();
 
         transaction.replace(R.id.fragment_container, fragment);
         transaction.addToBackStack(null);
@@ -362,7 +364,9 @@ public class BaseActivity extends BaseGameActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mFragmentManager = getSupportFragmentManager();
         setContentView(R.layout.activity_base);
+
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         boolean isTablet = getResources().getBoolean(R.bool.is_tablet);
         boolean isNormalPhone = getResources().getBoolean(R.bool.is_normal_phone);
@@ -390,7 +394,7 @@ public class BaseActivity extends BaseGameActivity
             }
 
             MainMenuFragment menuFragment = MainMenuFragment.newInstance();
-            getSupportFragmentManager().beginTransaction()
+            mFragmentManager.beginTransaction()
                     .add(R.id.fragment_container, menuFragment, MAIN_MENU_FRAGMENT).commit();
         }
 
@@ -407,10 +411,7 @@ public class BaseActivity extends BaseGameActivity
         ddbClient = new AmazonDynamoDBClient(credentialsProvider);
         mapper = new DynamoDBMapper(ddbClient);
         ddbClient.setRegion(Region.getRegion(Regions.US_EAST_2));
-        gameHelper = new GameHelper(this, GameHelper.CLIENT_GAMES);
-        //TODO Remove this for production
-        gameHelper.enableDebugLog(true);
-        gameHelper.setup(this);
+        gameHelper = getGameHelper();
 
         //completedGames = new ArrayList<>();
         //savedGames = new ArrayList<>();
@@ -458,7 +459,7 @@ public class BaseActivity extends BaseGameActivity
 
     @Override
     public void onSignInFailed() {
-        Fragment f = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+        Fragment f = mFragmentManager.findFragmentById(R.id.fragment_container);
         if (f instanceof MainMenuFragment) {
             MainMenuFragment mmf = (MainMenuFragment)f;
             mmf.updateUI(false);
@@ -478,12 +479,14 @@ public class BaseActivity extends BaseGameActivity
 
     @Override
     public void onSignInSucceeded() {
-        Fragment f = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+        Fragment f = mFragmentManager.findFragmentById(R.id.fragment_container);
+        /*
         if(gameHelper.hasInvitation())
         {
             acceptInviteToRoom(null);
         }
-        else if (f instanceof MainMenuFragment) {
+        */
+        if (f instanceof MainMenuFragment) {
             MainMenuFragment mmf = (MainMenuFragment)f;
             mmf.updateUI(true);
             return;
@@ -543,7 +546,7 @@ public class BaseActivity extends BaseGameActivity
 
     @Override
     public void onBackPressed() {
-        Fragment f = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+        Fragment f = mFragmentManager.findFragmentById(R.id.fragment_container);
         if (f instanceof BoardFragment) {
             BoardFragment ba = (BoardFragment) f;
             if (!ba.getSolvedState()) {
@@ -561,7 +564,7 @@ public class BaseActivity extends BaseGameActivity
                 swapFragment(BaseActivity.MAIN_MENU_FRAGMENT, new Bundle());
             }
         } else if (f instanceof SudokuSettingsFragment) {
-            getSupportFragmentManager().popBackStack();
+            mFragmentManager.popBackStack();
         } else if (f instanceof MainMenuFragment) {
             new AlertDialog.Builder(this)
                     .setMessage(R.string.sure_exit)
@@ -579,6 +582,14 @@ public class BaseActivity extends BaseGameActivity
         else{
             super.onBackPressed();
         }
+    }
+
+    //calls this in oncreate in the main menu fragment
+    public void bindMainMenuButtons(LinearLayout screenWait, LinearLayout levelSelect, LinearLayout modeSelect)
+    {
+        this.screenWait = screenWait;
+        mLevelSelect = levelSelect;
+        mModeSelect = modeSelect;
     }
 
 
@@ -606,12 +617,6 @@ public class BaseActivity extends BaseGameActivity
     final static int RC_INVITATION_INBOX = 10001;
     final static int RC_WAITING_ROOM = 10002;
 
-    private void setupMultiplayer()
-    {
-        screenWait = (LinearLayout)findViewById(R.id.screen_wait);
-        mLevelSelect = (LinearLayout)findViewById(R.id.level_select);
-        mModeSelect = (LinearLayout)findViewById(R.id.mode_select);
-    }
 
 
     @Override
@@ -896,6 +901,9 @@ public class BaseActivity extends BaseGameActivity
     }
 
     public void startQuickGame() {
+
+        clearMenu();
+
         // quick-start a game with 1 randomly selected opponent
         final int MIN_OPPONENTS = 1, MAX_OPPONENTS = 1;
         Bundle autoMatchCriteria = RoomConfig.createAutoMatchCriteria(MultiGame.MIN_OPPONENTS,
@@ -904,33 +912,22 @@ public class BaseActivity extends BaseGameActivity
         rtmConfigBuilder.setMessageReceivedListener(this);
         rtmConfigBuilder.setRoomStatusUpdateListener(this);
         rtmConfigBuilder.setAutoMatchCriteria(autoMatchCriteria);
-        switchToWaitScreen();
+
         keepScreenOn();
         Games.RealTimeMultiplayer.create(gameHelper.getApiClient(), rtmConfigBuilder.build());
     }
 
     public void hostGame() {
-        //showSelectOpponentsIntent();
-        //switchToWaitScreen();
-        //keepScreenOn();
+        keepScreenOn();
         Intent i = Games.RealTimeMultiplayer.getSelectOpponentsIntent(gameHelper.getApiClient(),
                 MultiGame.MIN_OPPONENTS, MultiGame.MAX_OPPONENTS);
 
-        switchToWaitScreen();
+        clearMenu();
 
         // show waiting room UI
         startActivityForResult(i, RC_SELECT_PLAYERS);
     }
 
-    // returns whether there are enough players to start the game
-    boolean shouldStartGame(Room room) {
-        int connectedPlayers = 0;
-        for (Participant p : room.getParticipants()) {
-            if (p.isConnectedToRoom()) ++connectedPlayers;
-        }
-
-        return (connectedPlayers >= MultiGame.MIN_OPPONENTS + 1);
-    }
 
     void keepScreenOn() {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -956,17 +953,19 @@ public class BaseActivity extends BaseGameActivity
         if (mRoomId != null) {
             Games.RealTimeMultiplayer.leave(this.getApiClient(), this, mRoomId);
             mRoomId = null;
-            switchToWaitScreen();
+            clearMenu();
         } else {
             switchToMainMenuFrag();
         }
     }
 
 
+    /***
+     * Shows the loading screen instead of the
+     */
+    void clearMenu() {
 
-    void switchToWaitScreen() {
 
-        setupMultiplayer();
         mLevelSelect.setVisibility(GONE);
         mModeSelect.setVisibility(GONE);
         screenWait.setVisibility(VISIBLE);
@@ -993,7 +992,6 @@ public class BaseActivity extends BaseGameActivity
 
         // show waiting room UI
         startActivityForResult(i, RC_WAITING_ROOM);
-        setupMultiplayer();
     }
 
     void showSelectOpponentsIntent()
@@ -1044,7 +1042,7 @@ public class BaseActivity extends BaseGameActivity
         if (autoMatchCriteria != null) {
             rtmConfigBuilder.setAutoMatchCriteria(autoMatchCriteria);
         }
-        switchToWaitScreen();
+        clearMenu();
         keepScreenOn();
         Games.RealTimeMultiplayer.create(gameHelper.getApiClient(), rtmConfigBuilder.build());
         Log.d(TAG, "Room created, waiting for it to be ready...");
@@ -1109,7 +1107,7 @@ public class BaseActivity extends BaseGameActivity
         roomConfigBuilder.setInvitationIdToAccept(invId)
                 .setMessageReceivedListener(this)
                 .setRoomStatusUpdateListener(this);
-        switchToWaitScreen();
+        clearMenu();
         keepScreenOn();
         Games.RealTimeMultiplayer.join(gameHelper.getApiClient(), roomConfigBuilder.build());
     }
