@@ -624,6 +624,7 @@ public class BoardFragment extends Fragment {
             obj.setLevel(level);
             obj.setAccuracy(mGame.getAccuracy());
             obj.setExactTime(String.format("%,d", System.currentTimeMillis()));
+            obj.setGamerName(BaseActivity.getUsername());
 
 
 

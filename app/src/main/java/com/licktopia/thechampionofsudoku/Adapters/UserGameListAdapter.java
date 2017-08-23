@@ -22,19 +22,31 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBQueryExpression;
 import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
+import com.amazonaws.services.dynamodbv2.model.AttributeValue;
+import com.amazonaws.services.dynamodbv2.model.Condition;
+import com.amazonaws.services.dynamodbv2.model.QueryRequest;
+import com.amazonaws.services.dynamodbv2.model.QueryResult;
 import com.licktopia.thechampionofsudoku.Activities.BaseActivity;
+import com.licktopia.thechampionofsudoku.Activities.UIActivities.UserBoardFragment;
 import com.licktopia.thechampionofsudoku.DBOjects.CompletedGame;
+import com.licktopia.thechampionofsudoku.Database.DatabaseAccess;
 import com.licktopia.thechampionofsudoku.ListItems.UserGameListItem;
 import com.licktopia.thechampionofsudoku.R;
 import com.licktopia.thechampionofsudoku.Tags;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import static com.amazonaws.services.dynamodbv2.model.ComparisonOperator.EQ;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.BOARD_FRAGMENT;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.phoneSize;
+import static com.licktopia.thechampionofsudoku.Activities.UIActivities.MainMenuFragment.mProgressBar;
 
 /**
  * Created by do_de on 3/30/2017.
@@ -55,6 +67,7 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
     TextView[] squares;
     private UserGameLAListener callback;
     public static boolean color = false;
+    List<CompletedGame> thisBoardsCompletedGames;
 
     //Interface to be implemented by containing activity.
     public interface UserGameLAListener {
@@ -117,6 +130,15 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
         int difficulty = userGameListItem.getDifficulty();
         String date = userGameListItem.getDate();
         final int level = userGameListItem.getLevel();
+        setUpItem(holder, userGameListItem, board, gamerName, difficulty, date);
+        setView(holder, level);
+        setHolderClickListener(holder, userGameListItem, level);
+        thisBoardsCompletedGames = new ArrayList<>();
+
+
+    }
+
+    private void setUpItem(ViewHolder holder, UserGameListItem userGameListItem, int[] board, String gamerName, int difficulty, String date) {
         for(int i =0; i<81; i++){
             if(board[i]!=0) {
                 if(!color) {
@@ -135,7 +157,6 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
                 }
             }
         }
-    
         holder.usUser.setText(new StringBuilder().append(gamerName).toString());
         holder.usDate.setText(date);
         holder.usDiff.setText(String.format(new StringBuilder().append("Diff.").append(" %d").toString(),difficulty));
@@ -147,15 +168,13 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
                 holder.isCompleted.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.cbut_darkreddot));
             }
         }
+    }
 
-
-
-        setView(holder, level);
-
+    private void setHolderClickListener(final ViewHolder holder, final UserGameListItem userGameListItem, final int level) {
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                holder.usBackground.setBackgroundColor(ContextCompat.getColor(context,R.color.color5));
+            public void onClick(View v) {/*
+                holder.usBackground.setBackgroundColor(ContextCompat.getColor(context, R.color.color5));
                 String colOrNum;
                 if(!color){
                     colOrNum = context.getString(R.string.num);
@@ -197,11 +216,65 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
                             }
                         })
                         .show();
+                */
+            getCommunityStatsForBoard(userGameListItem);
             }
         });
-
-
     }
+
+    private void getCommunityStatsForBoard(final UserGameListItem thisUserGameListItem){
+        Runnable runnable = new Runnable() {
+            public void run() {
+                Map<String,String> expressionAttributesNames = new HashMap<>();
+                expressionAttributesNames.put("#PuzzleNo","PuzzleNo");
+
+
+                Map<String,AttributeValue> expressionAttributeValues = new HashMap<>();
+                expressionAttributeValues.put(":PuzzleNo",new AttributeValue().withS("29130"));
+
+
+
+
+
+                //String queryItem = "29130";//thisUserGameListItem.getBoardIdentifier();
+                //CompletedGame cg = new CompletedGame();
+                //cg.setPuzzleNumber(Long.valueOf(queryItem));
+                final DynamoDBQueryExpression<CompletedGame> queryExpression = new DynamoDBQueryExpression<CompletedGame>()
+                        .withIndexName("PuzzleNo-index-copy")
+                        .withFilterExpression("#PuzzleNo = :PuzzleNo")
+                        .withExpressionAttributeNames(expressionAttributesNames)
+                        .withExpressionAttributeValues(expressionAttributeValues)
+                        .withConsistentRead(false);
+
+                final List<CompletedGame>[] list = new List[]{new ArrayList<>()};
+                try {
+                    list[0] = BaseActivity.mapper.query(CompletedGame.class, queryExpression);
+                }
+                catch(Exception e){
+
+                }
+
+                for (int i = 0; i < list[0].size(); i++) {
+                   thisBoardsCompletedGames.add(list[0].get(i));
+                }
+                try {
+                        ((BaseActivity)context).runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            //execute code on main thread
+                            mProgressBar.setVisibility(View.GONE);
+
+                        }
+                    });
+                }catch(Exception e){
+
+                }
+            }
+        };
+        Thread mythread = new Thread(runnable);
+        mythread.start();
+    }
+
 
     private void setView(ViewHolder holder, int level) {
         if(level==0) {
