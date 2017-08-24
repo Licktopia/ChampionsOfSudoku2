@@ -106,4 +106,6 @@
     <string name="begin">Begin</string>
     <string name="try_harder">Try Harder Puzzles to Gain More XP</string>
     <string name="difficulty">Difficulty</string>
+    <string name="disconnectedFromRoom">You have been disconnected from the room!</string>
+    <string name="invitationRemoved">Invitation has been removed!</string>
 </resources>

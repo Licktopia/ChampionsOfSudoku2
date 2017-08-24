@@ -94,10 +94,11 @@ public class BaseActivity extends BaseGameActivity
     public static final String GAMER_PROFILE_FRAGMENT = "GAMER_PROFILE_FRAGMENT";
     public static final String INSTRUCTIONS_FRAGMENT = "INSTRUCTIONS_FRAGMENT";
     public static final String SAVED_GAME_FRAGMENT = "SAVED_GAME_FRAGMENT";
-    public static final String INVITE_DIALOG_FRAGMENT = "INVITE_DIALOG_FRAGMENT";
+    public static final String INVITE_DIALOG_FRAGMENT_SHOW = "INVITE_DIALOG_FRAGMENT_SHOW";
+    public static final String INVITE_DIALOG_FRAGMENT_HIDE = "INVITE_DIALOG_FRAGMENT_HIDE";
     public static final String SETTINGS_FRAGMENT = "SETTINGS_FRAGMENT";
     public static final String USER_BOARD_FRAGMENT = "USER_BOARD_FRAGMENT";
-    public static  GameHelper gameHelper;
+    public static GameHelper gameHelper;
     public static boolean clickedOut = false;
     public static boolean userSignIn=false;
     public static int phoneSize = 2;
@@ -133,7 +134,7 @@ public class BaseActivity extends BaseGameActivity
     public static AmazonDynamoDBClient ddbClient;
     public static DynamoDBMapper mapper;
 
-    FragmentManager mFragmentManager = null;
+    DialogFragment inviteDialog = null;
     final static String TAG = "BaseActivity";
 
     public void swapFragment(String fragmentName, Bundle args) {
@@ -165,10 +166,12 @@ public class BaseActivity extends BaseGameActivity
             case SETTINGS_FRAGMENT:
                 fragment = SudokuSettingsFragment.newInstance();
                 break;
-            case INVITE_DIALOG_FRAGMENT:
-                DialogFragment dialog = InviteDialogFragment.newInstance();
-                dialog.setArguments(args);
-                dialog.show(mFragmentManager, INVITE_DIALOG_FRAGMENT);
+            case INVITE_DIALOG_FRAGMENT_SHOW:
+                inviteDialog.setArguments(args);
+                inviteDialog.show(getSupportFragmentManager(), INVITE_DIALOG_FRAGMENT_SHOW);
+                return;
+            case INVITE_DIALOG_FRAGMENT_HIDE:
+                inviteDialog.dismiss();
                 return;
             case MAIN_MENU_FRAGMENT:
             default:
@@ -179,7 +182,7 @@ public class BaseActivity extends BaseGameActivity
         if (fragment != null)
             fragment.setArguments(args);
 
-        FragmentTransaction transaction = mFragmentManager.beginTransaction();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
         transaction.replace(R.id.fragment_container, fragment);
         transaction.addToBackStack(null);
@@ -364,7 +367,8 @@ public class BaseActivity extends BaseGameActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mFragmentManager = getSupportFragmentManager();
+        inviteDialog = InviteDialogFragment.newInstance();
+
         setContentView(R.layout.activity_base);
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -394,7 +398,7 @@ public class BaseActivity extends BaseGameActivity
             }
 
             MainMenuFragment menuFragment = MainMenuFragment.newInstance();
-            mFragmentManager.beginTransaction()
+            getSupportFragmentManager().beginTransaction()
                     .add(R.id.fragment_container, menuFragment, MAIN_MENU_FRAGMENT).commit();
         }
 
@@ -412,7 +416,6 @@ public class BaseActivity extends BaseGameActivity
         mapper = new DynamoDBMapper(ddbClient);
         ddbClient.setRegion(Region.getRegion(Regions.US_EAST_2));
         gameHelper = getGameHelper();
-
         //completedGames = new ArrayList<>();
         //savedGames = new ArrayList<>();
 
@@ -425,6 +428,7 @@ public class BaseActivity extends BaseGameActivity
     @Override
     protected void onStop() {
         super.onStop();
+        stopKeepingScreenOn();
        // gameHelper.onStop();
         /*SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = sharedPrefs.edit();
@@ -459,7 +463,7 @@ public class BaseActivity extends BaseGameActivity
 
     @Override
     public void onSignInFailed() {
-        Fragment f = mFragmentManager.findFragmentById(R.id.fragment_container);
+        Fragment f = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
         if (f instanceof MainMenuFragment) {
             MainMenuFragment mmf = (MainMenuFragment)f;
             mmf.updateUI(false);
@@ -479,13 +483,14 @@ public class BaseActivity extends BaseGameActivity
 
     @Override
     public void onSignInSucceeded() {
-        Fragment f = mFragmentManager.findFragmentById(R.id.fragment_container);
-        /*
+        Log.d(TAG, "In onSignInSucceeded");
+        Fragment f = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+        Games.Invitations.registerInvitationListener(gameHelper.getApiClient(), this);
         if(gameHelper.hasInvitation())
         {
             acceptInviteToRoom(null);
+            return;
         }
-        */
         if (f instanceof MainMenuFragment) {
             MainMenuFragment mmf = (MainMenuFragment)f;
             mmf.updateUI(true);
@@ -506,6 +511,7 @@ public class BaseActivity extends BaseGameActivity
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data){
+        Log.d(TAG, "In onActivityResult");
         super.onActivityResult(requestCode,resultCode,data);
         gameHelper.onActivityResult(requestCode, resultCode, data);
 
@@ -520,7 +526,7 @@ public class BaseActivity extends BaseGameActivity
                 handleSelectPlayersResult(resultCode, data);
                 break;
             case RC_INVITATION_INBOX:
-                // we got the result from the "select invitation" UI (invitation inbox). We're
+                handleInvitationInboxResult(resultCode, data);
                 break;
             case RC_WAITING_ROOM:
                 // we got the result from the "waiting room" UI.
@@ -546,7 +552,7 @@ public class BaseActivity extends BaseGameActivity
 
     @Override
     public void onBackPressed() {
-        Fragment f = mFragmentManager.findFragmentById(R.id.fragment_container);
+        Fragment f = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
         if (f instanceof BoardFragment) {
             BoardFragment ba = (BoardFragment) f;
             if (!ba.getSolvedState()) {
@@ -564,7 +570,7 @@ public class BaseActivity extends BaseGameActivity
                 swapFragment(BaseActivity.MAIN_MENU_FRAGMENT, new Bundle());
             }
         } else if (f instanceof SudokuSettingsFragment) {
-            mFragmentManager.popBackStack();
+            getSupportFragmentManager().popBackStack();
         } else if (f instanceof MainMenuFragment) {
             new AlertDialog.Builder(this)
                     .setMessage(R.string.sure_exit)
@@ -655,13 +661,10 @@ public class BaseActivity extends BaseGameActivity
         // We got an invitation to play a game! So, store it in
         // mIncomingInvitationId
         // and show the popup on the screen.
+        Log.d(TAG, "we got and invite!");
         mIncomingInvitationId = invitation.getInvitationId();
 
-
-        ((TextView) findViewById(R.id.incoming_invitation_text)).setText(
-                invitation.getInviter().getDisplayName());
-
-        swapFragment(BaseActivity.INVITE_DIALOG_FRAGMENT, new Bundle());
+        swapFragment(BaseActivity.INVITE_DIALOG_FRAGMENT_SHOW, new Bundle());
         //findViewById(R.id.invitation_popup).setVisibility(View.VISIBLE);
         //switchToScreen(mCurScreen); // This will show the invitation popup
 
@@ -671,10 +674,12 @@ public class BaseActivity extends BaseGameActivity
     @Override
     public void onInvitationRemoved(String invitationId) {
 
-
-        if (mIncomingInvitationId.equals(invitationId)&&mIncomingInvitationId!=null) {
+        new AlertDialog.Builder(this)
+                .setMessage(getString(R.string.disconnectedFromRoom))
+                .show();
+        if (mIncomingInvitationId != null && mIncomingInvitationId.equals(invitationId)) {
             mIncomingInvitationId = null;
-            //switchToScreen(mCurScreen); // This will hide the invitation popup
+            swapFragment(BaseActivity.INVITE_DIALOG_FRAGMENT_HIDE, new Bundle());
         }
 
 
@@ -719,6 +724,10 @@ public class BaseActivity extends BaseGameActivity
     public void onDisconnectedFromRoom(Room room) {
         mRoomId = null;
         mMultiGame = null;
+        new AlertDialog.Builder(this)
+                .setMessage(getString(R.string.disconnectedFromRoom))
+                .show();
+        swapFragment(BaseActivity.MAIN_MENU_FRAGMENT, new Bundle());
         Log.d(TAG, "Disconnected from room");
     }
 
@@ -809,6 +818,7 @@ public class BaseActivity extends BaseGameActivity
 
     @Override
     public void onPeerLeft(Room room, List<String> peersWhoLeft) {
+        Log.d(TAG, "Peer has left the room!");
         updateRoom(room);
     }
 
@@ -831,12 +841,6 @@ public class BaseActivity extends BaseGameActivity
 
     private void startMultiGame()
     {
-        /*
-        if (shouldStartGame(room)) {
-
-
-        }
-        */
         Log.d(TAG, "Starting the game");
 
         for(int i = 0; i < mParticipants.size(); i++)
@@ -887,11 +891,6 @@ public class BaseActivity extends BaseGameActivity
         if (room != null) {
             mParticipants = room.getParticipants();
         }
-        /*
-        if (mParticipants != null) {
-            updatePeerScoresDisplay();
-        }
-        */
     }
 
 
@@ -928,9 +927,20 @@ public class BaseActivity extends BaseGameActivity
         startActivityForResult(i, RC_SELECT_PLAYERS);
     }
 
+    public void viewInvites()
+    {
+        Intent i = Games.Invitations.getInvitationInboxIntent(gameHelper.getApiClient());
+        clearMenu();
+        startActivityForResult(i, RC_INVITATION_INBOX);
+    }
+
 
     void keepScreenOn() {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+    }
+
+    void stopKeepingScreenOn() {
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
     void switchToBoardFrag()
@@ -949,6 +959,7 @@ public class BaseActivity extends BaseGameActivity
 
     void leaveRoom() {
         Log.d(TAG, "Leaving room.");
+        stopKeepingScreenOn();
         mMultiGame = null;
         if (mRoomId != null) {
             Games.RealTimeMultiplayer.leave(this.getApiClient(), this, mRoomId);
@@ -964,22 +975,9 @@ public class BaseActivity extends BaseGameActivity
      * Shows the loading screen instead of the
      */
     void clearMenu() {
-
-
         mLevelSelect.setVisibility(GONE);
         mModeSelect.setVisibility(GONE);
         screenWait.setVisibility(VISIBLE);
-
-        // should we show the invitation popup?
-        boolean showInvPopup;
-        if (mIncomingInvitationId == null) {
-            // no invitation, so no popup
-            showInvPopup = false;
-        } else{
-            // if in multiplayer, only show invitation on main screen
-            showInvPopup = true;
-        }
-        //findViewById(R.id.invitation_popup).setVisibility(showInvPopup ? View.VISIBLE : View.GONE);
     }
 
 
@@ -992,15 +990,6 @@ public class BaseActivity extends BaseGameActivity
 
         // show waiting room UI
         startActivityForResult(i, RC_WAITING_ROOM);
-    }
-
-    void showSelectOpponentsIntent()
-    {
-        Intent i = Games.RealTimeMultiplayer.getSelectOpponentsIntent(gameHelper.getApiClient(),
-                MultiGame.MIN_OPPONENTS, MultiGame.MAX_OPPONENTS);
-
-        // show waiting room UI
-        startActivityForResult(i, RC_SELECT_PLAYERS);
     }
 
     /**
@@ -1091,8 +1080,12 @@ public class BaseActivity extends BaseGameActivity
 
             if(gameHelper.getInvitationId() != null)
             {
-                invId = gameHelper.getInvitationId();
-                mIncomingInvitationId = invId;
+                mIncomingInvitationId = gameHelper.getInvitationId();
+                invId = mIncomingInvitationId;
+            }
+            else if (mIncomingInvitationId != null)
+            {
+                invId = mIncomingInvitationId;
             }
             else
             {

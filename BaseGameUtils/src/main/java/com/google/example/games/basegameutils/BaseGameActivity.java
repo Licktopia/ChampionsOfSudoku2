@@ -90,28 +90,16 @@ public abstract class BaseGameActivity extends AppCompatActivity implements
     }
 
     public GameHelper getGameHelper() {
-        if (mHelper == null) {
-            mHelper = new GameHelper(this, mRequestedClients);
-            mHelper.enableDebugLog(mDebugLog);
 
-        }
+        mHelper.enableDebugLog(mDebugLog);
         return mHelper;
     }
 
     @Override
     protected void onCreate(Bundle b) {
         super.onCreate(b);
-        if (mHelper == null) {
-            getGameHelper();
-        }
-        try
-        {
-            mHelper.setup(this);
-        }
-        catch(Exception e)
-        {
-            Log.d(TAG,  "mHelper Already Setup");
-        }
+        mHelper = new GameHelper(this, mRequestedClients);
+        mHelper.setup(this);
     }
 
     @Override

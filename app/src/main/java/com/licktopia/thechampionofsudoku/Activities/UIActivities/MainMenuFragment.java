@@ -173,18 +173,13 @@ public class MainMenuFragment extends Fragment {
         initializeShareBar();
         initializeResumeButton(mResumeButton);
 
-
-        // IGNORE, TESTING FOR CLASSIFIER, SWITCH TO REAL HOST FUNCTION WHEN MERGEz
         hostButton = (Button)view.findViewById(R.id.host_button);
-        ((Button)view.findViewById(R.id.host_button)).setEnabled(false);
-        ((Button)view.findViewById(R.id.host_button)).setAlpha(.5f);
 
         ((BaseActivity)getActivity()).bindMainMenuButtons(
                 (LinearLayout)view.findViewById(R.id.screen_wait),
                 (LinearLayout)view.findViewById(R.id.level_select),
                 (LinearLayout)view.findViewById(R.id.mode_select));
 
-        /*
         hostButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -198,25 +193,21 @@ public class MainMenuFragment extends Fragment {
             }
         });
 
-        */
 
-        //Button is not necessary since the join is done with a google play notification
-        ((Button)view.findViewById(R.id.join_button)).setEnabled(false);
-        ((Button)view.findViewById(R.id.join_button)).setAlpha(.5f);
-        /*
+
         ((Button)view.findViewById(R.id.join_button)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 if(gameHelper.getApiClient().isConnected()) {
-                    ((BaseActivity)getActivity()).acceptInviteToRoom(null);
+                    ((BaseActivity)getActivity()).viewInvites();
                 }
                 else{
                     Toast.makeText(getContext(), R.string.must_be_logged_in,Toast.LENGTH_SHORT).show();
                 }
             }
         });
-        */
+
 
 
 
