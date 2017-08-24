@@ -307,16 +307,19 @@ public class MainMenuFragment extends Fragment {
     public void onResume(){
         super.onResume();
         //updateUI(gameHelper.isSignedIn());
-        if(gameHelper.getApiClient().isConnected()) {
-            if(isInternet()) {
-                mSignInButton.setVisibility(GONE);
-            }
+        if(isInternet()&&gameHelper.isConnecting()){
+            mProgressBar.setVisibility(VISIBLE);
+            mainScreen.setAlpha(.6f);
+        }
+        else if(gameHelper.getApiClient().isConnected() && isInternet()) {
 
+            mSignInButton.setVisibility(GONE);
             //mBadge.setVisibility(VISIBLE);
             getHighestScoreFromLeaderBoard();
-
         }
         else{
+            mSignInButton.setVisibility(VISIBLE);
+            mBadge.setVisibility(GONE);
             //mProgressBar.setVisibility(GONE);
             //mainScreen.setAlpha(1);
         }
@@ -427,7 +430,8 @@ public class MainMenuFragment extends Fragment {
 
         }
         setMessage();
-
+        mProgressBar.setVisibility(GONE);
+        mainScreen.setAlpha(1);
         //userBadge.setVisibility(VISIBLE);
 
     }

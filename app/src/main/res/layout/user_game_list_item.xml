@@ -1719,7 +1719,7 @@
                             android:layout_centerInParent="false"
                             android:layout_centerVertical="false"
                             android:layout_marginBottom="5dp"
-                            android:layout_weight="25"
+                            android:layout_weight="28"
                             android:gravity="center_horizontal"
                             android:text="TextView"
                             android:textColor="@color/white"
@@ -1746,7 +1746,7 @@
                             android:layout_centerInParent="false"
                             android:layout_centerVertical="false"
                             android:layout_marginBottom="5dp"
-                            android:layout_weight="25"
+                            android:layout_weight="28"
                             android:gravity="center_horizontal"
                             android:text="TextView"
                             android:textColor="@color/white"
@@ -1755,9 +1755,10 @@
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
+                            android:layout_marginBottom="5dp"
                             android:layout_marginLeft="10dp"
                             android:layout_marginRight="10dp"
-                            android:layout_weight="20"
+                            android:layout_weight="14"
                             android:orientation="horizontal"
                             android:weightSum="100">
 

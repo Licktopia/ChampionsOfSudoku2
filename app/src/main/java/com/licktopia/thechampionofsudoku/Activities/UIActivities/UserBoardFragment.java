@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBQueryExpression;
 import com.licktopia.thechampionofsudoku.Activities.BaseActivity;
@@ -37,7 +38,6 @@ public class UserBoardFragment extends Fragment {
     private RecyclerView.Adapter adapter;
     private ArrayList<UserGameListItem> userGameListItems;
     private ArrayList<UserGameListItem> ShuffledList;
-    private List DisplayNowList;
     private ArrayList[] LevelLists;
     public static UserBoardFragment newInstance() {return new UserBoardFragment();}
     private View view;
@@ -50,6 +50,7 @@ public class UserBoardFragment extends Fragment {
     private GridLayoutManager gridLayoutManager;
     private List<Integer> smallRange;
     private List<Integer> bigRange;
+    private TextView titleLabel;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -82,6 +83,8 @@ public class UserBoardFragment extends Fragment {
         smallRange = smallRange.subList(0,DISPLAY_AT_A_TIME);
         Collections.shuffle(bigRange);
         bigRange = bigRange.subList(0,DISPLAY_AT_A_TIME);
+        titleLabel = (TextView)view.findViewById(R.id.board_layout_title);
+        titleLabel.setText(R.string.all_level);
         return view;
     }
 
@@ -174,6 +177,7 @@ public class UserBoardFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     levelNow = finalI;
+                    titleLabel.setText(new StringBuilder().append(Tags.Levels[levelNow]).append(" Sudokus").toString());
                     Collections.shuffle(smallRange);
                     ShuffledList.clear();
                     //DisplayNowList = LevelLists[finalI].subList(0,DISPLAY_AT_A_TIME);
@@ -191,6 +195,7 @@ public class UserBoardFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 levelNow = 6;
+                titleLabel.setText(R.string.all_level);
                 Collections.shuffle(bigRange);
                 //DisplayNowList = ShuffledList.subList(0, DISPLAY_AT_A_TIME);
                 ShuffledList.clear();

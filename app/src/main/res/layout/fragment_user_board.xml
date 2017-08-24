@@ -22,7 +22,7 @@
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/textView14"
+            android:id="@+id/board_layout_title"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_centerInParent="false"

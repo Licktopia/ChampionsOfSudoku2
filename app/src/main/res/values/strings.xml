@@ -108,4 +108,5 @@
     <string name="difficulty">Difficulty</string>
     <string name="disconnectedFromRoom">You have been disconnected from the room!</string>
     <string name="invitationRemoved">Invitation has been removed!</string>
+    <string name="all_level">All Level Sudokus</string>
 </resources>
