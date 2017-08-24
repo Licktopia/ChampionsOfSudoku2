@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBQueryExpression;
 import com.licktopia.thechampionofsudoku.Activities.BaseActivity;
@@ -37,7 +38,6 @@ public class UserBoardFragment extends Fragment {
     private RecyclerView.Adapter adapter;
     private ArrayList<UserGameListItem> userGameListItems;
     private ArrayList<UserGameListItem> ShuffledList;
-    private List DisplayNowList;
     private ArrayList[] LevelLists;
     public static UserBoardFragment newInstance() {return new UserBoardFragment();}
     private View view;
@@ -50,6 +50,7 @@ public class UserBoardFragment extends Fragment {
     private GridLayoutManager gridLayoutManager;
     private List<Integer> smallRange;
     private List<Integer> bigRange;
+    private TextView titleLabel;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -70,19 +71,29 @@ public class UserBoardFragment extends Fragment {
             view = inflater.inflate(R.layout.fragment_user_board_large, container, false);
             gridNum = 4;
         }
-        smallRange = new ArrayList<Integer>();
-        for(int i = 1; i < 10001; i++){
-            smallRange.add(i);
-        }
+        resetSmallRange();
+        resetBigRange();
+        titleLabel = (TextView)view.findViewById(R.id.board_layout_title);
+        titleLabel.setText(R.string.all_level);
+        return view;
+    }
+
+    private void resetBigRange() {
         bigRange = new ArrayList<Integer>();
         for(int i = 1; i < 60001; i++){
             bigRange.add(i);
         }
-        Collections.shuffle(smallRange);
-        smallRange = smallRange.subList(0,DISPLAY_AT_A_TIME);
         Collections.shuffle(bigRange);
         bigRange = bigRange.subList(0,DISPLAY_AT_A_TIME);
-        return view;
+    }
+
+    private void resetSmallRange() {
+        smallRange = new ArrayList<Integer>();
+        for(int i = 1; i < 10001; i++){
+            smallRange.add(i);
+        }
+        Collections.shuffle(smallRange);
+        smallRange = smallRange.subList(0,DISPLAY_AT_A_TIME);
     }
 
     @Override
@@ -174,7 +185,8 @@ public class UserBoardFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     levelNow = finalI;
-                    Collections.shuffle(smallRange);
+                    titleLabel.setText(new StringBuilder().append(Tags.Levels[levelNow]).append(" Sudokus").toString());
+                    resetSmallRange();
                     ShuffledList.clear();
                     //DisplayNowList = LevelLists[finalI].subList(0,DISPLAY_AT_A_TIME);
                     for(int j = 0; j < DISPLAY_AT_A_TIME; j++){
@@ -191,7 +203,8 @@ public class UserBoardFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 levelNow = 6;
-                Collections.shuffle(bigRange);
+                titleLabel.setText(R.string.all_level);
+                resetBigRange();
                 //DisplayNowList = ShuffledList.subList(0, DISPLAY_AT_A_TIME);
                 ShuffledList.clear();
                 for(int i = 0; i < DISPLAY_AT_A_TIME; i++){
@@ -207,7 +220,7 @@ public class UserBoardFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if(levelNow<6) {
-                    Collections.shuffle(smallRange);
+                    resetSmallRange();
                     ShuffledList.clear();
                     for(int i = 0; i < DISPLAY_AT_A_TIME; i++){
                         ShuffledList.add(databaseAccess.getSpecificBoardGame(smallRange.get(i)+(10000*levelNow)));

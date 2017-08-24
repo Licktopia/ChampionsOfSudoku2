@@ -9,7 +9,6 @@ import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBHashKey;
 
 @DynamoDBTable(tableName = "CompletedGame")
 public class CompletedGame {
-    private String gameID;
     private String gamerID;
 
 
@@ -23,6 +22,7 @@ public class CompletedGame {
     private int level;
     private double accuracy;
     private int xp;
+    private String gamerName;
 
 
     @DynamoDBRangeKey(attributeName = "ExactTime")
@@ -79,6 +79,16 @@ public class CompletedGame {
         this.date = date;
     }
 
+    @DynamoDBAttribute(attributeName = "GamerName")
+    public String getGamerName() {
+        return gamerName;
+    }
+
+
+    public void setGamerName(String gamerName) {
+        this.gamerName = gamerName;
+    }
+
     @DynamoDBAttribute(attributeName = "Color")
     public boolean isColor() {
         return color;
@@ -88,7 +98,7 @@ public class CompletedGame {
         this.color = color;
     }
 
-    @DynamoDBAttribute(attributeName = "PuzzleNo")
+    @DynamoDBIndexHashKey(globalSecondaryIndexName = "PuzzleNo-index", attributeName = "PuzzleNo")
     public long getPuzzleNumber() {
         return puzzleNumber;
     }

@@ -27,7 +27,7 @@
     <string name="are_you_sure">Are you sure you want to exit? In game progress may be lost. Finished games data is already saved.</string>
     <string name="signin_other_error">There was an issue with sign-in, please try again later.".</string>
     <string name="signin_failure">Unable to sign in.".</string>
-    <string name="share_with_your_friends">Share with your friends</string>
+    <string name="share_with_your_friends">Share with friends</string>
     <string name="beginner">Beginner</string>
     <string name="easy">Easy</string>
     <string name="medium">Medium</string>
@@ -104,4 +104,9 @@
     <string name="start_ga">Start game in</string>
     <string name="mode">mode?</string>
     <string name="begin">Begin</string>
+    <string name="try_harder">Try Harder Puzzles to Gain More XP</string>
+    <string name="difficulty">Difficulty</string>
+    <string name="disconnectedFromRoom">You have been disconnected from the room!</string>
+    <string name="invitationRemoved">Invitation has been removed!</string>
+    <string name="all_level">All Sudokus</string>
 </resources>
