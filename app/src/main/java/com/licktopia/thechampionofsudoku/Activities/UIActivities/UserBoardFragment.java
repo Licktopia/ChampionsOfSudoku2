@@ -156,7 +156,7 @@ public class UserBoardFragment extends Fragment {
     private void assignAllLists() {
         int levelNum = 0;
         userGameListItems = new ArrayList<>();
-        for(String i : Tags.Levels) {
+        for(int i = 0; i < Tags.Levels.length; i++) {
             LevelLists[levelNum] = new ArrayList();
             LevelLists[levelNum] = databaseAccess.getStockGamesFromLevel(i, levelNum);
             userGameListItems.addAll(LevelLists[levelNum]);
