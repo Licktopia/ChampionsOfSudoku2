@@ -435,8 +435,6 @@ public class MainMenuFragment extends Fragment {
 
         }
         setMessage();
-        mProgressBar.setVisibility(GONE);
-        mainScreen.setAlpha(1);
         //userBadge.setVisibility(VISIBLE);
 
     }

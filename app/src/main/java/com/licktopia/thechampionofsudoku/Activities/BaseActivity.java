@@ -460,9 +460,22 @@ public class BaseActivity extends BaseGameActivity
     /* Implemented from BoardFragmentListener */
     public double getMultiplier() { return MULTIPLIER[level]; }
 
+    /****
+     * updates the UI after a connection attempt
+     * called in onSignInFailed and onSignInSucceeded
+     */
+    private void afterConnectingUI()
+    {
+        if(mProgressBar != null)
+            mProgressBar.setVisibility(GONE);
+        if(mainScreen != null)
+            mainScreen.setAlpha(1);
+    }
+
 
     @Override
     public void onSignInFailed() {
+        afterConnectingUI();
         Fragment f = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
         if (f instanceof MainMenuFragment) {
             MainMenuFragment mmf = (MainMenuFragment)f;
@@ -484,6 +497,7 @@ public class BaseActivity extends BaseGameActivity
     @Override
     public void onSignInSucceeded() {
         Log.d(TAG, "In onSignInSucceeded");
+        afterConnectingUI();
         Fragment f = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
         Games.Invitations.registerInvitationListener(gameHelper.getApiClient(), this);
         if(gameHelper.hasInvitation())
@@ -654,7 +668,6 @@ public class BaseActivity extends BaseGameActivity
     }
 
 
-    //TODO write code for onInvitationReceived
     // Called when we get an invitation to play a game. We react by showing that to the user.
     @Override
     public void onInvitationReceived(Invitation invitation) {
@@ -665,12 +678,9 @@ public class BaseActivity extends BaseGameActivity
         mIncomingInvitationId = invitation.getInvitationId();
 
         swapFragment(BaseActivity.INVITE_DIALOG_FRAGMENT_SHOW, new Bundle());
-        //findViewById(R.id.invitation_popup).setVisibility(View.VISIBLE);
-        //switchToScreen(mCurScreen); // This will show the invitation popup
 
     }
 
-    //TODO write code for onInvitationRemoved
     @Override
     public void onInvitationRemoved(String invitationId) {
 
@@ -686,7 +696,6 @@ public class BaseActivity extends BaseGameActivity
     }
 
 
-    //TODO write code for onConnectedToRoom
     // Called when we are connected to the room. We're not ready to play yet! (maybe not everybody
     // is connected yet).
     @Override
@@ -708,7 +717,6 @@ public class BaseActivity extends BaseGameActivity
         Log.d(TAG, "<< CONNECTED TO ROOM>>");
     }
 
-    //TODO onLeftRoom
     // Called when we've successfully left the room (this happens a result of voluntarily leaving
     // via a call to leaveRoom(). If we get disconnected, we get onDisconnectedFromRoom()).
     @Override
@@ -718,7 +726,6 @@ public class BaseActivity extends BaseGameActivity
         //switchToWaitScreen();
     }
 
-    //TODO onDisconnectedFromRoom
     // Called when we get disconnected from the room. We return to the main screen.
     @Override
     public void onDisconnectedFromRoom(Room room) {

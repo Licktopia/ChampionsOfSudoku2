@@ -1,6 +1,9 @@
 package com.licktopia.thechampionofsudoku.Sudoku;
 
 import android.content.Context;
+import android.util.Log;
+
+import com.licktopia.thechampionofsudoku.Database.DatabaseAccess;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -31,7 +34,8 @@ public class Board implements java.io.Serializable {
         int[] values;
         if (index == -1) {
             values = DbIO.loadBoard(level, ctx, SIZE * SIZE);
-            boardIdentifier = DbIO.getRandomNum();
+            boardIdentifier = DatabaseAccess.getRandomBoardIndex();
+            Log.i("BoardDB", "BoardID: " + boardIdentifier);
         }
         else {
             values = DbIO.loadSpecificBoard(level, ctx, SIZE * SIZE, index);

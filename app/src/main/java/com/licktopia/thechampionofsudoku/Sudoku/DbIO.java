@@ -17,18 +17,21 @@ import com.licktopia.thechampionofsudoku.Database.DatabaseAccess;
  */
 
 public class DbIO {
-    private static ThreadLocalRandom _Rand = ThreadLocalRandom.current();
-
-    public static int getRandomNum() {
-        return randomNum;
-    }
-
-    private static int randomNum;
 
     //loads a random board from the given level
     protected static int[] loadBoard(int level, Context ctx, int totalBoardElements) {
-        randomNum = _Rand.nextInt(1, 10001) + level*10000;
-        return loadSpecificBoard(level, ctx, totalBoardElements, randomNum);
+
+        DatabaseAccess databaseAccess = DatabaseAccess.getInstance(ctx);
+        databaseAccess.open();
+        try {
+            int[] values = databaseAccess.getRandomBoard(level);
+            return values;
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+
     }
 
     //loads a board from row 'boardIndex' from the given level

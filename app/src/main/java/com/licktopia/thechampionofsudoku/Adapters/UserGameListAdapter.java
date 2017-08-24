@@ -18,20 +18,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
-import com.amazonaws.auth.CognitoCachingCredentialsProvider;
-import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBQueryExpression;
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.licktopia.thechampionofsudoku.Activities.BaseActivity;
 import com.licktopia.thechampionofsudoku.DBOjects.CompletedGame;
 import com.licktopia.thechampionofsudoku.ListItems.UserGameListItem;
 import com.licktopia.thechampionofsudoku.R;
 import com.licktopia.thechampionofsudoku.Tags;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.BOARD_FRAGMENT;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.phoneSize;
 
@@ -41,16 +35,9 @@ import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.phoneSiz
 
 public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapter.ViewHolder> {
 
-    public void setUserGameListItems(List<UserGameListItem> userGameListItems) {
-        this.userGameListItems = userGameListItems;
-    }
-
     public List<UserGameListItem> userGameListItems;
     private Context context;
     private String[] mColors = {"#1E91D6","#ea3f6a","#7D1538","#7c8597","#E18335","#4A2772","#F2CA08","#329d53"};
-    private CognitoCachingCredentialsProvider credentialsProvider;
-    private AmazonDynamoDBClient ddbClient;
-    private DynamoDBMapper mapper;
     TextView[] squares;
     private UserGameLAListener callback;
     public static boolean color = false;
@@ -61,9 +48,6 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
         void swapFragment(String fragmentName, Bundle args);
 
     }
-
-
-
 
     public UserGameListAdapter(List<UserGameListItem> userGameListItem, Context context, boolean color) {
         this.userGameListItems = userGameListItem;
@@ -105,9 +89,8 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
         else{
             this.color = true;
         }
-
-
     }
+
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
 
@@ -121,8 +104,6 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
         setView(holder, level);
         setHolderClickListener(holder, userGameListItem, level);
         thisBoardsCompletedGames = new ArrayList<>();
-
-
     }
 
     private void setUpItem(ViewHolder holder, UserGameListItem userGameListItem, int[] board, String gamerName, int difficulty, String date) {
@@ -224,8 +205,12 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
 
         if(size>0) {
             int avgScore = Math.round(totalScore / size);
+            String timeWord = " times ";
+            if(size==1){
+                timeWord= " time ";
+            }
             String avgTime = formatTime(Math.round(totalTime / size));
-            communityBlurb = new StringBuilder().append(size).append(" times played. ").append(avgTime).append("average time. ").append(avgScore).append(" average score.").toString();
+            communityBlurb = new StringBuilder().append(size).append(timeWord).append("played. ").append("Average time ").append(avgTime).append(". Average score ").append(avgScore).toString();
             playerBlurb = "Give this one a try?";
         }
         holder.statsBox.setVisibility(View.VISIBLE);
@@ -299,7 +284,6 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
         return intSeconds;
     }
 
-
     private String formatTime(int intSeconds){
         String formattedTime;
         int minutes = intSeconds/60;
@@ -315,20 +299,13 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
     }
 
     private void share(UserGameListItem uGLI) {
-
         Intent i = new Intent(
-
                 Intent.ACTION_SEND);
-
         i.setType("text/plain");
         i.putExtra(
-
                 Intent.EXTRA_TEXT, "Sudoku Challenge from " + BaseActivity.getUsername() + ". CODE: " + uGLI.getBoardIdentifier()+ "?" + uGLI.getGamerID());
-
         context.startActivity(Intent.createChooser(
-
                 i,
-
                 "Share via"));
     }
 
@@ -341,36 +318,27 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
 
         }
         else if(level==1) {
-
-
             Drawable drawable = ContextCompat.getDrawable(context,R.drawable.easyicon);
             holder.usLevel.setImageDrawable(drawable);
             holder.usBackground.setBackgroundColor(Color.parseColor(mColors[6]));
         }
         else if(level==2) {
-
-
             Drawable drawable = ContextCompat.getDrawable(context,R.drawable.mediumicon);
             holder.usLevel.setImageDrawable(drawable);
             holder.usBackground.setBackgroundColor(Color.parseColor(mColors[1]));
         }
         else if(level==3) {
-
             Drawable drawable = ContextCompat.getDrawable(context,R.drawable.hardicon);
             holder.usLevel.setImageDrawable(drawable);
             holder.usBackground.setBackgroundColor(Color.parseColor(mColors[5]));
         }
         else if(level==4) {
-
-
             Drawable drawable = ContextCompat.getDrawable(context,R.drawable.experticon);
             holder.usLevel.setImageDrawable(drawable);
             holder.usBackground.setBackgroundColor(Color.parseColor(mColors[2]));
         }
         else
         {
-
-
             Drawable drawable = ContextCompat.getDrawable(context,R.drawable.mastericon);
             holder.usLevel.setImageDrawable(drawable);
             holder.usBackground.setBackgroundColor(Color.parseColor(mColors[4]));
