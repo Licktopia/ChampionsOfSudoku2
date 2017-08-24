@@ -71,21 +71,29 @@ public class UserBoardFragment extends Fragment {
             view = inflater.inflate(R.layout.fragment_user_board_large, container, false);
             gridNum = 4;
         }
-        smallRange = new ArrayList<Integer>();
-        for(int i = 1; i < 10001; i++){
-            smallRange.add(i);
-        }
+        resetSmallRange();
+        resetBigRange();
+        titleLabel = (TextView)view.findViewById(R.id.board_layout_title);
+        titleLabel.setText(R.string.all_level);
+        return view;
+    }
+
+    private void resetBigRange() {
         bigRange = new ArrayList<Integer>();
         for(int i = 1; i < 60001; i++){
             bigRange.add(i);
         }
-        Collections.shuffle(smallRange);
-        smallRange = smallRange.subList(0,DISPLAY_AT_A_TIME);
         Collections.shuffle(bigRange);
         bigRange = bigRange.subList(0,DISPLAY_AT_A_TIME);
-        titleLabel = (TextView)view.findViewById(R.id.board_layout_title);
-        titleLabel.setText(R.string.all_level);
-        return view;
+    }
+
+    private void resetSmallRange() {
+        smallRange = new ArrayList<Integer>();
+        for(int i = 1; i < 10001; i++){
+            smallRange.add(i);
+        }
+        Collections.shuffle(smallRange);
+        smallRange = smallRange.subList(0,DISPLAY_AT_A_TIME);
     }
 
     @Override
@@ -178,7 +186,7 @@ public class UserBoardFragment extends Fragment {
                 public void onClick(View v) {
                     levelNow = finalI;
                     titleLabel.setText(new StringBuilder().append(Tags.Levels[levelNow]).append(" Sudokus").toString());
-                    Collections.shuffle(smallRange);
+                    resetSmallRange();
                     ShuffledList.clear();
                     //DisplayNowList = LevelLists[finalI].subList(0,DISPLAY_AT_A_TIME);
                     for(int j = 0; j < DISPLAY_AT_A_TIME; j++){
@@ -196,7 +204,7 @@ public class UserBoardFragment extends Fragment {
             public void onClick(View v) {
                 levelNow = 6;
                 titleLabel.setText(R.string.all_level);
-                Collections.shuffle(bigRange);
+                resetBigRange();
                 //DisplayNowList = ShuffledList.subList(0, DISPLAY_AT_A_TIME);
                 ShuffledList.clear();
                 for(int i = 0; i < DISPLAY_AT_A_TIME; i++){
@@ -212,7 +220,7 @@ public class UserBoardFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if(levelNow<6) {
-                    Collections.shuffle(smallRange);
+                    resetSmallRange();
                     ShuffledList.clear();
                     for(int i = 0; i < DISPLAY_AT_A_TIME; i++){
                         ShuffledList.add(databaseAccess.getSpecificBoardGame(smallRange.get(i)+(10000*levelNow)));
