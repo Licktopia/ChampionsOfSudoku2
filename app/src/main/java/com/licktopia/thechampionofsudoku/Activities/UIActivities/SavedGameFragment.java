@@ -90,7 +90,6 @@ public class SavedGameFragment extends Fragment {
                     savedGames.get(i).getStoppedTime()
                     );
             savedGameListItems.add(sGLI);
-
         }
         Collections.sort(savedGameListItems, new RecentSorter());
     }
@@ -116,10 +115,10 @@ public class SavedGameFragment extends Fragment {
 
 
         final DynamoDBQueryExpression<SavedGame> queryExpression = new DynamoDBQueryExpression<SavedGame>()
-                .withHashKeyValues(sg)
-                .withConsistentRead(false);
+                .withHashKeyValues(sg);
 
-        final List<SavedGame>[] list = new List[]{new ArrayList<SavedGame>()};
+
+        final List[] list = new List[]{new ArrayList<>()};
 
         // id field is null at this point
         Runnable runnable = new Runnable() {
@@ -133,7 +132,7 @@ public class SavedGameFragment extends Fragment {
                 }
                 ArrayList<SavedGame> sGames = new ArrayList<SavedGame>();
                 for (int i = 0; i < list[0].size(); i++) {
-                    sGames.add(list[0].get(i));
+                    sGames.add((SavedGame) list[0].get(i));
                 }
                 BaseActivity.setSavedGames(sGames);
                 try {
