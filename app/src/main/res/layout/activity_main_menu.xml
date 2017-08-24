@@ -25,7 +25,7 @@
             android:layout_weight="5"
             android:background="#96f1f1f1"
             android:gravity="center"
-            android:text="Try Harder Puzzles to Gain more XP"
+            android:text="@string/try_harder"
             android:textColor="@color/colorPrimaryDark"
             android:visibility="invisible"
             tools:visibility="visible" />
@@ -62,7 +62,6 @@
                     android:paddingBottom="10dp"
                     android:scaleX="1"
                     android:scaleY="1"
-                    android:src="@drawable/sudoku"
                     app:srcCompat="@drawable/sudoku" />
             </LinearLayout>
 
@@ -987,8 +986,7 @@
         </HorizontalScrollView>
 
 
-        <RelativeLayout
-            android:id="@+id/share_bar"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_alignParentBottom="true"
@@ -996,36 +994,90 @@
             android:layout_weight="7"
             android:background="#41666666"
             android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:weightSum="100">
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:id="@+id/share_bar"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_centerHorizontal="true"
-                android:orientation="horizontal">
+                android:layout_centerHorizontal="false"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_weight="50"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal"
+                android:weightSum="100">
 
                 <TextView
-                    android:id="@+id/textView6"
+                    android:id="@+id/textView24"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
+                    android:layout_marginRight="5dp"
+                    android:gravity="center"
                     android:text="@string/share_with_your_friends"
-                    android:textAlignment="center"
                     android:textColor="@color/white"
                     android:textSize="16sp" />
+
+                <ImageView
+                    android:id="@+id/imageView2"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="5dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/share"
+                    app:srcCompat="@drawable/share" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/filla2"
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_toEndOf="@+id/share_bar"
+                android:layout_toRightOf="@+id/share_bar"
+                android:background="@color/white"
+                android:orientation="vertical">
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/browser_button"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_centerHorizontal="false"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_weight="50"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal"
+                android:weightSum="100">
 
                 <ImageView
                     android:id="@+id/imageView2"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="10dp"
-                    android:src="@drawable/share"
-                    app:srcCompat="@drawable/share" />
+                    android:layout_marginRight="5dp"
+                    android:scaleType="fitCenter"
+                    app:srcCompat="@drawable/browse" />
+
+                <TextView
+                    android:id="@+id/textView24"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="5dp"
+                    android:gravity="center"
+                    android:text="View Sudokus"
+                    android:textColor="@color/white"
+                    android:textSize="16sp" />
+
             </LinearLayout>
 
-        </RelativeLayout>
+        </LinearLayout>
     </LinearLayout>
 
     <ProgressBar

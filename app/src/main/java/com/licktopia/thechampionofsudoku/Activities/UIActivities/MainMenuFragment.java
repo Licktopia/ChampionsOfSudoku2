@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -25,7 +24,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,14 +40,12 @@ import com.licktopia.thechampionofsudoku.Activities.BaseActivity;
 import com.licktopia.thechampionofsudoku.PlaySounds;
 import com.licktopia.thechampionofsudoku.R;
 import com.licktopia.thechampionofsudoku.DBOjects.CompletedGame;
-import com.licktopia.thechampionofsudoku.Sudoku.DifficultyClassifier;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
-import static com.google.example.games.basegameutils.BaseGameActivity.mHelper;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.BADGETAGS;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.BOARD_FRAGMENT;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.GAMER_PROFILE_FRAGMENT;
@@ -58,7 +54,6 @@ import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.USER_BOA
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.clickedOut;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.gameHelper;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.getUsername;
-import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.level;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.phoneSize;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.setId;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.setUsername;
@@ -98,6 +93,7 @@ public class MainMenuFragment extends Fragment {
     static final int MAX_SWIPE_TIME = 200;
     private HorizontalScrollView scrollView;
     private LinearLayout mLick;
+    private LinearLayout mBoardBrowswer;
     private LinearLayout innerScrollView;
     public static LinearLayout mainScreen;
 
@@ -135,12 +131,12 @@ public class MainMenuFragment extends Fragment {
         screenWait = (LinearLayout)view.findViewById(R.id.screen_wait);
         mModeSelect = (LinearLayout)view.findViewById(R.id.mode_select);
         lickbar = (LinearLayout)view.findViewById(R.id.lickbar);
-        lickbar = (LinearLayout)view.findViewById(R.id.lickbar);
         multiplayerBar = (LinearLayout)view.findViewById(R.id.multiplayer_bar);
         innerScrollView = (LinearLayout)view.findViewById(R.id.innerscrollview);
         mProgressBar = (ProgressBar)view.findViewById(R.id.main_progress);
         mainScreen = (LinearLayout)view.findViewById(R.id.menu);
         mLick = (LinearLayout)view.findViewById(R.id.lick);
+        mBoardBrowswer = (LinearLayout)view.findViewById(R.id.browser_button);
         WindowManager wm = getActivity().getWindowManager();
         Display d = wm.getDefaultDisplay();
         int view_width = 2*d.getWidth();
@@ -500,7 +496,7 @@ public class MainMenuFragment extends Fragment {
     }
 
     private void initializeShareBar() {
-        RelativeLayout mShareBar = (RelativeLayout)view.findViewById(R.id.share_bar);
+        LinearLayout mShareBar = (LinearLayout)view.findViewById(R.id.share_bar);
         mShareBar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -517,6 +513,14 @@ public class MainMenuFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 playLickSound();
+
+
+            }
+        });
+
+        mBoardBrowswer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 Bundle args = new Bundle();
                 callback.swapFragment(USER_BOARD_FRAGMENT, args);
             }

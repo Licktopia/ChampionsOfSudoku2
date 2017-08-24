@@ -1649,7 +1649,7 @@
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
-                            android:layout_marginLeft="10dp"
+                            android:layout_marginLeft="5dp"
                             android:layout_weight="50"
                             android:gravity="center"
                             android:text="Jan 13"
@@ -1662,12 +1662,12 @@
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
-                            android:layout_marginRight="10dp"
+                            android:layout_marginRight="5dp"
                             android:layout_weight="50"
                             android:gravity="center"
                             android:text="506"
                             android:textColor="@color/white"
-                            android:textSize="12sp"
+                            android:textSize="11sp"
                             android:textStyle="bold" />
                     </LinearLayout>
 
@@ -1692,70 +1692,97 @@
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_centerInParent="true"
-                        android:orientation="vertical">
+                        android:layout_margin="5dp"
+                        android:orientation="vertical"
+                        android:weightSum="100">
 
                         <TextView
-                            android:id="@+id/textView18"
+                            android:id="@+id/community_label"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="0dp"
                             android:layout_centerInParent="false"
                             android:layout_centerVertical="false"
-                            android:layout_marginBottom="10dp"
+                            android:layout_weight="15"
                             android:gravity="center_horizontal"
-                            android:text="Board Stats"
+                            android:text="Community"
                             android:textColor="@color/white"
-                            android:textSize="20sp"
+                            android:textSize="18sp"
                             android:textStyle="bold" />
 
                         <TextView
-                            android:id="@+id/times_played"
+                            android:id="@+id/comm_stats_text"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/textView18"
+                            android:layout_height="0dp"
+                            android:layout_below="@+id/community_label"
                             android:layout_centerInParent="false"
                             android:layout_centerVertical="false"
-                            android:layout_marginBottom="10dp"
+                            android:layout_marginBottom="5dp"
+                            android:layout_weight="25"
                             android:gravity="center_horizontal"
                             android:text="TextView"
                             android:textColor="@color/white"
                             android:textSize="14sp" />
 
                         <TextView
-                            android:id="@+id/avg_score"
+                            android:id="@+id/usr_label"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/times_played"
+                            android:layout_height="0dp"
                             android:layout_centerInParent="false"
                             android:layout_centerVertical="false"
-                            android:layout_marginBottom="10dp"
+                            android:layout_weight="15"
                             android:gravity="center_horizontal"
-                            android:text="TextView"
+                            android:text="LicktopiaLicks"
                             android:textColor="@color/white"
-                            android:textSize="14sp" />
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
 
                         <TextView
-                            android:id="@+id/avg_time"
+                            android:id="@+id/user_stats_text"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/avg_score"
+                            android:layout_height="0dp"
+                            android:layout_below="@+id/community_label"
                             android:layout_centerInParent="false"
                             android:layout_centerVertical="false"
-                            android:layout_marginBottom="10dp"
+                            android:layout_marginBottom="5dp"
+                            android:layout_weight="25"
                             android:gravity="center_horizontal"
                             android:text="TextView"
                             android:textColor="@color/white"
                             android:textSize="14sp" />
 
-                        <Button
-                            android:id="@+id/us_play_now"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:background="@drawable/rounded_button"
-                            android:text="Play now"
-                            android:textSize="12sp" />
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_weight="20"
+                            android:orientation="horizontal"
+                            android:weightSum="100">
+
+                            <ImageView
+                                android:id="@+id/us_share"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="10dp"
+                                android:layout_weight="35"
+                                android:scaleType="fitCenter"
+                                app:srcCompat="@drawable/share" />
+
+                            <Button
+                                android:id="@+id/us_play_now"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_gravity="center"
+                                android:layout_marginLeft="10dp"
+                                android:layout_weight="65"
+                                android:background="@drawable/rounded_button"
+                                android:text="Play now"
+                                android:textSize="10sp" />
+
+                        </LinearLayout>
+
                     </LinearLayout>
 
                 </RelativeLayout>

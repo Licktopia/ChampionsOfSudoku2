@@ -28,7 +28,7 @@
             android:layout_centerInParent="false"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="Endless Board Chooser"
+            android:text="60,000 Sudokus"
             android:textColor="@color/white"
             android:textSize="26sp"
             android:textStyle="bold" />
@@ -220,7 +220,7 @@
             <ImageView
                 android:id="@+id/imageView22"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:alpha=".15"
                 android:scaleType="centerCrop"
                 app:srcCompat="@drawable/keyboardbg" />

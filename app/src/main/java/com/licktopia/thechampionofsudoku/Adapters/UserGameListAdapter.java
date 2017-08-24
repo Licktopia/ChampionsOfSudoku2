@@ -6,10 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -17,42 +14,26 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
+
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBQueryExpression;
-import com.amazonaws.regions.Region;
-import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
-import com.amazonaws.services.dynamodbv2.model.AttributeValue;
-import com.amazonaws.services.dynamodbv2.model.Condition;
-import com.amazonaws.services.dynamodbv2.model.QueryRequest;
-import com.amazonaws.services.dynamodbv2.model.QueryResult;
-import com.google.android.gms.games.Games;
 import com.licktopia.thechampionofsudoku.Activities.BaseActivity;
-import com.licktopia.thechampionofsudoku.Activities.UIActivities.UserBoardFragment;
 import com.licktopia.thechampionofsudoku.DBOjects.CompletedGame;
-import com.licktopia.thechampionofsudoku.Database.DatabaseAccess;
 import com.licktopia.thechampionofsudoku.ListItems.UserGameListItem;
 import com.licktopia.thechampionofsudoku.R;
 import com.licktopia.thechampionofsudoku.Tags;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import static com.amazonaws.services.dynamodbv2.model.ComparisonOperator.EQ;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.BOARD_FRAGMENT;
-import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.gameHelper;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.phoneSize;
-import static com.licktopia.thechampionofsudoku.Activities.UIActivities.MainMenuFragment.mProgressBar;
 
 /**
  * Created by do_de on 3/30/2017.
@@ -165,7 +146,7 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
         }
         holder.usUser.setText(new StringBuilder().append(gamerName).toString());
         holder.usDate.setText(date);
-        holder.usDiff.setText(String.format(new StringBuilder().append("Diff.").append(" %d").toString(),difficulty));
+        holder.usDiff.setText(String.format(new StringBuilder().append(context.getString(R.string.difficulty)).append(" %d").toString(),difficulty));
         for(CompletedGame i : BaseActivity.getCompletedGames()){
             if(i.getPuzzleNumber() == Long.valueOf(userGameListItem.getBoardIdentifier())){
                 holder.isCompleted.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.cbut_darkgreendot));
@@ -192,7 +173,7 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
         holder.progressBar.setVisibility(View.VISIBLE);
         Runnable runnable = new Runnable() {
             public void run() {
-                Long puzzleNo = Long.valueOf(4225);
+                Long puzzleNo = thisUserGameListItem.getBoardIdentifierAsLong();
                 CompletedGame cg = new CompletedGame();
                 cg.setPuzzleNumber(puzzleNo);
 
@@ -208,7 +189,6 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
                 catch(Exception e){
                     Log.d("DYNAMO", String.valueOf(e));
                 }
-
                 for (int i = 0; i < list[0].size(); i++) {
                    thisBoardsCompletedGames.add(list[0].get(i));
                 }
@@ -218,11 +198,8 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
                         public void run() {
                             //execute code on main thread
                             //mProgressBar.setVisibility(View.GONE);
-                            if(thisBoardsCompletedGames.size()>0) {
-                                holder.progressBar.setVisibility(View.GONE);
-                                showBoardStats(holder, thisUserGameListItem);
-                            }
-
+                            holder.progressBar.setVisibility(View.GONE);
+                            showBoardStats(holder, thisUserGameListItem);
                         }
                     });
                 }catch(Exception e){
@@ -238,25 +215,38 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
         int size = thisBoardsCompletedGames.size();
         int totalTime = 0;
         int totalScore = 0;
+        String communityBlurb = "Be the first community member to play this Sudoku!";
+        String playerBlurb = "Give this one a try?";
         for(CompletedGame i : thisBoardsCompletedGames){
             totalTime += getSeconds(i.getTime());
             totalScore += i.getRealScore();
         }
-        int avgScore = Math.round(totalScore/size);
-        String avgTime = formatTime(Math.round(totalTime/size));
+
+        if(size>0) {
+            int avgScore = Math.round(totalScore / size);
+            String avgTime = formatTime(Math.round(totalTime / size));
+            communityBlurb = new StringBuilder().append(size).append(" times played. ").append(avgTime).append("average time. ").append(avgScore).append(" average score.").toString();
+            playerBlurb = "Give this one a try?";
+        }
         holder.statsBox.setVisibility(View.VISIBLE);
-        holder.timesPlayed.setText(new StringBuilder().append("Times played").append(" ").append(size).toString());
-        holder.averageScore.setText(new StringBuilder().append("Avg score").append(" ").append(avgScore).toString());
-        holder.avgTime.setText(new StringBuilder().append("Avg time").append(" ").append(avgTime));
+        holder.communityText.setText(communityBlurb);
+        holder.playerText.setText(playerBlurb);
+        holder.playerLabel.setText(BaseActivity.getUsername());
         holder.statsBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 holder.statsBox.setVisibility(View.GONE);
             }
         });
+        holder.shareButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                share(userGameListItem);
+            }
+        });
         holder.playNow.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {/*
+            public void onClick(View v) {
                 holder.usBackground.setBackgroundColor(ContextCompat.getColor(context, R.color.color5));
                 String colOrNum;
                 if(!color){
@@ -299,9 +289,6 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
                             }
                         })
                         .show();
-                */
-            share(userGameListItem);
-
             }
         });
     }
@@ -409,10 +396,14 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
         ImageView isCompleted;
         LinearLayout usBackground;
         LinearLayout statsBox;
-        TextView averageScore;
-        TextView timesPlayed;
-        TextView avgTime;
+
+        TextView communityText;
+        TextView playerText;
+        TextView playerLabel;
+
+
         Button playNow;
+        ImageView shareButton;
         ProgressBar progressBar;
 
 
@@ -421,14 +412,17 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
             usUser = (TextView)itemView.findViewById(R.id.us_user);
             usDate = (TextView)itemView.findViewById(R.id.us_date);
             usDiff = (TextView)itemView.findViewById(R.id.us_diff);
-            averageScore = (TextView)itemView.findViewById(R.id.avg_score);
-            timesPlayed = (TextView)itemView.findViewById(R.id.times_played);
-            avgTime = (TextView)itemView.findViewById(R.id.avg_time);
+
+            communityText = (TextView)itemView.findViewById(R.id.comm_stats_text);
+            playerText = (TextView)itemView.findViewById(R.id.user_stats_text);
+            playerLabel = (TextView)itemView.findViewById(R.id.usr_label);
+
             usLevel = (ImageView) itemView.findViewById(R.id.us_level);
             isCompleted = (ImageView) itemView.findViewById(R.id.is_completed);
             usBackground = (LinearLayout)itemView.findViewById(R.id.us_background);
             statsBox = (LinearLayout)itemView.findViewById(R.id.board_stats_box);
             playNow = (Button)itemView.findViewById(R.id.us_play_now);
+            shareButton = (ImageView)itemView.findViewById(R.id.us_share);
             progressBar = (ProgressBar) itemView.findViewById(R.id.us_progress);
         }
     }
