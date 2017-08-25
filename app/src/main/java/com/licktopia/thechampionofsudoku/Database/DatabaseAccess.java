@@ -66,7 +66,7 @@ public class DatabaseAccess {
      *
      * @return a List of quotes
      */
-    public ArrayList<UserGameListItem> getStockGamesFromLevel(int level, int levelNum) {
+    public ArrayList<UserGameListItem> getStockGamesFromLevel(int level) {
         ArrayList <UserGameListItem> list = new ArrayList<>();
         int minDifficulty = DifficultyClassifier.LEVEL_DELIMS[level];
         int maxDifficulty = DifficultyClassifier.LEVEL_DELIMS[level + 1];

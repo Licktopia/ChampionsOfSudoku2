@@ -165,13 +165,11 @@ public class UserBoardFragment extends Fragment {
     }
 
     private void assignAllLists() {
-        int levelNum = 0;
         userGameListItems = new ArrayList<>();
         for(int i = 0; i < Tags.Levels.length; i++) {
-            LevelLists[levelNum] = new ArrayList();
-            LevelLists[levelNum] = databaseAccess.getStockGamesFromLevel(i, levelNum);
-            userGameListItems.addAll(LevelLists[levelNum]);
-            levelNum++;
+            LevelLists[i] = new ArrayList();
+            LevelLists[i] = databaseAccess.getStockGamesFromLevel(i);
+            userGameListItems.addAll(LevelLists[i]);
         }
     }
 
@@ -189,8 +187,9 @@ public class UserBoardFragment extends Fragment {
                     resetSmallRange();
                     ShuffledList.clear();
                     //DisplayNowList = LevelLists[finalI].subList(0,DISPLAY_AT_A_TIME);
-                    for(int j = 0; j < DISPLAY_AT_A_TIME; j++){
-                        ShuffledList.add(databaseAccess.getSpecificBoardGame(smallRange.get(j)+(10000* finalI1)));
+                    ArrayList<UserGameListItem> levelGames = databaseAccess.getStockGamesFromLevel(finalI1);
+                    for (UserGameListItem gameListItem: levelGames){
+                        ShuffledList.add(gameListItem);
                     }
                     adapter = null;
                     adapter = new UserGameListAdapter(ShuffledList, getContext(), color);
