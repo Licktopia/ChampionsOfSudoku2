@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        app:srcCompat="@drawable/historybackground" />
+        app:srcCompat="@drawable/coolbackground" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -22,84 +22,127 @@
         android:orientation="vertical"
         android:weightSum="100">
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="10"
+            android:layout_height="48dp"
+            android:background="@color/color1"
             android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/user_name"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@color/white"
                 android:gravity="center_vertical|center_horizontal"
                 android:text="Games Played By Jeffrey Michael Lichtman 564"
                 android:textAllCaps="true"
-                android:textColor="@android:color/black"
+                android:textColor="@android:color/white"
                 android:textSize="16sp" />
-        </LinearLayout>
+
+            <ImageView
+                android:id="@+id/imageView26"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:alpha=".15"
+                android:scaleType="centerCrop"
+                app:srcCompat="@drawable/keyboardbg" />
+        </RelativeLayout>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="80"
-            android:background="@android:color/transparent"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
 
-            />
+            android:layout_weight="100"
+            android:background="@android:color/transparent" />
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="10"
+            android:layout_height="48dp"
             android:background="@color/white"
             android:orientation="horizontal"
             android:weightSum="4">
 
-            <Button
-                android:id="@+id/sort_recent"
-                style="@style/Widget.AppCompat.Button.Borderless"
+            <ImageView
+                android:id="@+id/imageView27"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="Recent" />
+                android:alpha=".6"
+                android:scaleType="centerCrop"
+                app:srcCompat="@drawable/keyboardbg" />
 
-            <Button
-                android:id="@+id/sort_best"
-                style="@style/Widget.AppCompat.Button.Borderless"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="Best" />
+                android:orientation="horizontal"
+                android:weightSum="4">
 
-            <Button
-                android:id="@+id/sort_highscore"
-                style="@style/Widget.AppCompat.Button.Borderless"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="High Score" />
+                <Button
+                    android:id="@+id/sort_best"
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="Best"
+                    android:textColor="@color/Jeffgrey"
+                    android:textSize="12sp" />
 
-            <Button
-                android:id="@+id/sort_time"
-                style="@style/Widget.AppCompat.Button.Borderless"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="Time" />
+                <LinearLayout
+                    android:layout_width="2dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/white"
+                    android:orientation="vertical"></LinearLayout>
 
-        </LinearLayout>
+                <Button
+                    android:id="@+id/sort_recent"
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="Recent"
+                    android:textColor="@color/Jeffgrey"
+                    android:textSize="12sp" />
+
+                <LinearLayout
+                    android:layout_width="2dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/white"
+                    android:orientation="vertical"></LinearLayout>
+
+                <Button
+                    android:id="@+id/sort_time"
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="Time"
+                    android:textColor="@color/Jeffgrey"
+                    android:textSize="12sp" />
+
+                <LinearLayout
+                    android:layout_width="2dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/white"
+                    android:orientation="vertical"></LinearLayout>
+
+                <Button
+                    android:id="@+id/sort_highscore"
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="High Score"
+                    android:textColor="@color/Jeffgrey"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+        </RelativeLayout>
+
     </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal"></LinearLayout>
 
 </RelativeLayout>

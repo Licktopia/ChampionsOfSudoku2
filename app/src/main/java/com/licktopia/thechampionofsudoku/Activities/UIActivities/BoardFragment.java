@@ -79,6 +79,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import main.java.com.maximeroussy.invitrode.RandomWord;
 
+import static android.content.ContentValues.TAG;
 import static android.view.View.GONE;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.gameHelper;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.phoneSize;
@@ -690,6 +691,13 @@ public class BoardFragment extends Fragment {
         }
         else if(multiplayer)
         {
+            if(gameHelper.getApiClient().isConnected()) {
+                try {
+                    Games.Leaderboards.submitScore(gameHelper.getApiClient(), getString(R.string.leaderboard_opponents_vanquished_multiplayer), numPlayers, "1337");
+                }catch(Exception e){
+                    Log.d(TAG, "endOfGame: Failed to upload to db");
+                }
+            }
             mHintsLayout.setVisibility(GONE);
             mEndGameLayout.setVisibility(View.VISIBLE);
             final RelativeLayout mStatsBox = (RelativeLayout) view.findViewById(R.id.game_stats_box);

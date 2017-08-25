@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        app:srcCompat="@drawable/historybackground" />
+        app:srcCompat="@drawable/coolbackground" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -22,10 +22,10 @@
         android:orientation="vertical"
         android:weightSum="100">
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="10"
+            android:layout_height="48dp"
+            android:background="@color/color1"
             android:orientation="horizontal">
 
             <TextView
@@ -33,29 +33,33 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@color/white"
                 android:gravity="center_vertical|center_horizontal"
                 android:text="Games Played By Jeffrey Michael Lichtman 564"
                 android:textAllCaps="true"
-                android:textColor="@android:color/black"
+                android:textColor="@android:color/white"
                 android:textSize="16sp" />
-        </LinearLayout>
+
+            <ImageView
+                android:id="@+id/imageView24"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:alpha=".15"
+                android:scaleType="centerCrop"
+                app:srcCompat="@drawable/keyboardbg" />
+
+        </RelativeLayout>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/savedrecyclerView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="90"
-            android:background="@android:color/transparent"
+            android:layout_marginTop="5dp"
+            android:layout_weight="100"
 
-            />
+            android:background="@android:color/transparent" />
 
     </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal"></LinearLayout>
 
     <ProgressBar
         android:id="@+id/progressBar2"
@@ -71,7 +75,9 @@
         android:layout_below="@+id/progressBar2"
         android:layout_centerHorizontal="true"
         android:layout_centerInParent="false"
+        android:layout_marginTop="5dp"
         android:text="Loading..."
+        android:textColor="@color/white"
         android:textSize="18sp" />
 
 </RelativeLayout>
