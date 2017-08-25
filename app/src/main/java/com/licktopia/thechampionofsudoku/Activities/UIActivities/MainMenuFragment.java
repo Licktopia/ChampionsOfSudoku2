@@ -336,13 +336,18 @@ public class MainMenuFragment extends Fragment {
     }
 
     private void loadPlayer(){
-        if(gameHelper.getApiClient().isConnected()) {
+        if(gameHelper.getApiClient().isConnected()&&isInternet()) {
             setUsername(Games.Players.getCurrentPlayer(gameHelper.getApiClient()).getDisplayName());
             setId(Games.Players.getCurrentPlayer(gameHelper.getApiClient()).getPlayerId());
             mBadgeButtonInitialize(getUsername(), BaseActivity.getId());
-            if(isInternet()) {
-                mBadge.setVisibility(VISIBLE);
-            }
+            mBadge.setVisibility(VISIBLE);
+            mSignInButton.setVisibility(GONE);
+            mProgressBar.setVisibility(GONE);
+            mainScreen.setAlpha(1);
+        }
+        else{
+            mSignInButton.setVisibility(VISIBLE);
+            mBadge.setVisibility(GONE);
         }
     }
 
@@ -435,6 +440,7 @@ public class MainMenuFragment extends Fragment {
     }
 
     private void getHighestScoreFromLeaderBoard(){
+
         if(isInternet()) {
             PendingResult result = Games.Leaderboards.loadCurrentPlayerLeaderboardScore(gameHelper.getApiClient(),
                     getString(R.string.leaderboard_most_total_xp), LeaderboardVariant.TIME_SPAN_ALL_TIME,
@@ -472,7 +478,7 @@ public class MainMenuFragment extends Fragment {
             //userBadge.setVisibility(VISIBLE);
             loadPlayer();
         }
-
+        loadPlayer();
     }
 
     // Call when the sign-in button is clicked
@@ -726,7 +732,7 @@ public class MainMenuFragment extends Fragment {
     //Interface to be implemented by containing activity.
     public interface MainMenuFragmentListener {
         void swapFragment(String fragmentName, Bundle args);
-        void querySavedGameDb();
+        //void querySavedGameDb();
         int getBadgetag();
         void beginUserInitSignIn();
 
