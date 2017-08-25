@@ -617,6 +617,7 @@ public class BaseActivity extends BaseGameActivity
     private ArrayList<Participant> mParticipants = null;
     // My participant ID in the currently active game
     private String mMyId = null;
+    private MultiGame.GameMode mGameMode;
 
     String mRoomId = null;
 
@@ -846,7 +847,7 @@ public class BaseActivity extends BaseGameActivity
                 {
                     Log.d(TAG, "You are the host");
                     Log.d(TAG, "Creating the game");
-                    mMultiGame = new MultiGame(MultiGame.GameMode.RACE,
+                    mMultiGame = new MultiGame(mGameMode,
                             MultiGame.ConnectType.HUMAN_GAME, 0, this,
                             mParticipants,
                             mMyId,
@@ -894,8 +895,8 @@ public class BaseActivity extends BaseGameActivity
         return mMultiGame;
     }
 
-    public void startQuickGame() {
-
+    public void startQuickGame(MultiGame.GameMode gameMode ) {
+        mGameMode = gameMode;
         clearMenu();
 
         // quick-start a game with 1 randomly selected opponent
@@ -906,12 +907,14 @@ public class BaseActivity extends BaseGameActivity
         rtmConfigBuilder.setMessageReceivedListener(this);
         rtmConfigBuilder.setRoomStatusUpdateListener(this);
         rtmConfigBuilder.setAutoMatchCriteria(autoMatchCriteria);
+        rtmConfigBuilder.setVariant(mGameMode.getValue());
 
         keepScreenOn();
         Games.RealTimeMultiplayer.create(gameHelper.getApiClient(), rtmConfigBuilder.build());
     }
 
-    public void hostGame() {
+    public void hostGame(MultiGame.GameMode gameMode) {
+        mGameMode = gameMode;
         keepScreenOn();
         Intent i = Games.RealTimeMultiplayer.getSelectOpponentsIntent(gameHelper.getApiClient(),
                 MultiGame.MIN_OPPONENTS, MultiGame.MAX_OPPONENTS);
@@ -981,6 +984,7 @@ public class BaseActivity extends BaseGameActivity
         // For simplicity, we require everyone to join the game before we start it
         // (this is signaled by Integer.MAX_VALUE).
         final int MIN_PLAYERS = Integer.MAX_VALUE;
+        mGameMode = MultiGame.GameMode.valueToGameMode(room.getVariant());
         Intent i = Games.RealTimeMultiplayer.getWaitingRoomIntent(gameHelper.getApiClient(), room, MIN_PLAYERS);
 
         // show waiting room UI
@@ -1023,6 +1027,7 @@ public class BaseActivity extends BaseGameActivity
         rtmConfigBuilder.addPlayersToInvite(invitees);
         rtmConfigBuilder.setMessageReceivedListener(this);
         rtmConfigBuilder.setRoomStatusUpdateListener(this);
+        rtmConfigBuilder.setVariant(mGameMode.getValue());
         if (autoMatchCriteria != null) {
             rtmConfigBuilder.setAutoMatchCriteria(autoMatchCriteria);
         }

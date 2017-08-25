@@ -37,6 +37,7 @@ import com.google.android.gms.games.leaderboard.Leaderboards;
 
 
 import com.licktopia.thechampionofsudoku.Activities.BaseActivity;
+import com.licktopia.thechampionofsudoku.Multiplayer.MultiGame;
 import com.licktopia.thechampionofsudoku.PlaySounds;
 import com.licktopia.thechampionofsudoku.R;
 import com.licktopia.thechampionofsudoku.DBOjects.CompletedGame;
@@ -185,8 +186,7 @@ public class MainMenuFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if(gameHelper.getApiClient().isConnected()) {
-                    //callback.swapFragment(BaseActivity.INVITE_DIALOG_FRAGMENT, new Bundle());
-                    ((BaseActivity)getActivity()).hostGame();
+                    ((BaseActivity)getActivity()).hostGame(MultiGame.GameMode.RACE);
                 }
                 else{
                     Toast.makeText(getContext(), R.string.must_be_logged_in,Toast.LENGTH_SHORT).show();
@@ -217,7 +217,7 @@ public class MainMenuFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if(gameHelper.getApiClient().isConnected()) {
-                    ((BaseActivity)getActivity()).startQuickGame();
+                    ((BaseActivity)getActivity()).startQuickGame(MultiGame.GameMode.RACE);
                 }
                 else{
                     Toast.makeText(getContext(), R.string.must_be_logged_in,Toast.LENGTH_SHORT).show();
