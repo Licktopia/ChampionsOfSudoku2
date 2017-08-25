@@ -79,7 +79,7 @@ public class UserBoardFragment extends Fragment {
     }
 
     private void resetBigRange() {
-        bigRange = new ArrayList<Integer>();
+        bigRange = new ArrayList<>();
         for(int i = 1; i < 60001; i++){
             bigRange.add(i);
         }
@@ -88,88 +88,78 @@ public class UserBoardFragment extends Fragment {
     }
 
     private void resetSmallRange(int levelBoardCount) {
-        smallRange = new ArrayList<Integer>();
+        smallRange = new ArrayList<>();
         for(int i = 1; i < levelBoardCount; i++){
             smallRange.add(i);
         }
         Collections.shuffle(smallRange);
         smallRange = smallRange.subList(0,DISPLAY_AT_A_TIME);
     }
-
+    @Override
+    public void onPause(){
+        super.onPause();
+    }
+    @Override
+    public void onResume(){
+        super.onResume();
+    }
     @Override
     public void onStart(){
         super.onStart();
-        mProgressBar = (ProgressBar)view.findViewById(R.id.usr_progress);
-        recyclerView = (RecyclerView)view.findViewById(R.id.user_board_rv);
-        gridLayoutManager = new GridLayoutManager(getContext(),gridNum);
-        recyclerView.setLayoutManager((gridLayoutManager));
-        LevelLists = new ArrayList[Tags.Levels.length];
+        if(ShuffledList==null) {
+            mProgressBar = (ProgressBar) view.findViewById(R.id.usr_progress);
+            recyclerView = (RecyclerView) view.findViewById(R.id.user_board_rv);
+            gridLayoutManager = new GridLayoutManager(getContext(), gridNum);
+            recyclerView.setLayoutManager((gridLayoutManager));
+            LevelLists = new ArrayList[Tags.Levels.length];
+
+            Runnable runnable = new Runnable() {
+                public void run() {
+                    String partitionKey = BaseActivity.getId();
+                    CompletedGame cg = new CompletedGame();
+                    cg.setGamerID(partitionKey);
+                    final DynamoDBQueryExpression<CompletedGame> queryExpression = new DynamoDBQueryExpression<CompletedGame>()
+                            .withHashKeyValues(cg)
+                            .withConsistentRead(false);
+
+                    final List<CompletedGame>[] list = new List[]{new ArrayList<>()};
+                    try {
+                        list[0] = BaseActivity.mapper.query(CompletedGame.class, queryExpression);
+                    } catch (Exception e) {
+
+                    }
+                    ArrayList<CompletedGame> cGames = new ArrayList<CompletedGame>();
+                    for (int i = 0; i < list[0].size(); i++) {
+                        cGames.add(list[0].get(i));
+                    }
+                    BaseActivity.setCompletedGames(cGames);
 
 
+                    databaseAccess = DatabaseAccess.getInstance(getContext());
+                    databaseAccess.open();
+                    ShuffledList = new ArrayList<>();
+                    for (int i = 0; i < DISPLAY_AT_A_TIME; i++) {
+                        ShuffledList.add(databaseAccess.getSpecificBoardGame(bigRange.get(i)));
+                    }
 
+                    adapter = new UserGameListAdapter(ShuffledList, getContext(), color);
+                    initializeButtons();
+                    try {
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                //execute code on main thread
+                                mProgressBar.setVisibility(View.GONE);
+                                recyclerView.setAdapter(adapter);
+                            }
+                        });
+                    } catch (Exception e) {
 
-        Runnable runnable = new Runnable() {
-            public void run() {
-                String partitionKey = BaseActivity.getId();
-                CompletedGame cg = new CompletedGame();
-                cg.setGamerID(partitionKey);
-                final DynamoDBQueryExpression<CompletedGame> queryExpression = new DynamoDBQueryExpression<CompletedGame>()
-                        .withHashKeyValues(cg)
-                        .withConsistentRead(false);
-
-                final List<CompletedGame>[] list = new List[]{new ArrayList<>()};
-                try {
-                    list[0] = BaseActivity.mapper.query(CompletedGame.class, queryExpression);
+                    }
                 }
-                catch(Exception e){
-
-                }
-                ArrayList<CompletedGame> cGames = new ArrayList<CompletedGame>();
-                for (int i = 0; i < list[0].size(); i++) {
-                    cGames.add(list[0].get(i));
-                }
-                BaseActivity.setCompletedGames(cGames);
-
-
-
-                databaseAccess = DatabaseAccess.getInstance(getContext());
-                databaseAccess.open();
-                ShuffledList = new ArrayList<>();
-                for(int i = 0; i < DISPLAY_AT_A_TIME; i++){
-                    ShuffledList.add(databaseAccess.getSpecificBoardGame(bigRange.get(i)));
-                }
-                /*
-                assignAllLists();
-                ShuffledList = userGameListItems;
-                Collections.shuffle(ShuffledList);
-                DisplayNowList = ShuffledList.subList(0,DISPLAY_AT_A_TIME);
-                */
-                adapter = new UserGameListAdapter(ShuffledList, getContext(), color);
-                initializeButtons();
-                try {
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            //execute code on main thread
-                            mProgressBar.setVisibility(View.GONE);
-                            recyclerView.setAdapter(adapter);
-                        }
-                    });
-                }catch(Exception e){
-
-                }
-            }
-        };
-        Thread mythread = new Thread(runnable);
-        mythread.start();
-    }
-
-    private void assignAllLists() {
-        userGameListItems = new ArrayList<>();
-        for(int i = 0; i < Tags.Levels.length; i++) {
-            LevelLists[i] = new ArrayList();
-            LevelLists[i] = databaseAccess.getStockGamesFromLevel(i);
-            userGameListItems.addAll(LevelLists[i]);
+            };
+            Thread mythread = new Thread(runnable);
+            mythread.start();
         }
     }
 

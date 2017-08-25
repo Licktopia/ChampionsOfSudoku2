@@ -478,7 +478,13 @@ public class MainMenuFragment extends Fragment {
             //userBadge.setVisibility(VISIBLE);
             loadPlayer();
         }
-        loadPlayer();
+        if(!gameHelper.isConnecting()) {
+            loadPlayer();
+        }
+        else{
+            mainScreen.setAlpha(.6f);
+            mProgressBar.setVisibility(VISIBLE);
+        }
     }
 
     // Call when the sign-in button is clicked

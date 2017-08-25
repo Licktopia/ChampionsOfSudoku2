@@ -60,6 +60,7 @@
     <string name="leaderboard_fastest_time_hard">CgkIjrCfsNsFEAIQBA</string>
     <string name="leaderboard_fastest_time_expert">CgkIjrCfsNsFEAIQBQ</string>
     <string name="leaderboard_fastest_time_master">CgkIjrCfsNsFEAIQBg</string>
+    <string name="leaderboard_opponents_vanquished_multiplayer" translatable="false">CgkIjrCfsNsFEAIQFw</string>
     <string name="leaderboard_most_total_xp">CgkIjrCfsNsFEAIQBw</string>
     <string name="leaderboard_highest_single_game_score">CgkIjrCfsNsFEAIQCA</string>
     <string name="mustbe_loggedin_viewachievements">You must be logged in to view achievements</string>

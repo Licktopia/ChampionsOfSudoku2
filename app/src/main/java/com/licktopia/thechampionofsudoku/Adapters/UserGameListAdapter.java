@@ -196,21 +196,31 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
         int size = thisBoardsCompletedGames.size();
         int totalTime = 0;
         int totalScore = 0;
+        int topScore = 0;
         String communityBlurb = "Be the first community member to play this Sudoku!";
         String playerBlurb = "Give this one a try?";
         for(CompletedGame i : thisBoardsCompletedGames){
+            if(i.getRealScore()>topScore){
+                topScore = i.getRealScore();
+            }
             totalTime += getSeconds(i.getTime());
             totalScore += i.getRealScore();
         }
 
         if(size>0) {
+            String bestScore = "";
+            String topScoreWord = "";
+            if(topScore>0){
+                bestScore = String.valueOf(topScore) + ". ";
+                topScoreWord = "Top score ";
+            }
             int avgScore = Math.round(totalScore / size);
             String timeWord = " times ";
             if(size==1){
                 timeWord= " time ";
             }
             String avgTime = formatTime(Math.round(totalTime / size));
-            communityBlurb = new StringBuilder().append(size).append(timeWord).append("played. ").append("Average time ").append(avgTime).append(". Average score ").append(avgScore).toString();
+            communityBlurb = new StringBuilder().append(size).append(timeWord).append("played. ").append(topScoreWord).append(bestScore).append("Average time ").append(avgTime).append(". Average score ").append(avgScore).toString();
             playerBlurb = "Give this one a try?";
         }
         holder.statsBox.setVisibility(View.VISIBLE);
