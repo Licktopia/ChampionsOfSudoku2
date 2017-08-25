@@ -83,7 +83,8 @@ public class DatabaseAccess {
                     convert(cursor.getString(1).toCharArray()),
                     Integer.parseInt(cursor.getString(5)),
                     cursor.getString(4),
-                    levelNum);
+                    DifficultyClassifier.getLevelFromDifficulty(Integer.parseInt(cursor.getString(5)))
+            );
             list.add(userGameListItem);
             cursor.moveToNext();
         }
