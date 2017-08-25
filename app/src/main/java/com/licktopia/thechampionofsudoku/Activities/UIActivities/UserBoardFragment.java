@@ -48,7 +48,6 @@ public class UserBoardFragment extends Fragment {
     private ImageButton colorSwitcher;
     private int gridNum = 2;
     private GridLayoutManager gridLayoutManager;
-    private ArrayList<UserGameListItem> currentLevelBoards;
     private List<Integer> smallRange;
     private List<Integer> bigRange;
     private TextView titleLabel;
@@ -87,14 +86,12 @@ public class UserBoardFragment extends Fragment {
         bigRange = bigRange.subList(0,DISPLAY_AT_A_TIME);
     }
 
-    private void resetSmallRange(int levelBoardCount) {
-        smallRange = new ArrayList<>();
-        for(int i = 1; i < levelBoardCount; i++){
-            smallRange.add(i);
-        }
+    private void resetSmallRange(int level) {
+        smallRange = databaseAccess.getIdentifiersFromLevel(level);
         Collections.shuffle(smallRange);
         smallRange = smallRange.subList(0,DISPLAY_AT_A_TIME);
     }
+
     @Override
     public void onPause(){
         super.onPause();
@@ -176,10 +173,9 @@ public class UserBoardFragment extends Fragment {
                     titleLabel.setText(new StringBuilder().append(Tags.Levels[levelNow]).append(" Sudokus").toString());
                     ShuffledList.clear();
                     //DisplayNowList = LevelLists[finalI].subList(0,DISPLAY_AT_A_TIME);
-                    currentLevelBoards = databaseAccess.getStockGamesFromLevel(finalI1);
-                    resetSmallRange(currentLevelBoards.size());
+                    resetSmallRange(finalI1);
                     for(int j = 0; j < DISPLAY_AT_A_TIME; j++){
-                        ShuffledList.add(currentLevelBoards.get(smallRange.get(j)));
+                        ShuffledList.add(databaseAccess.getSpecificBoardGame(smallRange.get(j)));
                     }
                     adapter = null;
                     adapter = new UserGameListAdapter(ShuffledList, getContext(), color);
@@ -209,10 +205,10 @@ public class UserBoardFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if(levelNow<6) {
-                    resetSmallRange(currentLevelBoards.size());
+                    Collections.shuffle(smallRange);
                     ShuffledList.clear();
                     for(int j = 0; j < DISPLAY_AT_A_TIME; j++){
-                        ShuffledList.add(currentLevelBoards.get(smallRange.get(j)));
+                        ShuffledList.add(databaseAccess.getSpecificBoardGame(smallRange.get(j)));
                     }
                     //DisplayNowList = LevelLists[levelNow].subList(0, DISPLAY_AT_A_TIME);
                 }
