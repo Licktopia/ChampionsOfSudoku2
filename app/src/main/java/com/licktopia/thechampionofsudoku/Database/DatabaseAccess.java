@@ -92,6 +92,28 @@ public class DatabaseAccess {
         return list;
     }
 
+    /**
+     * Get IDs of all the boards within a difficulty range.
+     *
+     * @return a List of all board identifiers within a given difficulty level
+     */
+    public ArrayList<Integer> getIdentifiersFromLevel(int level) {
+        ArrayList <Integer> list = new ArrayList<>();
+        int minDifficulty = DifficultyClassifier.LEVEL_DELIMS[level];
+        int maxDifficulty = DifficultyClassifier.LEVEL_DELIMS[level + 1];
+        String rowName = "Difficulty";
+
+        Cursor cursor = database.rawQuery("SELECT Identifier FROM Boards WHERE " + rowName + ">=? AND " + rowName + "<?",
+                new String[] {String.valueOf(minDifficulty), String.valueOf(maxDifficulty)});
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            list.add(Integer.parseInt(cursor.getString(0)));
+            cursor.moveToNext();
+        }
+        cursor.close();
+        return list;
+    }
+
     // Gets random board from given difficulty level
     public int[] getRandomBoard(int level) {
 
