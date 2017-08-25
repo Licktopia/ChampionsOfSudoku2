@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -130,10 +131,10 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
         holder.usDiff.setText(String.format(new StringBuilder().append(context.getString(R.string.difficulty)).append(" %d").toString(),difficulty));
         for(CompletedGame i : BaseActivity.getCompletedGames()){
             if(i.getPuzzleNumber() == Long.valueOf(userGameListItem.getBoardIdentifier())){
-                holder.isCompleted.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.cbut_darkgreendot));
+                holder.isCompleted.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.whitecheck));
             }
             else{
-                holder.isCompleted.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.cbut_darkreddot));
+                holder.isCompleted.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.white_circle));
             }
         }
     }
@@ -197,22 +198,38 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
         int totalTime = 0;
         int totalScore = 0;
         int topScore = 0;
+        int topTime = 0;
+        int usrTopScore = 0;
+        int usrTopTime = 0;
         String communityBlurb = "Be the first community member to play this Sudoku!";
         String playerBlurb = "Give this one a try?";
+        int userScoreCounter = 0;
+        int userTimeCounter = 0;
         for(CompletedGame i : thisBoardsCompletedGames){
             if(i.getRealScore()>topScore){
                 topScore = i.getRealScore();
+            }
+            if(i.getGamerID()==BaseActivity.getId() && i.getRealScore()>usrTopScore){
+                usrTopScore = i.getRealScore();
+                userScoreCounter++;
+            }
+            if(getSeconds(i.getTime())>topTime){
+                topTime = getSeconds(i.getTime());
+            }
+            if(i.getGamerID()==BaseActivity.getId() && getSeconds(i.getTime())>usrTopTime){
+                usrTopTime = getSeconds(i.getTime());
+                userTimeCounter++;
             }
             totalTime += getSeconds(i.getTime());
             totalScore += i.getRealScore();
         }
 
         if(size>0) {
-            String bestScore = "";
-            String topScoreWord = "";
-            if(topScore>0){
-                bestScore = String.valueOf(topScore) + ". ";
-                topScoreWord = "Top score ";
+            String bestTime = "";
+            String topTimeWord = "";
+            if(topTime>0){
+                bestTime = formatTime(topTime) + ". ";
+                topTimeWord = "Top time ";
             }
             int avgScore = Math.round(totalScore / size);
             String timeWord = " times ";
@@ -220,8 +237,22 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
                 timeWord= " time ";
             }
             String avgTime = formatTime(Math.round(totalTime / size));
-            communityBlurb = new StringBuilder().append(size).append(timeWord).append("played. ").append(topScoreWord).append(bestScore).append("Average time ").append(avgTime).append(". Average score ").append(avgScore).toString();
-            playerBlurb = "Give this one a try?";
+            communityBlurb = new StringBuilder().append(size).append(timeWord).append("played. ").append(topTimeWord).append(bestTime).append("Average time ").append(avgTime).append(". Average score ").append(avgScore).toString();
+            if(userScoreCounter>0 || userTimeCounter>0) {
+                String userBestTime = "";
+                String userBestTimeWord = "";
+                String userBestScore = "";
+                String userBestScoreWord = "";
+                if (usrTopTime > 0) {
+                    userBestTime = formatTime(usrTopTime) + ". ";
+                    userBestTimeWord = " Best time ";
+                }
+                if (usrTopScore > 0) {
+                    userBestScore = String.valueOf(usrTopScore) + ". ";
+                    userBestScoreWord = " Best score ";
+                }
+                playerBlurb = new StringBuilder().append(userBestScoreWord).append(userBestScore).append(userBestTimeWord).append(userBestTime).toString();
+            }
         }
         holder.statsBox.setVisibility(View.VISIBLE);
         holder.communityText.setText(communityBlurb);
@@ -390,11 +421,9 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
             usUser = (TextView)itemView.findViewById(R.id.us_user);
             usDate = (TextView)itemView.findViewById(R.id.us_date);
             usDiff = (TextView)itemView.findViewById(R.id.us_diff);
-
             communityText = (TextView)itemView.findViewById(R.id.comm_stats_text);
             playerText = (TextView)itemView.findViewById(R.id.user_stats_text);
             playerLabel = (TextView)itemView.findViewById(R.id.usr_label);
-
             usLevel = (ImageView) itemView.findViewById(R.id.us_level);
             isCompleted = (ImageView) itemView.findViewById(R.id.is_completed);
             usBackground = (LinearLayout)itemView.findViewById(R.id.us_background);

@@ -460,22 +460,11 @@ public class BaseActivity extends BaseGameActivity
     /* Implemented from BoardFragmentListener */
     public double getMultiplier() { return MULTIPLIER[level]; }
 
-    /****
-     * updates the UI after a connection attempt
-     * called in onSignInFailed and onSignInSucceeded
-     */
-    private void afterConnectingUI()
-    {
-        if(mProgressBar != null)
-            mProgressBar.setVisibility(GONE);
-        if(mainScreen != null)
-            mainScreen.setAlpha(1);
-    }
+
 
 
     @Override
     public void onSignInFailed() {
-        afterConnectingUI();
         Fragment f = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
         if (f instanceof MainMenuFragment) {
             MainMenuFragment mmf = (MainMenuFragment)f;
@@ -497,7 +486,6 @@ public class BaseActivity extends BaseGameActivity
     @Override
     public void onSignInSucceeded() {
         Log.d(TAG, "In onSignInSucceeded");
-        afterConnectingUI();
         Fragment f = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
         Games.Invitations.registerInvitationListener(gameHelper.getApiClient(), this);
         if(gameHelper.hasInvitation())

@@ -17,7 +17,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:weightSum="100">
+        android:weightSum="100"
+        card_view:background="@color/color2">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -48,15 +49,22 @@
                 android:textSize="12sp"
                 android:textStyle="bold" />
 
-            <ImageView
-                android:id="@+id/is_completed"
+            <RelativeLayout
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
+                android:layout_height="match_parent"
                 android:layout_weight="10"
-                android:padding="1dp"
-                android:scaleType="fitCenter"
-                app:srcCompat="@drawable/cbut_orangedot" />
+                android:padding="2dp">
+
+                <ImageView
+                    android:id="@+id/is_completed"
+                    android:layout_width="13dp"
+                    android:layout_height="13dp"
+                    android:layout_centerInParent="true"
+                    android:visibility="visible"
+                    app:srcCompat="@drawable/whitecheck" />
+
+            </RelativeLayout>
+
         </LinearLayout>
 
         <RelativeLayout
@@ -1704,7 +1712,7 @@
                             android:layout_height="0dp"
                             android:layout_centerInParent="false"
                             android:layout_centerVertical="false"
-                            android:layout_weight="15"
+                            android:layout_weight="12"
                             android:gravity="center_horizontal"
                             android:text="Community"
                             android:textColor="@color/white"
@@ -1719,7 +1727,7 @@
                             android:layout_centerInParent="false"
                             android:layout_centerVertical="false"
                             android:layout_marginBottom="5dp"
-                            android:layout_weight="28"
+                            android:layout_weight="39"
                             android:gravity="center_horizontal"
                             android:text="TextView"
                             android:textColor="@color/white"
@@ -1731,7 +1739,7 @@
                             android:layout_height="0dp"
                             android:layout_centerInParent="false"
                             android:layout_centerVertical="false"
-                            android:layout_weight="15"
+                            android:layout_weight="12"
                             android:gravity="center_horizontal"
                             android:text="LicktopiaLicks"
                             android:textColor="@color/white"
@@ -1746,7 +1754,7 @@
                             android:layout_centerInParent="false"
                             android:layout_centerVertical="false"
                             android:layout_marginBottom="5dp"
-                            android:layout_weight="28"
+                            android:layout_weight="23"
                             android:gravity="center_horizontal"
                             android:text="TextView"
                             android:textColor="@color/white"

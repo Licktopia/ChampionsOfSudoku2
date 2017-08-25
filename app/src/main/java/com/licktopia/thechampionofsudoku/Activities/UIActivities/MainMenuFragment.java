@@ -81,6 +81,7 @@ public class MainMenuFragment extends Fragment {
 
 
     private SharedPreferences.Editor ed;
+    private boolean isGettingHighestScore = false;
 
 
     public static ProgressBar mProgressBar;
@@ -306,23 +307,25 @@ public class MainMenuFragment extends Fragment {
     @Override
     public void onResume(){
         super.onResume();
-        //updateUI(gameHelper.isSignedIn());
-        if(isInternet()&&gameHelper.isConnecting()){
-            mProgressBar.setVisibility(VISIBLE);
-            mainScreen.setAlpha(.6f);
-        }
-        else if(gameHelper.getApiClient().isConnected() && isInternet()) {
-
-            mSignInButton.setVisibility(GONE);
-            //mBadge.setVisibility(VISIBLE);
+        if(!gameHelper.isConnecting()&& isInternet() && gameHelper.isSignedIn()) {
             getHighestScoreFromLeaderBoard();
         }
-        else{
+        else if((!gameHelper.isConnecting() && !gameHelper.isSignedIn()) || ! isInternet() || !isGettingHighestScore){
             mSignInButton.setVisibility(VISIBLE);
             mBadge.setVisibility(GONE);
-            //mProgressBar.setVisibility(GONE);
-            //mainScreen.setAlpha(1);
+            mProgressBar.setVisibility(GONE);
+            mainScreen.setAlpha(1);
         }
+        userBadge.setImageDrawable(ContextCompat.getDrawable(getActivity(), BADGETAGS[BaseActivity.level]));
+
+
+
+
+            //mBadge.setVisibility(VISIBLE);
+
+
+
+
         if(isInternet()) {
             queryCompletedGameDb();
             // callback.querySavedGameDb();
@@ -340,14 +343,19 @@ public class MainMenuFragment extends Fragment {
             setUsername(Games.Players.getCurrentPlayer(gameHelper.getApiClient()).getDisplayName());
             setId(Games.Players.getCurrentPlayer(gameHelper.getApiClient()).getPlayerId());
             mBadgeButtonInitialize(getUsername(), BaseActivity.getId());
-            mBadge.setVisibility(VISIBLE);
-            mSignInButton.setVisibility(GONE);
-            mProgressBar.setVisibility(GONE);
-            mainScreen.setAlpha(1);
+
         }
-        else{
+       if(isInternet()&&gameHelper.isSignedIn()&&!gameHelper.isConnecting()&&!isGettingHighestScore){
+           mSignInButton.setVisibility(GONE);
+           mBadge.setVisibility(VISIBLE);
+           mProgressBar.setVisibility(GONE);
+           mainScreen.setAlpha(1);
+       }
+       else if(!isInternet() || (!gameHelper.isConnecting() && !gameHelper.isSignedIn())){
             mSignInButton.setVisibility(VISIBLE);
             mBadge.setVisibility(GONE);
+            mProgressBar.setVisibility(GONE);
+            mainScreen.setAlpha(1);
         }
     }
 
@@ -403,21 +411,24 @@ public class MainMenuFragment extends Fragment {
     *Update UI when login or logout occurs
     ***************************************/
     public void updateUI(boolean loggedIn){
-        if(loggedIn){
-            if(userSignIn) {
-                mPlaySounds.playSounds(getContext(),7);
+        if(loggedIn) {
+            if (userSignIn) {
+                mPlaySounds.playSounds(getContext(), 7);
                 userSignIn = false;
             }
-            if(isInternet()) {
-                mSignInButton.setVisibility(GONE);
-            }
-            gameHelper.getApiClient().connect();
-            if(gameHelper.getApiClient().isConnected()) {
+
+            //gameHelper.getApiClient().connect();
+
+            if (!isGettingHighestScore) {
                 getHighestScoreFromLeaderBoard();
             }
-            if(isInternet()) {
+            else{
+                loadPlayer();
+            }
+
+            if (isInternet()) {
                 queryCompletedGameDb();
-               // callback.querySavedGameDb();
+                // callback.querySavedGameDb();
             }
 
 
@@ -429,9 +440,9 @@ public class MainMenuFragment extends Fragment {
             }
 
             clickedOut = false;
-            mSignInButton.setVisibility(VISIBLE);
-            mSignOutButton.setVisibility(View.INVISIBLE);
+
             userBadge.setImageDrawable(ContextCompat.getDrawable(getActivity(), callback.getBadgetag()));
+            loadPlayer();
 
         }
         setMessage();
@@ -440,7 +451,7 @@ public class MainMenuFragment extends Fragment {
     }
 
     private void getHighestScoreFromLeaderBoard(){
-
+        isGettingHighestScore = true;
         if(isInternet()) {
             PendingResult result = Games.Leaderboards.loadCurrentPlayerLeaderboardScore(gameHelper.getApiClient(),
                     getString(R.string.leaderboard_most_total_xp), LeaderboardVariant.TIME_SPAN_ALL_TIME,
@@ -456,16 +467,20 @@ public class MainMenuFragment extends Fragment {
                         long highestScore = result.getScore().getRawScore();
                         if(highestScore>=BaseActivity.getXp()) {
                             BaseActivity.setXp(highestScore);
-                            loadPlayer();
+
 
                             //userBadge.setImageDrawable(ContextCompat.getDrawable(getActivity(), callback.getBadgetag()));
                         }
 
                         //userBadge.setVisibility(VISIBLE);
+                        isGettingHighestScore = false;
+                        loadPlayer();
 
                     }
                     else{
+                        isGettingHighestScore = false;
                         loadPlayer();
+
                     }
 
 
@@ -476,15 +491,11 @@ public class MainMenuFragment extends Fragment {
         else{
 
             //userBadge.setVisibility(VISIBLE);
+            isGettingHighestScore = false;
             loadPlayer();
+
         }
-        if(!gameHelper.isConnecting()) {
-            loadPlayer();
-        }
-        else{
-            mainScreen.setAlpha(.6f);
-            mProgressBar.setVisibility(VISIBLE);
-        }
+
     }
 
     // Call when the sign-in button is clicked
