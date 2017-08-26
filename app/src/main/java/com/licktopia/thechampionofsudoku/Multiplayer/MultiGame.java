@@ -1013,4 +1013,8 @@ public class MultiGame implements GameInterface, java.io.Serializable {
 
 
     public int getStartingOpenSquares() { return mGame.getStartingOpenSquares(); }
+
+    public void backupAllNotepads() { mGame.backupAllNotepads(); }
+
+    public void restoreAllNotepads() { mGame.restoreAllNotepads(); }
 }

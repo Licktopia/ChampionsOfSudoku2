@@ -702,6 +702,22 @@ public class Board implements java.io.Serializable {
 
     protected int totalIncorrectGuesses(){ return incorrectGuesses; }
 
+    protected void backupAllNotepads() {
+        for (Square[] row : contents) {
+            for (Square square : row) {
+                square.backupNotepad();
+            }
+        }
+    }
+
+    protected void restoreAllNotepads() {
+        for (Square[] row : contents) {
+            for (Square square : row) {
+                square.restoreNotepad();
+            }
+        }
+    }
+
     //given an index for a single dimensional array of the board
     //converts it into the correct row of a 2d board array
     private int idxToRow(int idx)

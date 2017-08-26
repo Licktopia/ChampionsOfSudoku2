@@ -402,4 +402,14 @@ public interface GameInterface {
      * @return total number of starting open squares
      */
     public Set<Integer> checkCurrentProgress();
+
+    /*************************************************************
+     * backs up the current state of the board's notepads
+     */
+    public void backupAllNotepads();
+
+    /*************************************************************
+     * restores the current state of the board's notepads
+     */
+    public void restoreAllNotepads();
 }

@@ -1,5 +1,7 @@
 package com.licktopia.thechampionofsudoku.Sudoku;
 
+import java.util.Arrays;
+
 /**
  * Created by John Konecny on 6/19/2017.
  */
@@ -13,6 +15,7 @@ public class Square implements java.io.Serializable
     private int boardSize = -1;
     private boolean isStartingValue;
     private boolean[] notepad;
+    private boolean[] notepadBackup;
     private int value = -1;
     //true if the user has changed the square number
     private boolean hasBeenChange;
@@ -34,6 +37,7 @@ public class Square implements java.io.Serializable
         this.col = col;
         this.boardSize = boardSize;
         notepad = new boolean[boardSize];
+        notepadBackup = new boolean[boardSize];
         this.value = entry;
         this.isStartingValue = isStartingValue;
         hasBeenChange = false;
@@ -125,6 +129,14 @@ public class Square implements java.io.Serializable
     public boolean getNotepad(int num) {
 
         return notepad[num - 1];
+    }
+
+    protected void backupNotepad() {
+        notepadBackup = Arrays.copyOf(notepad, notepad.length);
+    }
+
+    protected void restoreNotepad() {
+        notepad = Arrays.copyOf(notepadBackup, notepadBackup.length);
     }
 
     protected boolean noMoreThanOneGuess(){return this.noMoreThanOneGuess;}

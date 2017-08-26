@@ -1445,6 +1445,8 @@ public class BoardFragment extends Fragment {
                 }
                 if (event.getAction() == MotionEvent.ACTION_UP) {
                     nakedSingleButton.setBackground(getResources().getDrawable(R.drawable.hint_rounded_button));
+                    mGame.restoreAllNotepads();
+                    updateBoard();
                     removeAllHighlights();
                 }
                 return true;
@@ -1465,6 +1467,8 @@ public class BoardFragment extends Fragment {
                 }
                 if (event.getAction() == MotionEvent.ACTION_UP) {
                     nakedDoubleButton.setBackground(getResources().getDrawable(R.drawable.hint_rounded_button));
+                    mGame.restoreAllNotepads();
+                    updateBoard();
                     removeAllHighlights();
                 }
                 return true;
@@ -1485,6 +1489,8 @@ public class BoardFragment extends Fragment {
                 }
                 if (event.getAction() == MotionEvent.ACTION_UP) {
                     hiddenSingleButton.setBackground(getResources().getDrawable(R.drawable.hint_rounded_button));
+                    mGame.restoreAllNotepads();
+                    updateBoard();
                     removeAllHighlights();
                 }
                 return true;
@@ -1505,6 +1511,8 @@ public class BoardFragment extends Fragment {
                 }
                 if (event.getAction() == MotionEvent.ACTION_UP) {
                     hiddenPairButton.setBackground(getResources().getDrawable(R.drawable.hint_rounded_button));
+                    mGame.restoreAllNotepads();
+                    updateBoard();
                     removeAllHighlights();
                 }
                 return true;
@@ -1525,6 +1533,8 @@ public class BoardFragment extends Fragment {
                 }
                 if (event.getAction() == MotionEvent.ACTION_UP) {
                     lockedCandidateButton.setBackground(getResources().getDrawable(R.drawable.hint_rounded_button));
+                    mGame.restoreAllNotepads();
+                    updateBoard();
                     removeAllHighlights();
                 }
                 return true;
@@ -1545,6 +1555,8 @@ public class BoardFragment extends Fragment {
                 }
                 if (event.getAction() == MotionEvent.ACTION_UP) {
                     xWingButton.setBackground(getResources().getDrawable(R.drawable.hint_rounded_button));
+                    mGame.restoreAllNotepads();
+                    updateBoard();
                     removeAllHighlights();
                 }
                 return true;
@@ -1565,6 +1577,8 @@ public class BoardFragment extends Fragment {
                 }
                 if (event.getAction() == MotionEvent.ACTION_UP) {
                     nakedTripleButton.setBackground(getResources().getDrawable(R.drawable.hint_rounded_button));
+                    mGame.restoreAllNotepads();
+                    updateBoard();
                     removeAllHighlights();
                 }
                 return true;
@@ -1585,6 +1599,8 @@ public class BoardFragment extends Fragment {
                 }
                 if (event.getAction() == MotionEvent.ACTION_UP) {
                     yWingButton.setBackground(getResources().getDrawable(R.drawable.hint_rounded_button));
+                    mGame.restoreAllNotepads();
+                    updateBoard();
                     removeAllHighlights();
                 }
                 return true;
@@ -1605,12 +1621,9 @@ public class BoardFragment extends Fragment {
     }
 */
     /************************************
-     * Update board
+     * Update board notepad display
      *********************************/
-    boolean removeOnly = false; // TODO test value, remove
     private void updateBoard() {
-        mGame.updateAllNotepads(removeOnly);
-        removeOnly = true;
         for (int idx = 0; idx < mGame.totalBoardElements(); idx++) {
             if (mGame.isStartingValue(idx) || mGame.getBoardValueAt(idx) != 0) continue;
             for (int num = 1; num <= mGame.totalBoardRows(); num++) {
@@ -1623,6 +1636,8 @@ public class BoardFragment extends Fragment {
      * Show one instance of a given hint
      ***********************************/
     private void showHint(int hintType) {
+        mGame.backupAllNotepads();
+        mGame.updateAllNotepads(false);
         updateBoard();
         Strategies.Hint hint = mGame.getHint(hintType);
         if (hint != null) {
@@ -1637,6 +1652,9 @@ public class BoardFragment extends Fragment {
      * Show one instance of a naked single
      *********************************/
     private void showNakedSingle() {
+        mGame.backupAllNotepads();
+        mGame.updateAllNotepads(false);
+        updateBoard();
         int index = mGame.getNakedSingle();
         if (index != -1) {
             removeAllHighlights();

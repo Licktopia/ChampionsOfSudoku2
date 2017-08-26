@@ -368,6 +368,14 @@ public class Game implements GameInterface, java.io.Serializable
         Strategies.updateAllNotepads(curBoard, removeOnly);
     }
 
+    public void backupAllNotepads() {
+        curBoard.backupAllNotepads();
+    }
+
+    public void restoreAllNotepads() {
+        curBoard.restoreAllNotepads();
+    }
+
     public int getNakedSingle() {
         List<Integer> nakedSingles = Strategies.getNakedSingles(curBoard);
         totalHintsUsed++;
