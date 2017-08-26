@@ -47,9 +47,32 @@ public class MultiGame implements GameInterface, java.io.Serializable {
     boolean isBotGame = false;
 
     public enum GameMode {
-        RACE,
-        BATTLE,
-        COOP
+        RACE(1000),
+        BATTLE(2000),
+        COOP(3000);
+
+        private final int value;
+        private GameMode(int value) {
+            this.value = value;
+        }
+
+        public int getValue() {
+            return value;
+        }
+
+        public static GameMode valueToGameMode(int num)
+        {
+            GameMode[] allValues = GameMode.values();
+
+            for(int i = 0; i < allValues.length; i++)
+            {
+                if(allValues[i].getValue() == num)
+                {
+                    return allValues[i];
+                }
+            }
+            return null;
+        }
     }
 
     public enum ConnectType{
@@ -61,6 +84,7 @@ public class MultiGame implements GameInterface, java.io.Serializable {
         GAME_OBJ,
         GAME_UPDATE,
         GAME_OVER,
+        PLAYER_INFO,
         DEBUG
     }
 
@@ -70,10 +94,12 @@ public class MultiGame implements GameInterface, java.io.Serializable {
         private float mGameProgress;
         private boolean mGameFinished;
         private String mImageUri;
+        private int mXP;
 
         protected Opponent(String gamerId, String imageUri)
         {
             mGameProgress = 0;
+            mXP = 0;
             mGamerId = gamerId;
             mImageUri = imageUri;
         }
@@ -86,8 +112,33 @@ public class MultiGame implements GameInterface, java.io.Serializable {
             return mGameProgress;
         }
 
+        protected int getXP() {return mXP;}
+
+        protected void setXP(int XP) {
+            if(XP < 0)
+            {
+                Log.d(TAG, "Bad XP attempted to be sent!");
+                mXP = 0;
+            }
+            else
+            {
+                mXP = XP;
+            }
+        }
+
         protected void updateProgress(GameUpdate update)
         {
+            //make sure data is good
+            if(update.getGameProgress() < 0 || update.getGameProgress() > 1)
+            {
+                Log.d(TAG, "Progress was < 0.0 or > 1.0");
+                return;
+            }
+            else if (update.getGameProgress() != 1 && update.isGameFinished())
+            {
+                Log.d(TAG, "Progress said game was over, but progress doesn't equal 1");
+                return;
+            }
             mGameProgress = update.getGameProgress();
             mGameFinished = update.isGameFinished();
         }
@@ -157,9 +208,58 @@ public class MultiGame implements GameInterface, java.io.Serializable {
             mGameFinished = stream.readBoolean();
         }
 
-
     }
 
+    protected class PlayerInfo implements java.io.Serializable
+    {
+        private String mGamerId;
+        private int mXP;
+
+        protected PlayerInfo(String gamerId, int XP)
+        {
+            mGamerId = gamerId;
+            mXP = XP;
+        }
+
+        protected int getXP() {
+            return mXP;
+        }
+
+        protected String getGamerId() {
+            return mGamerId.toString();
+        }
+
+        private void writeObject(java.io.ObjectOutputStream stream)
+                throws IOException {
+
+            char[] charArr = mGamerId.toCharArray();
+            stream.writeInt(charArr.length);
+            for(int i = 0; i < charArr.length; i++)
+            {
+                stream.writeChar(charArr[i]);
+            }
+
+            stream.writeInt(mXP);
+
+        }
+
+        private void readObject(java.io.ObjectInputStream stream)
+                throws IOException, ClassNotFoundException {
+
+            int strLen = stream.readInt();
+
+            char[] charArr = new char[strLen];
+
+            for(int i = 0; i < strLen; i++)
+            {
+                charArr[i] = stream.readChar();
+            }
+
+            mGamerId = new String(charArr);
+            mXP = stream.readInt();
+        }
+
+    }
 
 
     // The participants in the currently active game
@@ -209,6 +309,7 @@ public class MultiGame implements GameInterface, java.io.Serializable {
             case HUMAN_GAME:
                 isBotGame = false;
                 sendGameState();
+                sendMyInfo();
                 break;
             default:
                 Log.d(TAG, "Invalid ConnectionType Used");
@@ -247,6 +348,7 @@ public class MultiGame implements GameInterface, java.io.Serializable {
             case HUMAN_GAME:
                 isBotGame = false;
                 sendGameState();
+                sendMyInfo();
                 break;
             default:
                 Log.d(TAG, "Invalid ConnectionType Used");
@@ -273,7 +375,7 @@ public class MultiGame implements GameInterface, java.io.Serializable {
         initializePlayerArray();
         this.mGame = mGame;
         isBotGame = false;
-
+        sendMyInfo();
     }
 
 
@@ -340,6 +442,20 @@ public class MultiGame implements GameInterface, java.io.Serializable {
             }
 
         }
+    }
+
+    void sendMyInfo()
+    {
+        Log.d(TAG, "Sending my info");
+        if(isBotGame)
+        {
+            //do nothing
+        }
+        else
+        {
+            sendMessage(MessageType.PLAYER_INFO, new PlayerInfo(mMyId, -100));
+        }
+
     }
 
 
@@ -417,6 +533,10 @@ public class MultiGame implements GameInterface, java.io.Serializable {
                     // this message does not always need to reach the other players
                     sendReliably = false;
                     break;
+                case PLAYER_INFO:
+                    o.writeObject((PlayerInfo)msgObj);
+                    sendReliably = true;
+                    break;
                 case DEBUG:
                     o.writeObject((String)msgObj);
                     sendReliably = true;
@@ -464,7 +584,11 @@ public class MultiGame implements GameInterface, java.io.Serializable {
     }
 
 
-
+    /********************************
+     * Read messages from other users
+     * ALWAYS ASSUME THE DATA COULD BE COMPRISED
+     * @param msgBuffer
+     */
     public void readMessage(byte[] msgBuffer)
     {
 
@@ -479,17 +603,13 @@ public class MultiGame implements GameInterface, java.io.Serializable {
             {
                 case GAME_OBJ:
                     Log.d(TAG, "I received a game object!");
-                    //do nothing for now...
-                    //the game should already be created
-                    //mGame = (Game)o.readObject();
+                    //this is handled in the baseActivity.java class
                     break;
                 case GAME_UPDATE:
                     Log.d(TAG, "I received a game update!");
                     GameUpdate update = (GameUpdate)o.readObject();
                     for (int i = 0; i < humanOpps.length; i++) {
-                        if(humanOpps[i] == null ||
-                                humanOpps[i].getGamerId().equals(update.getGamerId())
-                                )
+                        if(humanOpps[i].getGamerId().equals(update.getGamerId()))
                         {
                             humanOpps[i].updateProgress(update);
                             break;
@@ -500,11 +620,20 @@ public class MultiGame implements GameInterface, java.io.Serializable {
                     Log.d(TAG, "An opponent has finished their game!");
                     GameUpdate endGameUpdate = (GameUpdate)o.readObject();
                     for (int i = 0; i < humanOpps.length; i++) {
-                        if(humanOpps[i] == null ||
-                                humanOpps[i].getGamerId().equals(endGameUpdate.getGamerId())
-                                )
+                        if(humanOpps[i].getGamerId().equals(endGameUpdate.getGamerId()))
                         {
                             humanOpps[i].updateProgress(endGameUpdate);
+                            break;
+                        }
+                    }
+                    break;
+                case PLAYER_INFO:
+                    Log.d(TAG, "An opponent has sent their XP to us!");
+                    PlayerInfo playerInfo = (PlayerInfo)o.readObject();
+                    for (int i = 0; i < humanOpps.length; i++) {
+                        if(humanOpps[i].getGamerId().equals(playerInfo.getGamerId()))
+                        {
+                            humanOpps[i].setXP(playerInfo.getXP());
                             break;
                         }
                     }
@@ -594,6 +723,18 @@ public class MultiGame implements GameInterface, java.io.Serializable {
         else
         {
             return -100;
+        }
+    }
+
+    public long getOpponentXP(int i)
+    {
+        if(isBotGame)
+        {
+            return this.allBots[i].getXP();
+        }
+        else
+        {
+            return humanOpps[i].getXP();
         }
     }
 

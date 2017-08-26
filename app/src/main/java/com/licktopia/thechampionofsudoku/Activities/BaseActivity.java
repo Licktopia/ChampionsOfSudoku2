@@ -52,6 +52,7 @@ import com.licktopia.thechampionofsudoku.Activities.UIActivities.MainMenuFragmen
 import com.licktopia.thechampionofsudoku.Activities.UIActivities.SavedGameFragment;
 import com.licktopia.thechampionofsudoku.Activities.UIActivities.UserBoardFragment;
 import com.licktopia.thechampionofsudoku.Adapters.UserGameListAdapter;
+import com.licktopia.thechampionofsudoku.DBOjects.SavedGameData;
 import com.licktopia.thechampionofsudoku.Multiplayer.MultiGame;
 import com.licktopia.thechampionofsudoku.R;
 import com.licktopia.thechampionofsudoku.Adapters.SavedGameListAdapter;
@@ -194,14 +195,14 @@ public class BaseActivity extends BaseGameActivity
         return savedGames;
     }
 
-    public static byte[] getThisSavedGame(String exactTime){
+    /*public static byte[] getThisSavedGame(String exactTime){
         for(int i = 0; i < savedGames.size(); i ++){
             if(exactTime.compareTo(savedGames.get(i).getExactTime()) == 0){
                 return savedGames.get(i).getSaveFile();
             }
         }
         return null;
-    }
+    }*/
 
     public static void setSavedGames(ArrayList<SavedGame> savedGames) {
         Collections.sort(savedGames, new BaseActivity.RecentSorter());
@@ -313,43 +314,6 @@ public class BaseActivity extends BaseGameActivity
 
         }
     }
-
-    public void querySavedGameDb() {
-
-        String partitionKey = getId();
-        SavedGame sg = new SavedGame();
-        sg.setGamerID(partitionKey);
-
-
-        final DynamoDBQueryExpression<SavedGame> queryExpression = new DynamoDBQueryExpression<SavedGame>()
-                .withHashKeyValues(sg)
-                .withConsistentRead(false);
-
-        final List<SavedGame>[] list = new List[]{new ArrayList<SavedGame>()};
-
-        // id field is null at this point
-        Runnable runnable = new Runnable() {
-            public void run() {
-                //DynamoDB calls go here
-
-                list[0] = mapper.query(SavedGame.class, queryExpression);
-                ArrayList<SavedGame> sGames = new ArrayList<SavedGame>();
-                for (int i = 0; i < list[0].size(); i++) {
-                    sGames.add(list[0].get(i));
-                }
-                setSavedGames(sGames);
-
-
-                //updateActivity();
-
-
-            }
-        };
-
-        Thread mythread = new Thread(runnable);
-        mythread.start();
-    }
-
 
     public static Long formatExactTime(String time) {
         Long timeNumber;
@@ -617,6 +581,7 @@ public class BaseActivity extends BaseGameActivity
     private ArrayList<Participant> mParticipants = null;
     // My participant ID in the currently active game
     private String mMyId = null;
+    private MultiGame.GameMode mGameMode;
 
     String mRoomId = null;
 
@@ -846,7 +811,7 @@ public class BaseActivity extends BaseGameActivity
                 {
                     Log.d(TAG, "You are the host");
                     Log.d(TAG, "Creating the game");
-                    mMultiGame = new MultiGame(MultiGame.GameMode.RACE,
+                    mMultiGame = new MultiGame(mGameMode,
                             MultiGame.ConnectType.HUMAN_GAME, 0, this,
                             mParticipants,
                             mMyId,
@@ -894,8 +859,8 @@ public class BaseActivity extends BaseGameActivity
         return mMultiGame;
     }
 
-    public void startQuickGame() {
-
+    public void startQuickGame(MultiGame.GameMode gameMode ) {
+        mGameMode = gameMode;
         clearMenu();
 
         // quick-start a game with 1 randomly selected opponent
@@ -906,12 +871,14 @@ public class BaseActivity extends BaseGameActivity
         rtmConfigBuilder.setMessageReceivedListener(this);
         rtmConfigBuilder.setRoomStatusUpdateListener(this);
         rtmConfigBuilder.setAutoMatchCriteria(autoMatchCriteria);
+        rtmConfigBuilder.setVariant(mGameMode.getValue());
 
         keepScreenOn();
         Games.RealTimeMultiplayer.create(gameHelper.getApiClient(), rtmConfigBuilder.build());
     }
 
-    public void hostGame() {
+    public void hostGame(MultiGame.GameMode gameMode) {
+        mGameMode = gameMode;
         keepScreenOn();
         Intent i = Games.RealTimeMultiplayer.getSelectOpponentsIntent(gameHelper.getApiClient(),
                 MultiGame.MIN_OPPONENTS, MultiGame.MAX_OPPONENTS);
@@ -981,6 +948,7 @@ public class BaseActivity extends BaseGameActivity
         // For simplicity, we require everyone to join the game before we start it
         // (this is signaled by Integer.MAX_VALUE).
         final int MIN_PLAYERS = Integer.MAX_VALUE;
+        mGameMode = MultiGame.GameMode.valueToGameMode(room.getVariant());
         Intent i = Games.RealTimeMultiplayer.getWaitingRoomIntent(gameHelper.getApiClient(), room, MIN_PLAYERS);
 
         // show waiting room UI
@@ -1023,6 +991,7 @@ public class BaseActivity extends BaseGameActivity
         rtmConfigBuilder.addPlayersToInvite(invitees);
         rtmConfigBuilder.setMessageReceivedListener(this);
         rtmConfigBuilder.setRoomStatusUpdateListener(this);
+        rtmConfigBuilder.setVariant(mGameMode.getValue());
         if (autoMatchCriteria != null) {
             rtmConfigBuilder.setAutoMatchCriteria(autoMatchCriteria);
         }

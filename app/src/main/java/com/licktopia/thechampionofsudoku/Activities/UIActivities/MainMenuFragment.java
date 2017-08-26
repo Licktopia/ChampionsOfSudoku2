@@ -37,6 +37,7 @@ import com.google.android.gms.games.leaderboard.Leaderboards;
 
 
 import com.licktopia.thechampionofsudoku.Activities.BaseActivity;
+import com.licktopia.thechampionofsudoku.Multiplayer.MultiGame;
 import com.licktopia.thechampionofsudoku.PlaySounds;
 import com.licktopia.thechampionofsudoku.R;
 import com.licktopia.thechampionofsudoku.DBOjects.CompletedGame;
@@ -185,8 +186,7 @@ public class MainMenuFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if(gameHelper.getApiClient().isConnected()) {
-                    //callback.swapFragment(BaseActivity.INVITE_DIALOG_FRAGMENT, new Bundle());
-                    ((BaseActivity)getActivity()).hostGame();
+                    ((BaseActivity)getActivity()).hostGame(MultiGame.GameMode.RACE);
                 }
                 else{
                     Toast.makeText(getContext(), R.string.must_be_logged_in,Toast.LENGTH_SHORT).show();
@@ -217,7 +217,7 @@ public class MainMenuFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if(gameHelper.getApiClient().isConnected()) {
-                    ((BaseActivity)getActivity()).startQuickGame();
+                    ((BaseActivity)getActivity()).startQuickGame(MultiGame.GameMode.RACE);
                 }
                 else{
                     Toast.makeText(getContext(), R.string.must_be_logged_in,Toast.LENGTH_SHORT).show();
@@ -307,10 +307,10 @@ public class MainMenuFragment extends Fragment {
     @Override
     public void onResume(){
         super.onResume();
-        if(!gameHelper.isConnecting()&& isInternet() && gameHelper.isSignedIn()) {
+        if(!gameHelper.isConnecting() && gameHelper.isSignedIn()) {
             getHighestScoreFromLeaderBoard();
         }
-        else if((!gameHelper.isConnecting() && !gameHelper.isSignedIn()) || ! isInternet() || !isGettingHighestScore){
+        else if((!gameHelper.isConnecting() && !gameHelper.isSignedIn()) || !isGettingHighestScore){
             mSignInButton.setVisibility(VISIBLE);
             mBadge.setVisibility(GONE);
             mProgressBar.setVisibility(GONE);
@@ -345,7 +345,7 @@ public class MainMenuFragment extends Fragment {
             mBadgeButtonInitialize(getUsername(), BaseActivity.getId());
 
         }
-       if(isInternet()&&gameHelper.isSignedIn()&&!gameHelper.isConnecting()&&!isGettingHighestScore){
+       if(gameHelper.isSignedIn()&&!gameHelper.isConnecting()&&!isGettingHighestScore){
            mSignInButton.setVisibility(GONE);
            mBadge.setVisibility(VISIBLE);
            mProgressBar.setVisibility(GONE);

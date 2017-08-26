@@ -12,7 +12,9 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBAttribute;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBQueryExpression;
+import com.amazonaws.services.dynamodbv2.model.QueryResult;
 import com.licktopia.thechampionofsudoku.Activities.BaseActivity;
 import com.licktopia.thechampionofsudoku.R;
 import com.licktopia.thechampionofsudoku.Adapters.SavedGameListAdapter;
@@ -86,7 +88,6 @@ public class SavedGameFragment extends Fragment {
                     savedGames.get(i).getLevel(),
                     savedGames.get(i).getPuzzleNumber(),
                     savedGames.get(i).getGamerID(),
-                    //getSavedGames().get(i).getSaveFile(),
                     savedGames.get(i).getStoppedTime()
                     );
             savedGameListItems.add(sGLI);
@@ -112,8 +113,6 @@ public class SavedGameFragment extends Fragment {
         String partitionKey = BaseActivity.getId();
         SavedGame sg = new SavedGame();
         sg.setGamerID(partitionKey);
-
-
         final DynamoDBQueryExpression<SavedGame> queryExpression = new DynamoDBQueryExpression<SavedGame>()
                 .withHashKeyValues(sg);
 
