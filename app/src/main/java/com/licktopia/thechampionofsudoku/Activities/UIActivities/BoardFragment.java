@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -389,7 +390,7 @@ public class BoardFragment extends Fragment {
                     Picasso.with(getActivity()).load(uri).transform(cf).into(Opponents[i]);
                 } catch (Exception e) {
 
-                    Opponents[i].setImageDrawable(getResources().getDrawable(Tags.colorButtonTags[i]));
+                    Opponents[i].setImageDrawable(getResources().getDrawable(Tags.colorButtonTags[i],null));
                 }
 
                 if (i < numPlayers) {
@@ -405,7 +406,7 @@ public class BoardFragment extends Fragment {
 
             ViewGroup.LayoutParams paramsBar = botBar.getLayoutParams();
 
-            int view_height = d.getHeight();
+            //int view_height = d.getHeight();
 
             ViewGroup.LayoutParams params2=Opponents[0].getLayoutParams();
 
@@ -661,6 +662,9 @@ public class BoardFragment extends Fragment {
         else{
             userBadge.setImageDrawable(getResources().getDrawable(callback.getBadgetag(), null));
             userText.setText(R.string.me);
+            ImageView homeMenu = (ImageView) toolbar.findViewById(R.id.home_menu_button);
+            homeMenu.setImageDrawable(getResources().getDrawable(R.mipmap.ic_launcher));
+            homeMenu.setPadding(0,0,0,0);
         }
     }
 
@@ -671,6 +675,14 @@ public class BoardFragment extends Fragment {
             gamerID = Games.Players.getCurrentPlayer(gameHelper.getApiClient()).getPlayerId();
             userBadge.setImageDrawable(getResources().getDrawable(callback.getBadgetag(), null));
             userText.setText(BaseActivity.getUsername());
+            View homeMenu = toolbar.findViewById(R.id.home_menu_button);
+            CircleTransform cf = new CircleTransform();
+            try {
+                String me = Games.Players.getCurrentPlayer(gameHelper.getApiClient()).getIconImageUrl();
+                Picasso.with(getActivity()).load(me).transform(cf).into((ImageView) homeMenu);
+            }catch (Exception e){
+
+            }
         }
     }
 
@@ -855,6 +867,7 @@ public class BoardFragment extends Fragment {
      *********************************/
     private void setStatsBox(long gameXP){
         TextView mTitleStats = (TextView)view.findViewById(R.id.title_stats);
+        ImageView userIcon = (ImageView) view.findViewById(R.id.user_icon);
         TextView mTotalXpStats = (TextView)view.findViewById(R.id.totalxp_stats);
         TextView mRpStats = (TextView)view.findViewById(R.id.regular_points);
         TextView mLevelBonusStats = (TextView)view.findViewById(R.id.levelbonus_stats);
@@ -872,10 +885,29 @@ public class BoardFragment extends Fragment {
             {
                 mTitleStats.setText("You are not a winner :(");
             }
+            if(gameHelper.isSignedIn()) {
+                if(gameHelper.isSignedIn()) {
+                    CircleTransform cf = new CircleTransform();
+                    String me = Games.Players.getCurrentPlayer(gameHelper.getApiClient()).getIconImageUrl();
+                    Picasso.with(getActivity()).load(me).transform(cf).into(userIcon);
+                }
+            }
+            else{
+                userIcon.setVisibility(GONE);
+            }
+
         }
         else
         {
             mTitleStats.setText(BaseActivity.getUsername());
+            if(gameHelper.isSignedIn()) {
+                CircleTransform cf = new CircleTransform();
+                String me = Games.Players.getCurrentPlayer(gameHelper.getApiClient()).getIconImageUrl();
+                Picasso.with(getActivity()).load(me).transform(cf).into(userIcon);
+            }
+            else{
+                userIcon.setVisibility(GONE);
+            }
         }
 
         mTotalXpStats.setText(String.format("%,d",(int) gameXP)+ " XP");
@@ -1286,7 +1318,20 @@ public class BoardFragment extends Fragment {
      * Listener for toolbar icon
      *********************************/
     private void toolbarButtonsListener(Toolbar toolbar) {
-        toolbar.findViewById(R.id.home_menu_button).setOnClickListener(new View.OnClickListener() {
+        View homeMenu = toolbar.findViewById(R.id.home_menu_button);
+        if(gameHelper.isSignedIn()) {
+            try{
+                CircleTransform cf = new CircleTransform();
+                String me = Games.Players.getCurrentPlayer(gameHelper.getApiClient()).getIconImageUrl();
+                Picasso.with(getActivity()).load(me).transform(cf).into((ImageView) homeMenu);
+                homeMenu.setPadding(7,7,7,7);
+
+            }
+            catch (Exception e){
+                Log.d(TAG, "toolbarButtonsListener: Couldn't get image");
+            }
+        }
+        homeMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 homeClick();

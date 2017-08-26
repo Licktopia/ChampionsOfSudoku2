@@ -77,6 +77,9 @@ import static com.licktopia.thechampionofsudoku.Activities.UIActivities.MainMenu
 
 public class BaseActivity extends BaseGameActivity
         implements MainMenuFragment.MainMenuFragmentListener,
+        UserBoardFragment.UserBoardFragmentListener,
+        CompletedGameFragment.CompletedGameFragmentListener,
+        SavedGameFragment.SavedGameFragmentListener,
         GamerProfileFragment.GamerProfileFragmentListener,
         BoardFragment.BoardFragmentListener,
         RealTimeMessageReceivedListener, SavedGameListAdapter.SavedGameLAListener, UserGameListAdapter.UserGameLAListener,

@@ -31,24 +31,43 @@ android:fitsSystemWindows="false">
             android:id="@+id/rel"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="43"
-            android:background="#add100"
+            android:layout_marginBottom="5dp"
+            android:layout_weight="48"
+            android:background="@drawable/gold_gradient"
             android:paddingBottom="5dp">
 
-            <TextView
-                android:id="@+id/title_name"
+            <RelativeLayout
+                android:id="@+id/title_bar"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
-                android:gravity="center_vertical|center_horizontal"
-                android:paddingBottom="5dp"
-                android:paddingTop="5dp"
-                android:text="Golden Eagle"
-                android:textAllCaps="false"
-                android:textColor="@color/white"
-                android:textSize="30sp"
-                android:textStyle="bold" />
+                android:layout_height="48dp">
+
+                <ImageView
+                    android:id="@+id/icon_gamer"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="5dp"
+                    android:layout_weight="1"
+                    app:srcCompat="@mipmap/ic_launcher" />
+
+                <TextView
+                    android:id="@+id/title_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_gravity="center"
+                    android:layout_toEndOf="@+id/icon_gamer"
+                    android:layout_toRightOf="@+id/icon_gamer"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:text="Golden Eagle"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="20sp" />
+            </RelativeLayout>
 
             <ImageView
                 android:id="@+id/rank_display"
@@ -58,7 +77,7 @@ android:fitsSystemWindows="false">
                 android:layout_alignParentLeft="false"
                 android:layout_alignParentStart="false"
                 android:layout_alignParentTop="false"
-                android:layout_below="@+id/title_name"
+                android:layout_below="@+id/title_bar"
                 android:padding="15dp"
                 app:srcCompat="@drawable/rank5" />
 
@@ -74,7 +93,7 @@ android:fitsSystemWindows="false">
                 android:fontFamily="monospace"
                 android:text="XP 56454563"
                 android:textColor="@color/white"
-                android:textSize="30sp"
+                android:textSize="24sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -90,46 +109,11 @@ android:fitsSystemWindows="false">
         </RelativeLayout>
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="7"
-            android:orientation="horizontal"
-            android:weightSum="100">
-
-            <Button
-                android:id="@+id/sign_out_new"
-                style="@style/Widget.AppCompat.Button.Borderless"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_alignParentBottom="false"
-                android:layout_gravity="center_vertical|center_horizontal"
-                android:layout_weight="50"
-                android:lines="2"
-                android:maxLines="2"
-                android:text="Sign Out"
-                android:textColor="@android:color/black"
-                android:textSize="12sp" />
-
-            <Button
-                android:id="@+id/history_button"
-                style="@style/Widget.AppCompat.Button.Borderless"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_alignParentBottom="false"
-                android:layout_gravity="center_vertical|center_horizontal"
-                android:layout_weight="50"
-                android:lines="2"
-                android:maxLines="2"
-                android:text="Game History"
-                android:textColor="@android:color/black"
-                android:textSize="12sp" />
-        </LinearLayout>
-
-        <LinearLayout
             android:id="@+id/ll"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="43"
+            android:layout_marginBottom="1dp"
+            android:layout_weight="38"
             android:orientation="vertical">
 
             <LinearLayout
@@ -188,42 +172,131 @@ android:fitsSystemWindows="false">
 
         </LinearLayout>
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="7"
             android:orientation="horizontal"
             android:weightSum="100">
 
-            <Button
-                android:id="@+id/leader"
-                style="@style/Widget.AppCompat.Button.Borderless"
-                android:layout_width="0dp"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_alignParentBottom="false"
-                android:layout_gravity="center_vertical|center_horizontal"
-                android:layout_weight="50"
-                android:lines="2"
-                android:maxLines="2"
-                android:text="Leaderboards"
-                android:textColor="@android:color/black"
-                android:textSize="12sp" />
+                android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/achievements"
-                style="@style/Widget.AppCompat.Button.Borderless"
-                android:layout_width="0dp"
+                <Button
+                    android:id="@+id/achievements"
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentBottom="false"
+                    android:layout_gravity="center_vertical|center_horizontal"
+                    android:layout_weight="1"
+                    android:background="@android:color/black"
+                    android:lines="2"
+                    android:maxLines="2"
+                    android:text="Achievements"
+                    android:textColor="@color/white"
+                    android:textSize="12sp" />
+
+                <LinearLayout
+                    android:id="@+id/filler"
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/white"
+                    android:orientation="vertical"></LinearLayout>
+
+                <Button
+                    android:id="@+id/leader"
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentBottom="false"
+                    android:layout_gravity="center_vertical|center_horizontal"
+                    android:layout_weight="1"
+                    android:background="@android:color/black"
+                    android:lines="2"
+                    android:maxLines="2"
+                    android:text="Leaderboards"
+                    android:textColor="@color/white"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/imageView32"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_alignParentBottom="false"
-                android:layout_gravity="center_vertical|center_horizontal"
-                android:layout_weight="50"
-                android:lines="2"
-                android:maxLines="2"
-                android:text="Achievements"
-                android:textColor="@android:color/black"
-                android:textSize="12sp" />
+                android:alpha=".3"
+                android:scaleType="centerCrop"
+                app:srcCompat="@drawable/keyboardbg" />
 
-        </LinearLayout>
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/white"
+            android:orientation="horizontal"></LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="7"
+            android:orientation="horizontal"
+            android:weightSum="100">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/history_button"
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentBottom="false"
+                    android:layout_gravity="center_vertical|center_horizontal"
+                    android:layout_weight="1"
+                    android:background="@android:color/black"
+                    android:lines="2"
+                    android:maxLines="2"
+                    android:text="Game History"
+                    android:textColor="@color/white"
+                    android:textSize="12sp" />
+
+                <LinearLayout
+                    android:id="@+id/filler"
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/white"
+                    android:orientation="vertical"></LinearLayout>
+
+                <Button
+                    android:id="@+id/sign_out_new"
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentBottom="false"
+                    android:layout_gravity="center_vertical|center_horizontal"
+                    android:layout_weight="1"
+                    android:background="@android:color/black"
+                    android:lines="2"
+                    android:maxLines="2"
+                    android:text="Sign Out"
+                    android:textColor="@color/white"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/imageView31"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:alpha=".3"
+                android:scaleType="centerCrop"
+                app:srcCompat="@drawable/keyboardbg" />
+
+        </RelativeLayout>
 
     </LinearLayout>
 

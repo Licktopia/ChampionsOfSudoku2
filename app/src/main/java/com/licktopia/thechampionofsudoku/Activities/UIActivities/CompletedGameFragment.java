@@ -1,6 +1,7 @@
 package com.licktopia.thechampionofsudoku.Activities.UIActivities;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -9,14 +10,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.games.Games;
 import com.licktopia.thechampionofsudoku.Activities.BaseActivity;
 import com.licktopia.thechampionofsudoku.Adapters.CompletedGameListAdapter;
 
+import com.licktopia.thechampionofsudoku.CircleTransform;
 import com.licktopia.thechampionofsudoku.ListItems.CompletedGameListItem;
 import com.licktopia.thechampionofsudoku.R;
 import com.licktopia.thechampionofsudoku.DBOjects.CompletedGame;
+import com.squareup.picasso.Picasso;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import java.util.ArrayList;
@@ -25,6 +30,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.formatExactTime;
+import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.gameHelper;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.phoneSize;
 
 
@@ -38,11 +44,51 @@ public class CompletedGameFragment extends Fragment {
     private TextView tvGpDisplay;
     public static List<CompletedGameListItem> completedGameListItems;
     private View view;
+    private CompletedGameFragment.CompletedGameFragmentListener callback;
 
     public static CompletedGameFragment newInstance() {
         return new CompletedGameFragment();
     }
- 
+
+
+    //Checks interface is implemented in the activity.
+    @Override
+    public void onAttach(Context context){
+        super.onAttach(context);
+
+        try {
+            callback = (CompletedGameFragment.CompletedGameFragmentListener)context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() +
+                    " must implement CompletedGameFragmentListener");
+        }
+    }
+
+    //Interface to be implemented by containing activity.
+    public interface CompletedGameFragmentListener {
+        void swapFragment(String fragmentName, Bundle args);
+    }
+    @Override
+    public void onResume(){
+        super.onResume();
+        ImageView iconView = (ImageView)view.findViewById(R.id.icon_comp_usr);
+        if(gameHelper.isSignedIn()){
+            CircleTransform cf = new CircleTransform();
+            try {
+                String me = Games.Players.getCurrentPlayer(gameHelper.getApiClient()).getIconImageUrl();
+                Picasso.with(getActivity()).load(me).transform(cf).into(iconView);
+            }catch (Exception e){
+
+            }
+        }
+        iconView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                callback.swapFragment(BaseActivity.MAIN_MENU_FRAGMENT, new Bundle());
+            }
+        });
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

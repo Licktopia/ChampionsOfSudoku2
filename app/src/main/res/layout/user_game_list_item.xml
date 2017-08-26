@@ -37,14 +37,14 @@
                 app:srcCompat="@drawable/experticon" />
 
             <TextView
-                android:id="@+id/us_user"
+                android:id="@+id/us_number"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_gravity="center"
+                android:layout_gravity="center_vertical"
                 android:layout_weight="80"
                 android:background="@android:color/transparent"
                 android:gravity="center"
-                android:text="Licktopia"
+                android:text="#54324"
                 android:textColor="@color/white"
                 android:textSize="12sp"
                 android:textStyle="bold" />
@@ -52,6 +52,7 @@
             <RelativeLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
                 android:layout_weight="10"
                 android:padding="2dp">
 
@@ -1653,14 +1654,14 @@
                         android:weightSum="100">
 
                         <TextView
-                            android:id="@+id/us_date"
+                            android:id="@+id/us_user"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:layout_marginLeft="5dp"
                             android:layout_weight="50"
                             android:gravity="center"
-                            android:text="Jan 13"
+                            android:text="Licktopia"
                             android:textColor="@color/white"
                             android:textSize="9sp"
                             android:textStyle="italic" />

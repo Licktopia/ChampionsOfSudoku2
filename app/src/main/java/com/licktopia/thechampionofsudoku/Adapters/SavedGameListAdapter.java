@@ -25,6 +25,9 @@ import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.marshallers.Byte
 import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
+import com.amazonaws.services.dynamodbv2.model.AttributeValue;
+import com.amazonaws.services.dynamodbv2.model.ComparisonOperator;
+import com.amazonaws.services.dynamodbv2.model.Condition;
 import com.licktopia.thechampionofsudoku.Activities.BaseActivity;
 import com.licktopia.thechampionofsudoku.DBOjects.SavedGameData;
 import com.licktopia.thechampionofsudoku.R;
@@ -236,10 +239,16 @@ public class SavedGameListAdapter extends RecyclerView.Adapter<SavedGameListAdap
     }
     private byte[] getSavedGame(String eTime, String gID){
         final SavedGameData savedGameData = new SavedGameData();
-        savedGameData.setExactTime(eTime);
         savedGameData.setGamerID(gID);
+        String queryString = eTime;
+        Condition rangeKeyCondition = new Condition()
+                .withComparisonOperator(ComparisonOperator.EQ.toString())
+                .withAttributeValueList(new AttributeValue().withS(queryString.toString()));
+
         final DynamoDBQueryExpression<SavedGameData> queryExpression = new DynamoDBQueryExpression<SavedGameData>()
-                .withHashKeyValues(savedGameData);
+                .withHashKeyValues(savedGameData)
+                .withRangeKeyCondition("ExactTime", rangeKeyCondition)
+                .withConsistentRead(false);;
         final List[] list = new List[]{new ArrayList<>()};
         Runnable runnable = new Runnable() {
             public void run() {

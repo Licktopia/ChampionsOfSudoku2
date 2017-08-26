@@ -1,5 +1,6 @@
 package com.licktopia.thechampionofsudoku.Activities.UIActivities;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -10,30 +11,36 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBQueryExpression;
+import com.google.android.gms.games.Games;
 import com.licktopia.thechampionofsudoku.Activities.BaseActivity;
 import com.licktopia.thechampionofsudoku.Adapters.UserGameListAdapter;
+import com.licktopia.thechampionofsudoku.CircleTransform;
 import com.licktopia.thechampionofsudoku.DBOjects.CompletedGame;
 import com.licktopia.thechampionofsudoku.Database.DatabaseAccess;
 import com.licktopia.thechampionofsudoku.ListItems.UserGameListItem;
 import com.licktopia.thechampionofsudoku.R;
 import com.licktopia.thechampionofsudoku.Tags;
+import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
 
-
+import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.gameHelper;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.phoneSize;
 
 
 public class UserBoardFragment extends Fragment {
 
-    private int DISPLAY_AT_A_TIME = 20;
+    private int DISPLAY_AT_A_TIME = 14;
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
     private ArrayList<UserGameListItem> userGameListItems;
@@ -51,6 +58,26 @@ public class UserBoardFragment extends Fragment {
     private List<Integer> smallRange;
     private List<Integer> bigRange;
     private TextView titleLabel;
+    private UserBoardFragment.UserBoardFragmentListener callback;
+
+
+    //Checks interface is implemented in the activity.
+    @Override
+    public void onAttach(Context context){
+        super.onAttach(context);
+
+        try {
+            callback = (UserBoardFragment.UserBoardFragmentListener)context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() +
+                    " must implement BoardFragmentListener");
+        }
+    }
+
+    //Interface to be implemented by containing activity.
+    public interface UserBoardFragmentListener {
+        void swapFragment(String fragmentName, Bundle args);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -70,6 +97,7 @@ public class UserBoardFragment extends Fragment {
         else{
             view = inflater.inflate(R.layout.fragment_user_board_large, container, false);
             gridNum = 4;
+            DISPLAY_AT_A_TIME+=2;
         }
         resetBigRange();
         titleLabel = (TextView)view.findViewById(R.id.board_layout_title);
@@ -99,6 +127,22 @@ public class UserBoardFragment extends Fragment {
     @Override
     public void onResume(){
         super.onResume();
+        ImageView iconView = (ImageView)view.findViewById(R.id.user_icon_usr);
+        if(gameHelper.isSignedIn()){
+            CircleTransform cf = new CircleTransform();
+            try {
+                String me = Games.Players.getCurrentPlayer(gameHelper.getApiClient()).getIconImageUrl();
+                Picasso.with(getActivity()).load(me).transform(cf).into((ImageView) iconView);
+            }catch (Exception e){
+
+            }
+        }
+        iconView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                callback.swapFragment(BaseActivity.MAIN_MENU_FRAGMENT, new Bundle());
+            }
+        });
     }
     @Override
     public void onStart(){
@@ -183,7 +227,7 @@ public class UserBoardFragment extends Fragment {
                 }
             });
         }
-        ImageButton ranButton = (ImageButton)view.findViewById(R.id.ran);
+        LinearLayout ranButton = (LinearLayout)view.findViewById(R.id.ran);
         ranButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -200,12 +244,12 @@ public class UserBoardFragment extends Fragment {
             }
         });
 
-        ImageButton moreButton = (ImageButton) view.findViewById(R.id.more);
+        LinearLayout moreButton = (LinearLayout) view.findViewById(R.id.more);
         moreButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(levelNow<6) {
-                    Collections.shuffle(smallRange);
+                    resetSmallRange(levelNow);
                     ShuffledList.clear();
                     for(int j = 0; j < DISPLAY_AT_A_TIME; j++){
                         ShuffledList.add(databaseAccess.getSpecificBoardGame(smallRange.get(j)));
@@ -213,7 +257,7 @@ public class UserBoardFragment extends Fragment {
                     //DisplayNowList = LevelLists[levelNow].subList(0, DISPLAY_AT_A_TIME);
                 }
                 else{
-                    Collections.shuffle(bigRange);
+                    resetBigRange();
                     ShuffledList.clear();
                     for(int i = 0; i < DISPLAY_AT_A_TIME; i++){
                         ShuffledList.add(databaseAccess.getSpecificBoardGame(bigRange.get(i)));

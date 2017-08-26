@@ -17,6 +17,7 @@ import android.widget.Button;
 
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,11 +30,13 @@ import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.google.android.gms.games.Games;
 import com.licktopia.thechampionofsudoku.Activities.BaseActivity;
+import com.licktopia.thechampionofsudoku.CircleTransform;
 import com.licktopia.thechampionofsudoku.PlaySounds;
 import com.licktopia.thechampionofsudoku.R;
 import com.licktopia.thechampionofsudoku.DBOjects.CompletedGame;
 import com.licktopia.thechampionofsudoku.SudokuFacts;
 import com.licktopia.thechampionofsudoku.Tags;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -120,6 +123,22 @@ public class GamerProfileFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        ImageView iconView = (ImageView)view.findViewById(R.id.icon_gamer);
+        if(gameHelper.isSignedIn()){
+            CircleTransform cf = new CircleTransform();
+            try {
+                String me = Games.Players.getCurrentPlayer(gameHelper.getApiClient()).getIconImageUrl();
+                Picasso.with(getActivity()).load(me).transform(cf).into(iconView);
+            }catch (Exception e){
+
+            }
+        }
+        iconView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                callback.swapFragment(BaseActivity.MAIN_MENU_FRAGMENT, new Bundle());
+            }
+        });
         updateUI();
 
 
@@ -195,13 +214,14 @@ public class GamerProfileFragment extends Fragment {
         LinearLayout mFactBackground = (LinearLayout) view.findViewById(R.id.fact_background);
         ImageView mRankDisplay = (ImageView)view.findViewById(R.id.rank_display);
         Button mHistoryButton = (Button) view.findViewById(R.id.history_button);
+        RelativeLayout mTitleBar = (RelativeLayout) view.findViewById(R.id.title_bar);
 
         sudokuFacts = new SudokuFacts();
         mFactText.setText(sudokuFacts.getFunFact());
         String color = sudokuFacts.getColorHex();
         mDidYouKnow.setBackgroundColor(Color.parseColor(color));
         mFactBackground.setBackgroundColor(Color.parseColor(color));
-        mTitleName.setBackgroundColor(Color.parseColor(color));
+        mTitleBar.setBackgroundColor(Color.parseColor(color));
         mTitleName.setText(BaseActivity.getUsername());
 
         if(completedGames!= null && completedGames.isEmpty()){
