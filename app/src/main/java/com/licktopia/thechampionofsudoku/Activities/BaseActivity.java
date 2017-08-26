@@ -52,6 +52,7 @@ import com.licktopia.thechampionofsudoku.Activities.UIActivities.MainMenuFragmen
 import com.licktopia.thechampionofsudoku.Activities.UIActivities.SavedGameFragment;
 import com.licktopia.thechampionofsudoku.Activities.UIActivities.UserBoardFragment;
 import com.licktopia.thechampionofsudoku.Adapters.UserGameListAdapter;
+import com.licktopia.thechampionofsudoku.DBOjects.SavedGameData;
 import com.licktopia.thechampionofsudoku.Multiplayer.MultiGame;
 import com.licktopia.thechampionofsudoku.R;
 import com.licktopia.thechampionofsudoku.Adapters.SavedGameListAdapter;
@@ -194,14 +195,14 @@ public class BaseActivity extends BaseGameActivity
         return savedGames;
     }
 
-    public static byte[] getThisSavedGame(String exactTime){
+    /*public static byte[] getThisSavedGame(String exactTime){
         for(int i = 0; i < savedGames.size(); i ++){
             if(exactTime.compareTo(savedGames.get(i).getExactTime()) == 0){
                 return savedGames.get(i).getSaveFile();
             }
         }
         return null;
-    }
+    }*/
 
     public static void setSavedGames(ArrayList<SavedGame> savedGames) {
         Collections.sort(savedGames, new BaseActivity.RecentSorter());
@@ -313,43 +314,6 @@ public class BaseActivity extends BaseGameActivity
 
         }
     }
-
-    public void querySavedGameDb() {
-
-        String partitionKey = getId();
-        SavedGame sg = new SavedGame();
-        sg.setGamerID(partitionKey);
-
-
-        final DynamoDBQueryExpression<SavedGame> queryExpression = new DynamoDBQueryExpression<SavedGame>()
-                .withHashKeyValues(sg)
-                .withConsistentRead(false);
-
-        final List<SavedGame>[] list = new List[]{new ArrayList<SavedGame>()};
-
-        // id field is null at this point
-        Runnable runnable = new Runnable() {
-            public void run() {
-                //DynamoDB calls go here
-
-                list[0] = mapper.query(SavedGame.class, queryExpression);
-                ArrayList<SavedGame> sGames = new ArrayList<SavedGame>();
-                for (int i = 0; i < list[0].size(); i++) {
-                    sGames.add(list[0].get(i));
-                }
-                setSavedGames(sGames);
-
-
-                //updateActivity();
-
-
-            }
-        };
-
-        Thread mythread = new Thread(runnable);
-        mythread.start();
-    }
-
 
     public static Long formatExactTime(String time) {
         Long timeNumber;

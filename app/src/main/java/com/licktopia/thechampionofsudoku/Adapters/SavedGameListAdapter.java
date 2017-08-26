@@ -20,13 +20,18 @@ import android.widget.Toast;
 
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBQueryExpression;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.marshallers.ByteArraySetToBinarySetMarshaller;
 import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
+import com.licktopia.thechampionofsudoku.Activities.BaseActivity;
+import com.licktopia.thechampionofsudoku.DBOjects.SavedGameData;
 import com.licktopia.thechampionofsudoku.R;
 import com.licktopia.thechampionofsudoku.ListItems.SavedGameListItem;
 import com.licktopia.thechampionofsudoku.DBOjects.SavedGame;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.BOARD_FRAGMENT;
@@ -133,11 +138,9 @@ public class SavedGameListAdapter extends RecyclerView.Adapter<SavedGameListAdap
                                     //Make level less than zero so that activity knows to load a game
                                     boolean resume = true;
                                     args.putBoolean("RESUME", resume);
+                                    args.putByteArray("SAVE_FILE", getSavedGame(savedGameListItem.getExactTime(),savedGameListItem.getGamerID()));
                                     args.putBoolean("COLOR_MODE", savedGameListItem.isColor());
                                     args.putInt("LEVEL", savedGameListItem.getLevel());
-
-                                    //intent.putExtra("SAVE_FILE", savedGameListItem.getSavedGame());
-
                                     args.putLong("STOPPED_TIME", savedGameListItem.getStoppedTime());
                                     args.putString("EXACT_TIME", savedGameListItem.getExactTime());
                                     args.putString("SAVED_NAME", savedGameListItem.getTime());
@@ -148,6 +151,7 @@ public class SavedGameListAdapter extends RecyclerView.Adapter<SavedGameListAdap
                                         throw new ClassCastException(context.toString() +
                                                 " must implement SavedGameLAFragmentListener");
                                     }
+
                                     callback.swapFragment(BOARD_FRAGMENT, args);
 
 
@@ -230,6 +234,40 @@ public class SavedGameListAdapter extends RecyclerView.Adapter<SavedGameListAdap
 
 
     }
+    private byte[] getSavedGame(String eTime, String gID){
+        final SavedGameData savedGameData = new SavedGameData();
+        savedGameData.setExactTime(eTime);
+        savedGameData.setGamerID(gID);
+        final DynamoDBQueryExpression<SavedGameData> queryExpression = new DynamoDBQueryExpression<SavedGameData>()
+                .withHashKeyValues(savedGameData);
+        final List[] list = new List[]{new ArrayList<>()};
+        Runnable runnable = new Runnable() {
+            public void run() {
+                //DynamoDB calls go here
+                try {
+                    list[0] = BaseActivity.mapper.query(SavedGameData.class, queryExpression);
+
+                }
+                catch(Exception e){
+                    e.printStackTrace();
+                }
+
+            }
+        };
+        Thread mythread = new Thread(runnable);
+        mythread.start();
+        try {
+            mythread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        ArrayList<SavedGameData> sGameData = new ArrayList<>();
+        sGameData.add((SavedGameData) list[0].get(0));
+        return sGameData.get(0).getSaveFile();
+
+
+    }
 
     private void deleteRecord(String eTime, String gID){
         credentialsProvider = new CognitoCachingCredentialsProvider(
@@ -246,6 +284,9 @@ public class SavedGameListAdapter extends RecyclerView.Adapter<SavedGameListAdap
             final SavedGame sg = new SavedGame();
             sg.setGamerID(gID);
             sg.setExactTime(eTime);
+            final SavedGameData sgData = new SavedGameData();
+            sgData.setGamerID(gID);
+            sgData.setExactTime(eTime);
 
 
 
@@ -253,7 +294,13 @@ public class SavedGameListAdapter extends RecyclerView.Adapter<SavedGameListAdap
             Runnable runnable = new Runnable() {
                 public void run() {
                     //DynamoDB calls go here
-                    mapper.delete(sg);
+                    try {
+                        mapper.delete(sg);
+                        mapper.delete(sgData);
+                    }
+                    catch(Exception e){
+                        e.printStackTrace();
+                    }
 
                 }
             };

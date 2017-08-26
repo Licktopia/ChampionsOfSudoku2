@@ -50,6 +50,7 @@ import com.google.example.games.basegameutils.BaseGameActivity;
 import com.licktopia.thechampionofsudoku.Activities.BaseActivity;
 import com.licktopia.thechampionofsudoku.BackgroundImages;
 import com.licktopia.thechampionofsudoku.CircleTransform;
+import com.licktopia.thechampionofsudoku.DBOjects.SavedGameData;
 import com.licktopia.thechampionofsudoku.Multiplayer.MultiGame;
 import com.licktopia.thechampionofsudoku.PlaySounds;
 import com.licktopia.thechampionofsudoku.R;
@@ -160,6 +161,7 @@ public class BoardFragment extends Fragment {
     public Toolbar toolbar;
     private int[] userBoard = null;
     private long boardIdentifier;
+    private byte[] myResumedGame;
 
 
     public static BoardFragment newInstance() {
@@ -168,19 +170,19 @@ public class BoardFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-
-        colorGame = getArguments().getBoolean("COLOR_MODE");
-        level = getArguments().getInt("LEVEL");
-        resume = getArguments().getBoolean("RESUME");
-        level = getArguments().getInt("LEVEL");
-        sTime = getArguments().getLong("STOPPED_TIME");
-        multiplayer = getArguments().getBoolean("MULTIPLAYER");
+        Bundle bundle = getArguments();
+        colorGame = bundle.getBoolean("COLOR_MODE");
+        level = bundle.getInt("LEVEL");
+        resume = bundle.getBoolean("RESUME");
+        sTime = bundle.getLong("STOPPED_TIME");
+        multiplayer = bundle.getBoolean("MULTIPLAYER");
         //multiplayer = true;
-        exactTime = getArguments().getString("EXACT_TIME");
-        savedName = getArguments().getString("SAVED_NAME");
-        savedDate = getArguments().getString("SAVED_DATE");
-        userBoard = getArguments().getIntArray("USER_BOARD");
-        boardIdentifier = getArguments().getLong("BOARD_IDENTIFIER");
+        exactTime = bundle.getString("EXACT_TIME");
+        savedName = bundle.getString("SAVED_NAME");
+        savedDate = bundle.getString("SAVED_DATE");
+        userBoard =bundle.getIntArray("USER_BOARD");
+        boardIdentifier = bundle.getLong("BOARD_IDENTIFIER");
+        myResumedGame = bundle.getByteArray("SAVE_FILE");
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -275,7 +277,7 @@ public class BoardFragment extends Fragment {
         {
            // byte[] temp = getIntent().getExtras().getByteArray("SAVE_FILE");
 
-            try(ByteArrayInputStream b = new ByteArrayInputStream(BaseActivity.getThisSavedGame(exactTime))){
+            try(ByteArrayInputStream b = new ByteArrayInputStream(myResumedGame)){
 
 
                 ObjectInputStream o = new ObjectInputStream(b);
@@ -517,18 +519,22 @@ public class BoardFragment extends Fragment {
             String today = dateFormat.format(dt);
             String now = sdf.format(dt);
             final SavedGame obj = new SavedGame();
+            final SavedGameData data = new SavedGameData();
             obj.setGamerID(BaseActivity.getId());
+            data.setGamerID(BaseActivity.getId());
 
             if(!alreadySaved) {
                 Long exactoTime = System.currentTimeMillis();
                 exactTime = String.format("%,d", exactoTime);
                 obj.setExactTime(String.format("%,d", exactoTime));
+                data.setExactTime(String.format("%,d", exactoTime));
                 obj.setDate(today);
                 savedDate = today;
                 obj.setTime(fileSaveName);
             }
             else{
                 obj.setExactTime(exactTime);
+                data.setExactTime(exactTime);
                 obj.setDate(savedDate);
                 obj.setTime(savedName);
             }
@@ -540,7 +546,7 @@ public class BoardFragment extends Fragment {
             try(ByteArrayOutputStream b = new ByteArrayOutputStream()){
                 ObjectOutputStream o = new ObjectOutputStream(b);
                 o.writeObject(mGame);
-                obj.setSaveFile(b.toByteArray());
+                data.setSaveFile(b.toByteArray());
             }
             catch(IOException e)
             {
@@ -553,6 +559,7 @@ public class BoardFragment extends Fragment {
                     //DynamoDB calls go here
                     try {
                         mapper.save(obj);
+                        mapper.save(data);
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -573,6 +580,7 @@ public class BoardFragment extends Fragment {
                     }
                 }
             };
+
             Thread mythread = new Thread(runnable);
             mythread.start();
             alreadySaved = true;

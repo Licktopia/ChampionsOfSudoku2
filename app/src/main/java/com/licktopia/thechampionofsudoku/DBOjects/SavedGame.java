@@ -16,7 +16,6 @@ import java.io.File;
 public class SavedGame {
     private String gamerID;
     private String exactTime;
-    private byte[] saveFile;
     private boolean colorMode;
     private String date;
     private String time;
@@ -41,15 +40,6 @@ public class SavedGame {
     }
 
     //must be a binary file type
-    @DynamoDBAttribute(attributeName = "saveFile")
-    public byte[] getSaveFile() {
-        return saveFile;
-    }
-    public void setSaveFile(byte[] saveFile) {
-        this.saveFile = saveFile;
-    }
-
-    //must be a binary file type
     @DynamoDBAttribute(attributeName = "colorMode")
     public boolean getColorMode() {
         return colorMode;
@@ -65,6 +55,7 @@ public class SavedGame {
     public void setDate(String date) {
         this.date = date;
     }
+
     @DynamoDBAttribute(attributeName = "Time")
     public String getTime() {
         return time;
@@ -72,11 +63,11 @@ public class SavedGame {
     public void setTime(String time) {
         this.time = time;
     }
+
     @DynamoDBAttribute(attributeName = "PuzzleNo")
     public long getPuzzleNumber() {
         return puzzleNumber;
     }
-
     public void setPuzzleNumber(long puzzleNumber) {
         this.puzzleNumber = puzzleNumber;
     }
@@ -88,6 +79,7 @@ public class SavedGame {
     public void setLevel(int level) {
         this.level = level;
     }
+
     @DynamoDBAttribute(attributeName = "StoppedTime")
     public long getStoppedTime() {
         return stoppedTime;

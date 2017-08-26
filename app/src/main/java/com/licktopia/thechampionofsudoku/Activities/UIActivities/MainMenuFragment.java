@@ -307,10 +307,10 @@ public class MainMenuFragment extends Fragment {
     @Override
     public void onResume(){
         super.onResume();
-        if(!gameHelper.isConnecting()&& isInternet() && gameHelper.isSignedIn()) {
+        if(!gameHelper.isConnecting() && gameHelper.isSignedIn()) {
             getHighestScoreFromLeaderBoard();
         }
-        else if((!gameHelper.isConnecting() && !gameHelper.isSignedIn()) || ! isInternet() || !isGettingHighestScore){
+        else if((!gameHelper.isConnecting() && !gameHelper.isSignedIn()) || !isGettingHighestScore){
             mSignInButton.setVisibility(VISIBLE);
             mBadge.setVisibility(GONE);
             mProgressBar.setVisibility(GONE);
@@ -345,7 +345,7 @@ public class MainMenuFragment extends Fragment {
             mBadgeButtonInitialize(getUsername(), BaseActivity.getId());
 
         }
-       if(isInternet()&&gameHelper.isSignedIn()&&!gameHelper.isConnecting()&&!isGettingHighestScore){
+       if(gameHelper.isSignedIn()&&!gameHelper.isConnecting()&&!isGettingHighestScore){
            mSignInButton.setVisibility(GONE);
            mBadge.setVisibility(VISIBLE);
            mProgressBar.setVisibility(GONE);
