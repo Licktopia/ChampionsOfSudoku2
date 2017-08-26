@@ -606,7 +606,7 @@ public class BaseActivity extends BaseGameActivity
         {
             Log.d(TAG, "Creating game object...");
             mMultiGame = MultiGame.byteToObj(buf, mParticipants,
-                    mMyId, gameHelper, mRoomId);
+                    mMyId, gameHelper, mRoomId, xp);
             if(mMultiGame != null)
             {
                 //Looks like post resume gets called before we get to this statement
@@ -816,7 +816,8 @@ public class BaseActivity extends BaseGameActivity
                             mParticipants,
                             mMyId,
                             gameHelper,
-                            mRoomId);
+                            mRoomId,
+                            xp);
 
                     switchToBoard = true;
                     break;

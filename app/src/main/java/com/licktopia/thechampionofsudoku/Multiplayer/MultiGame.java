@@ -46,6 +46,10 @@ public class MultiGame implements GameInterface, java.io.Serializable {
     private GameMode mode;
     boolean isBotGame = false;
 
+    //set to -100 to prevent an infinite loop of message sending
+    final long DEFAULT_XP = -100;
+    long mXP = DEFAULT_XP;
+
     public enum GameMode {
         RACE(1000),
         BATTLE(2000),
@@ -94,12 +98,12 @@ public class MultiGame implements GameInterface, java.io.Serializable {
         private float mGameProgress;
         private boolean mGameFinished;
         private String mImageUri;
-        private int mXP;
+        private long mXP;
 
         protected Opponent(String gamerId, String imageUri)
         {
             mGameProgress = 0;
-            mXP = 0;
+            mXP = DEFAULT_XP;
             mGamerId = gamerId;
             mImageUri = imageUri;
         }
@@ -112,9 +116,9 @@ public class MultiGame implements GameInterface, java.io.Serializable {
             return mGameProgress;
         }
 
-        protected int getXP() {return mXP;}
+        protected long getXP() {return mXP;}
 
-        protected void setXP(int XP) {
+        protected void setXP(long XP) {
             if(XP < 0)
             {
                 Log.d(TAG, "Bad XP attempted to be sent!");
@@ -213,15 +217,15 @@ public class MultiGame implements GameInterface, java.io.Serializable {
     protected class PlayerInfo implements java.io.Serializable
     {
         private String mGamerId;
-        private int mXP;
+        private long mXP;
 
-        protected PlayerInfo(String gamerId, int XP)
+        protected PlayerInfo(String gamerId, long XP)
         {
             mGamerId = gamerId;
             mXP = XP;
         }
 
-        protected int getXP() {
+        protected long getXP() {
             return mXP;
         }
 
@@ -239,7 +243,7 @@ public class MultiGame implements GameInterface, java.io.Serializable {
                 stream.writeChar(charArr[i]);
             }
 
-            stream.writeInt(mXP);
+            stream.writeLong(mXP);
 
         }
 
@@ -256,7 +260,7 @@ public class MultiGame implements GameInterface, java.io.Serializable {
             }
 
             mGamerId = new String(charArr);
-            mXP = stream.readInt();
+            mXP = stream.readLong();
         }
 
     }
@@ -290,9 +294,10 @@ public class MultiGame implements GameInterface, java.io.Serializable {
                      ArrayList<Participant> mParticipants,
                      String mMyId,
                      GameHelper gameHelper,
-                     String mRoomId)
+                     String mRoomId,
+                     long XP)
     {
-
+        this.mXP = XP;
         this.mParticipants = mParticipants;
         this.mMyId = mMyId;
         this.gameHelper = gameHelper;
@@ -329,9 +334,10 @@ public class MultiGame implements GameInterface, java.io.Serializable {
                      ArrayList<Participant> mParticipants,
                      String mMyId,
                      GameHelper gameHelper,
-                     String mRoomId)
+                     String mRoomId,
+                     long XP)
     {
-
+        this.mXP = XP;
         this.mParticipants = mParticipants;
         this.mMyId = mMyId;
         this.gameHelper = gameHelper;
@@ -366,8 +372,10 @@ public class MultiGame implements GameInterface, java.io.Serializable {
                       ArrayList<Participant> mParticipants,
                       String mMyId,
                       GameHelper gameHelper,
-                      String mRoomId)
+                      String mRoomId,
+                      long XP)
     {
+        this.mXP = XP;
         this.mParticipants = mParticipants;
         this.mMyId = mMyId;
         this.gameHelper = gameHelper;
@@ -375,6 +383,7 @@ public class MultiGame implements GameInterface, java.io.Serializable {
         initializePlayerArray();
         this.mGame = mGame;
         isBotGame = false;
+
         sendMyInfo();
     }
 
@@ -383,7 +392,8 @@ public class MultiGame implements GameInterface, java.io.Serializable {
                                       ArrayList<Participant> mParticipants,
                                       String mMyId,
                                       GameHelper gameHelper,
-                                      String mRoomId)
+                                      String mRoomId,
+                                      long XP)
     {
         Game curGame;
 
@@ -416,7 +426,8 @@ public class MultiGame implements GameInterface, java.io.Serializable {
                 mParticipants,
                 mMyId,
                 gameHelper,
-                mRoomId);
+                mRoomId,
+                XP);
 
     }
 
@@ -453,7 +464,7 @@ public class MultiGame implements GameInterface, java.io.Serializable {
         }
         else
         {
-            sendMessage(MessageType.PLAYER_INFO, new PlayerInfo(mMyId, -100));
+            sendMessage(MessageType.PLAYER_INFO, new PlayerInfo(mMyId, mXP));
         }
 
     }
@@ -633,7 +644,21 @@ public class MultiGame implements GameInterface, java.io.Serializable {
                     for (int i = 0; i < humanOpps.length; i++) {
                         if(humanOpps[i].getGamerId().equals(playerInfo.getGamerId()))
                         {
-                            humanOpps[i].setXP(playerInfo.getXP());
+                            //they probably don't have my info
+                            if(humanOpps[i].getXP() == DEFAULT_XP)
+                            {
+                                sendMyInfo();
+                            }
+                            // prevent an infinite loop of calling sendMyInfo
+                            if(playerInfo.getXP() == DEFAULT_XP)
+                            {
+                                humanOpps[i].setXP(-500);
+                            }
+                            else
+                            {
+                                humanOpps[i].setXP(playerInfo.getXP());
+                            }
+
                             break;
                         }
                     }

@@ -83,6 +83,7 @@ import main.java.com.maximeroussy.invitrode.RandomWord;
 import static android.content.ContentValues.TAG;
 import static android.view.View.GONE;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.gameHelper;
+import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.getXp;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.phoneSize;
 
 
@@ -301,7 +302,7 @@ public class BoardFragment extends Fragment {
             {
                 mGame = new MultiGame(MultiGame.GameMode.RACE,
                         MultiGame.ConnectType.BOT_GAME,
-                        level, getContext(), null, null, null, null);
+                        level, getContext(), null, null, null, null, getXp());
             }
             initializePlayerTokens();
             if(!comeBackFlag){
