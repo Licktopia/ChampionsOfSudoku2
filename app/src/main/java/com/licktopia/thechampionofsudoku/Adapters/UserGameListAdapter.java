@@ -99,15 +99,15 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
         final int[] board = userGameListItem.getBoard();
         String gamerName = userGameListItem.getGamerName();
         int difficulty = userGameListItem.getDifficulty();
-        String date = userGameListItem.getDate();
+        String identifier = userGameListItem.getBoardIdentifier();
         final int level = userGameListItem.getLevel();
-        setUpItem(holder, userGameListItem, board, gamerName, difficulty, date);
+        setUpItem(holder, userGameListItem, board, gamerName, difficulty, identifier);
         setView(holder, level);
         setHolderClickListener(holder, userGameListItem, level);
         thisBoardsCompletedGames = new ArrayList<>();
     }
 
-    private void setUpItem(ViewHolder holder, UserGameListItem userGameListItem, int[] board, String gamerName, int difficulty, String date) {
+    private void setUpItem(ViewHolder holder, UserGameListItem userGameListItem, int[] board, String gamerName, int difficulty, String identifier) {
         for(int i =0; i<81; i++){
             if(board[i]!=0) {
                 if(!color) {
@@ -127,7 +127,7 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
             }
         }
         holder.usUser.setText(new StringBuilder().append(gamerName).toString());
-        holder.usDate.setText(date);
+        holder.usNumber.setText(String.format("#%s", identifier));
         holder.usDiff.setText(String.format(new StringBuilder().append(context.getString(R.string.difficulty)).append(" %d").toString(),difficulty));
         for(CompletedGame i : BaseActivity.getCompletedGames()){
             if(i.getPuzzleNumber() == Long.valueOf(userGameListItem.getBoardIdentifier())){
@@ -399,7 +399,7 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
 
     public class ViewHolder extends RecyclerView.ViewHolder{
         TextView usUser;
-        TextView usDate;
+        TextView usNumber;
         TextView usDiff;
         ImageView usLevel;
         ImageView isCompleted;
@@ -419,7 +419,7 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
         public ViewHolder(View itemView) {
             super(itemView);
             usUser = (TextView)itemView.findViewById(R.id.us_user);
-            usDate = (TextView)itemView.findViewById(R.id.us_date);
+            usNumber = (TextView)itemView.findViewById(R.id.us_number);
             usDiff = (TextView)itemView.findViewById(R.id.us_diff);
             communityText = (TextView)itemView.findViewById(R.id.comm_stats_text);
             playerText = (TextView)itemView.findViewById(R.id.user_stats_text);

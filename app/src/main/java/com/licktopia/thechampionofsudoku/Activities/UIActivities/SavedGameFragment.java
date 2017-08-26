@@ -1,6 +1,7 @@
 package com.licktopia.thechampionofsudoku.Activities.UIActivities;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -9,17 +10,21 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBAttribute;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBQueryExpression;
 import com.amazonaws.services.dynamodbv2.model.QueryResult;
+import com.google.android.gms.games.Games;
 import com.licktopia.thechampionofsudoku.Activities.BaseActivity;
+import com.licktopia.thechampionofsudoku.CircleTransform;
 import com.licktopia.thechampionofsudoku.R;
 import com.licktopia.thechampionofsudoku.Adapters.SavedGameListAdapter;
 import com.licktopia.thechampionofsudoku.ListItems.SavedGameListItem;
 import com.licktopia.thechampionofsudoku.DBOjects.SavedGame;
+import com.squareup.picasso.Picasso;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import java.util.ArrayList;
@@ -28,6 +33,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.formatExactTime;
+import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.gameHelper;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.phoneSize;
 
 
@@ -39,6 +45,8 @@ public class SavedGameFragment extends Fragment {
     private TextView savedUser;
     public static List<SavedGameListItem> savedGameListItems;
     private View view;
+    private SavedGameFragment.SavedGameFragmentListener callback;
+
     public static SavedGameFragment newInstance() {
         return new SavedGameFragment();
     }
@@ -95,10 +103,42 @@ public class SavedGameFragment extends Fragment {
         Collections.sort(savedGameListItems, new RecentSorter());
     }
 
+    //Checks interface is implemented in the activity.
+    @Override
+    public void onAttach(Context context){
+        super.onAttach(context);
+
+        try {
+            callback = (SavedGameFragment.SavedGameFragmentListener)context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() +
+                    " must implement SavedGameFragmentListener");
+        }
+    }
+
+    //Interface to be implemented by containing activity.
+    public interface SavedGameFragmentListener {
+        void swapFragment(String fragmentName, Bundle args);
+    }
     @Override
     public void onResume(){
         super.onResume();
+        ImageView iconView = (ImageView)view.findViewById(R.id.icon_user_sav);
+        if(gameHelper.isSignedIn()){
+            CircleTransform cf = new CircleTransform();
+            try {
+                String me = Games.Players.getCurrentPlayer(gameHelper.getApiClient()).getIconImageUrl();
+                Picasso.with(getActivity()).load(me).transform(cf).into((ImageView) iconView);
+            }catch (Exception e){
 
+            }
+        }
+        iconView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                callback.swapFragment(BaseActivity.MAIN_MENU_FRAGMENT, new Bundle());
+            }
+        });
     }
 
     @Override

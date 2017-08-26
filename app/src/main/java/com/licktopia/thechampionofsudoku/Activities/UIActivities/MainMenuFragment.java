@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -41,6 +42,7 @@ import com.licktopia.thechampionofsudoku.Multiplayer.MultiGame;
 import com.licktopia.thechampionofsudoku.PlaySounds;
 import com.licktopia.thechampionofsudoku.R;
 import com.licktopia.thechampionofsudoku.DBOjects.CompletedGame;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -307,10 +309,10 @@ public class MainMenuFragment extends Fragment {
     @Override
     public void onResume(){
         super.onResume();
-        if(!gameHelper.isConnecting() && gameHelper.isSignedIn()) {
+        if(!gameHelper.isConnecting() && gameHelper.isSignedIn() && !isGettingHighestScore) {
             getHighestScoreFromLeaderBoard();
         }
-        else if((!gameHelper.isConnecting() && !gameHelper.isSignedIn()) || !isGettingHighestScore){
+        else if((!gameHelper.isConnecting() && !gameHelper.isSignedIn() && !isGettingHighestScore)){
             mSignInButton.setVisibility(VISIBLE);
             mBadge.setVisibility(GONE);
             mProgressBar.setVisibility(GONE);
@@ -339,7 +341,7 @@ public class MainMenuFragment extends Fragment {
     }
 
     private void loadPlayer(){
-        if(gameHelper.getApiClient().isConnected()&&isInternet()) {
+        if(gameHelper.getApiClient().isConnected()) {
             setUsername(Games.Players.getCurrentPlayer(gameHelper.getApiClient()).getDisplayName());
             setId(Games.Players.getCurrentPlayer(gameHelper.getApiClient()).getPlayerId());
             mBadgeButtonInitialize(getUsername(), BaseActivity.getId());
@@ -351,7 +353,7 @@ public class MainMenuFragment extends Fragment {
            mProgressBar.setVisibility(GONE);
            mainScreen.setAlpha(1);
        }
-       else if(!isInternet() || (!gameHelper.isConnecting() && !gameHelper.isSignedIn())){
+       else if(!gameHelper.isConnecting() && !gameHelper.isSignedIn() && !isGettingHighestScore){
             mSignInButton.setVisibility(VISIBLE);
             mBadge.setVisibility(GONE);
             mProgressBar.setVisibility(GONE);
