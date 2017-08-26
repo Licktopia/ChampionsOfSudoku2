@@ -119,6 +119,7 @@ public class BoardFragment extends Fragment {
     private Button xWingButton;
     private Button nakedTripleButton;
     private Button yWingButton;
+    private Button[] hintButtonArray;
     private ImageButton mUndoButton;
     private ImageButton mRedoButton;
     private ImageButton notepadIcon;
@@ -1091,6 +1092,8 @@ public class BoardFragment extends Fragment {
         nakedTripleButton = (Button) view.findViewById(R.id.naked_triple);
         yWingButton = (Button) view.findViewById(R.id.y_wing);
         hintButton = (Button) view.findViewById(R.id.hints);
+        hintButtonArray = new Button[] {nakedDoubleButton, hiddenSingleButton, hiddenPairButton, nakedTripleButton,
+                lockedCandidateButton, xWingButton, yWingButton};
     }
 
     /************************************
@@ -1217,13 +1220,9 @@ public class BoardFragment extends Fragment {
         clearButtonListener();
         checkProgressButtonListener();
         nakedSingleButtonListener();
-        nakedDoubleButtonListener();
-        hiddenSingleButtonListener();
-        hiddenPairButtonListener();
-        lockedCandidateListener();
-        xWingListener();
-        nakedTripleButtonListener();
-        yWingListener();
+        for (int i = 0; i < hintButtonArray.length; i++) {
+            setHintButtonListener(hintButtonArray[i], i + 2);
+        }
         solveButtonListener();
         undoRedoListener();
         continueListener();
@@ -1507,151 +1506,16 @@ public class BoardFragment extends Fragment {
         });
     }
 
-    /************************************
-     * Listeners nakedDoubleButton
-     *********************************/
-    private void nakedDoubleButtonListener() {
-        nakedDoubleButton.setOnTouchListener(new View.OnTouchListener() {
+    private void setHintButtonListener(Button button, final int strategyNum) {
+        button.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    nakedDoubleButton.setBackground(getResources().getDrawable(R.drawable.hint_button_pressed));
-                    showHint(Strategies.NAKED_DOUBLE);
+                    v.setBackground(getResources().getDrawable(R.drawable.hint_button_pressed));
+                    showHint(strategyNum);
                 }
                 if (event.getAction() == MotionEvent.ACTION_UP) {
-                    nakedDoubleButton.setBackground(getResources().getDrawable(R.drawable.hint_rounded_button));
-                    mGame.restoreAllNotepads();
-                    updateBoard();
-                    removeAllHighlights();
-                }
-                return true;
-            }
-        });
-    }
-
-    /************************************
-     * Listeners hiddenSingleButton
-     *********************************/
-    private void hiddenSingleButtonListener() {
-        hiddenSingleButton.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    hiddenSingleButton.setBackground(getResources().getDrawable(R.drawable.hint_button_pressed));
-                    showHint(Strategies.HIDDEN_SINGLE);
-                }
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    hiddenSingleButton.setBackground(getResources().getDrawable(R.drawable.hint_rounded_button));
-                    mGame.restoreAllNotepads();
-                    updateBoard();
-                    removeAllHighlights();
-                }
-                return true;
-            }
-        });
-    }
-
-    /************************************
-     * Listeners hiddenPairButton
-     *********************************/
-    private void hiddenPairButtonListener() {
-        hiddenPairButton.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    hiddenPairButton.setBackground(getResources().getDrawable(R.drawable.hint_button_pressed));
-                    showHint(Strategies.HIDDEN_PAIR);
-                }
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    hiddenPairButton.setBackground(getResources().getDrawable(R.drawable.hint_rounded_button));
-                    mGame.restoreAllNotepads();
-                    updateBoard();
-                    removeAllHighlights();
-                }
-                return true;
-            }
-        });
-    }
-
-    /************************************
-     * Listeners lockedCandidateButton
-     *********************************/
-    private void lockedCandidateListener() {
-        lockedCandidateButton.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    lockedCandidateButton.setBackground(getResources().getDrawable(R.drawable.hint_button_pressed));
-                    showHint(Strategies.LOCKED_CANDIDATE);
-                }
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    lockedCandidateButton.setBackground(getResources().getDrawable(R.drawable.hint_rounded_button));
-                    mGame.restoreAllNotepads();
-                    updateBoard();
-                    removeAllHighlights();
-                }
-                return true;
-            }
-        });
-    }
-
-    /************************************
-     * Listeners xWingButton
-     *********************************/
-    private void xWingListener() {
-        xWingButton.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    xWingButton.setBackground(getResources().getDrawable(R.drawable.hint_button_pressed));
-                    showHint(Strategies.XWING);
-                }
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    xWingButton.setBackground(getResources().getDrawable(R.drawable.hint_rounded_button));
-                    mGame.restoreAllNotepads();
-                    updateBoard();
-                    removeAllHighlights();
-                }
-                return true;
-            }
-        });
-    }
-
-    /************************************
-     * Listeners nakedTripleButton
-     *********************************/
-    private void nakedTripleButtonListener() {
-        nakedTripleButton.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    nakedTripleButton.setBackground(getResources().getDrawable(R.drawable.hint_button_pressed));
-                    showHint(Strategies.NAKED_TRIPLE);
-                }
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    nakedTripleButton.setBackground(getResources().getDrawable(R.drawable.hint_rounded_button));
-                    mGame.restoreAllNotepads();
-                    updateBoard();
-                    removeAllHighlights();
-                }
-                return true;
-            }
-        });
-    }
-
-    /************************************
-     * Listeners yWingButton
-     *********************************/
-    private void yWingListener() {
-        yWingButton.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    yWingButton.setBackground(getResources().getDrawable(R.drawable.hint_button_pressed));
-                    showHint(Strategies.YWING);
-                }
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    yWingButton.setBackground(getResources().getDrawable(R.drawable.hint_rounded_button));
+                    v.setBackground(getResources().getDrawable(R.drawable.hint_rounded_button));
                     mGame.restoreAllNotepads();
                     updateBoard();
                     removeAllHighlights();
@@ -1689,6 +1553,10 @@ public class BoardFragment extends Fragment {
      * Show one instance of a given hint
      ***********************************/
     private void showHint(int hintType) {
+        Set<Integer> conflicts = mGame.checkCurrentProgress();  // Set board value to number
+        if (!conflicts.isEmpty()) {
+
+        }
         mGame.backupAllNotepads();
         mGame.updateAllNotepads(false);
         updateBoard();
