@@ -172,7 +172,6 @@ public class MainMenuFragment extends Fragment {
         levelButtonInitialize();
         modeButtonInitialize();
         menuBackInitialize();
-        setMessage();
         initializeLick();
         initializeShareBar();
         initializeResumeButton(mResumeButton);
@@ -317,10 +316,11 @@ public class MainMenuFragment extends Fragment {
             mBadge.setVisibility(GONE);
             mProgressBar.setVisibility(GONE);
             mainScreen.setAlpha(1);
+            setMessage();
         }
         userBadge.setImageDrawable(ContextCompat.getDrawable(getActivity(), BADGETAGS[BaseActivity.level]));
 
-        setMessage();
+
         screenWait.setVisibility(GONE);
         mLevelSelect.setVisibility(VISIBLE);
         mModeSelect.setVisibility(GONE);
@@ -339,12 +339,14 @@ public class MainMenuFragment extends Fragment {
            mBadge.setVisibility(VISIBLE);
            mProgressBar.setVisibility(GONE);
            mainScreen.setAlpha(1);
+           setMessage();
        }
        else if(!gameHelper.isConnecting() && !gameHelper.isSignedIn() && !isGettingHighestScore){
             mSignInButton.setVisibility(VISIBLE);
             mBadge.setVisibility(GONE);
             mProgressBar.setVisibility(GONE);
             mainScreen.setAlpha(1);
+           setMessage();
         }
     }
 
@@ -392,7 +394,7 @@ public class MainMenuFragment extends Fragment {
             loadPlayer();
 
         }
-        setMessage();
+
         //userBadge.setVisibility(VISIBLE);
 
     }

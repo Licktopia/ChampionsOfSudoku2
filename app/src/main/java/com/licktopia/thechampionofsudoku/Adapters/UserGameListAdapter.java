@@ -260,7 +260,7 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
                 String userBestScoreWord = "";
                 shareBlurb.append(". ");
                 if (usrTopTime > 0) {
-                    userBestTime = formatTime(usrTopTime) + ". ";
+                    userBestTime = formatTime(usrTopTime);
                     userBestTimeWord = " Best time ";
                     shareBlurb.append(context.getString(R.string.my_best_time)).append(" ").append(userBestTime);
                 }

@@ -29,10 +29,9 @@
 
             <ImageView
                 android:id="@+id/us_level"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
                 android:layout_gravity="center_vertical"
-                android:layout_weight="13"
                 app:srcCompat="@drawable/experticon" />
 
             <RelativeLayout
@@ -68,17 +67,19 @@
             </RelativeLayout>
 
             <RelativeLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="13"
-                android:padding="2dp">
+                android:id="@+id/check_holder"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_gravity="center_vertical">
 
                 <ImageView
                     android:id="@+id/is_completed"
-                    android:layout_width="13dp"
-                    android:layout_height="13dp"
-                    android:layout_centerInParent="true"
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:layout_alignParentEnd="false"
+                    android:layout_alignParentRight="false"
+                    android:layout_centerInParent="false"
+                    android:scaleType="fitCenter"
                     android:visibility="visible"
                     app:srcCompat="@drawable/whitecheck" />
 
@@ -89,7 +90,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="90">
+            android:layout_weight="92">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -106,10 +107,8 @@
                     android:layout_weight="92"
                     android:background="@android:color/transparent"
                     android:orientation="horizontal"
-                    android:paddingBottom="6dp"
-                    android:paddingLeft="6dp"
-                    android:paddingRight="6dp"
-                    android:paddingTop="6dp"
+                    android:paddingLeft="4dp"
+                    android:paddingRight="4dp"
                     android:visibility="visible"
                     android:weightSum="90"
                     card_view:visibility="visible">
@@ -1708,7 +1707,8 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="center_horizontal"
                 android:orientation="vertical"
-                android:padding="6dp"
+                android:paddingLeft="4dp"
+                android:paddingRight="4dp"
                 android:visibility="gone"
                 card_view:visibility="visible">
 

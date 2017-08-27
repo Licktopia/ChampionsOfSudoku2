@@ -20,6 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
+import com.amazonaws.mobileconnectors.cognito.CognitoSyncManager;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBQueryExpression;
 import com.amazonaws.regions.Region;
@@ -334,7 +335,11 @@ public class BaseActivity extends BaseGameActivity
                 "us-east-2:40802ef0-7537-4910-8442-31e2b30c5a7d", // Identity Pool ID
                 Regions.US_EAST_2 // Region
         );
-
+       /* CognitoSyncManager client = new CognitoSyncManager(
+                getApplicationContext(),
+                Regions.US_EAST_2,
+                credentialsProvider);
+                */
         mMultiGame = null;
 
         ddbClient = new AmazonDynamoDBClient(credentialsProvider);
