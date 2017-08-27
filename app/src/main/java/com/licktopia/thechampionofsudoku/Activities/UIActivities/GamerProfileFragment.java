@@ -5,9 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 
-
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
@@ -24,7 +21,6 @@ import android.widget.Toast;
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
 import com.amazonaws.mobileconnectors.cognito.CognitoSyncManager;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
-import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBQueryExpression;
 import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
@@ -33,18 +29,12 @@ import com.licktopia.thechampionofsudoku.Activities.BaseActivity;
 import com.licktopia.thechampionofsudoku.CircleTransform;
 import com.licktopia.thechampionofsudoku.PlaySounds;
 import com.licktopia.thechampionofsudoku.R;
-import com.licktopia.thechampionofsudoku.DBOjects.CompletedGame;
 import com.licktopia.thechampionofsudoku.SudokuFacts;
 import com.licktopia.thechampionofsudoku.Tags;
 import com.squareup.picasso.Picasso;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.COMPLETED_GAME_FRAGMENT;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.GAMER_PROFILE_FRAGMENT;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.MAIN_MENU_FRAGMENT;
-import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.completedGames;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.gameHelper;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.phoneSize;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.setNullUser;
@@ -92,7 +82,7 @@ public class GamerProfileFragment extends Fragment {
         mapper = new DynamoDBMapper(ddbClient);
 
         ddbClient.setRegion(Region.getRegion(Regions.US_EAST_2));
-        queryCompletedGameDb();
+
         initializeSignOut();
         updateUI();
         listeners();
@@ -224,12 +214,6 @@ public class GamerProfileFragment extends Fragment {
         mTitleBar.setBackgroundColor(Color.parseColor(color));
         mTitleName.setText(BaseActivity.getUsername());
 
-        if(completedGames!= null && completedGames.isEmpty()){
-            mHistoryButton.setAlpha(.5f);
-        }
-        else{
-            mHistoryButton.setAlpha(1);
-        }
         if(BaseActivity.getLevel()==BaseActivity.CUTOFF.length){
             nextPowerUpDisplay.setText(callback.getRank());
         }
@@ -250,56 +234,6 @@ public class GamerProfileFragment extends Fragment {
                 verticalBadges[i].setVisibility(View.INVISIBLE);
             }
         }
-
-    }
-
-    private void queryCompletedGameDb(){
-        if(isInternet()) {
-            String partitionKey = BaseActivity.getId();
-            CompletedGame cg = new CompletedGame();
-            cg.setGamerID(partitionKey);
-
-            final DynamoDBQueryExpression<CompletedGame> queryExpression = new DynamoDBQueryExpression<CompletedGame>()
-                    .withHashKeyValues(cg)
-                    .withConsistentRead(false);
-
-            final List<CompletedGame>[] list = new List[]{new ArrayList<CompletedGame>()};
-
-            // id field is null at this point
-            Runnable runnable = new Runnable() {
-                public void run() {
-                    //DynamoDB calls go here
-                    list[0] = mapper.query(CompletedGame.class, queryExpression);
-                    ArrayList<CompletedGame> cGames = new ArrayList<CompletedGame>();
-                    for (int i = 0; i < list[0].size(); i++) {
-                        cGames.add(list[0].get(i));
-                    }
-                    BaseActivity.setCompletedGames(cGames);
-                    if(completedGames!= null && completedGames.isEmpty()){
-                        mHistoryButton.setAlpha(.5f);
-                    }
-                    else{
-                        mHistoryButton.setAlpha(1);
-                    }
-                }
-            };
-            Thread mythread = new Thread(runnable);
-            mythread.start();
-
-
-        }
-
-    }
-
-    private boolean isInternet(){
-        boolean isConnected;
-        ConnectivityManager cm =
-                (ConnectivityManager)getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        isConnected = activeNetwork != null &&
-                activeNetwork.isConnectedOrConnecting();
-        return isConnected;
 
     }
 

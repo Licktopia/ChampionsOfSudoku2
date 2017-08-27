@@ -85,12 +85,6 @@ public class BaseActivity extends BaseGameActivity
         RealTimeMessageReceivedListener, SavedGameListAdapter.SavedGameLAListener, UserGameListAdapter.UserGameLAListener,
         RoomStatusUpdateListener, RoomUpdateListener, OnInvitationReceivedListener {
 
-    public static final String SAVED_KEY = "SAVED_KEY";
-    public static final String COMPLETED_KEY = "COMPLETED_KEY";
-    public static final String XP_KEY = "XP_KEY";
-    public static final String USERNAME_KEY = "USERNAME_KEY";
-    public static final String LEVEL_KEY = "LEVEL_KEY";
-
     public static final String MAIN_MENU_FRAGMENT = "MAIN_MENU_FRAGMENT";
     public static final String ABOUT_FRAGMENT = "ABOUT_FRAGMENT";
     public static final String BOARD_FRAGMENT = "BOARD_FRAGMENT";
@@ -132,8 +126,8 @@ public class BaseActivity extends BaseGameActivity
     public static String id = "0";
     public static int level=0;
     public static long xp;
-    public static ArrayList<CompletedGame> completedGames;
-    public static ArrayList<SavedGame> savedGames;
+    //public static ArrayList<CompletedGame> completedGames;
+    //public static ArrayList<SavedGame> savedGames;
     public static CognitoCachingCredentialsProvider credentialsProvider;
     public static AmazonDynamoDBClient ddbClient;
     public static DynamoDBMapper mapper;
@@ -194,9 +188,7 @@ public class BaseActivity extends BaseGameActivity
         transaction.commit();
     }
 
-    public static ArrayList<SavedGame> getSavedGames() {
-        return savedGames;
-    }
+
 
     /*public static byte[] getThisSavedGame(String exactTime){
         for(int i = 0; i < savedGames.size(); i ++){
@@ -207,19 +199,11 @@ public class BaseActivity extends BaseGameActivity
         return null;
     }*/
 
-    public static void setSavedGames(ArrayList<SavedGame> savedGames) {
-        Collections.sort(savedGames, new BaseActivity.RecentSorter());
-        BaseActivity.savedGames = savedGames;
-    }
 
-    public static ArrayList<CompletedGame> getCompletedGames() {
-        return completedGames;
-    }
 
-    public static void setCompletedGames(ArrayList<CompletedGame> completedGames) {
-        BaseActivity.completedGames = completedGames;
 
-    }
+
+
 
     public static boolean addExperience(long xp) {
         BaseActivity.xp += xp;
@@ -292,30 +276,6 @@ public class BaseActivity extends BaseGameActivity
         BaseActivity.id = null;
         BaseActivity.xp = 0;
         BaseActivity.level = 0;
-        if(completedGames!=null) {
-            BaseActivity.completedGames.clear();
-        }
-        if(savedGames!=null) {
-            BaseActivity.savedGames.clear();
-        }
-    }
-
-    public static class RecentSorter implements Comparator<SavedGame> {
-
-        public int compare(SavedGame one, SavedGame another){
-            int returnVal = 0;
-
-            if(formatExactTime(one.getExactTime()) < formatExactTime(another.getExactTime())){
-                returnVal =  1;
-            }else if(formatExactTime(one.getExactTime()) > formatExactTime(another.getExactTime())){
-                returnVal =  -1;
-            }else if(formatExactTime(one.getExactTime()) == formatExactTime(another.getExactTime())){
-                returnVal =  0;
-            }
-
-            return returnVal;
-
-        }
     }
 
     public static Long formatExactTime(String time) {
@@ -369,8 +329,6 @@ public class BaseActivity extends BaseGameActivity
                     .add(R.id.fragment_container, menuFragment, MAIN_MENU_FRAGMENT).commit();
         }
 
-
-
         credentialsProvider = new CognitoCachingCredentialsProvider(
                 getApplicationContext(),
                 "us-east-2:40802ef0-7537-4910-8442-31e2b30c5a7d", // Identity Pool ID
@@ -396,19 +354,6 @@ public class BaseActivity extends BaseGameActivity
     protected void onStop() {
         super.onStop();
         stopKeepingScreenOn();
-       // gameHelper.onStop();
-        /*SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        SharedPreferences.Editor editor = sharedPrefs.edit();
-        Gson gson = new Gson();
-        String json = gson.toJson(savedGames);
-        editor.putString(SAVED_KEY, json);
-        json = gson.toJson(completedGames);
-        editor.putString(COMPLETED_KEY, json);
-        editor.putLong(XP_KEY, xp);
-        editor.putString(USERNAME_KEY, username);
-        editor.putInt(LEVEL_KEY, level);
-        editor.apply();*/
-
     }
 
     /* Implemented from MainMenuFragmentListener */

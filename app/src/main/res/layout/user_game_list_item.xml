@@ -4,11 +4,10 @@
     xmlns:card_view="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="275dp"
-    android:layout_margin="6dp"
+    android:layout_margin="3dp"
     android:elevation="10dp"
-    android:fadingEdge="horizontal|vertical"
     android:orientation="vertical"
-    app:cardCornerRadius="10dp"
+    app:cardCornerRadius="8dp"
     app:cardElevation="6dp"
     card_view:layout_width="200dp">
 
@@ -33,27 +32,46 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_weight="10"
+                android:layout_weight="13"
                 app:srcCompat="@drawable/experticon" />
 
-            <TextView
-                android:id="@+id/us_number"
-                android:layout_width="0dp"
+            <RelativeLayout
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="80"
-                android:background="@android:color/transparent"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:layout_weight="74"
                 android:gravity="center"
-                android:text="#54324"
-                android:textColor="@color/white"
-                android:textSize="12sp"
-                android:textStyle="bold" />
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/imageView35"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="5dp"
+                    app:srcCompat="@drawable/key" />
+
+                <TextView
+                    android:id="@+id/us_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:layout_toEndOf="@+id/imageView35"
+                    android:layout_toRightOf="@+id/imageView35"
+                    android:layout_weight="1"
+                    android:background="@android:color/transparent"
+                    android:gravity="center"
+                    android:text="54324"
+                    android:textColor="@color/white"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+            </RelativeLayout>
 
             <RelativeLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"
-                android:layout_weight="10"
+                android:layout_weight="13"
                 android:padding="2dp">
 
                 <ImageView
@@ -1660,7 +1678,8 @@
                             android:layout_gravity="center"
                             android:layout_marginLeft="5dp"
                             android:layout_weight="50"
-                            android:gravity="center"
+                            android:gravity="center_vertical"
+                            android:paddingLeft="3dp"
                             android:text="Licktopia"
                             android:textColor="@color/white"
                             android:textSize="9sp"

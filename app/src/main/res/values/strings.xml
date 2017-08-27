@@ -110,4 +110,8 @@
     <string name="disconnectedFromRoom">You have been disconnected from the room!</string>
     <string name="invitationRemoved">Invitation has been removed!</string>
     <string name="all_level">All Sudokus</string>
+    <string name="couldnt_find">Couldn\'t find any boards with a key of</string>
+    <string name="my_best_time">My best time is</string>
+    <string name="my_best_score">My best score is</string>
+    <string name="my_best_sc">My best score is</string>
 </resources>

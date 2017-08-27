@@ -42,14 +42,17 @@ android:fitsSystemWindows="false">
                 android:layout_height="48dp">
 
                 <ImageView
-                    android:id="@+id/icon_gamer"
+                    android:id="@+id/imageView33"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentLeft="false"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentStart="false"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
                     android:layout_weight="1"
+                    android:visibility="invisible"
                     app:srcCompat="@mipmap/ic_launcher" />
 
                 <TextView
@@ -60,13 +63,27 @@ android:fitsSystemWindows="false">
                     android:layout_centerHorizontal="true"
                     android:layout_gravity="center"
                     android:layout_toEndOf="@+id/icon_gamer"
+                    android:layout_toLeftOf="@+id/imageView33"
                     android:layout_toRightOf="@+id/icon_gamer"
+                    android:layout_toStartOf="@+id/imageView33"
                     android:layout_weight="1"
                     android:gravity="center_vertical|center_horizontal"
                     android:text="Golden Eagle"
                     android:textAllCaps="false"
                     android:textColor="@color/white"
                     android:textSize="20sp" />
+
+                <ImageView
+                    android:id="@+id/icon_gamer"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="5dp"
+                    android:layout_weight="1"
+                    app:srcCompat="@mipmap/ic_launcher" />
+
             </RelativeLayout>
 
             <ImageView
@@ -112,7 +129,7 @@ android:fitsSystemWindows="false">
             android:id="@+id/ll"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginBottom="1dp"
+            android:layout_marginBottom="5dp"
             android:layout_weight="38"
             android:orientation="vertical">
 
@@ -176,12 +193,15 @@ android:fitsSystemWindows="false">
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="7"
+            android:background="@color/color1"
             android:orientation="horizontal"
             android:weightSum="100">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginLeft="3dp"
+                android:layout_marginRight="3dp"
                 android:orientation="horizontal">
 
                 <Button
@@ -191,20 +211,16 @@ android:fitsSystemWindows="false">
                     android:layout_height="match_parent"
                     android:layout_alignParentBottom="false"
                     android:layout_gravity="center_vertical|center_horizontal"
+                    android:layout_marginBottom="3dp"
+                    android:layout_marginRight="2dp"
+                    android:layout_marginTop="3dp"
                     android:layout_weight="1"
-                    android:background="@android:color/black"
+                    android:background="@drawable/hint_button"
                     android:lines="2"
                     android:maxLines="2"
                     android:text="Achievements"
                     android:textColor="@color/white"
                     android:textSize="12sp" />
-
-                <LinearLayout
-                    android:id="@+id/filler"
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:background="@color/white"
-                    android:orientation="vertical"></LinearLayout>
 
                 <Button
                     android:id="@+id/leader"
@@ -213,8 +229,11 @@ android:fitsSystemWindows="false">
                     android:layout_height="match_parent"
                     android:layout_alignParentBottom="false"
                     android:layout_gravity="center_vertical|center_horizontal"
+                    android:layout_marginBottom="3dp"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginTop="3dp"
                     android:layout_weight="1"
-                    android:background="@android:color/black"
+                    android:background="@drawable/hint_button"
                     android:lines="2"
                     android:maxLines="2"
                     android:text="Leaderboards"
@@ -228,26 +247,24 @@ android:fitsSystemWindows="false">
                 android:layout_height="match_parent"
                 android:alpha=".3"
                 android:scaleType="centerCrop"
+                android:visibility="gone"
                 app:srcCompat="@drawable/keyboardbg" />
 
         </RelativeLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/white"
-            android:orientation="horizontal"></LinearLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="7"
+            android:background="@color/color1"
             android:orientation="horizontal"
             android:weightSum="100">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginLeft="3dp"
+                android:layout_marginRight="3dp"
                 android:orientation="horizontal">
 
                 <Button
@@ -257,20 +274,16 @@ android:fitsSystemWindows="false">
                     android:layout_height="match_parent"
                     android:layout_alignParentBottom="false"
                     android:layout_gravity="center_vertical|center_horizontal"
+                    android:layout_marginBottom="3dp"
+                    android:layout_marginRight="2dp"
+                    android:layout_marginTop="3dp"
                     android:layout_weight="1"
-                    android:background="@android:color/black"
+                    android:background="@drawable/hint_button"
                     android:lines="2"
                     android:maxLines="2"
                     android:text="Game History"
                     android:textColor="@color/white"
                     android:textSize="12sp" />
-
-                <LinearLayout
-                    android:id="@+id/filler"
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:background="@color/white"
-                    android:orientation="vertical"></LinearLayout>
 
                 <Button
                     android:id="@+id/sign_out_new"
@@ -279,8 +292,11 @@ android:fitsSystemWindows="false">
                     android:layout_height="match_parent"
                     android:layout_alignParentBottom="false"
                     android:layout_gravity="center_vertical|center_horizontal"
+                    android:layout_marginBottom="3dp"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginTop="3dp"
                     android:layout_weight="1"
-                    android:background="@android:color/black"
+                    android:background="@drawable/hint_button"
                     android:lines="2"
                     android:maxLines="2"
                     android:text="Sign Out"
@@ -294,6 +310,7 @@ android:fitsSystemWindows="false">
                 android:layout_height="match_parent"
                 android:alpha=".3"
                 android:scaleType="centerCrop"
+                android:visibility="gone"
                 app:srcCompat="@drawable/keyboardbg" />
 
         </RelativeLayout>

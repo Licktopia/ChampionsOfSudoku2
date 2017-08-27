@@ -75,17 +75,106 @@
         android:orientation="vertical"
         android:weightSum="100">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/user_board_rv"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-
             android:layout_marginBottom="6dp"
             android:layout_marginTop="6dp"
-            android:layout_weight="82"
-            android:background="@android:color/transparent" />
+            android:layout_weight="82">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/user_board_rv"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+
+                android:layout_weight="82"
+                android:background="@android:color/transparent" />
+
+            <RelativeLayout
+                android:id="@+id/num_picker"
+                android:layout_width="275dp"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:background="@color/white"
+                android:orientation="vertical"
+                android:padding="8dp"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <TextView
+                    android:id="@+id/textView18"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:layout_weight="1"
+                    android:text="Enter a board number:"
+                    android:textColor="@android:color/darker_gray"
+                    android:textSize="24sp" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/textView18"
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+                    android:visibility="visible"
+                    android:weightSum="100">
+
+                    <LinearLayout
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginRight="10dp"
+                        android:background="@color/com_facebook_button_background_color"
+                        android:orientation="horizontal"
+                        android:padding="3dp">
+
+                        <ImageView
+                            android:id="@+id/imageView34"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            app:srcCompat="@drawable/key" />
+                    </LinearLayout>
+
+                    <EditText
+                        android:id="@+id/num_board"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="100"
+                        android:ems="10"
+                        android:inputType="textPersonName"
+                        android:textColor="@android:color/black"
+                        android:textSize="22sp" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="60"
+                        android:orientation="horizontal"></LinearLayout>
+
+                    <Button
+                        android:id="@+id/ok_button"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_alignParentBottom="false"
+                        android:layout_alignParentRight="false"
+                        android:layout_below="@+id/textView18"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="10dp"
+                        android:background="@drawable/back_button"
+                        android:gravity="center"
+                        android:text="Ok" />
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+        </RelativeLayout>
 
         <RelativeLayout
+            android:id="@+id/sorters"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="18">
@@ -117,7 +206,7 @@
                         android:gravity="center"
                         android:padding="5dp"
                         android:scaleType="fitCenter"
-                        app:srcCompat="@drawable/beginnericon" />
+                        app:srcCompat="@drawable/beginnericon_white" />
 
                     <ImageButton
                         android:id="@+id/exp"
@@ -130,7 +219,7 @@
                         android:gravity="center"
                         android:padding="5dp"
                         android:scaleType="fitCenter"
-                        app:srcCompat="@drawable/experticon" />
+                        app:srcCompat="@drawable/experticon_white" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -152,7 +241,7 @@
                         android:gravity="center"
                         android:padding="5dp"
                         android:scaleType="fitCenter"
-                        app:srcCompat="@drawable/easyicon" />
+                        app:srcCompat="@drawable/easyicon_white" />
 
                     <ImageButton
                         android:id="@+id/mas"
@@ -165,7 +254,7 @@
                         android:gravity="center"
                         android:padding="5dp"
                         android:scaleType="fitCenter"
-                        app:srcCompat="@drawable/mastericon" />
+                        app:srcCompat="@drawable/mastericon_white" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -187,7 +276,7 @@
                         android:gravity="center"
                         android:padding="5dp"
                         android:scaleType="fitCenter"
-                        app:srcCompat="@drawable/mediumicon" />
+                        app:srcCompat="@drawable/mediumicon_white" />
 
                     <LinearLayout
                         android:id="@+id/ran"
@@ -201,8 +290,7 @@
                         android:orientation="vertical"
                         android:padding="5dp"
                         android:scaleType="fitCenter"
-                        android:weightSum="100"
-                       >
+                        android:weightSum="100">
 
                         <ImageView
                             android:id="@+id/imageView29"
@@ -210,7 +298,7 @@
                             android:layout_height="0dp"
                             android:layout_weight="65"
                             android:scaleType="fitCenter"
-                            app:srcCompat="@drawable/question" />
+                            app:srcCompat="@drawable/question_white" />
 
                         <TextView
                             android:id="@+id/textView14"
@@ -219,7 +307,7 @@
                             android:layout_weight="35"
                             android:gravity="center"
                             android:text="Random"
-                            android:textColor="@color/icon_color"
+                            android:textColor="@color/white"
                             android:textSize="11sp" />
                     </LinearLayout>
                 </LinearLayout>
@@ -243,7 +331,7 @@
                         android:gravity="center"
                         android:padding="5dp"
                         android:scaleType="fitCenter"
-                        app:srcCompat="@drawable/hardicon" />
+                        app:srcCompat="@drawable/hardicon_white" />
 
                     <LinearLayout
                         android:id="@+id/more"
@@ -265,7 +353,7 @@
                             android:layout_height="0dp"
                             android:layout_weight="65"
                             android:scaleType="fitCenter"
-                            app:srcCompat="@drawable/more" />
+                            app:srcCompat="@drawable/more_white" />
 
                         <TextView
                             android:id="@+id/textView15"
@@ -274,10 +362,10 @@
                             android:layout_weight="35"
                             android:gravity="center"
                             android:text="Load more"
-                            android:textColor="@color/icon_color"
+                            android:textColor="@color/white"
                             android:textSize="11sp" />
                     </LinearLayout>
-                        " />
+                    " />
 
                 </LinearLayout>
 
@@ -288,35 +376,69 @@
                     android:layout_weight="1"
                     android:orientation="vertical">
 
-                    <TextView
-                        android:id="@+id/har"
+                    <LinearLayout
+                        android:id="@+id/my_completed_button"
                         style="@style/Widget.AppCompat.Button.Borderless"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_marginBottom="1dp"
                         android:layout_weight="1"
-                        android:background="@android:color/black"
+                        android:background="@drawable/badgebuttonfinal"
                         android:gravity="center"
+                        android:orientation="vertical"
                         android:padding="5dp"
-                        android:scaleType="fitCenter"
-                        android:text="Popular Sudokus"
-                        android:textColor="@color/icon_color"
-                        android:textSize="10sp" />
+                        android:weightSum="100">
 
-                    <TextView
-                        android:id="@+id/more"
+                        <ImageView
+                            android:id="@+id/imageView28"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="65"
+                            android:scaleType="fitCenter"
+                            app:srcCompat="@drawable/whitecheck" />
+
+                        <TextView
+                            android:id="@+id/textView16"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="35"
+                            android:gravity="center"
+                            android:text="Completed"
+                            android:textColor="@color/white"
+                            android:textSize="11sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/enter_board_key"
                         style="@style/Widget.AppCompat.Button.Borderless"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_marginTop="1dp"
                         android:layout_weight="1"
-                        android:background="@android:color/black"
+                        android:background="@drawable/facebookbuttonfinal"
                         android:gravity="center"
+                        android:orientation="vertical"
                         android:padding="5dp"
-                        android:scaleType="fitCenter"
-                        android:text="My completed Sudokus"
-                        android:textColor="@color/icon_color"
-                        android:textSize="10sp" />
+                        android:weightSum="100">
+
+                        <ImageView
+                            android:id="@+id/imageView28"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="65"
+                            android:scaleType="fitCenter"
+                            app:srcCompat="@drawable/key" />
+
+                        <TextView
+                            android:id="@+id/textView16"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="35"
+                            android:gravity="center"
+                            android:text="Enter board"
+                            android:textColor="@color/white"
+                            android:textSize="11sp" />
+                    </LinearLayout>
 
                 </LinearLayout>
 

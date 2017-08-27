@@ -320,19 +320,6 @@ public class MainMenuFragment extends Fragment {
         }
         userBadge.setImageDrawable(ContextCompat.getDrawable(getActivity(), BADGETAGS[BaseActivity.level]));
 
-
-
-
-            //mBadge.setVisibility(VISIBLE);
-
-
-
-
-        if(isInternet()) {
-            queryCompletedGameDb();
-            // callback.querySavedGameDb();
-        }
-       //userBadge.setImageDrawable(ContextCompat.getDrawable(callback.getBadgetag(), null));
         setMessage();
         screenWait.setVisibility(GONE);
         mLevelSelect.setVisibility(VISIBLE);
@@ -373,41 +360,6 @@ public class MainMenuFragment extends Fragment {
 
     }
 
-    private void queryCompletedGameDb(){
-        if(isInternet()) {
-            String partitionKey = BaseActivity.getId();
-            CompletedGame cg = new CompletedGame();
-            cg.setGamerID(partitionKey);
-
-            final DynamoDBQueryExpression<CompletedGame> queryExpression = new DynamoDBQueryExpression<CompletedGame>()
-                    .withHashKeyValues(cg)
-                    .withConsistentRead(false);
-
-            final List<CompletedGame>[] list = new List[]{new ArrayList<CompletedGame>()};
-
-            // id field is null at this point
-            Runnable runnable = new Runnable() {
-                public void run() {
-                    //DynamoDB calls go here
-                    try {
-                        list[0] = BaseActivity.mapper.query(CompletedGame.class, queryExpression);
-                    }
-                    catch(Exception e){
-
-                    }
-                    ArrayList<CompletedGame> cGames = new ArrayList<CompletedGame>();
-                    for (int i = 0; i < list[0].size(); i++) {
-                        cGames.add(list[0].get(i));
-                    }
-                    BaseActivity.setCompletedGames(cGames);
-                }
-            };
-            Thread mythread = new Thread(runnable);
-            mythread.start();
-        }
-
-    }
-
 
     /***************************************
     *Update UI when login or logout occurs
@@ -427,13 +379,6 @@ public class MainMenuFragment extends Fragment {
             else{
                 loadPlayer();
             }
-
-            if (isInternet()) {
-                queryCompletedGameDb();
-                // callback.querySavedGameDb();
-            }
-
-
         }
         else{
             BaseActivity.setNullUser();

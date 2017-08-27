@@ -84,9 +84,8 @@ public class SavedGameFragment extends Fragment {
         return view;
     }
 
-    private void fillListItems(){
+    private void fillListItems(ArrayList<SavedGame> savedGames){
         savedGameListItems = new ArrayList<>();
-        ArrayList<SavedGame> savedGames = BaseActivity.getSavedGames();
         for(int i = 0; i < savedGames.size(); i++){
             SavedGameListItem sGLI= new SavedGameListItem(
                     savedGames.get(i).getDate(),
@@ -128,7 +127,7 @@ public class SavedGameFragment extends Fragment {
             CircleTransform cf = new CircleTransform();
             try {
                 String me = Games.Players.getCurrentPlayer(gameHelper.getApiClient()).getIconImageUrl();
-                Picasso.with(getActivity()).load(me).transform(cf).into((ImageView) iconView);
+                Picasso.with(getActivity()).load(me).transform(cf).into(iconView);
             }catch (Exception e){
 
             }
@@ -169,17 +168,17 @@ public class SavedGameFragment extends Fragment {
                 catch (Exception e){
 
                 }
-                ArrayList<SavedGame> sGames = new ArrayList<SavedGame>();
+                final ArrayList<SavedGame> sGames = new ArrayList<SavedGame>();
                 for (int i = 0; i < list[0].size(); i++) {
                     sGames.add((SavedGame) list[0].get(i));
                 }
-                BaseActivity.setSavedGames(sGames);
+
                 try {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             //execute code on main thread
-                            fillListItems();
+                            fillListItems(sGames);
                             adapter = new SavedGameListAdapter(savedGameListItems, getContext());
                             recyclerView.setAdapter(adapter);
                             mProgressIndicator.setVisibility(View.GONE);

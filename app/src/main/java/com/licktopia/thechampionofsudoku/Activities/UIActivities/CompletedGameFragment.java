@@ -2,6 +2,8 @@ package com.licktopia.thechampionofsudoku.Activities.UIActivities;
 
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,12 +13,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBQueryExpression;
 import com.google.android.gms.games.Games;
 import com.licktopia.thechampionofsudoku.Activities.BaseActivity;
 import com.licktopia.thechampionofsudoku.Adapters.CompletedGameListAdapter;
-
 import com.licktopia.thechampionofsudoku.CircleTransform;
 import com.licktopia.thechampionofsudoku.ListItems.CompletedGameListItem;
 import com.licktopia.thechampionofsudoku.R;
@@ -31,6 +34,7 @@ import java.util.List;
 
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.formatExactTime;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.gameHelper;
+import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.mapper;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.phoneSize;
 
 
@@ -42,6 +46,8 @@ public class CompletedGameFragment extends Fragment {
     private Button tvSortHigh;
     private Button tvSortTime;
     private TextView tvGpDisplay;
+    private ProgressBar mProgressIndicator;
+    private TextView mLoadingText;
     public static List<CompletedGameListItem> completedGameListItems;
     private View view;
     private CompletedGameFragment.CompletedGameFragmentListener callback;
@@ -105,6 +111,8 @@ public class CompletedGameFragment extends Fragment {
             view = inflater.inflate(R.layout.activity_completedgame_large, container, false);
         }
 
+        mProgressIndicator = (ProgressBar)view.findViewById(R.id.progressBar3);
+        mLoadingText = (TextView)view.findViewById(R.id.loading3);
         tvSortRecent = (Button)view.findViewById(R.id.sort_recent);
         tvSortBest = (Button)view.findViewById(R.id.sort_best);
         tvSortHigh = (Button)view.findViewById(R.id.sort_highscore);
@@ -112,13 +120,16 @@ public class CompletedGameFragment extends Fragment {
         recyclerView = (RecyclerView)view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        fillListItems();
         tvGpDisplay = (TextView)view.findViewById(R.id.user_name);
         recyclerView.addItemDecoration(
                 new HorizontalDividerItemDecoration.Builder(getContext()).size(12).build());
 
         tvGpDisplay.setText(new StringBuilder().append(BaseActivity.getUsername()).append(getString(R.string.game_history)).toString());
+        queryCompletedGameDb();
+        return view;
+    }
 
+    private void initializeSorters() {
         tvSortRecent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -154,16 +165,10 @@ public class CompletedGameFragment extends Fragment {
                 //recyclerView.setAdapter(adapter);
             }
         });
-
-        adapter = new CompletedGameListAdapter(completedGameListItems, getContext());
-        recyclerView.setAdapter(adapter);
-
-        return view;
     }
 
-    private void fillListItems(){
+    private void fillListItems(ArrayList<CompletedGame> completedGames){
         completedGameListItems = new ArrayList<>();
-        ArrayList<CompletedGame> completedGames = BaseActivity.getCompletedGames();
         for(int i = 0; i < completedGames.size(); i++){
             CompletedGameListItem cGLI= new CompletedGameListItem(
                     completedGames.get(i).getAccuracy(),
@@ -264,6 +269,65 @@ public class CompletedGameFragment extends Fragment {
         }
         timeNumber = Integer.valueOf(str.toString());
         return timeNumber;
+    }
+
+    private void queryCompletedGameDb(){
+        if(isInternet()) {
+            String partitionKey = BaseActivity.getId();
+            CompletedGame cg = new CompletedGame();
+            cg.setGamerID(partitionKey);
+
+            final DynamoDBQueryExpression<CompletedGame> queryExpression = new DynamoDBQueryExpression<CompletedGame>()
+                    .withHashKeyValues(cg)
+                    .withConsistentRead(false);
+
+            final List<CompletedGame>[] list = new List[]{new ArrayList<CompletedGame>()};
+
+            // id field is null at this point
+            Runnable runnable = new Runnable() {
+                public void run() {
+                    //DynamoDB calls go here
+                    list[0] = mapper.query(CompletedGame.class, queryExpression);
+                    final ArrayList<CompletedGame> cGames = new ArrayList<>();
+                    for (int i = 0; i < list[0].size(); i++) {
+                        cGames.add(list[0].get(i));
+                    }
+                    try {
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                //execute code on main thread
+                                fillListItems(cGames);
+                                adapter = new CompletedGameListAdapter(completedGameListItems, getContext());
+                                recyclerView.setAdapter(adapter);
+                                mProgressIndicator.setVisibility(View.GONE);
+                                mLoadingText.setVisibility(View.GONE);
+                                initializeSorters();
+                            }
+                        });
+                    }catch(Exception e){
+
+                    }
+                }
+            };
+            Thread mythread = new Thread(runnable);
+            mythread.start();
+
+
+        }
+
+    }
+
+    private boolean isInternet(){
+        boolean isConnected;
+        ConnectivityManager cm =
+                (ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        isConnected = activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
+        return isConnected;
+
     }
 
 }

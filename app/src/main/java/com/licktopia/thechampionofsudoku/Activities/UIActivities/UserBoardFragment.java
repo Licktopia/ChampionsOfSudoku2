@@ -6,15 +6,21 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBQueryExpression;
 import com.google.android.gms.games.Games;
@@ -30,10 +36,14 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
+import static android.content.ContentValues.TAG;
+import static android.content.Context.INPUT_METHOD_SERVICE;
+import static android.view.View.GONE;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.gameHelper;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.phoneSize;
 
@@ -59,6 +69,7 @@ public class UserBoardFragment extends Fragment {
     private List<Integer> bigRange;
     private TextView titleLabel;
     private UserBoardFragment.UserBoardFragmentListener callback;
+    private HashSet<Long> completedGameIds;
 
 
     //Checks interface is implemented in the activity.
@@ -153,6 +164,16 @@ public class UserBoardFragment extends Fragment {
             gridLayoutManager = new GridLayoutManager(getContext(), gridNum);
             recyclerView.setLayoutManager((gridLayoutManager));
             LevelLists = new ArrayList[Tags.Levels.length];
+            completedGameIds = new HashSet<>();
+            /*
+            DividerItemDecoration itemDecoratorVer = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
+            itemDecoratorVer.setDrawable(getResources().getDrawable(R.drawable.spacer_vertical, null));
+            DividerItemDecoration itemDecoratorHor = new DividerItemDecoration(getContext(), DividerItemDecoration.HORIZONTAL);
+            itemDecoratorHor.setDrawable(getResources().getDrawable(R.drawable.spacer_horizontal, null));
+            recyclerView.addItemDecoration(itemDecoratorVer);
+            recyclerView.addItemDecoration(itemDecoratorHor);
+            */
+
 
             Runnable runnable = new Runnable() {
                 public void run() {
@@ -169,11 +190,13 @@ public class UserBoardFragment extends Fragment {
                     } catch (Exception e) {
 
                     }
-                    ArrayList<CompletedGame> cGames = new ArrayList<CompletedGame>();
+                    completedGameIds.clear();
                     for (int i = 0; i < list[0].size(); i++) {
-                        cGames.add(list[0].get(i));
+                        completedGameIds.add(list[0].get(i).getPuzzleNumber());
                     }
-                    BaseActivity.setCompletedGames(cGames);
+
+
+
 
 
                     databaseAccess = DatabaseAccess.getInstance(getContext());
@@ -183,14 +206,14 @@ public class UserBoardFragment extends Fragment {
                         ShuffledList.add(databaseAccess.getSpecificBoardGame(bigRange.get(i)));
                     }
 
-                    adapter = new UserGameListAdapter(ShuffledList, getContext(), color);
+                    adapter = new UserGameListAdapter(ShuffledList, getContext(), color, completedGameIds);
                     initializeButtons();
                     try {
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 //execute code on main thread
-                                mProgressBar.setVisibility(View.GONE);
+                                mProgressBar.setVisibility(GONE);
                                 recyclerView.setAdapter(adapter);
                             }
                         });
@@ -222,7 +245,7 @@ public class UserBoardFragment extends Fragment {
                         ShuffledList.add(databaseAccess.getSpecificBoardGame(smallRange.get(j)));
                     }
                     adapter = null;
-                    adapter = new UserGameListAdapter(ShuffledList, getContext(), color);
+                    adapter = new UserGameListAdapter(ShuffledList, getContext(), color, completedGameIds);
                     recyclerView.setAdapter(adapter);
                 }
             });
@@ -239,7 +262,7 @@ public class UserBoardFragment extends Fragment {
                 for(int i = 0; i < DISPLAY_AT_A_TIME; i++){
                     ShuffledList.add(databaseAccess.getSpecificBoardGame(bigRange.get(i)));
                 }
-                adapter = new UserGameListAdapter(ShuffledList, getContext(), color);
+                adapter = new UserGameListAdapter(ShuffledList, getContext(), color, completedGameIds);
                 recyclerView.setAdapter(adapter);
             }
         });
@@ -265,7 +288,7 @@ public class UserBoardFragment extends Fragment {
                     //DisplayNowList = ShuffledList.subList(0, DISPLAY_AT_A_TIME);
                 }
                 adapter = null;
-                adapter = new UserGameListAdapter(ShuffledList, getContext(), color);
+                adapter = new UserGameListAdapter(ShuffledList, getContext(), color, completedGameIds);
                 recyclerView.setAdapter(adapter);
             }
         });
@@ -277,18 +300,67 @@ public class UserBoardFragment extends Fragment {
                 if(color){
                     color = false;
                     adapter = null;
-                    adapter = new UserGameListAdapter(ShuffledList, getContext(), color);
+                    adapter = new UserGameListAdapter(ShuffledList, getContext(), color, completedGameIds);
                     colorSwitcher.setImageDrawable(ContextCompat.getDrawable(getContext(),R.drawable.peacock));
                     recyclerView.setAdapter(adapter);
                 }
                 else{
                     color = true;
                     adapter = null;
-                    adapter = new UserGameListAdapter(ShuffledList, getContext(), color);
+                    adapter = new UserGameListAdapter(ShuffledList, getContext(), color, completedGameIds);
                     colorSwitcher.setImageDrawable(ContextCompat.getDrawable(getContext(),R.drawable.rocket));
                     recyclerView.setAdapter(adapter);
                 }
 
+            }
+        });
+        LinearLayout userPlayedButton = (LinearLayout) view.findViewById(R.id.my_completed_button);
+        userPlayedButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ShuffledList.clear();
+                for(Long i : completedGameIds){
+                    ShuffledList.add(databaseAccess.getSpecificBoardGame(i));
+                }
+                adapter = null;
+                adapter = new UserGameListAdapter(ShuffledList, getContext(), color, completedGameIds);
+                recyclerView.setAdapter(adapter);
+            }
+        });
+        final RelativeLayout enterBoard = (RelativeLayout)view.findViewById(R.id.num_picker);
+        final EditText boardNum = (EditText) view.findViewById(R.id.num_board);
+        Button okButton = (Button)view.findViewById(R.id.ok_button);
+        okButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                String enteredNum = boardNum.getText().toString();
+                UserGameListItem usgli;
+                try {
+                    usgli = databaseAccess.getSpecificBoardGame(Long.valueOf(enteredNum));
+                    ShuffledList.clear();
+                    ShuffledList.add(usgli);
+                    adapter = null;
+                    adapter = new UserGameListAdapter(ShuffledList, getContext(), color, completedGameIds);
+                    recyclerView.setAdapter(adapter);
+                }catch(Exception e){
+                    Log.d(TAG, "onClick: Couldn't retrieve user entered board");
+                    Toast.makeText(getContext(), new StringBuilder().append(getString(R.string.couldnt_find)).append(enteredNum).toString(), Toast.LENGTH_SHORT).show();
+                }
+                try  {
+                    InputMethodManager imm = (InputMethodManager)getContext().getSystemService(INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
+                } catch (Exception e) {
+
+                }
+                enterBoard.setVisibility(GONE);
+            }
+        });
+        LinearLayout enterBoardNumber = (LinearLayout) view.findViewById(R.id.enter_board_key);
+        enterBoardNumber.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                enterBoard.setVisibility(View.VISIBLE);
             }
         });
     }

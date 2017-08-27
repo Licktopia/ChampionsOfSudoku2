@@ -21,11 +21,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBQueryExpression;
 import com.licktopia.thechampionofsudoku.Activities.BaseActivity;
+import com.licktopia.thechampionofsudoku.Activities.UIActivities.UserBoardFragment;
 import com.licktopia.thechampionofsudoku.DBOjects.CompletedGame;
 import com.licktopia.thechampionofsudoku.ListItems.UserGameListItem;
 import com.licktopia.thechampionofsudoku.R;
 import com.licktopia.thechampionofsudoku.Tags;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.BOARD_FRAGMENT;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.phoneSize;
@@ -43,6 +45,7 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
     private UserGameLAListener callback;
     public static boolean color = false;
     List<CompletedGame> thisBoardsCompletedGames;
+    HashSet<Long> completedGameIds;
 
     //Interface to be implemented by containing activity.
     public interface UserGameLAListener {
@@ -50,10 +53,11 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
 
     }
 
-    public UserGameListAdapter(List<UserGameListItem> userGameListItem, Context context, boolean color) {
+    public UserGameListAdapter(List<UserGameListItem> userGameListItem, Context context, boolean colors, HashSet<Long> completedGameIds) {
         this.userGameListItems = userGameListItem;
         this.context = context;
-        this.color = color;
+        this.color = colors;
+        this.completedGameIds = completedGameIds;
     }
 
     @Override
@@ -127,16 +131,25 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
             }
         }
         holder.usUser.setText(new StringBuilder().append(gamerName).toString());
-        holder.usNumber.setText(String.format("#%s", identifier));
+        holder.usNumber.setText(String.format("%s", identifier));
         holder.usDiff.setText(String.format(new StringBuilder().append(context.getString(R.string.difficulty)).append(" %d").toString(),difficulty));
-        for(CompletedGame i : BaseActivity.getCompletedGames()){
-            if(i.getPuzzleNumber() == Long.valueOf(userGameListItem.getBoardIdentifier())){
+
+        if(completedGameIds.contains(Long.valueOf(userGameListItem.getBoardIdentifier()))){
+            holder.isCompleted.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.whitecheck));
+        }
+        else{
+            holder.isCompleted.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.white_circle));
+        }
+        /*
+        for(Long i : UserBoardFragment.completedGameIds){
+            if(i == Long.valueOf(userGameListItem.getBoardIdentifier())){
                 holder.isCompleted.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.whitecheck));
             }
             else{
                 holder.isCompleted.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.white_circle));
             }
         }
+        */
     }
 
     private void setHolderClickListener(final ViewHolder holder, final UserGameListItem userGameListItem, final int level) {
@@ -203,20 +216,22 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
         int usrTopTime = 0;
         String communityBlurb = "Be the first community member to play this Sudoku!";
         String playerBlurb = "Give this one a try?";
+        final StringBuilder shareBlurb = new StringBuilder();
+        shareBlurb.append("");
         int userScoreCounter = 0;
         int userTimeCounter = 0;
         for(CompletedGame i : thisBoardsCompletedGames){
             if(i.getRealScore()>topScore){
                 topScore = i.getRealScore();
             }
-            if(i.getGamerID()==BaseActivity.getId() && i.getRealScore()>usrTopScore){
+            if(i.getGamerID().equals(BaseActivity.getId()) && i.getRealScore()>usrTopScore){
                 usrTopScore = i.getRealScore();
                 userScoreCounter++;
             }
             if(getSeconds(i.getTime())>topTime){
                 topTime = getSeconds(i.getTime());
             }
-            if(i.getGamerID()==BaseActivity.getId() && getSeconds(i.getTime())>usrTopTime){
+            if(i.getGamerID().equals(BaseActivity.getId()) && getSeconds(i.getTime())>usrTopTime){
                 usrTopTime = getSeconds(i.getTime());
                 userTimeCounter++;
             }
@@ -243,13 +258,16 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
                 String userBestTimeWord = "";
                 String userBestScore = "";
                 String userBestScoreWord = "";
+                shareBlurb.append(". ");
                 if (usrTopTime > 0) {
                     userBestTime = formatTime(usrTopTime) + ". ";
                     userBestTimeWord = " Best time ";
+                    shareBlurb.append(context.getString(R.string.my_best_time)).append(" ").append(userBestTime);
                 }
                 if (usrTopScore > 0) {
                     userBestScore = String.valueOf(usrTopScore) + ". ";
                     userBestScoreWord = " Best score ";
+                    shareBlurb.append(context.getString(R.string.my_best_sc)).append(" ").append(String.valueOf(usrTopScore)).append(" ");
                 }
                 playerBlurb = new StringBuilder().append(userBestScoreWord).append(userBestScore).append(userBestTimeWord).append(userBestTime).toString();
             }
@@ -267,7 +285,7 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
         holder.shareButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                share(userGameListItem);
+                share(userGameListItem, shareBlurb);
             }
         });
         holder.playNow.setOnClickListener(new View.OnClickListener() {
@@ -339,48 +357,48 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
         return formattedTime;
     }
 
-    private void share(UserGameListItem uGLI) {
+    private void share(UserGameListItem uGLI, StringBuilder shareBlurb) {
         Intent i = new Intent(
                 Intent.ACTION_SEND);
         i.setType("text/plain");
-        i.putExtra(
-                Intent.EXTRA_TEXT, "Sudoku Challenge from " + BaseActivity.getUsername() + ". CODE: " + uGLI.getBoardIdentifier()+ "?" + uGLI.getGamerID());
+        i.putExtra(Intent.EXTRA_TEXT, new StringBuilder().append("You have received a Sudoku Challenge from ").append(BaseActivity.getUsername()).append(". BOARD KEY: ").append(uGLI.getBoardIdentifier()).append(shareBlurb).toString());
+
         context.startActivity(Intent.createChooser(
                 i,
-                "Share via"));
+                "Share key via"));
     }
 
     private void setView(ViewHolder holder, int level) {
         if(level==0) {
 
-            Drawable drawable = ContextCompat.getDrawable(context, R.drawable.beginnericon);
+            Drawable drawable = ContextCompat.getDrawable(context, R.drawable.beginnericon_white);
             holder.usLevel.setImageDrawable(drawable);
             holder.usBackground.setBackgroundColor(Color.parseColor(mColors[0]));
 
         }
         else if(level==1) {
-            Drawable drawable = ContextCompat.getDrawable(context,R.drawable.easyicon);
+            Drawable drawable = ContextCompat.getDrawable(context,R.drawable.easyicon_white);
             holder.usLevel.setImageDrawable(drawable);
             holder.usBackground.setBackgroundColor(Color.parseColor(mColors[6]));
         }
         else if(level==2) {
-            Drawable drawable = ContextCompat.getDrawable(context,R.drawable.mediumicon);
+            Drawable drawable = ContextCompat.getDrawable(context,R.drawable.mediumicon_white);
             holder.usLevel.setImageDrawable(drawable);
             holder.usBackground.setBackgroundColor(Color.parseColor(mColors[1]));
         }
         else if(level==3) {
-            Drawable drawable = ContextCompat.getDrawable(context,R.drawable.hardicon);
+            Drawable drawable = ContextCompat.getDrawable(context,R.drawable.hardicon_white);
             holder.usLevel.setImageDrawable(drawable);
             holder.usBackground.setBackgroundColor(Color.parseColor(mColors[5]));
         }
         else if(level==4) {
-            Drawable drawable = ContextCompat.getDrawable(context,R.drawable.experticon);
+            Drawable drawable = ContextCompat.getDrawable(context,R.drawable.experticon_white);
             holder.usLevel.setImageDrawable(drawable);
             holder.usBackground.setBackgroundColor(Color.parseColor(mColors[2]));
         }
         else
         {
-            Drawable drawable = ContextCompat.getDrawable(context,R.drawable.mastericon);
+            Drawable drawable = ContextCompat.getDrawable(context,R.drawable.mastericon_white);
             holder.usLevel.setImageDrawable(drawable);
             holder.usBackground.setBackgroundColor(Color.parseColor(mColors[4]));
         }

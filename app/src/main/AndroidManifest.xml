@@ -26,15 +26,12 @@
             android:authorities="com.facebook.app.FacebookContentProvider1040720769395510"
             android:exported="true" />
 
-        <activity android:name=".Activities.UIActivities.BoardFragment" />
-        <activity android:name=".Activities.UIActivities.InstructionsFragment" />
-        <activity android:name=".Activities.UIActivities.AboutFragment" />
-        <activity android:name=".Activities.UIActivities.CompletedGameFragment" />
-        <activity android:name=".Activities.UIActivities.SavedGameFragment" />
-        <activity android:name=".Activities.BaseActivity">
+
+        <activity android:name=".Activities.BaseActivity"
+                android:windowSoftInputMode="adjustNothing">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -42,7 +39,7 @@
             android:name=".Settings.SudokuSettingsActivity"
             android:label="Settings"
             android:theme="@style/Base.Theme.AppCompat.Light" />
-        <activity android:name=".Activities.UIActivities.GamerProfileFragment" />
+
     </application>
 
 </manifest>
