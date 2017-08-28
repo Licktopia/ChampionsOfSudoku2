@@ -37,13 +37,17 @@ public class InviteDialogFragment extends DialogFragment {
             inviteDialogFragment = getActivity().getLayoutInflater()
                     .inflate(R.layout.activity_invite_small, null);
         }
-        else if(phoneSize == 3){
+        else if(phoneSize == 2){
             inviteDialogFragment = getActivity().getLayoutInflater()
                     .inflate(R.layout.activity_invite_large, null);
         }
+        else if(phoneSize == 3){
+            inviteDialogFragment = getActivity().getLayoutInflater()
+                    .inflate(R.layout.activity_invite_phablet, null);
+        }
         else{
             inviteDialogFragment = getActivity().getLayoutInflater()
-                    .inflate(R.layout.activity_invite, null);
+                    .inflate(R.layout.activity_invite_large, null);
         }
 
         builder.setView(inviteDialogFragment);
