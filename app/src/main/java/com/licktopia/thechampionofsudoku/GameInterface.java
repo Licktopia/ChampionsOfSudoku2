@@ -326,12 +326,6 @@ public interface GameInterface {
      */
     public void updateAllNotepads(boolean removeOnly);
 
-    /***********************************************************
-     * Return a random square indices which has have only one possible value
-     * @return a random square indices which has have only one possible value
-     */
-    public int getNakedSingle();
-
     /**************************************************************************
      * hint object which has hint for given hintType
      * @param hintType eg NAKED_DOUBLE or HIDDEN_SINGLE see Strategies for accepted int values

@@ -68,26 +68,24 @@ public class Strategies {
     /****** NAKED SINGLES *******/
 
     /* Return a list of square indices that have only one possible value */
-    public static List<Integer> getNakedSingles(Board board) {
+    public static List<Hint> getNakedSingles(Board board) {
 
-        ArrayList<Integer> nakedSquares = new ArrayList<>();
+        ArrayList<Hint> nakedSquares = new ArrayList<>();
         for (int i = 0; i < board.totalBoardElements(); i++) {
-            if (!board.isStartingValue(i) && board.getValueAt(i) == 0 && board.getTotalNotepadValues(i) == 1)
-                nakedSquares.add(i);
+            if (!board.isStartingValue(i) && board.getValueAt(i) == 0 && board.getTotalNotepadValues(i) == 1) {
+                int[][] hintInfo = new int[NUM_CATEGORIES][];
+                hintInfo[REMOVE_FROM] = new int[] {CONNECTED};
+                hintInfo[SELECTED] = new int[] {i};
+                hintInfo[CONNECTED] = new int[] {};
+                int np = 1;
+                for (int x = 1; x <= board.getSize(); x++) {
+                    if (board.getNotepadAt(i, x)) np = x;
+                }
+                hintInfo[NOTEPAD] = new int[] {np};
+                nakedSquares.add(new Hint(hintInfo));
+            }
         }
         return nakedSquares;
-    }
-
-    /* Removes a random instance of a single */
-    public static int removeRandomNakedSingle(Board board) {
-        List<Integer> singles = getNakedSingles(board);
-        if (!singles.isEmpty()) {
-            int index = getRandomElement(singles);
-            board.setOnlyPossibleValueAt(index);
-            return index;
-        }
-        // No singles to remove
-        return -1;
     }
 
     /* Executes the strategy provided by the given Hint object */
@@ -641,13 +639,28 @@ public class Strategies {
         return singlesChains;
     }
 
-        public static int executeStrategyFromList(Board board, List<Hint> hints) {
+    public static int executeStrategyFromList(Board board, List<Hint> hints) {
         if (!hints.isEmpty()) {
             Hint hint = getRandomElement(hints);
             executeStrategy(board, hint);
             return 1;   // Signify a move was made
         }
         else return 0;  // No move made
+    }
+
+    public static int executeSinglesStrategyFromList(Board board, List<Hint> hints) {
+        if (!hints.isEmpty()) {
+            Hint hint = getRandomElement(hints);
+            int index = hint.hintInfo[SELECTED][0];
+            board.setOnlyPossibleValueAt(index);
+            return index;
+        }
+        else return -1; // Returns -1 for no move made since 0 is a valid index
+    }
+
+    /* Finds, selects, and executes naked pair strategy on one random existing hidden single */
+    public static int removeRandomNakedSingle(Board board) {
+        return executeSinglesStrategyFromList(board, getNakedSingles(board));
     }
 
     /* Finds, selects, and executes naked pair strategy on one random existing hidden single */

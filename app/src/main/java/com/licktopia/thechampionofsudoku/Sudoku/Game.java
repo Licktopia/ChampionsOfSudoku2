@@ -376,19 +376,11 @@ public class Game implements GameInterface, java.io.Serializable
         curBoard.restoreAllNotepads();
     }
 
-    public int getNakedSingle() {
-        List<Integer> nakedSingles = Strategies.getNakedSingles(curBoard);
-        totalHintsUsed++;
-        if (nakedSingles.isEmpty()) return -1;
-        Integer i = Strategies.getRandomElement(nakedSingles);
-        return i;
-    }
-
-
     public Strategies.Hint getHint(int hintType) {
         List<Strategies.Hint> hints;
         totalHintsUsed++;
         switch(hintType) {
+            case Strategies.NAKED_SINGLE: hints = Strategies.getNakedSingles(curBoard); break;
             case Strategies.SINGLES_CHAIN: hints = Strategies.getSinglesChains(curBoard); break;
             case Strategies.YWING: hints = Strategies.getYWings(curBoard); break;
             case Strategies.NAKED_TRIPLE: hints = Strategies.getNakedTriples(curBoard); break;

@@ -1204,10 +1204,6 @@ public class MultiGame implements GameInterface, java.io.Serializable {
         mGame.updateAllNotepads(removeOnly);
     }
 
-    public int getNakedSingle() {
-        return mGame.getNakedSingle();
-    }
-
     public Strategies.Hint getHint(int hintType) {
         return mGame.getHint(hintType);
     }
