@@ -121,6 +121,7 @@ public class BoardFragment extends Fragment {
     private Button nakedTripleButton;
     private Button yWingButton;
     private Button[] hintButtonArray;
+    private boolean hintPressed = false;
     private ImageButton mUndoButton;
     private ImageButton mRedoButton;
     private ImageButton notepadIcon;
@@ -1093,7 +1094,7 @@ public class BoardFragment extends Fragment {
         nakedTripleButton = (Button) view.findViewById(R.id.naked_triple);
         yWingButton = (Button) view.findViewById(R.id.y_wing);
         hintButton = (Button) view.findViewById(R.id.hints);
-        hintButtonArray = new Button[] {nakedDoubleButton, hiddenSingleButton, hiddenPairButton, nakedTripleButton,
+        hintButtonArray = new Button[] {nakedSingleButton, nakedDoubleButton, hiddenSingleButton, hiddenPairButton, nakedTripleButton,
                 lockedCandidateButton, xWingButton, yWingButton};
     }
 
@@ -1220,9 +1221,8 @@ public class BoardFragment extends Fragment {
         smallNumPadListener();
         clearButtonListener();
         checkProgressButtonListener();
-        nakedSingleButtonListener();
         for (int i = 0; i < hintButtonArray.length; i++) {
-            setHintButtonListener(hintButtonArray[i], i + 2);
+            setHintButtonListener(hintButtonArray[i], i + 1);
         }
         solveButtonListener();
         undoRedoListener();
@@ -1455,11 +1455,11 @@ public class BoardFragment extends Fragment {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    Set<Integer> conflicts = mGame.checkCurrentProgress();  // Set board value to number
+                    Set<Integer> conflicts = mGame.checkCurrentProgress();  // Check for errors
                     if (conflicts.isEmpty()) {
                         if(!solveClicked&&!mGame.isGameFinished()) {
                             mPlaySounds.playSounds(getContext(), 1);
-                            Toast.makeText(getContext(), "BoardofClass is currently correct!", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getContext(), "Board is currently correct!", Toast.LENGTH_LONG).show();
                         }
                     }
                     else {
@@ -1484,36 +1484,25 @@ public class BoardFragment extends Fragment {
         });
     }
 
-
-    /************************************
-     * Listeners nakedSingleButton
-     *********************************/
-    private void nakedSingleButtonListener() {
-        nakedSingleButton.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    nakedSingleButton.setBackground(getResources().getDrawable(R.drawable.hint_button_pressed));
-                    showNakedSingle();
-                }
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    nakedSingleButton.setBackground(getResources().getDrawable(R.drawable.hint_rounded_button));
-                    mGame.restoreAllNotepads();
-                    updateBoard();
-                    removeAllHighlights();
-                }
-                return true;
-            }
-        });
-    }
-
     private void setHintButtonListener(Button button, final int strategyNum) {
         button.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    v.setBackground(getResources().getDrawable(R.drawable.hint_button_pressed));
-                    showHint(strategyNum);
+                    Set<Integer> conflicts = mGame.checkCurrentProgress();  // Check for errors
+                    if (conflicts.isEmpty()) {
+                        v.setBackground(getResources().getDrawable(R.drawable.hint_button_pressed));
+                        showHint(strategyNum);
+                    }
+                    else {
+                        if(!solveClicked) {
+                            mPlaySounds.playSounds(getContext(), 2);
+                        }
+                        for (int conflict : conflicts) {
+                            squareViews[conflict].setErrorHighlight(colorGame);     // Display error highlight
+                        }
+                        Toast.makeText(getContext(), "Hints require a correct board. Check these errors first.", Toast.LENGTH_LONG).show();
+                    }
                 }
                 if (event.getAction() == MotionEvent.ACTION_UP) {
                     v.setBackground(getResources().getDrawable(R.drawable.hint_rounded_button));
@@ -1567,27 +1556,6 @@ public class BoardFragment extends Fragment {
         }
         else {
             mPlaySounds.playSounds(getContext(), 2);
-        }
-    }
-
-    /************************************
-     * Show one instance of a naked single
-     *********************************/
-    private void showNakedSingle() {
-        mGame.backupAllNotepads();
-        mGame.updateAllNotepads(false);
-        updateBoard();
-        int index = mGame.getNakedSingle();
-        if (index != -1) {
-            removeAllHighlights();
-            squareViews[index].setDarkHighlight();
-            for (int i = 1; i <= 9; i++) {
-                if (mGame.getBoardNotepadAt(index, i))
-                    squareViews[index].setNotepadHighlightGreen(i);
-            }
-        }
-        else {
-            // TODO None exist, display message?
         }
     }
 
@@ -1880,6 +1848,7 @@ public class BoardFragment extends Fragment {
                     Square square = newSteps.get(finalI);
                     selectedSquare = square.getIdx();
                     numberCommands(square.getValue());
+                    mGame.updateAllNotepads(false);
                     updateBoard();
 
                 }
