@@ -22,10 +22,11 @@ dependencies {
         ext.gms_library_version = '11.0.1'
     }
 
-    compile 'com.android.support:appcompat-v7:25.3.1'
-    compile "com.android.support:support-v4:${support_library_version}"
     compile 'com.google.android.gms:play-services-games:11.0.2'
     compile 'com.google.android.gms:play-services-plus:11.0.2'
+    compile "com.android.support:support-v4:${support_library_version}"
+    compile 'com.android.support:appcompat-v7:25.3.1'
+
 }
 
 android {
@@ -54,3 +55,5 @@ android {
     }
 }
 
+
+apply plugin: 'com.google.gms.google-services'
