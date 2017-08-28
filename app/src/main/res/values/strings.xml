@@ -61,8 +61,10 @@
     <string name="leaderboard_fastest_time_expert">CgkIjrCfsNsFEAIQBQ</string>
     <string name="leaderboard_fastest_time_master">CgkIjrCfsNsFEAIQBg</string>
     <string name="leaderboard_opponents_vanquished_multiplayer" translatable="false">CgkIjrCfsNsFEAIQFw</string>
+    <string name="leaderboard_rank_multiplayer">CgkIjrCfsNsFEAIQGA</string>
     <string name="leaderboard_most_total_xp">CgkIjrCfsNsFEAIQBw</string>
     <string name="leaderboard_highest_single_game_score">CgkIjrCfsNsFEAIQCA</string>
+
     <string name="mustbe_loggedin_viewachievements">You must be logged in to view achievements</string>
     <string name="login_touse_thisfeature">You must be logged in to use this feature</string>
     <string name="login_toview_profile">You must be logged in to view gamer profile</string>
@@ -94,6 +96,11 @@
     <string name="accept_popup_invite">Accept!</string>
     <string name="inv_popup_text">Incoming invitation!</string>
     <string name="game_not_saved">Game not saved</string>
+    <string name="match_canceled">The match has been canceled!</string>
+    <string name="invitation_removed">An invitation has been removed</string>
+    <string name="multiplayer_win">You are a winner!</string>
+    <string name="multiplayer_loss">You lost!</string>
+
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

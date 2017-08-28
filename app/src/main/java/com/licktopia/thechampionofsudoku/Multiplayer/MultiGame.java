@@ -8,6 +8,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.google.example.games.basegameutils.GameHelper;
+import com.licktopia.thechampionofsudoku.Activities.BaseActivity;
 import com.licktopia.thechampionofsudoku.GameInterface;
 import com.licktopia.thechampionofsudoku.Sudoku.Game;
 import com.licktopia.thechampionofsudoku.Sudoku.Solver;
@@ -47,8 +48,8 @@ public class MultiGame implements GameInterface, java.io.Serializable {
     boolean isBotGame = false;
 
     //set to -100 to prevent an infinite loop of message sending
-    final long DEFAULT_XP = -100;
-    long mXP = DEFAULT_XP;
+    final long DEFAULT_RANK = -100;
+    final long MIN_RANK = 0;
 
     public enum GameMode {
         RACE(1000),
@@ -97,13 +98,15 @@ public class MultiGame implements GameInterface, java.io.Serializable {
         private String mGamerId;
         private float mGameProgress;
         private boolean mGameFinished;
+        private String mGamerName;
         private String mImageUri;
-        private long mXP;
+        private long mRank;
 
-        protected Opponent(String gamerId, String imageUri)
+        protected Opponent(String gamerId, String gamerName, String imageUri)
         {
             mGameProgress = 0;
-            mXP = DEFAULT_XP;
+            mGamerName = gamerName;
+            mRank = DEFAULT_RANK;
             mGamerId = gamerId;
             mImageUri = imageUri;
         }
@@ -116,17 +119,17 @@ public class MultiGame implements GameInterface, java.io.Serializable {
             return mGameProgress;
         }
 
-        protected long getXP() {return mXP;}
+        protected long getRank() {return mRank;}
 
-        protected void setXP(long XP) {
-            if(XP < 0)
+        protected void setRank(long rank) {
+            if(rank < 0)
             {
-                Log.d(TAG, "Bad XP attempted to be sent!");
-                mXP = 0;
+                Log.d(TAG, "Bad Rank attempted to be sent!");
+                mRank = MIN_RANK;
             }
             else
             {
-                mXP = XP;
+                mRank = rank;
             }
         }
 
@@ -149,6 +152,9 @@ public class MultiGame implements GameInterface, java.io.Serializable {
 
         protected String getGamerId() {
             return mGamerId.toString();
+        }
+        protected String getGamerName() {
+            return mGamerName.toString();
         }
 
         protected boolean isGameFinished() { return mGameFinished; }
@@ -217,16 +223,16 @@ public class MultiGame implements GameInterface, java.io.Serializable {
     protected class PlayerInfo implements java.io.Serializable
     {
         private String mGamerId;
-        private long mXP;
+        private long mRank;
 
-        protected PlayerInfo(String gamerId, long XP)
+        protected PlayerInfo(String gamerId, long rank)
         {
             mGamerId = gamerId;
-            mXP = XP;
+            mRank = rank;
         }
 
-        protected long getXP() {
-            return mXP;
+        protected long getRank() {
+            return mRank;
         }
 
         protected String getGamerId() {
@@ -243,7 +249,7 @@ public class MultiGame implements GameInterface, java.io.Serializable {
                 stream.writeChar(charArr[i]);
             }
 
-            stream.writeLong(mXP);
+            stream.writeLong(mRank);
 
         }
 
@@ -260,7 +266,7 @@ public class MultiGame implements GameInterface, java.io.Serializable {
             }
 
             mGamerId = new String(charArr);
-            mXP = stream.readLong();
+            mRank = stream.readLong();
         }
 
     }
@@ -294,10 +300,8 @@ public class MultiGame implements GameInterface, java.io.Serializable {
                      ArrayList<Participant> mParticipants,
                      String mMyId,
                      GameHelper gameHelper,
-                     String mRoomId,
-                     long XP)
+                     String mRoomId)
     {
-        this.mXP = XP;
         this.mParticipants = mParticipants;
         this.mMyId = mMyId;
         this.gameHelper = gameHelper;
@@ -334,10 +338,8 @@ public class MultiGame implements GameInterface, java.io.Serializable {
                      ArrayList<Participant> mParticipants,
                      String mMyId,
                      GameHelper gameHelper,
-                     String mRoomId,
-                     long XP)
+                     String mRoomId)
     {
-        this.mXP = XP;
         this.mParticipants = mParticipants;
         this.mMyId = mMyId;
         this.gameHelper = gameHelper;
@@ -372,10 +374,8 @@ public class MultiGame implements GameInterface, java.io.Serializable {
                       ArrayList<Participant> mParticipants,
                       String mMyId,
                       GameHelper gameHelper,
-                      String mRoomId,
-                      long XP)
+                      String mRoomId)
     {
-        this.mXP = XP;
         this.mParticipants = mParticipants;
         this.mMyId = mMyId;
         this.gameHelper = gameHelper;
@@ -392,8 +392,7 @@ public class MultiGame implements GameInterface, java.io.Serializable {
                                       ArrayList<Participant> mParticipants,
                                       String mMyId,
                                       GameHelper gameHelper,
-                                      String mRoomId,
-                                      long XP)
+                                      String mRoomId)
     {
         Game curGame;
 
@@ -426,8 +425,7 @@ public class MultiGame implements GameInterface, java.io.Serializable {
                 mParticipants,
                 mMyId,
                 gameHelper,
-                mRoomId,
-                XP);
+                mRoomId);
 
     }
 
@@ -448,7 +446,7 @@ public class MultiGame implements GameInterface, java.io.Serializable {
                     continue;
                 if (p.getStatus() != Participant.STATUS_JOINED)
                     continue;
-                humanOpps[i] = new Opponent(p.getParticipantId(), p.getIconImageUrl());
+                humanOpps[i] = new Opponent(p.getParticipantId(), p.getDisplayName(), p.getIconImageUrl());
                 i++;
             }
 
@@ -464,7 +462,7 @@ public class MultiGame implements GameInterface, java.io.Serializable {
         }
         else
         {
-            sendMessage(MessageType.PLAYER_INFO, new PlayerInfo(mMyId, mXP));
+            sendMessage(MessageType.PLAYER_INFO, new PlayerInfo(mMyId, BaseActivity.multiplayerRank));
         }
 
     }
@@ -645,18 +643,18 @@ public class MultiGame implements GameInterface, java.io.Serializable {
                         if(humanOpps[i].getGamerId().equals(playerInfo.getGamerId()))
                         {
                             //they probably don't have my info
-                            if(humanOpps[i].getXP() == DEFAULT_XP)
+                            if(humanOpps[i].getRank() == DEFAULT_RANK)
                             {
                                 sendMyInfo();
                             }
                             // prevent an infinite loop of calling sendMyInfo
-                            if(playerInfo.getXP() == DEFAULT_XP)
+                            if(playerInfo.getRank() == DEFAULT_RANK)
                             {
-                                humanOpps[i].setXP(-500);
+                                humanOpps[i].setRank(MIN_RANK);
                             }
                             else
                             {
-                                humanOpps[i].setXP(playerInfo.getXP());
+                                humanOpps[i].setRank(playerInfo.getRank());
                             }
 
                             break;
@@ -751,15 +749,15 @@ public class MultiGame implements GameInterface, java.io.Serializable {
         }
     }
 
-    public long getOpponentXP(int i)
+    public long getOpponentRank(int i)
     {
         if(isBotGame)
         {
-            return this.allBots[i].getXP();
+            return this.allBots[i].getRank();
         }
         else
         {
-            return humanOpps[i].getXP();
+            return humanOpps[i].getRank();
         }
     }
 
@@ -820,7 +818,7 @@ public class MultiGame implements GameInterface, java.io.Serializable {
         }
         else
         {
-            return "Not Coded Yet";
+            return humanOpps[i].getGamerName();
         }
     }
 
@@ -872,6 +870,81 @@ public class MultiGame implements GameInterface, java.io.Serializable {
     public long getNumberFilledSquares()
     {
         return this.mGame.totalBoardElements() - this.mGame.getNumberOpenSquares();
+    }
+
+    private long myOldRank = MIN_RANK;
+    /*************************************
+     * gets my rank before the call to updateMyRank
+     * @return
+     */
+    public long getMyOldRank()
+    {
+        return myOldRank;
+    }
+    /******************************************************
+     * Called at the end of the game and returns the new rank of a player
+     * UPDATES THE RANK IN THE BASEACTIVITY CLASS!!!!!
+     * @return
+     */
+    public long updateMyRank(boolean isWinner)
+    {
+        // Are you really a champion of Sudoku if you can only beat bots?
+        if(isBotGame)
+        {
+            return 0;
+        }
+
+        myOldRank = BaseActivity.multiplayerRank;
+        double winProbability = 0;
+        // ranks are divided by this number
+        final double rankDenominator = 1e6d;
+
+        // maximum amount a rank can change in a single game
+        final double K = 1000d / rankDenominator;
+
+
+        // we are going to assume that the rank will be a number between
+        // 0 and 5,000,000
+        // We cannot have the number be too large on the code side since
+        // the exponential function grows so quickly
+
+        for(int i = 0; i < humanOpps.length; i++)
+        {
+            // prevent overflow from calculating the exponential function
+            // will now be a number between 0.0 and 5.0
+            double temp = (double)humanOpps[i].getRank() / rankDenominator;
+
+            // won't be actual win probability when for loop is complete
+            winProbability += Math.exp(temp);
+        }
+
+        double myFactoredRank = ((double)BaseActivity.multiplayerRank / rankDenominator);
+
+        // this is our real win probability
+        // should be a number between 0.0 and 1.0
+        winProbability =
+                Math.exp(myFactoredRank) /
+                (Math.exp(myFactoredRank) + winProbability);
+
+
+        if(isWinner)
+        {
+            BaseActivity.multiplayerRank =
+                    (long)((myFactoredRank + K * (1 - winProbability)) * rankDenominator);
+        }
+        else
+        {
+            BaseActivity.multiplayerRank =
+                    (long)((myFactoredRank - K * winProbability) * rankDenominator);
+
+            // don't allow negative ranks
+            if(BaseActivity.multiplayerRank < 0)
+            {
+                BaseActivity.multiplayerRank = 0;
+            }
+        }
+
+        return BaseActivity.multiplayerRank;
     }
 
     /****************************************

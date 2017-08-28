@@ -69,7 +69,7 @@ public class Bot {
         this.accuracy = accuracy;
     }
 
-    public int getXP(){return AVG_DELAY[skill]; }
+    public int getRank(){return AVG_DELAY[skill]; }
 
     //Get game object the bot is playing on
     public Game getGameObj(){return this.game;}
