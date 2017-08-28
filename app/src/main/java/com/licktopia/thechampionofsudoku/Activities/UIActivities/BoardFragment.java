@@ -2,6 +2,7 @@ package com.licktopia.thechampionofsudoku.Activities.UIActivities;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -298,12 +299,13 @@ public class BoardFragment extends Fragment {
         }
         else if(multiplayer)
         {
+            scoreBoard.setVisibility(GONE);
             mGame = ((BaseActivity)getActivity()).getMultiGame();
             if(mGame == null)
             {
                 mGame = new MultiGame(MultiGame.GameMode.RACE,
                         MultiGame.ConnectType.BOT_GAME,
-                        level, getContext(), null, null, null, null, getXp());
+                        level, getContext(), null, null, null, null);
             }
             initializePlayerTokens();
             if(!comeBackFlag){
@@ -719,6 +721,11 @@ public class BoardFragment extends Fragment {
                 }catch(Exception e){
                     Log.d(TAG, "endOfGame: Failed to upload to db");
                 }
+                try {
+                    Games.Leaderboards.submitScore(gameHelper.getApiClient(), getString(R.string.leaderboard_rank_multiplayer), ((MultiGame)mGame).updateMyRank(mGame.isGameFinished()), "1337");
+                }catch(Exception e){
+                    Log.d(TAG, "endOfGame: Failed to upload to db");
+                }
             }
             mHintsLayout.setVisibility(GONE);
             mEndGameLayout.setVisibility(View.VISIBLE);
@@ -881,11 +888,11 @@ public class BoardFragment extends Fragment {
         {
             if(mGame.isGameFinished())
             {
-                mTitleStats.setText("You win :)");
+                mTitleStats.setText(R.string.multiplayer_win);
             }
             else
             {
-                mTitleStats.setText("You are not a winner :(");
+                mTitleStats.setText(R.string.multiplayer_loss);
             }
             if(gameHelper.isSignedIn()) {
                 if(gameHelper.isSignedIn()) {
@@ -897,7 +904,34 @@ public class BoardFragment extends Fragment {
             else{
                 userIcon.setVisibility(GONE);
             }
+            mTotalXpStats.getLayoutParams().height = ActionBar.LayoutParams.WRAP_CONTENT;
+            // my rank text
+            mTotalXpStats.setText("Your Old Rank: " +
+                    String.format("%,d",((MultiGame)mGame).getMyOldRank()) +
+                    "\nYour New Rank: " + String.format("%,d",BaseActivity.multiplayerRank));
 
+
+            String oppRanks = "";
+
+            for(int i = 0; i < ((MultiGame)mGame).getTotalOpponents(); i++)
+            {
+                oppRanks += ((MultiGame)mGame).getOpponentName(i) + "'s Rank: " +
+                        String.format("%,d",((MultiGame)mGame).getOpponentRank(i)) + "\n";
+            }
+
+            mRpStats.getLayoutParams().height = ActionBar.LayoutParams.WRAP_CONTENT;
+
+            mRpStats.setText(oppRanks);
+            mLevelBonusStats.setText("");
+            mLevelBonusStats.setVisibility(View.INVISIBLE);
+            mTimeBonusStats.setText("");
+            mTimeBonusStats.setVisibility(View.INVISIBLE);
+            mGoodSquaresStats.setText("");
+            mGoodSquaresStats.setVisibility(View.INVISIBLE);
+            mAccuracyStats.setText("");
+            mAccuracyStats.setVisibility(View.INVISIBLE);
+            mPenalty.setText("");
+            mPenalty.setVisibility(View.INVISIBLE);
         }
         else
         {
@@ -910,23 +944,25 @@ public class BoardFragment extends Fragment {
             else{
                 userIcon.setVisibility(GONE);
             }
+            mTotalXpStats.setText(String.format("%,d",(int) gameXP)+ " XP");
+            mRpStats.setText("Multiplier: " + String.format("%,d",(int) mGame.getScore())+ " x " + String.format("%2.1f", callback.getMultiplier()));
+            mLevelBonusStats.setText("Level Bonus: " + String.format("%,d",(int) mGame.getLevelBonus()));
+            if((mGame.getEarlyFinishTime() - mGame.getRunningTime()) >= 0)
+            {
+                mTimeBonusStats.setText("Time Bonus: " + String.format("%,d",(int) (mGame.getEarlyFinishTime() - mGame.getRunningTime())) + " x " + String.format("%,d",(int) mGame.getEarlyFinishBonus()) );
+            }
+            else
+            {
+                mTimeBonusStats.setText("Time Bonus: 0 x " + String.format("%,d",(int) mGame.getEarlyFinishBonus()) );
+            }
+
+            mGoodSquaresStats.setText("Square Points: " + String.format("%,d",(int) mGame.getTotalOneTimeGuesses())+ " x " + String.format("%,d",(int) mGame.getOneTimeGuessSquareBonus()));
+            mAccuracyStats.setText("Accuracy: " + String.format("%,d",(int)Math.round(mGame.getAccuracy()*100),2)+"%");
+            mPenalty.setText("Penalty: " + String.format("%,d",(int) mGame.totalPenaltyTimeIntervals()) + " x " + String.format("%,d",(int) mGame.getTimePenalty()));
+
         }
 
-        mTotalXpStats.setText(String.format("%,d",(int) gameXP)+ " XP");
-        mRpStats.setText("Multiplier: " + String.format("%,d",(int) mGame.getScore())+ " x " + String.format("%2.1f", callback.getMultiplier()));
-        mLevelBonusStats.setText("Level Bonus: " + String.format("%,d",(int) mGame.getLevelBonus()));
-        if((mGame.getEarlyFinishTime() - mGame.getRunningTime()) >= 0)
-        {
-            mTimeBonusStats.setText("Time Bonus: " + String.format("%,d",(int) (mGame.getEarlyFinishTime() - mGame.getRunningTime())) + " x " + String.format("%,d",(int) mGame.getEarlyFinishBonus()) );
-        }
-        else
-        {
-            mTimeBonusStats.setText("Time Bonus: 0 x " + String.format("%,d",(int) mGame.getEarlyFinishBonus()) );
-        }
 
-        mGoodSquaresStats.setText("Square Points: " + String.format("%,d",(int) mGame.getTotalOneTimeGuesses())+ " x " + String.format("%,d",(int) mGame.getOneTimeGuessSquareBonus()));
-        mAccuracyStats.setText("Accuracy: " + String.format("%,d",(int)Math.round(mGame.getAccuracy()*100),2)+"%");
-        mPenalty.setText("Penalty: " + String.format("%,d",(int) mGame.totalPenaltyTimeIntervals()) + " x " + String.format("%,d",(int) mGame.getTimePenalty()));
 
 
 
@@ -1837,8 +1873,6 @@ public class BoardFragment extends Fragment {
         if(mGame.isGameFinished()&&!solveClicked){
                 endOfGame(false);
         }
-
-
     }
 
     /* Uses the BoardFragment UI to solve a puzzle given the solution steps */

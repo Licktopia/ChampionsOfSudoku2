@@ -127,6 +127,7 @@ public class BaseActivity extends BaseGameActivity
     public static String id = "0";
     public static int level=0;
     public static long xp;
+    public static long multiplayerRank = 0;
     //public static ArrayList<CompletedGame> completedGames;
     //public static ArrayList<SavedGame> savedGames;
     public static CognitoCachingCredentialsProvider credentialsProvider;
@@ -264,6 +265,17 @@ public class BaseActivity extends BaseGameActivity
         setLevel(xp);
     }
 
+
+    public static long getMultiplayerRank() {
+        return multiplayerRank;
+    }
+
+    public static void setMultiplayerRank(long rank) {
+
+        BaseActivity.multiplayerRank = rank;
+    }
+
+
     public static String getId() {
         return id;
     }
@@ -277,6 +289,7 @@ public class BaseActivity extends BaseGameActivity
         BaseActivity.id = null;
         BaseActivity.xp = 0;
         BaseActivity.level = 0;
+        BaseActivity.multiplayerRank = 0;
     }
 
     public static Long formatExactTime(String time) {
@@ -552,14 +565,14 @@ public class BaseActivity extends BaseGameActivity
 
         if(mMultiGame != null)
         {
-            Log.d(TAG, "mMultigame is null");
+            Log.d(TAG, "mMultigame is not null");
             mMultiGame.readMessage(buf);
         }
         else
         {
             Log.d(TAG, "Creating game object...");
             mMultiGame = MultiGame.byteToObj(buf, mParticipants,
-                    mMyId, gameHelper, mRoomId, xp);
+                    mMyId, gameHelper, mRoomId);
             if(mMultiGame != null)
             {
                 //Looks like post resume gets called before we get to this statement
@@ -591,7 +604,7 @@ public class BaseActivity extends BaseGameActivity
     public void onInvitationRemoved(String invitationId) {
 
         new AlertDialog.Builder(this)
-                .setMessage(getString(R.string.disconnectedFromRoom))
+                .setMessage(getString(R.string.invitation_removed))
                 .show();
         if (mIncomingInvitationId != null && mIncomingInvitationId.equals(invitationId)) {
             mIncomingInvitationId = null;
@@ -651,6 +664,10 @@ public class BaseActivity extends BaseGameActivity
         BaseGameUtils.makeSimpleDialog(this, getString(R.string.game_problem));
         switchToMainScreen();
         */
+        new AlertDialog.Builder(this)
+                .setMessage(getString(R.string.match_canceled))
+                .show();
+        switchToMainMenuFrag();
     }
 
     // Called when room has been created
@@ -684,7 +701,7 @@ public class BaseActivity extends BaseGameActivity
         updateRoom(room);
     }
 
-    //TODO onJoinedRoom
+
     @Override
     public void onJoinedRoom(int statusCode, Room room) {
         Log.d(TAG, "onJoinedRoom(" + statusCode + ", " + room + ")");
@@ -769,8 +786,7 @@ public class BaseActivity extends BaseGameActivity
                             mParticipants,
                             mMyId,
                             gameHelper,
-                            mRoomId,
-                            xp);
+                            mRoomId);
 
                     switchToBoard = true;
                     break;

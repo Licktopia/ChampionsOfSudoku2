@@ -436,6 +436,30 @@ public class MainMenuFragment extends Fragment {
                 }
 
             });
+
+            PendingResult rankResult = Games.Leaderboards.loadCurrentPlayerLeaderboardScore(gameHelper.getApiClient(),
+                    "CgkIjrCfsNsFEAIQGA", LeaderboardVariant.TIME_SPAN_ALL_TIME,
+                    LeaderboardVariant.COLLECTION_PUBLIC);
+
+            rankResult.setResultCallback(new ResultCallback<Leaderboards.LoadPlayerScoreResult>() {
+                @Override
+                public void onResult(Leaderboards.LoadPlayerScoreResult result) {
+                    // check if valid score
+                    if (result != null
+                            && GamesStatusCodes.STATUS_OK == result.getStatus().getStatusCode()
+                            && result.getScore() != null) {
+                        long highestScore = result.getScore().getRawScore();
+                        if(highestScore>=BaseActivity.getMultiplayerRank()) {
+                            Log.d(TAG, "You have a rank of " + Long.toString(BaseActivity.getMultiplayerRank()));
+                            BaseActivity.setMultiplayerRank(highestScore);
+                        }
+                    }
+
+                }
+
+            });
+
+
         }
         else{
 
