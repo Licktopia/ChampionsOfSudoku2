@@ -68,6 +68,7 @@ import com.licktopia.thechampionofsudoku.Tags;
 import com.squareup.picasso.Picasso;
 
 import java.lang.reflect.Array;
+import java.security.spec.ECField;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -889,11 +890,13 @@ public class BoardFragment extends Fragment {
                 mTitleStats.setText("You are not a winner :(");
             }
             if(gameHelper.isSignedIn()) {
-                if(gameHelper.isSignedIn()) {
                     CircleTransform cf = new CircleTransform();
                     String me = Games.Players.getCurrentPlayer(gameHelper.getApiClient()).getIconImageUrl();
-                    Picasso.with(getActivity()).load(me).transform(cf).into(userIcon);
-                }
+                    try {
+                        Picasso.with(getActivity()).load(me).transform(cf).into(userIcon);
+                    }catch(Exception e){
+
+                    }
             }
             else{
                 userIcon.setVisibility(GONE);
@@ -906,7 +909,11 @@ public class BoardFragment extends Fragment {
             if(gameHelper.isSignedIn()) {
                 CircleTransform cf = new CircleTransform();
                 String me = Games.Players.getCurrentPlayer(gameHelper.getApiClient()).getIconImageUrl();
-                Picasso.with(getActivity()).load(me).transform(cf).into(userIcon);
+                try {
+                    Picasso.with(getActivity()).load(me).transform(cf).into(userIcon);
+                }catch(Exception e){
+
+                }
             }
             else{
                 userIcon.setVisibility(GONE);
