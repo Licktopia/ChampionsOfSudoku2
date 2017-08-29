@@ -226,11 +226,11 @@ public class Game implements GameInterface, java.io.Serializable
         if(isPaused)
         {
             isPaused = false;
-            startTime = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
+            startTime = System.currentTimeMillis();
         }
     }
 
-    //returns running time in seconds
+    //returns running time in milliseconds
     public long getRunningTime()
     {
         //clock has not be unpaused
@@ -238,7 +238,7 @@ public class Game implements GameInterface, java.io.Serializable
         {
             return runningTime;
         }
-        long endTime = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
+        long endTime = System.currentTimeMillis();
         return runningTime + endTime - startTime;
     }
 
@@ -310,9 +310,7 @@ public class Game implements GameInterface, java.io.Serializable
     // At 50 secs total penalty is 20 pts and this function would return 2 intervals
     public long totalPenaltyTimeIntervals()
     {
-        long test = getRunningTime() / getRunningTimeRemovalInterval();
-
-        return getRunningTime() / getRunningTimeRemovalInterval();
+        return TimeUnit.MILLISECONDS.toSeconds(getRunningTime()) / getRunningTimeRemovalInterval();
     }
 
     public long totalIncorrectGuesses()
