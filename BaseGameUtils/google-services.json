@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "196327495694",
+    "firebase_url": "https://thechampionofsudoku.firebaseio.com",
+    "project_id": "thechampionofsudoku",
+    "storage_bucket": "thechampionofsudoku.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:196327495694:android:0346901ff83d9859",
+        "android_client_info": {
+          "package_name": "com.google.example.games.basegameutils"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "196327495694-q7m1ja9565a555vab0fqts6fm1h26h8o.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "196327495694-s7m81lj6mhuns982ipti9lrf0uml4t9b.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.google.example.games.basegameutils",
+            "certificate_hash": "fd5e3216527b9c22b17c392157ed6460b749d33a"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "REDACTED"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "196327495694-q7m1ja9565a555vab0fqts6fm1h26h8o.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
