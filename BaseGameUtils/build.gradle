@@ -22,8 +22,9 @@ dependencies {
         ext.gms_library_version = '11.0.1'
     }
 
-    compile 'com.google.android.gms:play-services-games:11.0.2'
-    compile 'com.google.android.gms:play-services-plus:11.0.2'
+    compile 'com.google.firebase:firebase-auth:11.2.0'
+    compile 'com.google.android.gms:play-services-games:11.2.0'
+    compile 'com.google.android.gms:play-services-plus:11.2.0'
     compile "com.android.support:support-v4:${support_library_version}"
     compile 'com.android.support:appcompat-v7:25.3.1'
 
@@ -54,6 +55,3 @@ android {
         targetSdkVersion android_compile_version
     }
 }
-
-
-apply plugin: 'com.google.gms.google-services'

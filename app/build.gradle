@@ -17,6 +17,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    dexOptions {
+        jumboMode true
+    }
+
 }
 repositories {
     maven { url "https://jitpack.io" }
@@ -28,10 +32,10 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     compile project(':BaseGameUtils')
-    compile 'com.google.firebase:firebase-database:11.0.1'
-    compile 'com.google.firebase:firebase-auth:10.0.1'
-    compile 'com.google.android.gms:play-services-games:11.0.2'
-    compile 'com.google.android.gms:play-services-drive:11.0.2'
+    compile 'com.google.firebase:firebase-database:11.2.0'
+    compile 'com.google.firebase:firebase-auth:11.2.0'
+    compile 'com.google.android.gms:play-services-games:11.2.0'
+    compile 'com.google.android.gms:play-services-drive:11.2.0'
     compile 'com.android.support:support-v4:25.3.1'
     compile 'com.android.support:support-v4:25.3.1'
     compile 'com.android.support:appcompat-v7:25.3.1'
