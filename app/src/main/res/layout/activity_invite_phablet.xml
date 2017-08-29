@@ -14,14 +14,14 @@
         android:gravity="center"
         android:text="JOIN GAME"
         android:textColor="@color/white"
-        android:textSize="28sp"
+        android:textSize="26sp"
         android:textStyle="bold" />
 
     <Button
         android:id="@+id/decline_button"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_margin="5dp"
+        android:layout_margin="8dp"
         android:layout_weight="25"
         android:background="@drawable/multiplayer_button"
         android:text="Decline"
@@ -32,7 +32,7 @@
         android:id="@+id/button_accept_popup_invitation"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_margin="5dp"
+        android:layout_margin="8dp"
         android:layout_weight="25"
         android:background="@drawable/multiplayer_button"
         android:text="Accept"

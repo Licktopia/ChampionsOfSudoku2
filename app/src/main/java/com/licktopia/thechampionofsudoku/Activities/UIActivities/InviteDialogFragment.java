@@ -39,7 +39,7 @@ public class InviteDialogFragment extends DialogFragment {
         }
         else if(phoneSize == 2){
             inviteDialogFragment = getActivity().getLayoutInflater()
-                    .inflate(R.layout.activity_invite_large, null);
+                    .inflate(R.layout.activity_invite, null);
         }
         else if(phoneSize == 3){
             inviteDialogFragment = getActivity().getLayoutInflater()

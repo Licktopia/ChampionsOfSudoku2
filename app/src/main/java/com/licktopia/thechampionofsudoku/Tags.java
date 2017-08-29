@@ -89,4 +89,6 @@ public class Tags {
     public static int[] PlayerTags = {R.id.player1,R.id.player2,R.id.player3,R.id.player4,R.id.player5,R.id.player6,R.id.player7,R.id.player8};
     public static String[] Levels = {"Beginner","Easy","Medium","Hard","Expert","Master"};
     public static int [] levelSorter = {R.id.beg, R.id.eas, R.id.med, R.id.har, R.id.exp, R.id.mas};
+    public static int[] colorKeypadButtons = {R.drawable.badgebuttonfinal,R.drawable.begbuttonfinal,R.drawable.leaderbuttonfinal,R.drawable.expbuttonfinal,R.drawable.morbuttonfinal,
+                                            R.drawable.masbuttonfinal,R.drawable.harbuttonfinal,R.drawable.easbuttonfinal,R.drawable.exitbuttonfinal};
 }

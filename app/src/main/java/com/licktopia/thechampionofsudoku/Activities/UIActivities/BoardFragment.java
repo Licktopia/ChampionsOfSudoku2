@@ -132,7 +132,7 @@ public class BoardFragment extends Fragment {
     private long timeWhenStopped;
     private Handler highlightHandler;
 
-    private LinearLayout mHintsLayout;
+    private RelativeLayout mHintsLayout;
     private LinearLayout mEndGameLayout;
     private ImageView userBadge;
     private TextView userText;
@@ -261,7 +261,7 @@ public class BoardFragment extends Fragment {
         mRedoButton = (ImageButton)view.findViewById(R.id.forwardButton);
         notepadIcon = (ImageButton) view.findViewById(R.id.scratch);
         scoreBoard = (TextView)view.findViewById(R.id.score);
-        mHintsLayout = (LinearLayout) view.findViewById(R.id.hints_layout);
+        mHintsLayout = (RelativeLayout) view.findViewById(R.id.hints_layout);
         mEndGameLayout = (LinearLayout)view.findViewById(R.id.end_game_layout);
         userBadge = (ImageView)view.findViewById(R.id.user_image);
         userText = (TextView)view.findViewById(R.id.user_text);
@@ -1534,7 +1534,7 @@ public class BoardFragment extends Fragment {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     Set<Integer> conflicts = mGame.checkCurrentProgress();  // Check for errors
                     if (conflicts.isEmpty()) {
-                        v.setBackground(getResources().getDrawable(R.drawable.hint_button_pressed));
+                        v.setBackground(getResources().getDrawable(R.drawable.exitbuttonpressed,null));
                         showHint(strategyNum);
                     }
                     else {
@@ -1548,7 +1548,7 @@ public class BoardFragment extends Fragment {
                     }
                 }
                 if (event.getAction() == MotionEvent.ACTION_UP) {
-                    v.setBackground(getResources().getDrawable(R.drawable.hint_rounded_button));
+                    v.setBackground(getResources().getDrawable(R.drawable.exitbutton,null));
                     mGame.restoreAllNotepads();
                     updateBoard();
                     removeAllHighlights();
@@ -1906,7 +1906,7 @@ public class BoardFragment extends Fragment {
 
         if(!multiplayer){
             ViewGroup.LayoutParams params = botBar.getLayoutParams();
-            int view_height = d.getHeight();
+            //int view_height = d.getHeight();
             params.height = 0;
             botBar.setLayoutParams(params);
         }
@@ -1914,41 +1914,41 @@ public class BoardFragment extends Fragment {
         /////make board unclickable, made clickable after start animation
         allClickable(false);
         if(multiplayer){
-            hintButton.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
+            hintButton.setTextColor(getResources().getColor(R.color.colorPrimaryDark,null));
             mHintsLayout.setClickable(false);
         }
         /////set keypad colors
         for (int i = 0; i < size; i++) {
             if (!colorGame) {
-                numberButtons[i].setBackgroundColor(getResources().getColor(R.color.colorKeypad));
+                numberButtons[i].setBackground(getResources().getDrawable(R.drawable.numberbuttonfinal,null));
                 numberButtons[i].setText(String.format("%d", i + 1));
             } else {
-                numberButtons[i].setBackgroundColor(getResources().getColor(Tags.colors[i]));
+                numberButtons[i].setBackground(getResources().getDrawable(Tags.colorKeypadButtons[i],null));
                 numberButtons[i].setText("");
             }
         }
         /////reset all keypad buttons to original color
         RelativeLayout notepadBackground = (RelativeLayout) view.findViewById(R.id.scratch_bg);
-        notepadBackground.setBackgroundColor(getResources().getColor(R.color.colorKeypad));
-        clearButton.setBackgroundColor(getResources().getColor(R.color.colorKeypad));
-        hintButton.setBackgroundColor(getResources().getColor(R.color.colorKeypad));
+        notepadBackground.setBackgroundColor(getResources().getColor(R.color.colorKeypad,null));
+        clearButton.setBackgroundColor(getResources().getColor(R.color.colorKeypad,null));
+        hintButton.setBackgroundColor(getResources().getColor(R.color.colorKeypad,null));
 
         /////////set notepadbutton with correct image, color or number
 
         ImageView artHolder = (ImageView)view.findViewById(R.id.artHolder);
         if (!colorGame) {
-            notepadIcon.setImageDrawable(getResources().getDrawable(R.drawable.numbers));
+            notepadIcon.setImageDrawable(getResources().getDrawable(R.drawable.numbers,null));
             artHolder.setImageDrawable(null);
 
         } else {
-            notepadIcon.setImageDrawable(getResources().getDrawable(R.drawable.colors));
+            notepadIcon.setImageDrawable(getResources().getDrawable(R.drawable.colors,null));
             BackgroundImages mBackgroundImages = new BackgroundImages();
 
             if(resume){
-                artHolder.setImageDrawable(getResources().getDrawable(mBackgroundImages.getImage(mGame.getImageNumber())));
+                artHolder.setImageDrawable(getResources().getDrawable(mBackgroundImages.getImage(mGame.getImageNumber()),null));
             }
             else {
-                artHolder.setImageDrawable(getResources().getDrawable(mBackgroundImages.getImage()));
+                artHolder.setImageDrawable(getResources().getDrawable(mBackgroundImages.getImage(),null));
                 mGame.setImageNumber(mBackgroundImages.getPictureNumber());
             }
             //int imageNumber = mBackgroundImages.getPictureNumber();
