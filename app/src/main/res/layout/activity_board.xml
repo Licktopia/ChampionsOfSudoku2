@@ -1598,7 +1598,7 @@
             android:layout_centerHorizontal="true"
             android:layout_weight="20"
             android:visibility="visible"
-            tools:visibility="gone">
+            tools:visibility="visible">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -1634,7 +1634,7 @@
                             android:layout_height="match_parent"
                             android:layout_marginLeft="0dp"
                             android:layout_weight="10"
-                            android:background="@color/colorKeypad"
+                            android:background="@drawable/numberbuttonfinal"
                             android:hapticFeedbackEnabled="true"
                             android:text="1"
                             android:textColor="@android:color/white"
@@ -1669,7 +1669,7 @@
                             android:layout_height="match_parent"
                             android:layout_marginLeft="0dp"
                             android:layout_weight="10"
-                            android:background="@color/colorKeypad"
+                            android:background="@drawable/numberbuttonfinal"
                             android:hapticFeedbackEnabled="true"
                             android:text="2"
                             android:textColor="@android:color/white"
@@ -1702,7 +1702,7 @@
                             android:layout_height="match_parent"
                             android:layout_marginLeft="0dp"
                             android:layout_weight="10"
-                            android:background="@color/colorKeypad"
+                            android:background="@drawable/numberbuttonfinal"
                             android:hapticFeedbackEnabled="true"
                             android:text="3"
                             android:textColor="@android:color/white"
@@ -1735,7 +1735,7 @@
                             android:layout_height="match_parent"
                             android:layout_marginLeft="0dp"
                             android:layout_weight="10"
-                            android:background="@color/colorKeypad"
+                            android:background="@drawable/numberbuttonfinal"
                             android:hapticFeedbackEnabled="true"
                             android:text="4"
                             android:textColor="@android:color/white"
@@ -1768,7 +1768,7 @@
                             android:layout_height="match_parent"
                             android:layout_marginLeft="0dp"
                             android:layout_weight="10"
-                            android:background="@color/colorKeypad"
+                            android:background="@drawable/numberbuttonfinal"
                             android:hapticFeedbackEnabled="true"
                             android:lines="3"
                             android:text="5"
@@ -1825,6 +1825,21 @@
                     android:weightSum="60">
 
 
+                    <Button
+                        android:id="@+id/clear"
+                        style="@style/Widget.AppCompat.Button.Borderless"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="0dp"
+                        android:layout_marginRight="0dp"
+                        android:layout_weight="10"
+                        android:background="@drawable/numberbuttonfinal"
+                        android:hapticFeedbackEnabled="true"
+                        android:text="Clear"
+                        android:textColor="#d3d3d3"
+                        android:textSize="13sp"
+                        android:visibility="visible" />
+
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -1837,7 +1852,7 @@
                             android:layout_height="match_parent"
                             android:layout_marginLeft="0dp"
                             android:layout_weight="10"
-                            android:background="@color/colorKeypad"
+                            android:background="@drawable/numberbuttonfinal"
                             android:hapticFeedbackEnabled="true"
                             android:text="6"
                             android:textColor="@android:color/white"
@@ -1871,7 +1886,7 @@
                             android:layout_height="match_parent"
                             android:layout_marginLeft="0dp"
                             android:layout_weight="10"
-                            android:background="@color/colorKeypad"
+                            android:background="@drawable/numberbuttonfinal"
                             android:hapticFeedbackEnabled="true"
                             android:text="7"
                             android:textColor="@android:color/white"
@@ -1904,7 +1919,7 @@
                             android:layout_height="match_parent"
                             android:layout_marginLeft="0dp"
                             android:layout_weight="10"
-                            android:background="@color/colorKeypad"
+                            android:background="@drawable/numberbuttonfinal"
                             android:hapticFeedbackEnabled="true"
                             android:text="8"
                             android:textColor="@android:color/white"
@@ -1938,7 +1953,7 @@
                             android:layout_height="match_parent"
                             android:layout_marginLeft="0dp"
                             android:layout_weight="10"
-                            android:background="@color/colorKeypad"
+                            android:background="@drawable/numberbuttonfinal"
                             android:hapticFeedbackEnabled="true"
                             android:text="9"
                             android:textColor="@android:color/white"
@@ -1960,21 +1975,6 @@
                     </RelativeLayout>
 
                     <Button
-                        android:id="@+id/clear"
-                        style="@style/Widget.AppCompat.Button.Borderless"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginLeft="0dp"
-                        android:layout_marginRight="0dp"
-                        android:layout_weight="10"
-                        android:background="@color/colorKeypad"
-                        android:hapticFeedbackEnabled="true"
-                        android:text="Clear"
-                        android:textColor="#d3d3d3"
-                        android:textSize="13sp"
-                        android:visibility="visible" />
-
-                    <Button
                         android:id="@+id/hints"
                         style="@style/Widget.AppCompat.Button.Borderless"
                         android:layout_width="match_parent"
@@ -1982,7 +1982,7 @@
                         android:layout_marginLeft="0dp"
                         android:layout_marginRight="0dp"
                         android:layout_weight="10"
-                        android:background="@color/colorKeypad"
+                        android:background="@drawable/numberbuttonfinal"
                         android:hapticFeedbackEnabled="true"
                         android:text="Hints"
                         android:textColor="#d3d3d3"
@@ -2019,7 +2019,7 @@
             android:visibility="gone"
             android:weightSum="2"
             tools:scaleY="1"
-            tools:visibility="visible">
+            tools:visibility="gone">
 
 
             <LinearLayout
@@ -2165,232 +2165,249 @@
 
             </LinearLayout>
 
-            <LinearLayout
+            <RelativeLayout
                 android:id="@+id/hints_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_margin="3dp"
+                android:background="@color/colorFondoTrans"
                 android:orientation="horizontal"
                 android:scrollbars="none"
                 android:visibility="visible"
                 android:weightSum="5">
 
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:weightSum="2">
+                    android:orientation="horizontal"
+                    android:weightSum="5">
 
-                    <Button
-                        android:id="@+id/progressButton"
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginBottom="3dp"
-                        android:layout_marginRight="2dp"
+                        android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:background="@drawable/hint_rounded_button"
-                        android:clickable="false"
-                        android:padding="3dp"
-                        android:text="Check Progress"
-                        android:textColor="@color/white"
-                        android:textSize="8sp"
-                        tools:visibility="visible" />
+                        android:orientation="vertical"
+                        android:weightSum="2">
 
-                    <Button
-                        android:id="@+id/solveButton"
+                        <Button
+                            android:id="@+id/progressButton"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginBottom="2dp"
+                            android:layout_marginRight="2dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/exitbuttonfinal"
+                            android:clickable="false"
+                            android:padding="3dp"
+                            android:text="Check Progress"
+                            android:textColor="@color/white"
+                            android:textSize="11sp"
+                            tools:visibility="visible" />
+
+                        <Button
+                            android:id="@+id/solveButton"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginRight="2dp"
+                            android:layout_marginTop="2dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/masbuttonfinal"
+                            android:clickable="false"
+                            android:padding="3dp"
+                            android:text="Solve Now"
+                            android:textColor="@color/white"
+                            android:textSize="11sp"
+                            tools:visibility="visible" />
+                    </LinearLayout>
+
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginRight="2dp"
-                        android:layout_marginTop="3dp"
+                        android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:background="@drawable/rounded_button"
-                        android:clickable="false"
-                        android:padding="3dp"
-                        android:text="Solve Now"
-                        android:textColor="?android:attr/textColorSecondary"
-                        android:textSize="8sp"
-                        tools:visibility="visible" />
+                        android:orientation="vertical"
+                        android:weightSum="2">
+
+                        <Button
+                            android:id="@+id/naked_single"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginBottom="2dp"
+                            android:layout_marginLeft="2dp"
+                            android:layout_marginRight="2dp"
+                            android:layout_weight="1"
+                            android:alpha="1"
+                            android:background="@drawable/exitbuttonfinal"
+                            android:clickable="false"
+                            android:padding="3dp"
+                            android:text="Naked Single"
+                            android:textColor="@color/white"
+                            android:textSize="11sp"
+                            tools:visibility="visible" />
+
+                        <Button
+                            android:id="@+id/naked_double"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginLeft="2dp"
+                            android:layout_marginRight="2dp"
+                            android:layout_marginTop="2dp"
+                            android:layout_weight="1"
+                            android:alpha="1"
+                            android:background="@drawable/exitbuttonfinal"
+                            android:clickable="false"
+                            android:padding="3dp"
+                            android:text="Naked Pair"
+                            android:textColor="@color/white"
+                            android:textSize="11sp"
+                            tools:visibility="visible" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:weightSum="2">
+
+                        <Button
+                            android:id="@+id/hidden_single"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginBottom="2dp"
+                            android:layout_marginLeft="2dp"
+                            android:layout_marginRight="2dp"
+                            android:layout_weight="1"
+                            android:alpha="1"
+                            android:background="@drawable/exitbuttonfinal"
+                            android:clickable="false"
+                            android:padding="3dp"
+                            android:text="Hidden Single"
+                            android:textColor="@color/white"
+                            android:textSize="11sp"
+                            tools:visibility="visible" />
+
+                        <Button
+                            android:id="@+id/hidden_pair"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginLeft="2dp"
+                            android:layout_marginRight="2dp"
+                            android:layout_marginTop="2dp"
+                            android:layout_weight="1"
+                            android:alpha="1"
+                            android:background="@drawable/exitbuttonfinal"
+                            android:clickable="false"
+                            android:padding="3dp"
+                            android:text="Hidden Pair"
+                            android:textColor="@color/white"
+                            android:textSize="11sp"
+                            tools:visibility="visible" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:weightSum="2">
+
+                        <Button
+                            android:id="@+id/locked_candidate"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginBottom="2dp"
+                            android:layout_marginLeft="2dp"
+                            android:layout_marginRight="2dp"
+                            android:layout_weight="1"
+                            android:alpha="1"
+                            android:background="@drawable/exitbuttonfinal"
+                            android:clickable="false"
+                            android:padding="3dp"
+                            android:text="Locked Candidate"
+                            android:textColor="@color/white"
+                            android:textSize="11sp"
+                            tools:visibility="visible" />
+
+                        <Button
+                            android:id="@+id/x_wing"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginLeft="2dp"
+                            android:layout_marginRight="2dp"
+                            android:layout_marginTop="2dp"
+                            android:layout_weight="1"
+                            android:alpha="1"
+                            android:background="@drawable/exitbuttonfinal"
+                            android:clickable="false"
+                            android:padding="3dp"
+                            android:text="X-Wing"
+                            android:textColor="@color/white"
+                            android:textSize="11sp"
+                            tools:visibility="visible" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:weightSum="2">
+
+                        <Button
+                            android:id="@+id/naked_triple"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginBottom="2dp"
+                            android:layout_marginLeft="2dp"
+                            android:layout_weight="1"
+                            android:alpha="1"
+                            android:background="@drawable/exitbuttonfinal"
+                            android:clickable="false"
+                            android:padding="3dp"
+                            android:text="Naked Triple"
+                            android:textColor="@color/white"
+                            android:textSize="11sp"
+                            tools:visibility="visible" />
+
+                        <Button
+                            android:id="@+id/y_wing"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginLeft="2dp"
+                            android:layout_marginTop="2dp"
+                            android:layout_weight="1"
+                            android:alpha="1"
+                            android:background="@drawable/exitbuttonfinal"
+                            android:clickable="false"
+                            android:padding="3dp"
+                            android:text="Y-Wing"
+                            android:textColor="@color/white"
+                            android:textSize="11sp"
+                            tools:visibility="visible" />
+                    </LinearLayout>
+
                 </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="0dp"
+                <ImageView
+                    android:id="@+id/imageView17"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:weightSum="2">
-
-                    <Button
-                        android:id="@+id/naked_single"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginBottom="3dp"
-                        android:layout_marginLeft="2dp"
-                        android:layout_marginRight="2dp"
-                        android:layout_weight="1"
-                        android:alpha="1"
-                        android:background="@drawable/hint_rounded_button"
-                        android:clickable="false"
-                        android:padding="3dp"
-                        android:text="Naked Single"
-                        android:textColor="@color/white"
-                        android:textSize="8sp"
-                        tools:visibility="visible" />
-
-                    <Button
-                        android:id="@+id/naked_double"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="2dp"
-                        android:layout_marginRight="2dp"
-                        android:layout_marginTop="3dp"
-                        android:layout_weight="1"
-                        android:alpha="1"
-                        android:background="@drawable/hint_rounded_button"
-                        android:clickable="false"
-                        android:padding="3dp"
-                        android:text="Naked Pair"
-                        android:textColor="@color/white"
-                        android:textSize="8sp"
-                        tools:visibility="visible" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:weightSum="2">
-
-                    <Button
-                        android:id="@+id/hidden_single"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginBottom="3dp"
-                        android:layout_marginLeft="2dp"
-                        android:layout_marginRight="2dp"
-                        android:layout_weight="1"
-                        android:alpha="1"
-                        android:background="@drawable/hint_rounded_button"
-                        android:clickable="false"
-                        android:padding="3dp"
-                        android:text="Hidden Single"
-                        android:textColor="@color/white"
-                        android:textSize="8sp"
-                        tools:visibility="visible" />
-
-                    <Button
-                        android:id="@+id/hidden_pair"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="2dp"
-                        android:layout_marginRight="2dp"
-                        android:layout_marginTop="3dp"
-                        android:layout_weight="1"
-                        android:alpha="1"
-                        android:background="@drawable/hint_rounded_button"
-                        android:clickable="false"
-                        android:padding="3dp"
-                        android:text="Hidden Pair"
-                        android:textColor="@color/white"
-                        android:textSize="8sp"
-                        tools:visibility="visible" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:weightSum="2">
-
-                    <Button
-                        android:id="@+id/locked_candidate"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginBottom="3dp"
-                        android:layout_marginLeft="2dp"
-                        android:layout_marginRight="2dp"
-                        android:layout_weight="1"
-                        android:alpha="1"
-                        android:background="@drawable/hint_rounded_button"
-                        android:clickable="false"
-                        android:padding="3dp"
-                        android:text="Locked Candidate"
-                        android:textColor="@color/white"
-                        android:textSize="8sp"
-                        tools:visibility="visible" />
-
-                    <Button
-                        android:id="@+id/x_wing"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="2dp"
-                        android:layout_marginRight="2dp"
-                        android:layout_marginTop="3dp"
-                        android:layout_weight="1"
-                        android:alpha="1"
-                        android:background="@drawable/hint_rounded_button"
-                        android:clickable="false"
-                        android:padding="3dp"
-                        android:text="X-Wing"
-                        android:textColor="@color/white"
-                        android:textSize="8sp"
-                        tools:visibility="visible" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:weightSum="2">
-
-                    <Button
-                        android:id="@+id/naked_triple"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginBottom="3dp"
-                        android:layout_marginLeft="2dp"
-                        android:layout_weight="1"
-                        android:alpha="1"
-                        android:background="@drawable/hint_rounded_button"
-                        android:clickable="false"
-                        android:padding="3dp"
-                        android:text="Naked Triple"
-                        android:textColor="@color/white"
-                        android:textSize="8sp"
-                        tools:visibility="visible" />
-
-                    <Button
-                        android:id="@+id/y_wing"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="2dp"
-                        android:layout_marginTop="3dp"
-                        android:layout_weight="1"
-                        android:alpha="1"
-                        android:background="@drawable/hint_rounded_button"
-                        android:clickable="false"
-                        android:padding="3dp"
-                        android:text="Y-Wing"
-                        android:textColor="@color/white"
-                        android:textSize="8sp"
-                        tools:visibility="visible" />
-                </LinearLayout>
+                    android:alpha=".15"
+                    android:scaleType="centerCrop"
+                    app:srcCompat="@drawable/keyboardbg" />
 
 
-            </LinearLayout>
+            </RelativeLayout>
 
         </LinearLayout>
 
