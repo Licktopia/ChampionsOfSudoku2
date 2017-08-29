@@ -1534,7 +1534,7 @@ public class BoardFragment extends Fragment {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     Set<Integer> conflicts = mGame.checkCurrentProgress();  // Check for errors
                     if (conflicts.isEmpty()) {
-                        v.setBackground(getResources().getDrawable(R.drawable.exitbuttonpressed,null));
+                        v.setBackground(getResources().getDrawable(R.drawable.badgebuttonpressed,null));
                         showHint(strategyNum);
                     }
                     else {
@@ -1548,7 +1548,7 @@ public class BoardFragment extends Fragment {
                     }
                 }
                 if (event.getAction() == MotionEvent.ACTION_UP) {
-                    v.setBackground(getResources().getDrawable(R.drawable.exitbutton,null));
+                    v.setBackground(getResources().getDrawable(R.drawable.badgebutton,null));
                     mGame.restoreAllNotepads();
                     updateBoard();
                     removeAllHighlights();
