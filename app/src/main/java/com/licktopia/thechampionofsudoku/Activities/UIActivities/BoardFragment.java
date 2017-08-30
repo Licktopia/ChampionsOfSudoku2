@@ -1005,20 +1005,12 @@ public class BoardFragment extends Fragment {
                 if(mGame.canUndo()) {
                     int square =  mGame.undo();
                     int value = mGame.getBoardValueAt(square);
-                    if(value!=0) {
-                        if (!colorGame) {
-                            squareViews[square].setBigNumber(0, false);
-                        } else {
-                            squareViews[square].setSquareColor(0, false);
-                        }
+
+                    if(!colorGame) {
+                        squareViews[square].setBigNumber(value, false);
                     }
                     else{
-                        if(!colorGame) {
-                            squareViews[square].setBigNumber(value, false);
-                        }
-                        else{
-                            squareViews[square].setSquareColor(value, false);
-                        }
+                        squareViews[square].setSquareColor(value, false);
                     }
                 }
                 updateUndoRedoButtons();
