@@ -7,6 +7,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -1537,6 +1538,10 @@ public class BoardFragment extends Fragment {
                     Set<Integer> conflicts = mGame.checkCurrentProgress();  // Check for errors
                     v.setBackground(getResources().getDrawable(R.drawable.badgebuttonpressed,null));
                     if (conflicts.isEmpty()) {
+                        mPlaySounds.playSounds(getContext(),11);
+                        if(level>0){
+                            scoreBoard.setTextColor(ContextCompat.getColor(getContext(), R.color.red));
+                        }
                         showHint(strategyNum);
                     }
                     else {
@@ -1550,6 +1555,8 @@ public class BoardFragment extends Fragment {
                     }
                 }
                 if (event.getAction() == MotionEvent.ACTION_UP) {
+                    mPlaySounds.stopPlaying();
+                    scoreBoard.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
                     v.setBackground(getResources().getDrawable(R.drawable.badgebutton,null));
                     mGame.restoreAllNotepads();
                     updateBoard();

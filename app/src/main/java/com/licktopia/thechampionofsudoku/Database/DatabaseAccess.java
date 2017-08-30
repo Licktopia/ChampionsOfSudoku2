@@ -128,6 +128,7 @@ public class DatabaseAccess {
         randomBoardIndex = _Rand.nextLong(0, numBoards);
         cursor.moveToPosition((int)randomBoardIndex);
         int[] board = convert(cursor.getString(1).toCharArray());
+        randomBoardIndex = Long.valueOf(cursor.getString(0));
         cursor.close();
         return board;
     }

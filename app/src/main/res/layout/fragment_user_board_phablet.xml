@@ -184,15 +184,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="18"
-                android:background="@color/white"
+                android:background="@color/colorFondoTrans"
                 android:orientation="horizontal"
-                android:paddingTop="3dp"
                 android:weightSum="5">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginRight="2dp"
+                    android:layout_marginRight="3dp"
                     android:layout_weight="1"
                     android:orientation="vertical">
 
@@ -201,7 +200,7 @@
                         style="@style/Widget.AppCompat.Button.Borderless"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginBottom="2dp"
+                        android:layout_marginBottom="3dp"
                         android:layout_weight="1"
                         android:background="@drawable/begbuttonfinal"
                         android:gravity="center"
@@ -214,7 +213,7 @@
                         style="@style/Widget.AppCompat.Button.Borderless"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginTop="2dp"
+                        android:layout_marginTop="3dp"
                         android:layout_weight="1"
                         android:background="@drawable/expbuttonfinal"
                         android:gravity="center"
@@ -226,8 +225,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginLeft="2dp"
-                    android:layout_marginRight="2dp"
+                    android:layout_marginLeft="3dp"
+                    android:layout_marginRight="3dp"
                     android:layout_weight="1"
                     android:orientation="vertical">
 
@@ -236,7 +235,7 @@
                         style="@style/Widget.AppCompat.Button.Borderless"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginBottom="2dp"
+                        android:layout_marginBottom="3dp"
                         android:layout_weight="1"
                         android:background="@drawable/easbuttonfinal"
                         android:gravity="center"
@@ -249,7 +248,7 @@
                         style="@style/Widget.AppCompat.Button.Borderless"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginTop="2dp"
+                        android:layout_marginTop="3dp"
                         android:layout_weight="1"
                         android:background="@drawable/masbuttonfinal"
                         android:gravity="center"
@@ -261,8 +260,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginLeft="2dp"
-                    android:layout_marginRight="2dp"
+                    android:layout_marginLeft="3dp"
+                    android:layout_marginRight="3dp"
                     android:layout_weight="1"
                     android:orientation="vertical">
 
@@ -271,7 +270,7 @@
                         style="@style/Widget.AppCompat.Button.Borderless"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginBottom="2dp"
+                        android:layout_marginBottom="3dp"
                         android:layout_weight="1"
                         android:background="@drawable/leaderbuttonfinal"
                         android:gravity="center"
@@ -284,7 +283,7 @@
                         style="@style/Widget.AppCompat.Button.Borderless"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginTop="2dp"
+                        android:layout_marginTop="3dp"
                         android:layout_weight="1"
                         android:background="@drawable/exitbuttonfinal"
                         android:gravity="center"
@@ -316,8 +315,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginLeft="2dp"
-                    android:layout_marginRight="2dp"
+                    android:layout_marginLeft="3dp"
+                    android:layout_marginRight="3dp"
                     android:layout_weight="1"
                     android:orientation="vertical">
 
@@ -326,7 +325,7 @@
                         style="@style/Widget.AppCompat.Button.Borderless"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginBottom="2dp"
+                        android:layout_marginBottom="3dp"
                         android:layout_weight="1"
                         android:background="@drawable/harbuttonfinal"
                         android:gravity="center"
@@ -339,7 +338,7 @@
                         style="@style/Widget.AppCompat.Button.Borderless"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginTop="2dp"
+                        android:layout_marginTop="3dp"
                         android:layout_weight="1"
                         android:background="@drawable/morbuttonfinal"
                         android:gravity="center"
@@ -373,7 +372,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginLeft="2dp"
+                    android:layout_marginLeft="3dp"
                     android:layout_weight="1"
                     android:orientation="vertical">
 
@@ -382,7 +381,7 @@
                         style="@style/Widget.AppCompat.Button.Borderless"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginBottom="2dp"
+                        android:layout_marginBottom="3dp"
                         android:layout_weight="1"
                         android:background="@drawable/badgebuttonfinal"
                         android:gravity="center"
@@ -414,7 +413,7 @@
                         style="@style/Widget.AppCompat.Button.Borderless"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginTop="2dp"
+                        android:layout_marginTop="3dp"
                         android:layout_weight="1"
                         android:background="@drawable/facebookbuttonfinal"
                         android:gravity="center"

@@ -269,7 +269,12 @@ public class SquareView {
 
     /* Sets highlight layout to given selected marker */
     private void setHighlightMarker() {
-       selectedSquare.setBackground(ContextCompat.getDrawable(context, R.drawable.selected_square_marker));
+        if(colorMode) {
+            selectedSquare.setBackground(ContextCompat.getDrawable(context, R.drawable.colormarker));
+        }
+        else{
+            selectedSquare.setBackgroundColor(ContextCompat.getColor(context, R.color.number_selected));
+        }
 
     }
     /* Sets Alpha back to full */
