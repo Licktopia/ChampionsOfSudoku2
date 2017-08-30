@@ -26,9 +26,15 @@ public class InviteDialogFragment extends DialogFragment {
         return new InviteDialogFragment();
     }
 
+
+
+
     @Override
     public Dialog onCreateDialog(Bundle bundle) {
         super.onCreateDialog(bundle);
+
+        Bundle args = getArguments();
+        String inviterName = args.getString("INVITER_NAME");
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
@@ -51,7 +57,7 @@ public class InviteDialogFragment extends DialogFragment {
         }
 
         builder.setView(inviteDialogFragment);
-        builder.setTitle(getString(R.string.invite_dialog_title));
+        builder.setTitle(inviterName + "\n" + getText(R.string.blank_wants_to_play_you));
 
         Button acceptButton = (Button)inviteDialogFragment.findViewById(R.id.button_accept_popup_invitation);
         acceptButton.setOnClickListener(new View.OnClickListener() {
@@ -72,6 +78,7 @@ public class InviteDialogFragment extends DialogFragment {
             @Override
             public void onClick(View view) {
                 getDialog().hide();
+                ((BaseActivity)getActivity()).declineInviteToRoom(null);
             }
         });
         return builder.create();

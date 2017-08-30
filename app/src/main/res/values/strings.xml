@@ -100,7 +100,7 @@
     <string name="invitation_removed">An invitation has been removed</string>
     <string name="multiplayer_win">You are a winner!</string>
     <string name="multiplayer_loss">You lost!</string>
-
+    <string name="blank_wants_to_play_you">has invited you to a match!</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
