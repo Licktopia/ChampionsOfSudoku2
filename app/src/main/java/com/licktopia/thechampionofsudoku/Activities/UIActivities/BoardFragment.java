@@ -1499,6 +1499,7 @@ public class BoardFragment extends Fragment {
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     Set<Integer> conflicts = mGame.checkCurrentProgress();  // Check for errors
+                    v.setBackground(getResources().getDrawable(R.drawable.badgebuttonpressed,null));
                     if (conflicts.isEmpty()) {
                         if(!solveClicked&&!mGame.isGameFinished()) {
                             mPlaySounds.playSounds(getContext(), 1);
@@ -1516,6 +1517,7 @@ public class BoardFragment extends Fragment {
                     }
                 }
                 if (event.getAction() == MotionEvent.ACTION_UP) {
+                    v.setBackground(getResources().getDrawable(R.drawable.badgebutton,null));
                     removeAllHighlights();
                     if (selectedSquare != -1) {
                         squareViews[selectedSquare].setSelectedHighlight();
@@ -1533,8 +1535,8 @@ public class BoardFragment extends Fragment {
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     Set<Integer> conflicts = mGame.checkCurrentProgress();  // Check for errors
+                    v.setBackground(getResources().getDrawable(R.drawable.badgebuttonpressed,null));
                     if (conflicts.isEmpty()) {
-                        v.setBackground(getResources().getDrawable(R.drawable.badgebuttonpressed,null));
                         showHint(strategyNum);
                     }
                     else {
@@ -1914,7 +1916,7 @@ public class BoardFragment extends Fragment {
         /////make board unclickable, made clickable after start animation
         allClickable(false);
         if(multiplayer){
-            hintButton.setTextColor(ContextCompat.getColor(getContext(), R.color.colorPrimaryDark));
+            hintButton.setTextColor(getResources().getColor(R.color.colorPrimaryDark,null));
             mHintsLayout.setClickable(false);
         }
         /////set keypad colors
@@ -1929,9 +1931,9 @@ public class BoardFragment extends Fragment {
         }
         /////reset all keypad buttons to original color
         RelativeLayout notepadBackground = (RelativeLayout) view.findViewById(R.id.scratch_bg);
-        notepadBackground.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorKeypad));
-        clearButton.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorKeypad));
-        hintButton.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorKeypad));
+        notepadBackground.setBackgroundColor(getResources().getColor(R.color.colorKeypad,null));
+        clearButton.setBackground(getResources().getDrawable(R.drawable.numberbuttonfinal,null));
+        hintButton.setBackground(getResources().getDrawable(R.drawable.numberbuttonfinal,null));
 
         /////////set notepadbutton with correct image, color or number
 
