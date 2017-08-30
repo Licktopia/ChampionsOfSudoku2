@@ -1929,18 +1929,18 @@ public class BoardFragment extends Fragment {
         /////set keypad colors
         for (int i = 0; i < size; i++) {
             if (!colorGame) {
-                numberButtons[i].setBackground(getResources().getDrawable(R.drawable.numberbuttonfinal,null));
+                numberButtons[i].setBackground(ContextCompat.getDrawable(getContext(),R.drawable.numberbuttonfinal));
                 numberButtons[i].setText(String.format("%d", i + 1));
             } else {
-                numberButtons[i].setBackground(getResources().getDrawable(Tags.colorKeypadButtons[i],null));
+                numberButtons[i].setBackground(ContextCompat.getDrawable(getContext(),Tags.colorKeypadButtons[i]));
                 numberButtons[i].setText("");
             }
         }
         /////reset all keypad buttons to original color
         RelativeLayout notepadBackground = (RelativeLayout) view.findViewById(R.id.scratch_bg);
         notepadBackground.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorKeypad));
-        clearButton.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorKeypad));
-        hintButton.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorKeypad));
+        clearButton.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.numberbuttonfinal));
+        hintButton.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.numberbuttonfinal));
 
         /////////set notepadbutton with correct image, color or number
 
