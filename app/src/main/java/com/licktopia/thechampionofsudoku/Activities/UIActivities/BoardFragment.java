@@ -1538,9 +1538,8 @@ public class BoardFragment extends Fragment {
                     Set<Integer> conflicts = mGame.checkCurrentProgress();  // Check for errors
                     v.setBackground(getResources().getDrawable(R.drawable.badgebuttonpressed,null));
                     if (conflicts.isEmpty()) {
-                        mPlaySounds.playSounds(getContext(),11);
                         if(level>0){
-                            scoreBoard.setTextColor(ContextCompat.getColor(getContext(), R.color.red));
+                            scoreBoard.setTextColor(ContextCompat.getColor(getContext(), R.color.color7));
                         }
                         showHint(strategyNum);
                     }
@@ -1604,6 +1603,7 @@ public class BoardFragment extends Fragment {
         updateBoard();
         Strategies.Hint hint = mGame.getHint(hintType);
         if (hint != null) {
+            mPlaySounds.playSounds(getContext(),11);
             hintDisplay(hint);
         }
         else {
