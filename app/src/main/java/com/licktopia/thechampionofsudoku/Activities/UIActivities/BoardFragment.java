@@ -521,6 +521,7 @@ public class BoardFragment extends Fragment {
                 fileSaveName = savedName;
             }
             long stoppedTime = mChronometer.getBase() - SystemClock.elapsedRealtime();
+            mGame.pauseTimer();
             Date dt = new Date();
             SimpleDateFormat dateFormat = new SimpleDateFormat("MMM d hh:mm aaa");
             SimpleDateFormat sdf = new SimpleDateFormat("hh:mm aaa");
