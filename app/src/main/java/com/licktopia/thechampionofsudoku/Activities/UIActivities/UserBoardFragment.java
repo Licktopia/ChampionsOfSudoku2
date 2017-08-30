@@ -113,6 +113,71 @@ public class UserBoardFragment extends Fragment {
         resetBigRange();
         titleLabel = (TextView)view.findViewById(R.id.board_layout_title);
         titleLabel.setText(R.string.all_level);
+
+        if(ShuffledList==null) {
+            mProgressBar = (ProgressBar) view.findViewById(R.id.usr_progress);
+            recyclerView = (RecyclerView) view.findViewById(R.id.user_board_rv);
+            gridLayoutManager = new GridLayoutManager(getContext(), gridNum);
+            recyclerView.setLayoutManager((gridLayoutManager));
+            LevelLists = new ArrayList[Tags.Levels.length];
+            completedGameIds = new HashSet<>();
+            /*
+            DividerItemDecoration itemDecoratorVer = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
+            itemDecoratorVer.setDrawable(getResources().getDrawable(R.drawable.spacer_vertical, null));
+            DividerItemDecoration itemDecoratorHor = new DividerItemDecoration(getContext(), DividerItemDecoration.HORIZONTAL);
+            itemDecoratorHor.setDrawable(getResources().getDrawable(R.drawable.spacer_horizontal, null));
+            recyclerView.addItemDecoration(itemDecoratorVer);
+            recyclerView.addItemDecoration(itemDecoratorHor);
+            */
+
+
+            Runnable runnable = new Runnable() {
+                public void run() {
+                    String partitionKey = BaseActivity.getId();
+                    CompletedGame cg = new CompletedGame();
+                    cg.setGamerID(partitionKey);
+                    final DynamoDBQueryExpression<CompletedGame> queryExpression = new DynamoDBQueryExpression<CompletedGame>()
+                            .withHashKeyValues(cg)
+                            .withConsistentRead(false);
+
+                    final List<CompletedGame>[] list = new List[]{new ArrayList<>()};
+                    try {
+                        list[0] = BaseActivity.mapper.query(CompletedGame.class, queryExpression);
+                    } catch (Exception e) {
+
+                    }
+                    completedGameIds.clear();
+                    for (int i = 0; i < list[0].size(); i++) {
+                        completedGameIds.add(list[0].get(i).getPuzzleNumber());
+                    }
+                    databaseAccess = DatabaseAccess.getInstance(getContext());
+                    databaseAccess.open();
+                    ShuffledList = new ArrayList<>();
+                    for (int i = 0; i < DISPLAY_AT_A_TIME; i++) {
+                        ShuffledList.add(databaseAccess.getSpecificBoardGame(bigRange.get(i)));
+                    }
+
+                    adapter = new UserGameListAdapter(ShuffledList, getContext(), color, completedGameIds);
+                    initializeButtons();
+                    try {
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                //execute code on main thread
+                                mProgressBar.setVisibility(GONE);
+                                recyclerView.setAdapter(adapter);
+                            }
+                        });
+                    } catch (Exception e) {
+
+                    }
+                }
+            };
+            Thread mythread = new Thread(runnable);
+            mythread.start();
+        }
+
+
         return view;
     }
 
@@ -158,73 +223,7 @@ public class UserBoardFragment extends Fragment {
     @Override
     public void onStart(){
         super.onStart();
-        if(ShuffledList==null) {
-            mProgressBar = (ProgressBar) view.findViewById(R.id.usr_progress);
-            recyclerView = (RecyclerView) view.findViewById(R.id.user_board_rv);
-            gridLayoutManager = new GridLayoutManager(getContext(), gridNum);
-            recyclerView.setLayoutManager((gridLayoutManager));
-            LevelLists = new ArrayList[Tags.Levels.length];
-            completedGameIds = new HashSet<>();
-            /*
-            DividerItemDecoration itemDecoratorVer = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
-            itemDecoratorVer.setDrawable(getResources().getDrawable(R.drawable.spacer_vertical, null));
-            DividerItemDecoration itemDecoratorHor = new DividerItemDecoration(getContext(), DividerItemDecoration.HORIZONTAL);
-            itemDecoratorHor.setDrawable(getResources().getDrawable(R.drawable.spacer_horizontal, null));
-            recyclerView.addItemDecoration(itemDecoratorVer);
-            recyclerView.addItemDecoration(itemDecoratorHor);
-            */
 
-
-            Runnable runnable = new Runnable() {
-                public void run() {
-                    String partitionKey = BaseActivity.getId();
-                    CompletedGame cg = new CompletedGame();
-                    cg.setGamerID(partitionKey);
-                    final DynamoDBQueryExpression<CompletedGame> queryExpression = new DynamoDBQueryExpression<CompletedGame>()
-                            .withHashKeyValues(cg)
-                            .withConsistentRead(false);
-
-                    final List<CompletedGame>[] list = new List[]{new ArrayList<>()};
-                    try {
-                        list[0] = BaseActivity.mapper.query(CompletedGame.class, queryExpression);
-                    } catch (Exception e) {
-
-                    }
-                    completedGameIds.clear();
-                    for (int i = 0; i < list[0].size(); i++) {
-                        completedGameIds.add(list[0].get(i).getPuzzleNumber());
-                    }
-
-
-
-
-
-                    databaseAccess = DatabaseAccess.getInstance(getContext());
-                    databaseAccess.open();
-                    ShuffledList = new ArrayList<>();
-                    for (int i = 0; i < DISPLAY_AT_A_TIME; i++) {
-                        ShuffledList.add(databaseAccess.getSpecificBoardGame(bigRange.get(i)));
-                    }
-
-                    adapter = new UserGameListAdapter(ShuffledList, getContext(), color, completedGameIds);
-                    initializeButtons();
-                    try {
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                //execute code on main thread
-                                mProgressBar.setVisibility(GONE);
-                                recyclerView.setAdapter(adapter);
-                            }
-                        });
-                    } catch (Exception e) {
-
-                    }
-                }
-            };
-            Thread mythread = new Thread(runnable);
-            mythread.start();
-        }
     }
 
     private void initializeButtons() {

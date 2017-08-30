@@ -101,72 +101,131 @@ public class PlaySounds {
                 }
             }
             else if(sound == 3){
-                mp = MediaPlayer.create(context, R.raw.win);
-                mp.start();
+                try {
+                    mp = MediaPlayer.create(context, R.raw.win);
+                    mp.start();
+                }catch(Exception e){
+
+                }
 
             }
             else if(sound == 4){
-                mp = MediaPlayer.create(context, R.raw.level_up);
-                mp.start();
+                try {
+                    mp = MediaPlayer.create(context, R.raw.level_up);
+                    mp.start();
+                }catch(Exception e){
+
+                }
 
             }
 
             else if(sound == 5){
-                mp = MediaPlayer.create(context,R.raw.lick);
-                mp.start();
+                try {
+                    mp = MediaPlayer.create(context, R.raw.lick);
+                    mp.start();
+                }catch(Exception e){
+
+                }
 
             }
 
             else if(sound == 6){
+                try {
                 mp = MediaPlayer.create(context,R.raw.startgame);
                 mp.start();
+                } catch(Exception e){
+                }
             }
 
             else if(sound == 7){
-                mp = MediaPlayer.create(context,R.raw.connected);
-                mp.start();
+                try {
+                    mp = MediaPlayer.create(context, R.raw.connected);
+                    mp.start();
+                }catch(Exception e){
+
+                }
             }
 
             else if(sound == 8){
-                mp = MediaPlayer.create(context,R.raw.disconnected);
-                mp.start();
+                try {
+                    mp = MediaPlayer.create(context, R.raw.disconnected);
+                    mp.start();
+                }catch(Exception e){
+
+                }
             }
 
             else if(sound == 9){
-                mp = MediaPlayer.create(context,R.raw.clock);
-                mp.start();
+                try {
+                    mp = MediaPlayer.create(context, R.raw.clock);
+                    mp.start();
+                }catch(Exception e){
+
+                }
             }
 
             else if(sound == 10){
-                mp = MediaPlayer.create(context,R.raw.whoosh);
-                mp.start();
+                try {
+                    mp = MediaPlayer.create(context, R.raw.whoosh);
+                    mp.start();
+                }catch(Exception e){
+
+                }
             }
             else if(sound == 11){
-                mp = MediaPlayer.create(context,R.raw.aura);
-                mp.start();
-                mp.setLooping(true);
+                int randomNum = ThreadLocalRandom.current().nextInt(1, 4);
+                try {
+                    if(randomNum == 1) {
+                        mp = MediaPlayer.create(context, R.raw.aura);
+                    }
+                    else if(randomNum ==2){
+                        mp = MediaPlayer.create(context, R.raw.sonar);
+                    }
+                    else{
+                        mp = MediaPlayer.create(context, R.raw.fairytale);
+                    }
+                    mp.start();
+                    mp.setLooping(true);
+                }catch(Exception e){
+
+                }
             }
 
 
             mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                 @Override
                 public void onCompletion(MediaPlayer mp) {
+                    try{
                     if(mp.isPlaying()) {
                         mp.stop();
+                        }
+                    }catch(Exception e){
                     }
-                    if (mp != null) {
-                        mp.release();
+                    try {
+                        if (mp != null) {
+                            mp.release();
+                        }
+                    }catch(Exception e){
                     }
-
                 }
             });
 
         }
     }
     public void stopPlaying(){
-        mp.stop();
-        if (mp != null) {
-            mp.release();
+        try {
+            if (mp.isPlaying()) {
+                mp.stop();
+            }
+        }catch(Exception e){
+
+        }
+        try {
+            if (mp != null) {
+                mp.release();
+            }
+        }catch(Exception e){
+
         }
     }
 }
