@@ -1914,7 +1914,7 @@ public class BoardFragment extends Fragment {
         /////make board unclickable, made clickable after start animation
         allClickable(false);
         if(multiplayer){
-            hintButton.setTextColor(getResources().getColor(R.color.colorPrimaryDark,null));
+            hintButton.setTextColor(ContextCompat.getColor(getContext(), R.color.colorPrimaryDark));
             mHintsLayout.setClickable(false);
         }
         /////set keypad colors
@@ -1929,9 +1929,9 @@ public class BoardFragment extends Fragment {
         }
         /////reset all keypad buttons to original color
         RelativeLayout notepadBackground = (RelativeLayout) view.findViewById(R.id.scratch_bg);
-        notepadBackground.setBackgroundColor(getResources().getColor(R.color.colorKeypad,null));
-        clearButton.setBackgroundColor(getResources().getColor(R.color.colorKeypad,null));
-        hintButton.setBackgroundColor(getResources().getColor(R.color.colorKeypad,null));
+        notepadBackground.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorKeypad));
+        clearButton.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorKeypad));
+        hintButton.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorKeypad));
 
         /////////set notepadbutton with correct image, color or number
 
