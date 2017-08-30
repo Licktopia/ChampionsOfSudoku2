@@ -141,12 +141,19 @@ public class PlaySounds {
                 mp = MediaPlayer.create(context,R.raw.whoosh);
                 mp.start();
             }
+            else if(sound == 11){
+                mp = MediaPlayer.create(context,R.raw.aura);
+                mp.start();
+                mp.setLooping(true);
+            }
 
 
             mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                 @Override
                 public void onCompletion(MediaPlayer mp) {
-                    mp.stop();
+                    if(mp.isPlaying()) {
+                        mp.stop();
+                    }
                     if (mp != null) {
                         mp.release();
                     }
@@ -154,6 +161,12 @@ public class PlaySounds {
                 }
             });
 
+        }
+    }
+    public void stopPlaying(){
+        mp.stop();
+        if (mp != null) {
+            mp.release();
         }
     }
 }

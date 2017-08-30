@@ -2414,7 +2414,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:alpha=".15"
+                    android:alpha=".25"
                     android:scaleType="centerCrop"
                     app:srcCompat="@drawable/keyboardbg" />
 

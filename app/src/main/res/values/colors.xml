@@ -40,5 +40,6 @@
     <color name="transparent">#00ffffff</color>
     <color name="icon_color">#bdc3c6</color>
     <color name="semitransparent_background">#b4454444</color>
+    <color name="number_selected">#ffe0b2</color>
 
 </resources>

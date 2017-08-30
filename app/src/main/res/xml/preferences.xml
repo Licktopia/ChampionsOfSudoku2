@@ -19,7 +19,7 @@
         android:key="@string/autosave"
         android:title="@string/autosave"
         android:summary="@string/saves_inprogress"
-        android:defaultValue="true"/>
+        android:defaultValue="false"/>
 
 
 </PreferenceScreen>
