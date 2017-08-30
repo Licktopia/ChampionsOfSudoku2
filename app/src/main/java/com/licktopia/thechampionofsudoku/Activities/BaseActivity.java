@@ -595,8 +595,10 @@ public class BaseActivity extends BaseGameActivity
         // and show the popup on the screen.
         Log.d(TAG, "we got and invite!");
         mIncomingInvitationId = invitation.getInvitationId();
-
-        swapFragment(BaseActivity.INVITE_DIALOG_FRAGMENT_SHOW, new Bundle());
+        String inviterName = invitation.getInviter().getDisplayName();
+        Bundle args = new Bundle();
+        args.putString("INVITER_NAME", inviterName);
+        swapFragment(BaseActivity.INVITE_DIALOG_FRAGMENT_SHOW, args);
 
     }
 
@@ -1037,6 +1039,41 @@ public class BaseActivity extends BaseGameActivity
         clearMenu();
         keepScreenOn();
         Games.RealTimeMultiplayer.join(gameHelper.getApiClient(), roomConfigBuilder.build());
+    }
+
+
+    public void declineInviteToRoom(String invId)
+    {
+        if(invId == null)
+        {
+            if(gameHelper.hasInvitation() && mIncomingInvitationId != null)
+            {
+                if(mIncomingInvitationId.equals(gameHelper.getInvitationId()))
+                {
+                    Log.d(TAG, "Invite already sent!");
+                    return;
+                }
+            }
+
+            if(gameHelper.getInvitationId() != null)
+            {
+                mIncomingInvitationId = gameHelper.getInvitationId();
+                invId = mIncomingInvitationId;
+            }
+            else if (mIncomingInvitationId != null)
+            {
+                invId = mIncomingInvitationId;
+            }
+            else
+            {
+
+                Log.d(TAG, "No invite found!");
+                return;
+            }
+        }
+        // accept the invitation
+        Log.d(TAG, "Decline Invitation: " + invId);
+        Games.RealTimeMultiplayer.declineInvitation(gameHelper.getApiClient(), invId);
     }
 
 }
