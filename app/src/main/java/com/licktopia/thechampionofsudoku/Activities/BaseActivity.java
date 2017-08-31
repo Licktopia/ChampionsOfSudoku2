@@ -808,7 +808,6 @@ public class BaseActivity extends BaseGameActivity
         if (switchToBoard) {
             switchToBoard = false;
             switchToBoardFrag();
-            acceptInviteToRoom(null);
         }
     }
 
@@ -836,7 +835,6 @@ public class BaseActivity extends BaseGameActivity
         clearMenu();
 
         // quick-start a game with 1 randomly selected opponent
-        final int MIN_OPPONENTS = 1, MAX_OPPONENTS = 1;
         Bundle autoMatchCriteria = RoomConfig.createAutoMatchCriteria(MultiGame.MIN_OPPONENTS,
                 MultiGame.MAX_OPPONENTS , 0);
         RoomConfig.Builder rtmConfigBuilder = RoomConfig.builder(this);
@@ -852,10 +850,11 @@ public class BaseActivity extends BaseGameActivity
     public void hostGame(MultiGame.GameMode gameMode) {
         mGameMode = gameMode;
         keepScreenOn();
+        clearMenu();
         Intent i = Games.RealTimeMultiplayer.getSelectOpponentsIntent(gameHelper.getApiClient(),
                 MultiGame.MIN_OPPONENTS, MultiGame.MAX_OPPONENTS);
 
-        clearMenu();
+
 
         // show waiting room UI
         startActivityForResult(i, RC_SELECT_PLAYERS);
