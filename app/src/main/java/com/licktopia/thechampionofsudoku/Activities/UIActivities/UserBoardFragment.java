@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.util.ArraySet;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -39,7 +40,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 
 
 import static android.content.ContentValues.TAG;
@@ -54,9 +57,7 @@ public class UserBoardFragment extends Fragment {
     private int DISPLAY_AT_A_TIME = 14;
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
-    private ArrayList<UserGameListItem> userGameListItems;
     private ArrayList<UserGameListItem> ShuffledList;
-    private ArrayList[] LevelLists;
     public static UserBoardFragment newInstance() {return new UserBoardFragment();}
     private View view;
     private int levelNow = 6;
@@ -66,12 +67,13 @@ public class UserBoardFragment extends Fragment {
     private ImageButton colorSwitcher;
     private int gridNum = 2;
     private GridLayoutManager gridLayoutManager;
-    private List<Integer> smallRange;
-    private List<Integer> bigRange;
+    private ArrayList<Integer> smallRange;
+    private ArraySet<Integer> bigRange;
     private TextView titleLabel;
     private UserBoardFragment.UserBoardFragmentListener callback;
     private HashSet<Long> completedGameIds;
     private ImageView iconView;
+    private int numBoards;
 
 
     //Checks interface is implemented in the activity.
@@ -112,7 +114,7 @@ public class UserBoardFragment extends Fragment {
             gridNum = 4;
             DISPLAY_AT_A_TIME+=2;
         }
-        resetBigRange();
+
         
         titleLabel = (TextView)view.findViewById(R.id.board_layout_title);
 
@@ -159,7 +161,8 @@ public class UserBoardFragment extends Fragment {
         Picasso.with(getContext()).load(R.drawable.experticon_white).into(exp);
         ImageButton mas = (ImageButton)view.findViewById(R.id.mas);
         Picasso.with(getContext()).load(R.drawable.mastericon_white).into(mas);
-
+        bigRange = new ArraySet<>();
+        smallRange = new ArrayList<>();
 
 
 
@@ -171,7 +174,6 @@ public class UserBoardFragment extends Fragment {
             recyclerView = (RecyclerView) view.findViewById(R.id.user_board_rv);
             gridLayoutManager = new GridLayoutManager(getContext(), gridNum);
             recyclerView.setLayoutManager((gridLayoutManager));
-            LevelLists = new ArrayList[Tags.Levels.length];
             completedGameIds = new HashSet<>();
             /*
             DividerItemDecoration itemDecoratorVer = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
@@ -210,9 +212,11 @@ public class UserBoardFragment extends Fragment {
                     }
                     databaseAccess = DatabaseAccess.getInstance(getContext());
                     databaseAccess.open();
+                    numBoards = databaseAccess.getNumBoards();
+                    resetBigRange();
                     ShuffledList = new ArrayList<>();
                     for (int i = 0; i < DISPLAY_AT_A_TIME; i++) {
-                        ShuffledList.add(databaseAccess.getSpecificBoardGame(bigRange.get(i)));
+                        ShuffledList.add(databaseAccess.getSpecificBoardGame(bigRange.valueAt(i)));
                     }
 
                     adapter = new UserGameListAdapter(ShuffledList, getContext(), color, completedGameIds);
@@ -269,23 +273,24 @@ public class UserBoardFragment extends Fragment {
             mythread.start();
         }
 
-
         return view;
     }
 
     private void resetBigRange() {
-        bigRange = new ArrayList<>();
-        for(int i = 1; i < 60001; i++){
-            bigRange.add(i);
+        bigRange.clear();
+        Random rand = new Random();
+        int randomNum;
+        while(bigRange.size()<DISPLAY_AT_A_TIME){
+            randomNum = rand.nextInt(numBoards)+1;
+            bigRange.add(randomNum);
         }
-        Collections.shuffle(bigRange);
-        bigRange = bigRange.subList(0,DISPLAY_AT_A_TIME);
+
     }
 
     private void resetSmallRange(int level) {
-        smallRange = databaseAccess.getIdentifiersFromLevel(level);
-        Collections.shuffle(smallRange);
-        smallRange = smallRange.subList(0,DISPLAY_AT_A_TIME);
+        smallRange.clear();
+        smallRange = databaseAccess.getIdentifiersFromLevel(level, DISPLAY_AT_A_TIME);
+
     }
 
     @Override
@@ -350,7 +355,7 @@ public class UserBoardFragment extends Fragment {
                 //DisplayNowList = ShuffledList.subList(0, DISPLAY_AT_A_TIME);
                 ShuffledList.clear();
                 for(int i = 0; i < DISPLAY_AT_A_TIME; i++){
-                    ShuffledList.add(databaseAccess.getSpecificBoardGame(bigRange.get(i)));
+                    ShuffledList.add(databaseAccess.getSpecificBoardGame(bigRange.valueAt(i)));
                 }
                 adapter = new UserGameListAdapter(ShuffledList, getContext(), color, completedGameIds);
                 recyclerView.setAdapter(adapter);
@@ -450,7 +455,7 @@ public class UserBoardFragment extends Fragment {
             resetBigRange();
             ShuffledList.clear();
             for(int i = 0; i < DISPLAY_AT_A_TIME; i++){
-                ShuffledList.add(databaseAccess.getSpecificBoardGame(bigRange.get(i)));
+                ShuffledList.add(databaseAccess.getSpecificBoardGame(bigRange.valueAt(i)));
             }
             //DisplayNowList = ShuffledList.subList(0, DISPLAY_AT_A_TIME);
         }

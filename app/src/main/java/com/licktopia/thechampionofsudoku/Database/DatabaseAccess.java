@@ -13,6 +13,8 @@ import com.licktopia.thechampionofsudoku.ListItems.UserGameListItem;
 import com.licktopia.thechampionofsudoku.Sudoku.DifficultyClassifier;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class DatabaseAccess {
@@ -97,8 +99,8 @@ public class DatabaseAccess {
      *
      * @return a List of all board identifiers within a given difficulty level
      */
-    public ArrayList<Integer> getIdentifiersFromLevel(int level) {
-        ArrayList <Integer> list = new ArrayList<>();
+    public ArrayList<Integer> getIdentifiersFromLevel(int level, int displayAtATime) {
+        List<Integer> list = new ArrayList<>();
         int minDifficulty = DifficultyClassifier.LEVEL_DELIMS[level];
         int maxDifficulty = DifficultyClassifier.LEVEL_DELIMS[level + 1];
         String rowName = "Difficulty";
@@ -111,7 +113,19 @@ public class DatabaseAccess {
             cursor.moveToNext();
         }
         cursor.close();
-        return list;
+        Collections.shuffle(list);
+        list = list.subList(0,displayAtATime);
+        ArrayList<Integer> smallList = new ArrayList<>();
+        smallList.addAll(list);
+        return smallList;
+    }
+
+    /*****************************************
+     * Gets the number of total boards in the db
+     ***************************************/
+    public int getNumBoards() {
+        Cursor cursor = database.rawQuery("SELECT Identifier FROM Boards",null);
+        return cursor.getCount();
     }
 
     // Gets random board from given difficulty level
