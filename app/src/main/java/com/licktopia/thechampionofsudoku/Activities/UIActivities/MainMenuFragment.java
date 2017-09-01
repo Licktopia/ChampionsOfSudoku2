@@ -324,6 +324,7 @@ public class MainMenuFragment extends Fragment {
         screenWait.setVisibility(GONE);
         mLevelSelect.setVisibility(VISIBLE);
         mModeSelect.setVisibility(GONE);
+        callback.emptyBackStack();
 
     }
 
@@ -725,6 +726,7 @@ public class MainMenuFragment extends Fragment {
         //void querySavedGameDb();
         int getBadgetag();
         void beginUserInitSignIn();
+        void emptyBackStack();
 
     }
 
