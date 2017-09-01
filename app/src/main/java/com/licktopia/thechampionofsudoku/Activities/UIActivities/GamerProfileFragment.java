@@ -36,6 +36,7 @@ import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.COMPLETE
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.GAMER_PROFILE_FRAGMENT;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.MAIN_MENU_FRAGMENT;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.gameHelper;
+import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.justSignedOut;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.phoneSize;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.setNullUser;
 
@@ -143,6 +144,7 @@ public class GamerProfileFragment extends Fragment {
                 gameHelper.signOut();
                 setNullUser();
                 playDisconnect();
+                justSignedOut = true;
                 callback.swapFragment(MAIN_MENU_FRAGMENT, new Bundle());
 
             }

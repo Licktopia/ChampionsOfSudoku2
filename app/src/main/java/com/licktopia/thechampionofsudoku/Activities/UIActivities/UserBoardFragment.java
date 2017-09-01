@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.util.ArraySet;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,7 +11,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -74,6 +72,7 @@ public class UserBoardFragment extends Fragment {
     private HashSet<Long> completedGameIds;
     private ImageView iconView;
     private int numBoards;
+    private ArrayList<Integer> orderList;
 
 
     //Checks interface is implemented in the activity.
@@ -163,6 +162,7 @@ public class UserBoardFragment extends Fragment {
         Picasso.with(getContext()).load(R.drawable.mastericon_white).into(mas);
         bigRange = new ArraySet<>();
         smallRange = new ArrayList<>();
+        orderList = new ArrayList<>();
 
 
 
@@ -216,7 +216,7 @@ public class UserBoardFragment extends Fragment {
                     resetBigRange();
                     ShuffledList = new ArrayList<>();
                     for (int i = 0; i < DISPLAY_AT_A_TIME; i++) {
-                        ShuffledList.add(databaseAccess.getSpecificBoardGame(bigRange.valueAt(i)));
+                        ShuffledList.add(databaseAccess.getSpecificBoardGame(bigRange.valueAt(orderList.get(i))));
                     }
 
                     adapter = new UserGameListAdapter(ShuffledList, getContext(), color, completedGameIds);
@@ -231,32 +231,30 @@ public class UserBoardFragment extends Fragment {
                                 recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener()
                                 {
                                     @Override
-                                    public void onScrolled(RecyclerView recyclerView, int dx, int dy)
-                                    {
-                                        if(dy > 0) //check for scroll down
-                                        {
-                                            visibleItemCount[0] = gridLayoutManager.getChildCount();
-                                            totalItemCount[0] = gridLayoutManager.getItemCount();
-                                            pastVisiblesItems[0] = gridLayoutManager.findFirstVisibleItemPosition();
-
-                                            if (loading[0])
+                                    public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                                        if (levelNow != 7){
+                                            if (dy > 0) //check for scroll down
                                             {
-                                                if ( (visibleItemCount[0] + pastVisiblesItems[0]) >= totalItemCount[0])
-                                                {
-                                                    loading[0] = false;
-                                                    Log.v("...", "Last Item Wow !");
-                                                    mProgressBar.setVisibility(View.VISIBLE);
-                                                    Handler loadMoreHandle = new Handler();
-                                                    loadMoreHandle.postDelayed(new Runnable() {  // Wait then remove error color
-                                                        @Override
-                                                        public void run() {
-                                                            paginationList();
-                                                            loading[0] = true;
-                                                            mProgressBar.setVisibility(View.GONE);
-                                                        }
-                                                    }, 1500);
+                                                visibleItemCount[0] = gridLayoutManager.getChildCount();
+                                                totalItemCount[0] = gridLayoutManager.getItemCount();
+                                                pastVisiblesItems[0] = gridLayoutManager.findFirstVisibleItemPosition();
 
-                                                    //Do pagination.. i.e. fetch new data
+                                                if (loading[0]) {
+                                                    if ((visibleItemCount[0] + pastVisiblesItems[0]) >= totalItemCount[0]) {
+                                                        loading[0] = false;
+                                                        Log.v("...", "Last Item Wow !");
+                                                        mProgressBar.setVisibility(View.VISIBLE);
+                                                        Handler loadMoreHandle = new Handler();
+                                                        loadMoreHandle.postDelayed(new Runnable() {  // Wait then remove error color
+                                                            @Override
+                                                            public void run() {
+                                                                paginationList();
+                                                                loading[0] = true;
+                                                                mProgressBar.setVisibility(View.GONE);
+                                                            }
+                                                        }, 1500);
+
+                                                    }
                                                 }
                                             }
                                         }
@@ -277,6 +275,7 @@ public class UserBoardFragment extends Fragment {
     }
 
     private void resetBigRange() {
+        orderList.clear();
         bigRange.clear();
         Random rand = new Random();
         int randomNum;
@@ -284,6 +283,10 @@ public class UserBoardFragment extends Fragment {
             randomNum = rand.nextInt(numBoards)+1;
             bigRange.add(randomNum);
         }
+        for(int i = 0; i < DISPLAY_AT_A_TIME; i++){
+            orderList.add(i);
+        }
+        Collections.shuffle(orderList);
 
     }
 
@@ -355,7 +358,7 @@ public class UserBoardFragment extends Fragment {
                 //DisplayNowList = ShuffledList.subList(0, DISPLAY_AT_A_TIME);
                 ShuffledList.clear();
                 for(int i = 0; i < DISPLAY_AT_A_TIME; i++){
-                    ShuffledList.add(databaseAccess.getSpecificBoardGame(bigRange.valueAt(i)));
+                    ShuffledList.add(databaseAccess.getSpecificBoardGame(bigRange.valueAt(orderList.get(i))));
                 }
                 adapter = new UserGameListAdapter(ShuffledList, getContext(), color, completedGameIds);
                 recyclerView.setAdapter(adapter);
@@ -395,6 +398,7 @@ public class UserBoardFragment extends Fragment {
         userPlayedButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                levelNow = 7;
                 ShuffledList.clear();
                 for(Long i : completedGameIds){
                     ShuffledList.add(databaseAccess.getSpecificBoardGame(i));
@@ -450,19 +454,20 @@ public class UserBoardFragment extends Fragment {
                 ShuffledList.add(databaseAccess.getSpecificBoardGame(smallRange.get(j)));
             }
             //DisplayNowList = LevelLists[levelNow].subList(0, DISPLAY_AT_A_TIME);
+            adapter = null;
+            adapter = new UserGameListAdapter(ShuffledList, getContext(), color, completedGameIds);
+            recyclerView.setAdapter(adapter);
         }
-        else{
+        else if(levelNow == 6){
             resetBigRange();
             ShuffledList.clear();
             for(int i = 0; i < DISPLAY_AT_A_TIME; i++){
-                ShuffledList.add(databaseAccess.getSpecificBoardGame(bigRange.valueAt(i)));
+                ShuffledList.add(databaseAccess.getSpecificBoardGame(bigRange.valueAt(orderList.get(i))));
             }
             //DisplayNowList = ShuffledList.subList(0, DISPLAY_AT_A_TIME);
+            adapter = null;
+            adapter = new UserGameListAdapter(ShuffledList, getContext(), color, completedGameIds);
+            recyclerView.setAdapter(adapter);
         }
-        adapter = null;
-        adapter = new UserGameListAdapter(ShuffledList, getContext(), color, completedGameIds);
-        recyclerView.setAdapter(adapter);
     }
-
-
 }
