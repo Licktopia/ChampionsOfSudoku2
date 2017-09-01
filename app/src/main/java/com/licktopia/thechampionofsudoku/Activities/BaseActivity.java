@@ -138,6 +138,12 @@ public class BaseActivity extends BaseGameActivity
     DialogFragment inviteDialog = null;
     final static String TAG = "BaseActivity";
 
+
+    public void emptyBackStack(){
+        for(int i = 0; i < getSupportFragmentManager().getBackStackEntryCount(); ++i) {
+            getSupportFragmentManager().popBackStack();
+        }
+    }
     public void swapFragment(String fragmentName, Bundle args) {
 
         Fragment fragment = null;
@@ -188,8 +194,8 @@ public class BaseActivity extends BaseGameActivity
         transaction.replace(R.id.fragment_container, fragment);
         if(fragmentName!=BOARD_FRAGMENT && fragmentName!=MAIN_MENU_FRAGMENT) {
             transaction.addToBackStack(null);
-        }
-       /* else{
+        }/*
+        if(fragmentName==MAIN_MENU_FRAGMENT){
             for(int i = 0; i < getSupportFragmentManager().getBackStackEntryCount(); ++i) {
                 getSupportFragmentManager().popBackStack();
             }
@@ -525,6 +531,12 @@ public class BaseActivity extends BaseGameActivity
                     .setNegativeButton(getString(R.string.no), null)
                     .show();
         }else if(f instanceof UserBoardFragment){
+            swapFragment(BaseActivity.MAIN_MENU_FRAGMENT, new Bundle());
+        }else if(f instanceof SavedGameFragment){
+            swapFragment(BaseActivity.MAIN_MENU_FRAGMENT, new Bundle());
+        }else if(f instanceof CompletedGameFragment){
+            swapFragment(BaseActivity.MAIN_MENU_FRAGMENT, new Bundle());
+        }else if(f instanceof GamerProfileFragment){
             swapFragment(BaseActivity.MAIN_MENU_FRAGMENT, new Bundle());
         }
         else{
