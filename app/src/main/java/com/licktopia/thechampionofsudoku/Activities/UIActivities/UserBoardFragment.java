@@ -164,9 +164,6 @@ public class UserBoardFragment extends Fragment {
         smallRange = new ArrayList<>();
         orderList = new ArrayList<>();
 
-
-
-
         titleLabel.setText(R.string.all_level);
 
         if(ShuffledList==null) {
@@ -228,7 +225,7 @@ public class UserBoardFragment extends Fragment {
                                 //execute code on main thread
                                 mProgressBar.setVisibility(GONE);
                                 recyclerView.setAdapter(adapter);
-                                recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener()
+                                /*recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener()
                                 {
                                     @Override
                                     public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -259,7 +256,7 @@ public class UserBoardFragment extends Fragment {
                                             }
                                         }
                                     }
-                                });
+                                });*/
                             }
                         });
                     } catch (Exception e) {
@@ -408,6 +405,7 @@ public class UserBoardFragment extends Fragment {
                 recyclerView.setAdapter(adapter);
             }
         });
+
         final RelativeLayout enterBoard = (RelativeLayout)view.findViewById(R.id.num_picker);
         final EditText boardNum = (EditText) view.findViewById(R.id.num_board);
         Button okButton = (Button)view.findViewById(R.id.ok_button);
@@ -446,7 +444,7 @@ public class UserBoardFragment extends Fragment {
         });
     }
 
-    private void paginationList() {
+    public void paginationList() {
         if(levelNow<6) {
             resetSmallRange(levelNow);
             ShuffledList.clear();
