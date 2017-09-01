@@ -2,13 +2,20 @@ package com.licktopia.thechampionofsudoku;
 
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 /**
  * Handles state changes for the display of an individual Sudoku square
@@ -72,10 +79,10 @@ public class SquareView {
         notepadNums[8] = (ImageView) v.findViewById(R.id.squareNotepad9);
         for (int i = 0; i < notepadNums.length; i++) {
             if(!colorMode) {
-                notepadNums[i].setImageDrawable(ContextCompat.getDrawable(context, Tags.numberImageTags[i]));
+                Picasso.with(context).load(Tags.numberImageTags[i]).into(notepadNums[i]);
             }
             else{
-                notepadNums[i].setImageDrawable(ContextCompat.getDrawable(context, Tags.colorButtonTags[i]));
+                Picasso.with(context).load(Tags.colorButtonTags[i]).into(notepadNums[i]);
             }
         }
 
@@ -92,10 +99,10 @@ public class SquareView {
         }
         else {
             if(isStartingSquare) {
-                number.setImageDrawable(ContextCompat.getDrawable(context, Tags.numberImageTags[n - 1])); // Set background image
+                Picasso.with(context).load(Tags.numberImageTags[n - 1]).into(number);
             }
             else{
-                number.setImageDrawable(ContextCompat.getDrawable(context, Tags.greyNumberImageTags[n - 1])); // Set background image
+                Picasso.with(context).load(Tags.greyNumberImageTags[n - 1]).into(number);
             }
             number.setVisibility(View.VISIBLE);
             notepad.setVisibility(View.INVISIBLE);
@@ -126,7 +133,7 @@ public class SquareView {
             number.setImageDrawable(null);   // Remove display object
         else {
             number.setAlpha(0f);
-            number.setImageDrawable(ContextCompat.getDrawable(context, Tags.numberImageTags[n - 1])); // Set background image
+            Picasso.with(context).load(Tags.numberImageTags[n - 1]).into(number);
             ObjectAnimator mainFade = ObjectAnimator.ofFloat(number, "alpha", 0, 1);
             mainFade.setDuration(700);
             mainFade.start();
@@ -199,11 +206,10 @@ public class SquareView {
         else{
             if (highlighted) {
                 if (color.getBackground() == null) {
-                    squareTexture.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.grey_highlight));
+                    Picasso.with(context).load(R.drawable.grey_highlight).into(squareTexture);
                 }
                 else{
-                    squareTexture.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.white_highlight));
-
+                    Picasso.with(context).load(R.drawable.white_highlight).into(squareTexture);
                 }
                 squareTexture.setVisibility(View.VISIBLE); // Set to generic highlighted
             }
