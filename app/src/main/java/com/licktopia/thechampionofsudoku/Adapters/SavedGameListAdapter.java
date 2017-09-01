@@ -132,32 +132,34 @@ public class SavedGameListAdapter extends RecyclerView.Adapter<SavedGameListAdap
                         .setCancelable(true)
                         .setPositiveButton(R.string.resume_game, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                    /***** Maybe we should tell the user that the game is loading... *****/
-                                    /******* FOR THE PURPOSE OF DEBUGGING THE FIRST GAME ON THE LIST GETS PICKED******************/
-                                    Bundle args = new Bundle();
+                                try{
+                                /***** Maybe we should tell the user that the game is loading... *****/
+                                /******* FOR THE PURPOSE OF DEBUGGING THE FIRST GAME ON THE LIST GETS PICKED******************/
+                                Bundle args = new Bundle();
 
 
+                                //Make level less than zero so that activity knows to load a game
+                                boolean resume = true;
+                                args.putBoolean("RESUME", resume);
+                                args.putByteArray("SAVE_FILE", getSavedGame(savedGameListItem.getExactTime(), savedGameListItem.getGamerID()));
+                                args.putBoolean("COLOR_MODE", savedGameListItem.isColor());
+                                args.putInt("LEVEL", savedGameListItem.getLevel());
+                                args.putLong("STOPPED_TIME", savedGameListItem.getStoppedTime());
+                                args.putString("EXACT_TIME", savedGameListItem.getExactTime());
+                                args.putString("SAVED_NAME", savedGameListItem.getTime());
+                                args.putString("SAVED_DATE", savedGameListItem.getDate());
+                                try {
+                                    callback = (SavedGameLAListener) context;
+                                } catch (ClassCastException e) {
+                                    throw new ClassCastException(context.toString() +
+                                            " must implement SavedGameLAFragmentListener");
+                                }
 
-                                    //Make level less than zero so that activity knows to load a game
-                                    boolean resume = true;
-                                    args.putBoolean("RESUME", resume);
-                                    args.putByteArray("SAVE_FILE", getSavedGame(savedGameListItem.getExactTime(),savedGameListItem.getGamerID()));
-                                    args.putBoolean("COLOR_MODE", savedGameListItem.isColor());
-                                    args.putInt("LEVEL", savedGameListItem.getLevel());
-                                    args.putLong("STOPPED_TIME", savedGameListItem.getStoppedTime());
-                                    args.putString("EXACT_TIME", savedGameListItem.getExactTime());
-                                    args.putString("SAVED_NAME", savedGameListItem.getTime());
-                                    args.putString("SAVED_DATE", savedGameListItem.getDate());
-                                    try {
-                                        callback = (SavedGameLAListener) context;
-                                    } catch (ClassCastException e) {
-                                        throw new ClassCastException(context.toString() +
-                                                " must implement SavedGameLAFragmentListener");
-                                    }
+                                callback.swapFragment(BOARD_FRAGMENT, args);
 
-                                    callback.swapFragment(BOARD_FRAGMENT, args);
-
-
+                            }catch(Exception e){
+                                    Toast.makeText(context, "Unable to load. This game file has become corrupted", Toast.LENGTH_LONG).show();
+                                }
 
                             }
                         })
