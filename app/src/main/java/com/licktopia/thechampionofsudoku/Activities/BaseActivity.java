@@ -185,7 +185,9 @@ public class BaseActivity extends BaseGameActivity
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
         transaction.replace(R.id.fragment_container, fragment);
-        transaction.addToBackStack(null);
+        if(fragment!=BoardFragment.newInstance() || fragment!=MainMenuFragment.newInstance()) {
+            transaction.addToBackStack(null);
+        }
 
         transaction.commit();
     }

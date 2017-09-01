@@ -2460,6 +2460,7 @@
                 android:elevation="10dp"
                 android:paddingLeft="30dp"
                 android:paddingRight="30dp"
+                android:paddingTop="10dp"
                 android:visibility="invisible"
                 tools:visibility="visible">
 
@@ -2483,13 +2484,13 @@
                         android:gravity="center"
                         android:text="LicktopiaLicks"
                         android:textColor="@android:color/holo_purple"
-                        android:textSize="24sp"
+                        android:textSize="56sp"
                         android:textStyle="bold" />
 
                     <ImageView
                         android:id="@+id/user_icon"
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
                         android:layout_gravity="center_vertical"
                         android:layout_weight="1"
                         app:srcCompat="@drawable/icon_user" />
@@ -2498,7 +2499,7 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_below="@+id/title_stats"
+                    android:layout_below="@+id/user_icon_holder"
                     android:layout_centerHorizontal="true"
                     android:orientation="vertical"
                     android:paddingLeft="10dp"
@@ -2516,7 +2517,7 @@
                         android:layout_weight="12"
                         android:gravity="center"
                         android:textColor="@color/white"
-                        android:textSize="48sp"
+                        android:textSize="40sp"
                         android:textStyle="bold"
                         tools:text="5500 XP" />
 
