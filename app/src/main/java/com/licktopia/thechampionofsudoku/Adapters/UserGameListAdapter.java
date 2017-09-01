@@ -5,9 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -21,11 +19,12 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBQueryExpression;
 import com.licktopia.thechampionofsudoku.Activities.BaseActivity;
-import com.licktopia.thechampionofsudoku.Activities.UIActivities.UserBoardFragment;
 import com.licktopia.thechampionofsudoku.DBOjects.CompletedGame;
 import com.licktopia.thechampionofsudoku.ListItems.UserGameListItem;
 import com.licktopia.thechampionofsudoku.R;
 import com.licktopia.thechampionofsudoku.Tags;
+import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -133,12 +132,14 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
         holder.usUser.setText(new StringBuilder().append(gamerName).toString());
         holder.usNumber.setText(String.format("%s", identifier));
         holder.usDiff.setText(String.format(new StringBuilder().append(context.getString(R.string.difficulty)).append(" %d").toString(),difficulty));
+        Picasso.with(context).load(R.drawable.key).into(holder.key);
+        Picasso.with(context).load(R.drawable.share).into(holder.shareButton);
 
         if(completedGameIds.contains(Long.valueOf(userGameListItem.getBoardIdentifier()))){
-            holder.isCompleted.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.whitecheck));
+            Picasso.with(context).load(R.drawable.whitecheck).into(holder.isCompleted);
         }
         else{
-            holder.isCompleted.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.white_circle));
+            Picasso.with(context).load(R.drawable.white_circle).into(holder.isCompleted);
         }
         /*
         for(Long i : UserBoardFragment.completedGameIds){
@@ -370,36 +371,29 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
 
     private void setView(ViewHolder holder, int level) {
         if(level==0) {
-
-            Drawable drawable = ContextCompat.getDrawable(context, R.drawable.beginnericon_white);
-            holder.usLevel.setImageDrawable(drawable);
+            Picasso.with(context).load(R.drawable.beginnericon_white).into(holder.usLevel);
             holder.usBackground.setBackgroundColor(Color.parseColor(mColors[0]));
 
         }
         else if(level==1) {
-            Drawable drawable = ContextCompat.getDrawable(context,R.drawable.easyicon_white);
-            holder.usLevel.setImageDrawable(drawable);
+            Picasso.with(context).load(R.drawable.easyicon_white).into(holder.usLevel);
             holder.usBackground.setBackgroundColor(Color.parseColor(mColors[6]));
         }
         else if(level==2) {
-            Drawable drawable = ContextCompat.getDrawable(context,R.drawable.mediumicon_white);
-            holder.usLevel.setImageDrawable(drawable);
+            Picasso.with(context).load(R.drawable.mediumicon_white).into(holder.usLevel);
             holder.usBackground.setBackgroundColor(Color.parseColor(mColors[1]));
         }
         else if(level==3) {
-            Drawable drawable = ContextCompat.getDrawable(context,R.drawable.hardicon_white);
-            holder.usLevel.setImageDrawable(drawable);
+            Picasso.with(context).load(R.drawable.hardicon_white).into(holder.usLevel);
             holder.usBackground.setBackgroundColor(Color.parseColor(mColors[5]));
         }
         else if(level==4) {
-            Drawable drawable = ContextCompat.getDrawable(context,R.drawable.experticon_white);
-            holder.usLevel.setImageDrawable(drawable);
+            Picasso.with(context).load(R.drawable.experticon_white).into(holder.usLevel);
             holder.usBackground.setBackgroundColor(Color.parseColor(mColors[2]));
         }
         else
         {
-            Drawable drawable = ContextCompat.getDrawable(context,R.drawable.mastericon_white);
-            holder.usLevel.setImageDrawable(drawable);
+            Picasso.with(context).load(R.drawable.mastericon_white).into(holder.usLevel);
             holder.usBackground.setBackgroundColor(Color.parseColor(mColors[4]));
         }
     }
@@ -431,6 +425,7 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
 
         Button playNow;
         ImageView shareButton;
+        ImageView key;
         ProgressBar progressBar;
 
 
@@ -448,6 +443,7 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
             statsBox = (LinearLayout)itemView.findViewById(R.id.board_stats_box);
             playNow = (Button)itemView.findViewById(R.id.us_play_now);
             shareButton = (ImageView)itemView.findViewById(R.id.us_share);
+            key = (ImageView)itemView.findViewById(R.id.key);
             progressBar = (ProgressBar) itemView.findViewById(R.id.us_progress);
         }
     }

@@ -2,6 +2,7 @@ package com.licktopia.thechampionofsudoku.Activities.UIActivities;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
@@ -70,6 +71,7 @@ public class UserBoardFragment extends Fragment {
     private TextView titleLabel;
     private UserBoardFragment.UserBoardFragmentListener callback;
     private HashSet<Long> completedGameIds;
+    private ImageView iconView;
 
 
     //Checks interface is implemented in the activity.
@@ -111,7 +113,57 @@ public class UserBoardFragment extends Fragment {
             DISPLAY_AT_A_TIME+=2;
         }
         resetBigRange();
+        
         titleLabel = (TextView)view.findViewById(R.id.board_layout_title);
+
+        iconView = (ImageView)view.findViewById(R.id.user_icon_usr);
+        Picasso.with(getContext()).load(R.mipmap.ic_launcher).into(iconView);
+
+        ImageView ubBackground = (ImageView)view.findViewById(R.id.ub_background);
+        Picasso.with(getContext()).load(R.drawable.coolbackground).into(ubBackground);
+
+
+        ImageButton colorSwitcher = (ImageButton)view.findViewById(R.id.color_switcher);
+        Picasso.with(getContext()).load(R.drawable.peacock).into(colorSwitcher);
+
+        ImageView ubToolbarBg = (ImageView)view.findViewById(R.id.ub_tool_background);
+        Picasso.with(getContext()).load(R.drawable.keyboardbg).into(ubToolbarBg);
+
+        ImageView keyIcon = (ImageView)view.findViewById(R.id.key_icon);
+        Picasso.with(getContext()).load(R.drawable.key).into(keyIcon);
+
+        ImageView questionIcon = (ImageView)view.findViewById(R.id.question_icon);
+        Picasso.with(getContext()).load(R.drawable.question_white).into(questionIcon);
+
+        ImageView refreshIcon = (ImageView)view.findViewById(R.id.refresh_icon);
+        Picasso.with(getContext()).load(R.drawable.more_white).into(refreshIcon);
+
+        ImageView whiteCheckIcon = (ImageView)view.findViewById(R.id.whitecheck_icon);
+        Picasso.with(getContext()).load(R.drawable.whitecheck).into(whiteCheckIcon);
+
+        ImageView keyButtonIcon = (ImageView)view.findViewById(R.id.keybutton_icon);
+        Picasso.with(getContext()).load(R.drawable.key).into(keyButtonIcon);
+
+        ImageView userButtonsBackground = (ImageView)view.findViewById(R.id.user_buttons_background);
+        Picasso.with(getContext()).load(R.drawable.keyboardbg).into(userButtonsBackground);
+
+        ImageButton beg = (ImageButton)view.findViewById(R.id.beg);
+        Picasso.with(getContext()).load(R.drawable.beginnericon_white).into(beg);
+        ImageButton eas = (ImageButton)view.findViewById(R.id.eas);
+        Picasso.with(getContext()).load(R.drawable.easyicon_white).into(eas);
+        ImageButton med = (ImageButton)view.findViewById(R.id.med);
+        Picasso.with(getContext()).load(R.drawable.mediumicon_white).into(med);
+        ImageButton har = (ImageButton)view.findViewById(R.id.har);
+        Picasso.with(getContext()).load(R.drawable.hardicon_white).into(har);
+        ImageButton exp = (ImageButton)view.findViewById(R.id.exp);
+        Picasso.with(getContext()).load(R.drawable.experticon_white).into(exp);
+        ImageButton mas = (ImageButton)view.findViewById(R.id.mas);
+        Picasso.with(getContext()).load(R.drawable.mastericon_white).into(mas);
+
+
+
+
+
         titleLabel.setText(R.string.all_level);
 
         if(ShuffledList==null) {
@@ -129,6 +181,12 @@ public class UserBoardFragment extends Fragment {
             recyclerView.addItemDecoration(itemDecoratorVer);
             recyclerView.addItemDecoration(itemDecoratorHor);
             */
+
+            final boolean[] loading = {true};
+            final int[] pastVisiblesItems = new int[1];
+            final int[] visibleItemCount = new int[1];
+            final int[] totalItemCount = new int[1];
+
 
 
             Runnable runnable = new Runnable() {
@@ -166,6 +224,40 @@ public class UserBoardFragment extends Fragment {
                                 //execute code on main thread
                                 mProgressBar.setVisibility(GONE);
                                 recyclerView.setAdapter(adapter);
+                                recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener()
+                                {
+                                    @Override
+                                    public void onScrolled(RecyclerView recyclerView, int dx, int dy)
+                                    {
+                                        if(dy > 0) //check for scroll down
+                                        {
+                                            visibleItemCount[0] = gridLayoutManager.getChildCount();
+                                            totalItemCount[0] = gridLayoutManager.getItemCount();
+                                            pastVisiblesItems[0] = gridLayoutManager.findFirstVisibleItemPosition();
+
+                                            if (loading[0])
+                                            {
+                                                if ( (visibleItemCount[0] + pastVisiblesItems[0]) >= totalItemCount[0])
+                                                {
+                                                    loading[0] = false;
+                                                    Log.v("...", "Last Item Wow !");
+                                                    mProgressBar.setVisibility(View.VISIBLE);
+                                                    Handler loadMoreHandle = new Handler();
+                                                    loadMoreHandle.postDelayed(new Runnable() {  // Wait then remove error color
+                                                        @Override
+                                                        public void run() {
+                                                            paginationList();
+                                                            loading[0] = true;
+                                                            mProgressBar.setVisibility(View.GONE);
+                                                        }
+                                                    }, 1500);
+
+                                                    //Do pagination.. i.e. fetch new data
+                                                }
+                                            }
+                                        }
+                                    }
+                                });
                             }
                         });
                     } catch (Exception e) {
@@ -203,12 +295,11 @@ public class UserBoardFragment extends Fragment {
     @Override
     public void onResume(){
         super.onResume();
-        ImageView iconView = (ImageView)view.findViewById(R.id.user_icon_usr);
         if(gameHelper.isSignedIn()){
             CircleTransform cf = new CircleTransform();
             try {
                 String me = Games.Players.getCurrentPlayer(gameHelper.getApiClient()).getIconImageUrl();
-                Picasso.with(getActivity()).load(me).transform(cf).into((ImageView) iconView);
+                Picasso.with(getActivity()).load(me).transform(cf).into(iconView);
             }catch (Exception e){
 
             }
@@ -270,25 +361,7 @@ public class UserBoardFragment extends Fragment {
         moreButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(levelNow<6) {
-                    resetSmallRange(levelNow);
-                    ShuffledList.clear();
-                    for(int j = 0; j < DISPLAY_AT_A_TIME; j++){
-                        ShuffledList.add(databaseAccess.getSpecificBoardGame(smallRange.get(j)));
-                    }
-                    //DisplayNowList = LevelLists[levelNow].subList(0, DISPLAY_AT_A_TIME);
-                }
-                else{
-                    resetBigRange();
-                    ShuffledList.clear();
-                    for(int i = 0; i < DISPLAY_AT_A_TIME; i++){
-                        ShuffledList.add(databaseAccess.getSpecificBoardGame(bigRange.get(i)));
-                    }
-                    //DisplayNowList = ShuffledList.subList(0, DISPLAY_AT_A_TIME);
-                }
-                adapter = null;
-                adapter = new UserGameListAdapter(ShuffledList, getContext(), color, completedGameIds);
-                recyclerView.setAdapter(adapter);
+                paginationList();
             }
         });
         colorSwitcher = (ImageButton)view.findViewById(R.id.color_switcher);
@@ -300,14 +373,14 @@ public class UserBoardFragment extends Fragment {
                     color = false;
                     adapter = null;
                     adapter = new UserGameListAdapter(ShuffledList, getContext(), color, completedGameIds);
-                    colorSwitcher.setImageDrawable(ContextCompat.getDrawable(getContext(),R.drawable.peacock));
+                    Picasso.with(getContext()).load(R.drawable.peacock).into(colorSwitcher);
                     recyclerView.setAdapter(adapter);
                 }
                 else{
                     color = true;
                     adapter = null;
                     adapter = new UserGameListAdapter(ShuffledList, getContext(), color, completedGameIds);
-                    colorSwitcher.setImageDrawable(ContextCompat.getDrawable(getContext(),R.drawable.rocket));
+                    Picasso.with(getContext()).load(R.drawable.rocket).into(colorSwitcher);
                     recyclerView.setAdapter(adapter);
                 }
 
@@ -364,6 +437,27 @@ public class UserBoardFragment extends Fragment {
         });
     }
 
+    private void paginationList() {
+        if(levelNow<6) {
+            resetSmallRange(levelNow);
+            ShuffledList.clear();
+            for(int j = 0; j < DISPLAY_AT_A_TIME; j++){
+                ShuffledList.add(databaseAccess.getSpecificBoardGame(smallRange.get(j)));
+            }
+            //DisplayNowList = LevelLists[levelNow].subList(0, DISPLAY_AT_A_TIME);
+        }
+        else{
+            resetBigRange();
+            ShuffledList.clear();
+            for(int i = 0; i < DISPLAY_AT_A_TIME; i++){
+                ShuffledList.add(databaseAccess.getSpecificBoardGame(bigRange.get(i)));
+            }
+            //DisplayNowList = ShuffledList.subList(0, DISPLAY_AT_A_TIME);
+        }
+        adapter = null;
+        adapter = new UserGameListAdapter(ShuffledList, getContext(), color, completedGameIds);
+        recyclerView.setAdapter(adapter);
+    }
 
 
 }

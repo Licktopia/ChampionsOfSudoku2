@@ -5,14 +5,15 @@
     android:id="@+id/activity_history"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorFondoTrans"
     android:fitsSystemWindows="false">
 
     <ImageView
-        android:id="@+id/imageView7"
+        android:id="@+id/ub_background"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        app:srcCompat="@drawable/coolbackground" />
+        app:srcCompat="@android:color/transparent" />
 
     <RelativeLayout
         android:id="@+id/tool_title"
@@ -28,8 +29,7 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="5dp"
-            app:srcCompat="@mipmap/ic_launcher" />
+            android:layout_marginLeft="5dp" />
 
         <TextView
             android:id="@+id/board_layout_title"
@@ -54,15 +54,15 @@
             android:background="@android:color/white"
             android:padding="5dp"
             android:scaleType="fitCenter"
-            app:srcCompat="@drawable/peacock" />
+            app:srcCompat="@android:color/transparent" />
 
         <ImageView
-            android:id="@+id/imageView16"
+            android:id="@+id/ub_tool_background"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:alpha=".15"
             android:scaleType="centerCrop"
-            app:srcCompat="@drawable/keyboardbg" />
+            app:srcCompat="@android:color/transparent" />
 
     </RelativeLayout>
 
@@ -130,11 +130,11 @@
                         android:padding="3dp">
 
                         <ImageView
-                            android:id="@+id/imageView34"
+                            android:id="@+id/key_icon"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            app:srcCompat="@drawable/key" />
+                            app:srcCompat="@android:color/transparent" />
                     </LinearLayout>
 
                     <EditText
@@ -204,8 +204,7 @@
                         android:background="@drawable/begbuttonfinal"
                         android:gravity="center"
                         android:padding="5dp"
-                        android:scaleType="fitCenter"
-                        app:srcCompat="@drawable/beginnericon_white" />
+                        android:scaleType="fitCenter" />
 
                     <ImageButton
                         android:id="@+id/exp"
@@ -217,8 +216,7 @@
                         android:background="@drawable/expbuttonfinal"
                         android:gravity="center"
                         android:padding="5dp"
-                        android:scaleType="fitCenter"
-                        app:srcCompat="@drawable/experticon_white" />
+                        android:scaleType="fitCenter" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -239,8 +237,7 @@
                         android:background="@drawable/easbuttonfinal"
                         android:gravity="center"
                         android:padding="5dp"
-                        android:scaleType="fitCenter"
-                        app:srcCompat="@drawable/easyicon_white" />
+                        android:scaleType="fitCenter" />
 
                     <ImageButton
                         android:id="@+id/mas"
@@ -252,8 +249,7 @@
                         android:background="@drawable/masbuttonfinal"
                         android:gravity="center"
                         android:padding="5dp"
-                        android:scaleType="fitCenter"
-                        app:srcCompat="@drawable/mastericon_white" />
+                        android:scaleType="fitCenter" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -274,8 +270,7 @@
                         android:background="@drawable/leaderbuttonfinal"
                         android:gravity="center"
                         android:padding="5dp"
-                        android:scaleType="fitCenter"
-                        app:srcCompat="@drawable/mediumicon_white" />
+                        android:scaleType="fitCenter" />
 
                     <LinearLayout
                         android:id="@+id/ran"
@@ -292,12 +287,12 @@
                         android:weightSum="100">
 
                         <ImageView
-                            android:id="@+id/imageView29"
+                            android:id="@+id/question_icon"
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
                             android:layout_weight="65"
                             android:scaleType="fitCenter"
-                            app:srcCompat="@drawable/question_white" />
+                            app:srcCompat="@android:color/transparent" />
 
                         <TextView
                             android:id="@+id/textView14"
@@ -329,8 +324,7 @@
                         android:background="@drawable/harbuttonfinal"
                         android:gravity="center"
                         android:padding="5dp"
-                        android:scaleType="fitCenter"
-                        app:srcCompat="@drawable/hardicon_white" />
+                        android:scaleType="fitCenter" />
 
                     <LinearLayout
                         android:id="@+id/more"
@@ -347,12 +341,11 @@
                         android:weightSum="100">
 
                         <ImageView
-                            android:id="@+id/imageView30"
+                            android:id="@+id/refresh_icon"
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
                             android:layout_weight="65"
-                            android:scaleType="fitCenter"
-                            app:srcCompat="@drawable/more_white" />
+                            android:scaleType="fitCenter" />
 
                         <TextView
                             android:id="@+id/textView15"
@@ -389,12 +382,12 @@
                         android:weightSum="100">
 
                         <ImageView
-                            android:id="@+id/imageView28"
+                            android:id="@+id/whitecheck_icon"
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
                             android:layout_weight="65"
                             android:scaleType="fitCenter"
-                            app:srcCompat="@drawable/whitecheck" />
+                            app:srcCompat="@android:color/transparent" />
 
                         <TextView
                             android:id="@+id/textView16"
@@ -421,12 +414,12 @@
                         android:weightSum="100">
 
                         <ImageView
-                            android:id="@+id/imageView28"
+                            android:id="@+id/keybutton_icon"
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
                             android:layout_weight="65"
                             android:scaleType="fitCenter"
-                            app:srcCompat="@drawable/key" />
+                            app:srcCompat="@android:color/transparent" />
 
                         <TextView
                             android:id="@+id/textView16"
@@ -444,12 +437,12 @@
             </LinearLayout>
 
             <ImageView
-                android:id="@+id/imageView22"
+                android:id="@+id/user_buttons_background"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:alpha=".15"
                 android:scaleType="centerCrop"
-                app:srcCompat="@drawable/keyboardbg" />
+                app:srcCompat="@android:color/transparent" />
 
         </RelativeLayout>
 
