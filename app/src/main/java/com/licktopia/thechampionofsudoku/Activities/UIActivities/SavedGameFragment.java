@@ -153,7 +153,8 @@ public class SavedGameFragment extends Fragment {
         SavedGame sg = new SavedGame();
         sg.setGamerID(partitionKey);
         final DynamoDBQueryExpression<SavedGame> queryExpression = new DynamoDBQueryExpression<SavedGame>()
-                .withHashKeyValues(sg);
+                .withHashKeyValues(sg)
+                .withConsistentRead(false);
 
 
         final List[] list = new List[]{new ArrayList<>()};

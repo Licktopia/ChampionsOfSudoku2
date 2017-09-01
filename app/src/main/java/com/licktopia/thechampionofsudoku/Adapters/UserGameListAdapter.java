@@ -292,7 +292,7 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
         holder.playNow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                holder.usBackground.setBackgroundColor(ContextCompat.getColor(context, R.color.color5));
+                //holder.usBackground.setBackgroundColor(ContextCompat.getColor(context, R.color.color5));
                 String colOrNum;
                 if(!color){
                     colOrNum = context.getString(R.string.num);

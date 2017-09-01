@@ -30,7 +30,7 @@ public class SudokuSettings {
         return mSharedPreferences.getBoolean("Sounds", false);
     }
     public boolean getAutoSavePreference(){
-        return mSharedPreferences.getBoolean("Autosave", true);
+        return mSharedPreferences.getBoolean("Autosave", false);
     }
     public boolean getLilNumPreference(){
         return mSharedPreferences.getBoolean("LilNumbers", false);
