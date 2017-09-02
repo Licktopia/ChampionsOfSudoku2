@@ -46,6 +46,7 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
     public static boolean color = false;
     List<CompletedGame> thisBoardsCompletedGames;
     HashSet<Long> completedGameIds;
+    private UserBoardFragment fragment;
 
     //Interface to be implemented by containing activity.
     public interface UserGameLAListener {
@@ -53,11 +54,12 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
 
     }
 
-    public UserGameListAdapter(List<UserGameListItem> userGameListItem, Context context, boolean colors, HashSet<Long> completedGameIds) {
+    public UserGameListAdapter(List<UserGameListItem> userGameListItem, Context context, boolean colors, HashSet<Long> completedGameIds, UserBoardFragment fragment) {
         this.userGameListItems = userGameListItem;
         this.context = context;
         this.color = colors;
         this.completedGameIds = completedGameIds;
+        this.fragment = fragment;
     }
 
     @Override
@@ -105,13 +107,14 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         if(position == userGameListItems.size()) {
-            Button loadMoreButton = (Button)holder.itemView.findViewById(R.id.load_more);
+            ImageView loadMoreButton = (ImageView)holder.itemView.findViewById(R.id.load_more);
             loadMoreButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    UserBoardFragment.paginationList();
+                    fragment.paginationList();
                 }
             });
+
 
         }else {
             final UserGameListItem userGameListItem = userGameListItems.get(position);
