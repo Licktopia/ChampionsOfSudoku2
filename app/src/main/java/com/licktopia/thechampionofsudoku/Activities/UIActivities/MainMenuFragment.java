@@ -8,6 +8,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -223,6 +224,7 @@ public class MainMenuFragment extends Fragment {
         if((!gameHelper.isConnecting() && gameHelper.isSignedIn())){
             mSignInButton.setVisibility(GONE);
             userBadge.setImageDrawable(ContextCompat.getDrawable(getActivity(), BADGETAGS[BaseActivity.level]));
+            Picasso.with(getContext()).load( BADGETAGS[BaseActivity.level]).into(userBadge);
             mBadge.setVisibility(VISIBLE);
             //mProgressBar.setVisibility(GONE);
             //mainScreen.setAlpha(1);
