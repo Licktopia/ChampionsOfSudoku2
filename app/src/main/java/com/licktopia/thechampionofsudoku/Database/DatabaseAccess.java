@@ -125,7 +125,9 @@ public class DatabaseAccess {
      ***************************************/
     public int getNumBoards() {
         Cursor cursor = database.rawQuery("SELECT Identifier FROM Boards",null);
-        return cursor.getCount();
+        int count = cursor.getCount();
+        cursor.close();
+        return count;
     }
 
     // Gets random board from given difficulty level

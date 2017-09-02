@@ -91,4 +91,14 @@ public class Tags {
     public static int [] levelSorter = {R.id.beg, R.id.eas, R.id.med, R.id.har, R.id.exp, R.id.mas};
     public static int[] colorKeypadButtons = {R.drawable.badgebuttonfinal,R.drawable.begbuttonfinal,R.drawable.leaderbuttonfinal,R.drawable.expbuttonfinal,R.drawable.morbuttonfinal,
                                             R.drawable.masbuttonfinal,R.drawable.harbuttonfinal,R.drawable.easbuttonfinal,R.drawable.exitbuttonfinal};
+
+    public static int [] verticalFillers = {R.id.filler,R.id.filler2,R.id.filler3,R.id.filler4,R.id.filler5,R.id.filler6,R.id.filler7,R.id.filler8};
+    public static int [] horizontalFIllers = {R.id.fil1, R.id.fil2, R.id.fil3, R.id.fil4, R.id.fil5, R.id.fil6, R.id.fil7, R.id.fil8, R.id.fil9, R.id.fil10, R.id.fil11
+            , R.id.fil12, R.id.fil13, R.id.fil14, R.id.fil15, R.id.fil16, R.id.fil17, R.id.fil18, R.id.fil19, R.id.fil20, R.id.fil21, R.id.fil22, R.id.fil23,
+            R.id.fil24, R.id.fil25, R.id.fil26, R.id.fil27, R.id.fil28, R.id.fil29, R.id.fil30, R.id.fil31, R.id.fil32, R.id.fil33, R.id.fil34, R.id.fil35,
+            R.id.fil36, R.id.fil37, R.id.fil38, R.id.fil39, R.id.fil40, R.id.fil41, R.id.fil42, R.id.fil43, R.id.fil44, R.id.fil45, R.id.fil46, R.id.fil47,
+            R.id.fil48, R.id.fil49, R.id.fil50, R.id.fil51, R.id.fil52, R.id.fil53, R.id.fil54, R.id.fil55, R.id.fil56, R.id.fil57, R.id.fil58, R.id.fil59,
+            R.id.fil60, R.id.fil61, R.id.fil62, R.id.fil63, R.id.fil64, R.id.fil65, R.id.fil66, R.id.fil67, R.id.fil68, R.id.fil69, R.id.fil70, R.id.fil71,
+            R.id.fil72};
+
 }

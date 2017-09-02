@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -1524,6 +1525,9 @@ public class BoardFragment extends Fragment {
     }
 
     private void setHintButtonListener(Button button, final int strategyNum) {
+        final RelativeLayout colorBackground = (RelativeLayout)view.findViewById(R.id.color_background);
+        final ImageView hintsCover = (ImageView) view.findViewById(R.id.hints_cover);
+
         button.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -1532,8 +1536,20 @@ public class BoardFragment extends Fragment {
                     v.setBackground(getResources().getDrawable(R.drawable.badgebuttonpressed,null));
                     if (conflicts.isEmpty()) {
                         if(level>0){
-                            scoreBoard.setTextColor(ContextCompat.getColor(getContext(), R.color.color7));
+                            scoreBoard.setTextColor(ContextCompat.getColor(getContext(), R.color.color6));
+                            scoreBoard.setTypeface(Typeface.DEFAULT_BOLD);
                         }
+                        colorBackground.setBackgroundColor(ContextCompat.getColor(getContext(),R.color.gold));
+                        for(int i = 0; i < Tags.verticalFillers.length; i++){
+                            LinearLayout verFill = (LinearLayout)view.findViewById(Tags.verticalFillers[i]);
+                            verFill.setBackgroundColor(ContextCompat.getColor(getContext(),R.color.gold));
+                        }
+                        for(int i = 0; i < Tags.horizontalFIllers.length; i++){
+                            RelativeLayout horFill = (RelativeLayout) view.findViewById(Tags.horizontalFIllers[i]);
+                            horFill.setBackgroundColor(ContextCompat.getColor(getContext(),R.color.gold));
+                        }
+                        mHintsLayout.setBackgroundColor(ContextCompat.getColor(getContext(),R.color.gold));
+                        hintsCover.setVisibility(GONE);
                         showHint(strategyNum);
                     }
                     else {
@@ -1548,7 +1564,19 @@ public class BoardFragment extends Fragment {
                 }
                 if (event.getAction() == MotionEvent.ACTION_UP) {
                     mPlaySounds.stopPlaying();
+                    scoreBoard.setTypeface(Typeface.DEFAULT);
                     scoreBoard.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
+                    for(int i = 0; i < Tags.verticalFillers.length; i++){
+                        LinearLayout verFill = (LinearLayout)view.findViewById(Tags.verticalFillers[i]);
+                        verFill.setBackgroundColor(ContextCompat.getColor(getContext(),R.color.background));
+                    }
+                    for(int i = 0; i < Tags.horizontalFIllers.length; i++){
+                        RelativeLayout horFill = (RelativeLayout) view.findViewById(Tags.horizontalFIllers[i]);
+                        horFill.setBackgroundColor(ContextCompat.getColor(getContext(),R.color.background));
+                    }
+                    hintsCover.setVisibility(View.VISIBLE);
+                    mHintsLayout.setBackgroundColor(ContextCompat.getColor(getContext(),R.color.colorFondoTrans));
+                    colorBackground.setBackgroundColor(ContextCompat.getColor(getContext(),R.color.background));
                     v.setBackground(getResources().getDrawable(R.drawable.badgebutton,null));
                     mGame.restoreAllNotepads();
                     updateBoard();
