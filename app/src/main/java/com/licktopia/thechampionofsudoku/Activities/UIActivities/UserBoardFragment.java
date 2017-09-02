@@ -52,7 +52,7 @@ import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.phoneSiz
 
 public class UserBoardFragment extends Fragment {
 
-    private int DISPLAY_AT_A_TIME = 14;
+    private int DISPLAY_AT_A_TIME = 13;
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
     private ArrayList<UserGameListItem> ShuffledList;
@@ -216,7 +216,7 @@ public class UserBoardFragment extends Fragment {
                         ShuffledList.add(databaseAccess.getSpecificBoardGame(bigRange.valueAt(orderList.get(i))));
                     }
 
-                    adapter = new UserGameListAdapter(ShuffledList, getContext(), color, completedGameIds);
+                    adapter = new UserGameListAdapter(ShuffledList, getContext(), color, completedGameIds,UserBoardFragment.this);
                     initializeButtons();
                     try {
                         getActivity().runOnUiThread(new Runnable() {
@@ -340,7 +340,7 @@ public class UserBoardFragment extends Fragment {
                         ShuffledList.add(databaseAccess.getSpecificBoardGame(smallRange.get(j)));
                     }
                     adapter = null;
-                    adapter = new UserGameListAdapter(ShuffledList, getContext(), color, completedGameIds);
+                    adapter = new UserGameListAdapter(ShuffledList, getContext(), color, completedGameIds,UserBoardFragment.this);
                     recyclerView.setAdapter(adapter);
                 }
             });
@@ -357,7 +357,7 @@ public class UserBoardFragment extends Fragment {
                 for(int i = 0; i < DISPLAY_AT_A_TIME; i++){
                     ShuffledList.add(databaseAccess.getSpecificBoardGame(bigRange.valueAt(orderList.get(i))));
                 }
-                adapter = new UserGameListAdapter(ShuffledList, getContext(), color, completedGameIds);
+                adapter = new UserGameListAdapter(ShuffledList, getContext(), color, completedGameIds, UserBoardFragment.this);
                 recyclerView.setAdapter(adapter);
             }
         });
@@ -377,14 +377,14 @@ public class UserBoardFragment extends Fragment {
                 if(color){
                     color = false;
                     adapter = null;
-                    adapter = new UserGameListAdapter(ShuffledList, getContext(), color, completedGameIds);
+                    adapter = new UserGameListAdapter(ShuffledList, getContext(), color, completedGameIds,UserBoardFragment.this);
                     Picasso.with(getContext()).load(R.drawable.peacock).into(colorSwitcher);
                     recyclerView.setAdapter(adapter);
                 }
                 else{
                     color = true;
                     adapter = null;
-                    adapter = new UserGameListAdapter(ShuffledList, getContext(), color, completedGameIds);
+                    adapter = new UserGameListAdapter(ShuffledList, getContext(), color, completedGameIds,UserBoardFragment.this);
                     Picasso.with(getContext()).load(R.drawable.rocket).into(colorSwitcher);
                     recyclerView.setAdapter(adapter);
                 }
@@ -401,7 +401,7 @@ public class UserBoardFragment extends Fragment {
                     ShuffledList.add(databaseAccess.getSpecificBoardGame(i));
                 }
                 adapter = null;
-                adapter = new UserGameListAdapter(ShuffledList, getContext(), color, completedGameIds);
+                adapter = new UserGameListAdapter(ShuffledList, getContext(), color, completedGameIds,UserBoardFragment.this);
                 recyclerView.setAdapter(adapter);
             }
         });
@@ -420,7 +420,7 @@ public class UserBoardFragment extends Fragment {
                     ShuffledList.clear();
                     ShuffledList.add(usgli);
                     adapter = null;
-                    adapter = new UserGameListAdapter(ShuffledList, getContext(), color, completedGameIds);
+                    adapter = new UserGameListAdapter(ShuffledList, getContext(), color, completedGameIds,UserBoardFragment.this);
                     recyclerView.setAdapter(adapter);
                 }catch(Exception e){
                     Log.d(TAG, "onClick: Couldn't retrieve user entered board");
@@ -453,7 +453,7 @@ public class UserBoardFragment extends Fragment {
             }
             //DisplayNowList = LevelLists[levelNow].subList(0, DISPLAY_AT_A_TIME);
             adapter = null;
-            adapter = new UserGameListAdapter(ShuffledList, getContext(), color, completedGameIds);
+            adapter = new UserGameListAdapter(ShuffledList, getContext(), color, completedGameIds,UserBoardFragment.this);
             recyclerView.setAdapter(adapter);
         }
         else if(levelNow == 6){
@@ -464,7 +464,7 @@ public class UserBoardFragment extends Fragment {
             }
             //DisplayNowList = ShuffledList.subList(0, DISPLAY_AT_A_TIME);
             adapter = null;
-            adapter = new UserGameListAdapter(ShuffledList, getContext(), color, completedGameIds);
+            adapter = new UserGameListAdapter(ShuffledList, getContext(), color, completedGameIds,UserBoardFragment.this);
             recyclerView.setAdapter(adapter);
         }
     }
