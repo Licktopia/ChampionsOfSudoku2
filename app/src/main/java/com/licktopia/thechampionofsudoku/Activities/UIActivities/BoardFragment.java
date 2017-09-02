@@ -1497,13 +1497,13 @@ public class BoardFragment extends Fragment {
                     v.setBackground(getResources().getDrawable(R.drawable.badgebuttonpressed,null));
                     if (conflicts.isEmpty()) {
                         if(!solveClicked&&!mGame.isGameFinished()) {
-                            mPlaySounds.playSounds(getContext(), 1);
+                            mPlaySounds.playSounds(getContext(), 12);
                             Toast.makeText(getContext(), "Board is currently correct!", Toast.LENGTH_LONG).show();
                         }
                     }
                     else {
                         if(!solveClicked) {
-                            mPlaySounds.playSounds(getContext(), 2);
+                            mPlaySounds.playSounds(getContext(), 13);
                         }
                         for (int conflict : conflicts) {
                             squareViews[conflict].setErrorHighlight(colorGame);     // Display error highlight
@@ -1539,22 +1539,24 @@ public class BoardFragment extends Fragment {
                             scoreBoard.setTextColor(ContextCompat.getColor(getContext(), R.color.color6));
                             scoreBoard.setTypeface(Typeface.DEFAULT_BOLD);
                         }
-                        colorBackground.setBackgroundColor(ContextCompat.getColor(getContext(),R.color.gold));
-                        for(int i = 0; i < Tags.verticalFillers.length; i++){
-                            LinearLayout verFill = (LinearLayout)view.findViewById(Tags.verticalFillers[i]);
-                            verFill.setBackgroundColor(ContextCompat.getColor(getContext(),R.color.gold));
+                        if(showHint(strategyNum)) {
+                            colorBackground.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.gold));
+                            for (int i = 0; i < Tags.verticalFillers.length; i++) {
+                                LinearLayout verFill = (LinearLayout) view.findViewById(Tags.verticalFillers[i]);
+                                verFill.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.gold));
+                            }
+                            for (int i = 0; i < Tags.horizontalFIllers.length; i++) {
+                                RelativeLayout horFill = (RelativeLayout) view.findViewById(Tags.horizontalFIllers[i]);
+                                horFill.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.gold));
+                            }
+                            mHintsLayout.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.gold));
+                            hintsCover.setVisibility(GONE);
                         }
-                        for(int i = 0; i < Tags.horizontalFIllers.length; i++){
-                            RelativeLayout horFill = (RelativeLayout) view.findViewById(Tags.horizontalFIllers[i]);
-                            horFill.setBackgroundColor(ContextCompat.getColor(getContext(),R.color.gold));
-                        }
-                        mHintsLayout.setBackgroundColor(ContextCompat.getColor(getContext(),R.color.gold));
-                        hintsCover.setVisibility(GONE);
-                        showHint(strategyNum);
+
                     }
                     else {
                         if(!solveClicked) {
-                            mPlaySounds.playSounds(getContext(), 2);
+                            mPlaySounds.playSounds(getContext(), 13);
                         }
                         for (int conflict : conflicts) {
                             squareViews[conflict].setErrorHighlight(colorGame);     // Display error highlight
@@ -1614,7 +1616,7 @@ public class BoardFragment extends Fragment {
     /************************************
      * Show one instance of a given hint
      ***********************************/
-    private void showHint(int hintType) {
+    private boolean showHint(int hintType) {
         Set<Integer> conflicts = mGame.checkCurrentProgress();  // Set board value to number
         if (!conflicts.isEmpty()) {
 
@@ -1626,9 +1628,11 @@ public class BoardFragment extends Fragment {
         if (hint != null) {
             mPlaySounds.playSounds(getContext(),11);
             hintDisplay(hint);
+            return true;
         }
         else {
-            mPlaySounds.playSounds(getContext(), 2);
+            mPlaySounds.playSounds(getContext(), 14);
+            return false;
         }
     }
 
@@ -1638,10 +1642,10 @@ public class BoardFragment extends Fragment {
     private void hintDisplay(Strategies.Hint hint) {
         removeAllHighlights();
         for (int i : hint.hintInfo[Strategies.CONNECTED]) {
-            squareViews[i].setHighlighted(true, !colorGame);
+            squareViews[i].setHintHighlighted(true, !colorGame);
         }
         for (int i : hint.hintInfo[Strategies.SELECTED]) {
-            squareViews[i].setDarkHighlight();
+            squareViews[i].setDarkHighlight(!colorGame);
         }
         if (hint.getRemoveFrom() == Strategies.SELECTED) {
             for (int i : hint.hintInfo[Strategies.SELECTED]) {
@@ -1650,20 +1654,20 @@ public class BoardFragment extends Fragment {
                     colors[num - 1] = true;
                 for (int j = 1; j <= colors.length; j++) {
                     if (colors[j - 1])
-                        squareViews[i].setNotepadHighlightRed(j);
+                        squareViews[i].setNotepadHighlightRed(j, !colorGame);
                     else
-                        squareViews[i].setNotepadHighlightGreen(j);
+                        squareViews[i].setNotepadHighlightGreen(j, !colorGame);
                 }
             }
         }
         else {
             for (int i : hint.hintInfo[Strategies.CONNECTED]) {
                 for (int num : hint.hintInfo[Strategies.NOTEPAD])
-                    squareViews[i].setNotepadHighlightRed(num);
+                    squareViews[i].setNotepadHighlightRed(num, !colorGame);
             }
             for (int i : hint.hintInfo[Strategies.SELECTED]) {
                 for (int num : hint.hintInfo[Strategies.NOTEPAD])
-                    squareViews[i].setNotepadHighlightGreen(num);
+                    squareViews[i].setNotepadHighlightGreen(num, ! colorGame);
             }
         }
     }

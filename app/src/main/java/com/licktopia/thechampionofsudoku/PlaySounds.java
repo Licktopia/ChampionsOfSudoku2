@@ -190,6 +190,30 @@ public class PlaySounds {
 
                 }
             }
+            else if(sound == 12){
+                try {
+                    mp = MediaPlayer.create(context, R.raw.goodboard);
+                    mp.start();
+                }catch(Exception e){
+
+                }
+            }
+            else if(sound == 13){
+                try {
+                    mp = MediaPlayer.create(context, R.raw.failure);
+                    mp.start();
+                }catch(Exception e){
+
+                }
+            }
+            else if(sound == 14){
+                try {
+                    mp = MediaPlayer.create(context, R.raw.incorrect);
+                    mp.start();
+                }catch(Exception e){
+
+                }
+            }
 
 
             mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {

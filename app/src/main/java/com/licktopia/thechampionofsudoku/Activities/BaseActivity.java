@@ -102,6 +102,7 @@ public class BaseActivity extends BaseGameActivity
     public static boolean userSignIn=false;
     public static int phoneSize = 2;
     public static boolean justSignedOut = false;
+    public static boolean inProcessFlag = false;
 
     //will store the multiplayer game information
     private MultiGame mMultiGame = null;
@@ -531,7 +532,9 @@ public class BaseActivity extends BaseGameActivity
                     .setNegativeButton(getString(R.string.no), null)
                     .show();
         }else if(f instanceof UserBoardFragment){
-            swapFragment(BaseActivity.MAIN_MENU_FRAGMENT, new Bundle());
+            if(!inProcessFlag) {
+                swapFragment(BaseActivity.MAIN_MENU_FRAGMENT, new Bundle());
+            }
         }else if(f instanceof SavedGameFragment){
             swapFragment(BaseActivity.MAIN_MENU_FRAGMENT, new Bundle());
         }else if(f instanceof CompletedGameFragment){

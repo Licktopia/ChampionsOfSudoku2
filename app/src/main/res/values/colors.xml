@@ -42,5 +42,9 @@
     <color name="semitransparent_background">#b4454444</color>
     <color name="number_selected">#ffe0b2</color>
     <color name="gold">#CFB53B</color>
+    <color name="goldhighlight">#c8cfb53b</color>
+    <color name="light_gold">#64cfb53b</color>
+    <color name="hint_red">#a5e18335</color>
+    <color name="hint_green">#a5abd03a</color>
 
 </resources>

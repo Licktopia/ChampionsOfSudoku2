@@ -222,12 +222,51 @@ public class SquareView {
         }
     }
 
-    public void setNotepadHighlightRed(int num) {
-        notepadNums[num - 1].setBackgroundColor(ContextCompat.getColor(context, R.color.red));
+    /* Sets highlight state of current square */
+    public void setHintHighlighted(boolean highlighted, boolean numberMode) {
+        if(numberMode) {
+            if (highlighted)
+                setHighlightColor(ContextCompat.getColor(context, R.color.light_gold)); // Set to generic highlighted
+            else {
+                setHighlightColor(ContextCompat.getColor(context, R.color.white)); // Remove highlight
+                selectedSquare.setBackground(null);
+            }
+        }
+        else{
+            if (highlighted) {
+                if (color.getBackground() == null) {
+                    Picasso.with(context).load(R.drawable.gold_highlight).into(squareTexture);
+                }
+                else{
+                    Picasso.with(context).load(R.drawable.gold_highlight).into(squareTexture);
+                }
+                squareTexture.setVisibility(View.VISIBLE); // Set to generic highlighted
+            }
+            else {
+                squareTexture.setVisibility(View.GONE); // Remove highlight
+                setHighlightColor(ContextCompat.getColor(context, R.color.white)); // Remove highlight
+                selectedSquare.setBackground(null);
+            }
+            whiteX.setVisibility(View.GONE);
+        }
     }
 
-    public void setNotepadHighlightGreen(int num) {
-        notepadNums[num - 1].setBackgroundColor(ContextCompat.getColor(context, R.color.color1));
+    public void setNotepadHighlightRed(int num, boolean number) {
+        if(number) {
+            notepadNums[num - 1].setBackground(ContextCompat.getDrawable(context, R.drawable.circlered));
+        }
+        else{
+            notepadNums[num - 1].setBackgroundColor(ContextCompat.getColor(context, R.color.hint_red));
+        }
+    }
+
+    public void setNotepadHighlightGreen(int num, boolean number) {
+        if(number) {
+            notepadNums[num - 1].setBackground(ContextCompat.getDrawable(context, R.drawable.circlegreen));
+        }
+        else{
+            notepadNums[num - 1].setBackgroundColor(ContextCompat.getColor(context, R.color.hint_green));
+        }
     }
 
     public void clearNotepadHighlights() {
@@ -246,8 +285,12 @@ public class SquareView {
         }
     }
 
-    public void setDarkHighlight() {
-        setHighlightColor(ContextCompat.getColor(context, R.color.silver));
+    public void setDarkHighlight(boolean numbers) {
+        if(numbers) {
+            setHighlightColor(ContextCompat.getColor(context, R.color.goldhighlight));
+        }else{
+            setHighlightColor(ContextCompat.getColor(context, R.color.light_gold));
+        }
     }
 
     public void setSelectedHighlight() {

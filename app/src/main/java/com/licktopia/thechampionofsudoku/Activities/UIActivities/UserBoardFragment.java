@@ -47,6 +47,7 @@ import static android.content.ContentValues.TAG;
 import static android.content.Context.INPUT_METHOD_SERVICE;
 import static android.view.View.GONE;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.gameHelper;
+import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.inProcessFlag;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.phoneSize;
 
 
@@ -189,7 +190,7 @@ public class UserBoardFragment extends Fragment {
             final int[] totalItemCount = new int[1];
 
 
-
+            inProcessFlag = true;
             Runnable runnable = new Runnable() {
                 public void run() {
                     String partitionKey = BaseActivity.getId();
@@ -228,6 +229,7 @@ public class UserBoardFragment extends Fragment {
                                 mProgressBar.setVisibility(GONE);
                                 progressText.setVisibility(GONE);
                                 recyclerView.setAdapter(adapter);
+                                inProcessFlag=false;
                                 /*recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener()
                                 {
                                     @Override
@@ -317,7 +319,9 @@ public class UserBoardFragment extends Fragment {
         iconView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                callback.swapFragment(BaseActivity.MAIN_MENU_FRAGMENT, new Bundle());
+                if(!inProcessFlag) {
+                    callback.swapFragment(BaseActivity.MAIN_MENU_FRAGMENT, new Bundle());
+                }
             }
         });
     }
@@ -419,17 +423,19 @@ public class UserBoardFragment extends Fragment {
             public void onClick(View v) {
 
                 String enteredNum = boardNum.getText().toString();
-                UserGameListItem usgli;
-                try {
-                    usgli = databaseAccess.getSpecificBoardGame(Long.valueOf(enteredNum));
-                    ShuffledList.clear();
-                    ShuffledList.add(usgli);
-                    adapter = null;
-                    adapter = new UserGameListAdapter(ShuffledList, getContext(), color, completedGameIds,UserBoardFragment.this);
-                    recyclerView.setAdapter(adapter);
-                }catch(Exception e){
-                    Log.d(TAG, "onClick: Couldn't retrieve user entered board");
-                    Toast.makeText(getContext(), new StringBuilder().append(getString(R.string.couldnt_find)).append(enteredNum).toString(), Toast.LENGTH_SHORT).show();
+                if(enteredNum.compareTo("")!=0) {
+                    UserGameListItem usgli;
+                    try {
+                        usgli = databaseAccess.getSpecificBoardGame(Long.valueOf(enteredNum));
+                        ShuffledList.clear();
+                        ShuffledList.add(usgli);
+                        adapter = null;
+                        adapter = new UserGameListAdapter(ShuffledList, getContext(), color, completedGameIds, UserBoardFragment.this);
+                        recyclerView.setAdapter(adapter);
+                    } catch (Exception e) {
+                        Log.d(TAG, "onClick: Couldn't retrieve user entered board");
+                        Toast.makeText(getContext(), new StringBuilder().append(getString(R.string.couldnt_find)).append(enteredNum).toString(), Toast.LENGTH_SHORT).show();
+                    }
                 }
                 try  {
                     InputMethodManager imm = (InputMethodManager)getContext().getSystemService(INPUT_METHOD_SERVICE);
