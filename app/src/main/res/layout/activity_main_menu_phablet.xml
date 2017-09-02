@@ -52,7 +52,7 @@
                 android:orientation="vertical">
 
                 <ImageView
-                    android:id="@+id/imageView6"
+                    android:id="@+id/main_title"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_alignParentTop="true"
@@ -61,9 +61,7 @@
                     android:layout_weight="25"
                     android:paddingBottom="10dp"
                     android:scaleX="1"
-                    android:scaleY="1"
-                    android:src="@drawable/sudoku"
-                    app:srcCompat="@drawable/sudoku" />
+                    android:scaleY="1"/>
             </LinearLayout>
 
             <LinearLayout
@@ -154,8 +152,7 @@
                                 android:layout_centerInParent="false"
                                 android:layout_weight="75"
                                 android:padding="5dp"
-                                android:scaleType="fitCenter"
-                                app:srcCompat="@drawable/mpholder" />
+                                android:scaleType="fitCenter"/>
 
                             <TextView
                                 android:id="@+id/textView12"
@@ -222,17 +219,16 @@
                                     android:textSize="24sp" />
 
                                 <ImageView
-                                    android:id="@+id/imageView18"
+                                    android:id="@+id/blue_dot"
                                     android:layout_width="20dp"
                                     android:layout_height="20dp"
                                     android:layout_alignParentLeft="true"
                                     android:layout_alignParentStart="true"
                                     android:layout_centerVertical="true"
-                                    android:layout_marginLeft="15dp"
-                                    app:srcCompat="@drawable/cbut_bluedot" />
+                                    android:layout_marginLeft="15dp"/>
 
                                 <ImageView
-                                    android:id="@+id/imageView"
+                                    android:id="@+id/beginner_icon"
                                     android:layout_width="40dp"
                                     android:layout_height="40dp"
                                     android:layout_alignParentEnd="true"
@@ -240,9 +236,7 @@
                                     android:layout_alignParentTop="false"
                                     android:layout_centerVertical="true"
                                     android:layout_marginRight="20dp"
-                                    android:scaleType="fitCenter"
-                                    android:src="@drawable/beginnericon"
-                                    app:srcCompat="@drawable/beginnericon" />
+                                    android:scaleType="fitCenter"/>
 
                             </RelativeLayout>
 
@@ -283,16 +277,15 @@
                                     android:textSize="24sp" />
 
                                 <ImageView
-                                    android:id="@+id/imageView19"
+                                    android:id="@+id/yellow_dot"
                                     android:layout_width="20dp"
                                     android:layout_height="20dp"
                                     android:layout_alignParentLeft="true"
                                     android:layout_centerVertical="true"
-                                    android:layout_marginLeft="15dp"
-                                    app:srcCompat="@drawable/cbut_yellowdot" />
+                                    android:layout_marginLeft="15dp"/>
 
                                 <ImageView
-                                    android:id="@+id/imageView"
+                                    android:id="@+id/easy_icon"
                                     android:layout_width="40dp"
                                     android:layout_height="40dp"
                                     android:layout_alignParentEnd="true"
@@ -300,9 +293,7 @@
                                     android:layout_alignParentTop="false"
                                     android:layout_centerVertical="true"
                                     android:layout_marginRight="20dp"
-                                    android:scaleType="fitCenter"
-                                    android:src="@drawable/easyicon"
-                                    app:srcCompat="@drawable/easyicon" />
+                                    android:scaleType="fitCenter"/>
 
                             </RelativeLayout>
 
@@ -341,16 +332,15 @@
                                     android:textSize="24sp" />
 
                                 <ImageView
-                                    android:id="@+id/imageView20"
+                                    android:id="@+id/pink_dot"
                                     android:layout_width="20dp"
                                     android:layout_height="20dp"
                                     android:layout_alignParentLeft="true"
                                     android:layout_centerVertical="true"
-                                    android:layout_marginLeft="15dp"
-                                    app:srcCompat="@drawable/cbut_lightreddot" />
+                                    android:layout_marginLeft="15dp"/>
 
                                 <ImageView
-                                    android:id="@+id/imageView"
+                                    android:id="@+id/medium_icon"
                                     android:layout_width="40dp"
                                     android:layout_height="40dp"
                                     android:layout_alignParentEnd="true"
@@ -358,9 +348,7 @@
                                     android:layout_alignParentTop="false"
                                     android:layout_centerVertical="true"
                                     android:layout_marginRight="20dp"
-                                    android:scaleType="fitCenter"
-                                    android:src="@drawable/mediumicon"
-                                    app:srcCompat="@drawable/mediumicon" />
+                                    android:scaleType="fitCenter"/>
 
                             </RelativeLayout>
 
@@ -399,16 +387,15 @@
                                     android:textSize="24sp" />
 
                                 <ImageView
-                                    android:id="@+id/imageView21"
+                                    android:id="@+id/purple_dot"
                                     android:layout_width="20dp"
                                     android:layout_height="20dp"
                                     android:layout_alignParentLeft="true"
                                     android:layout_centerVertical="true"
-                                    android:layout_marginLeft="15dp"
-                                    app:srcCompat="@drawable/cbut_purpledot" />
+                                    android:layout_marginLeft="15dp"/>
 
                                 <ImageView
-                                    android:id="@+id/imageView"
+                                    android:id="@+id/hard_icon"
                                     android:layout_width="40dp"
                                     android:layout_height="40dp"
                                     android:layout_alignParentEnd="true"
@@ -416,9 +403,7 @@
                                     android:layout_alignParentTop="false"
                                     android:layout_centerVertical="true"
                                     android:layout_marginRight="20dp"
-                                    android:scaleType="fitCenter"
-                                    android:src="@drawable/hardicon"
-                                    app:srcCompat="@drawable/hardicon" />
+                                    android:scaleType="fitCenter"/>
 
                             </RelativeLayout>
 
@@ -457,16 +442,15 @@
                                     android:textSize="24sp" />
 
                                 <ImageView
-                                    android:id="@+id/imageView23"
+                                    android:id="@+id/dark_red_dot"
                                     android:layout_width="20dp"
                                     android:layout_height="20dp"
                                     android:layout_alignParentLeft="true"
                                     android:layout_centerVertical="true"
-                                    android:layout_marginLeft="15dp"
-                                    app:srcCompat="@drawable/cbut_darkreddot" />
+                                    android:layout_marginLeft="15dp" />
 
                                 <ImageView
-                                    android:id="@+id/imageView"
+                                    android:id="@+id/expert_icon"
                                     android:layout_width="40dp"
                                     android:layout_height="40dp"
                                     android:layout_alignParentEnd="true"
@@ -474,9 +458,7 @@
                                     android:layout_alignParentTop="false"
                                     android:layout_centerVertical="true"
                                     android:layout_marginRight="20dp"
-                                    android:scaleType="fitCenter"
-                                    android:src="@drawable/experticon"
-                                    app:srcCompat="@drawable/experticon" />
+                                    android:scaleType="fitCenter"/>
 
                             </RelativeLayout>
 
@@ -516,13 +498,12 @@
                                     android:textSize="24sp" />
 
                                 <ImageView
-                                    android:id="@+id/imageView25"
+                                    android:id="@+id/orange_dot"
                                     android:layout_width="20dp"
                                     android:layout_height="20dp"
                                     android:layout_alignParentLeft="true"
                                     android:layout_centerVertical="true"
-                                    android:layout_marginLeft="15dp"
-                                    app:srcCompat="@drawable/cbut_orangedot" />
+                                    android:layout_marginLeft="15dp"/>
 
                                 <ImageView
                                     android:id="@+id/master_icon"
@@ -533,9 +514,7 @@
                                     android:layout_alignParentTop="false"
                                     android:layout_centerVertical="true"
                                     android:layout_marginRight="20dp"
-                                    android:scaleType="fitCenter"
-                                    android:src="@drawable/mastericon"
-                                    app:srcCompat="@drawable/mastericon" />
+                                    android:scaleType="fitCenter"/>
 
                             </RelativeLayout>
 
@@ -563,7 +542,6 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
                                     android:background="?attr/selectableItemBackgroundBorderless"
-                                    android:src="@drawable/art_buttontablet"
                                     android:text="Colortopia"
                                     android:textColor="@android:color/black"
                                     android:textSize="14sp" />
@@ -582,7 +560,7 @@
                                     android:textSize="30sp" />
 
                                 <ImageView
-                                    android:id="@+id/imageView3"
+                                    android:id="@+id/peacock_icon"
                                     android:layout_width="130dp"
                                     android:layout_height="match_parent"
                                     android:layout_alignParentRight="true"
@@ -590,9 +568,7 @@
                                     android:layout_marginBottom="5dp"
                                     android:layout_marginRight="25dp"
                                     android:layout_marginTop="5dp"
-                                    android:layout_weight="5"
-                                    android:src="@drawable/peacock"
-                                    app:srcCompat="@drawable/peacock" />
+                                    android:layout_weight="5"/>
 
                             </RelativeLayout>
 
@@ -607,22 +583,19 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
                                     android:background="?attr/selectableItemBackgroundBorderless"
-                                    android:src="@drawable/art_buttontablet"
                                     android:text="Colortopia"
                                     android:textColor="@android:color/black"
                                     android:textSize="14sp" />
 
                                 <ImageView
-                                    android:id="@+id/imageView3"
+                                    android:id="@+id/rocket_icon"
                                     android:layout_width="130dp"
                                     android:layout_height="match_parent"
                                     android:layout_alignParentLeft="true"
                                     android:layout_alignParentRight="false"
                                     android:layout_centerVertical="true"
                                     android:layout_marginLeft="15dp"
-                                    android:layout_weight="5"
-                                    android:src="@drawable/rocket"
-                                    app:srcCompat="@drawable/rocket" />
+                                    android:layout_weight="5"/>
 
                                 <TextView
                                     android:id="@+id/textView7"
@@ -650,10 +623,8 @@
                                 android:background="@drawable/back_button"
                                 android:padding="18dp"
                                 android:scaleType="fitCenter"
-                                android:src="@drawable/backarrow"
                                 android:text="Back"
-                                android:textSize="12sp"
-                                app:srcCompat="@drawable/backarrow" />
+                                android:textSize="12sp"/>
 
 
                         </LinearLayout>
@@ -709,14 +680,13 @@
                     tools:visibility="visible">
 
                     <ImageView
-                        android:id="@+id/imageView9"
+                        android:id="@+id/right_pointer"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_marginLeft="25dp"
                         android:layout_weight="5"
                         android:rotation="180"
-                        android:visibility="visible"
-                        app:srcCompat="@drawable/rightpointer" />
+                        android:visibility="visible"/>
 
                     <LinearLayout
                         android:id="@+id/resume"
@@ -731,7 +701,7 @@
                         tools:visibility="visible">
 
                         <ImageView
-                            android:id="@+id/imageView7"
+                            android:id="@+id/star_icon"
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
                             android:layout_gravity="center_vertical"
@@ -741,7 +711,6 @@
                             android:scaleType="fitCenter"
                             android:scaleX=".8"
                             android:scaleY=".8"
-                            app:srcCompat="@drawable/star"
                             tools:visibility="visible" />
 
                         <TextView
@@ -776,14 +745,13 @@
                             tools:visibility="visible">
 
                             <ImageView
-                                android:id="@+id/imageView4"
+                                android:id="@+id/google_icon"
                                 android:layout_width="35dp"
                                 android:layout_height="35dp"
                                 android:layout_alignParentLeft="false"
                                 android:layout_alignParentStart="false"
                                 android:layout_gravity="center"
-                                android:layout_marginTop="20dp"
-                                android:src="@drawable/googlelogo" />
+                                android:layout_marginTop="20dp"/>
 
                             <TextView
                                 android:id="@+id/textView8"
@@ -818,7 +786,6 @@
                                 android:layout_weight="75"
                                 android:scaleType="fitCenter"
                                 android:visibility="visible"
-                                app:srcCompat="@drawable/rank0"
                                 tools:visibility="visible" />
 
                             <TextView
@@ -846,6 +813,7 @@
                         android:weightSum="100">
 
                         <ImageView
+                            android:id="@+id/licktop"
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
                             android:layout_gravity="center_vertical"
@@ -854,28 +822,25 @@
                             android:alpha="1"
                             android:scaleType="fitCenter"
                             android:scaleX=".9"
-                            android:scaleY=".9"
-                            app:srcCompat="@drawable/licktop" />
+                            android:scaleY=".9"/>
 
                         <ImageView
-                            android:id="@+id/imageView8"
+                            android:id="@+id/lickbottom"
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
                             android:layout_marginTop="5dp"
-                            android:layout_weight="30"
-                            app:srcCompat="@drawable/lickbotton" />
+                            android:layout_weight="30"/>
                     </LinearLayout>
 
                     <ImageView
-                        android:id="@+id/imageView11"
+                        android:id="@+id/right_pointer_b"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="25dp"
                         android:layout_weight="5"
                         android:scaleX=".75"
                         android:scaleY=".75"
-                        android:visibility="invisible"
-                        app:srcCompat="@drawable/rightpointer" />
+                        android:visibility="invisible"/>
 
                 </LinearLayout>
 
@@ -912,14 +877,13 @@
                         tools:visibility="visible">
 
                         <ImageView
-                            android:id="@+id/imageView12"
+                            android:id="@+id/right_pointer_c"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="25dp"
                             android:layout_weight="5"
                             android:rotation="180"
-                            android:visibility="invisible"
-                            app:srcCompat="@drawable/rightpointer" />
+                            android:visibility="invisible"/>
 
                         <Button
                             android:id="@+id/host_button"
@@ -975,13 +939,12 @@
                         </Button>
 
                         <ImageView
-                            android:id="@+id/imageView13"
+                            android:id="@+id/right_pointer_d"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginRight="25dp"
                             android:layout_weight="5"
-                            android:visibility="visible"
-                            app:srcCompat="@drawable/rightpointer" />
+                            android:visibility="visible"/>
 
                     </LinearLayout>
 
@@ -1026,13 +989,12 @@
                     android:textSize="24sp" />
 
                 <ImageView
-                    android:id="@+id/imageView2"
+                    android:id="@+id/browse"
                     android:layout_width="35dp"
                     android:layout_height="35dp"
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="8dp"
-                    android:scaleType="fitCenter"
-                    app:srcCompat="@drawable/browse" />
+                    android:scaleType="fitCenter"/>
 
             </LinearLayout>
 
@@ -1071,14 +1033,12 @@
                     android:textSize="24sp" />
 
                 <ImageView
-                    android:id="@+id/imageView2"
+                    android:id="@+id/share_icon"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="8dp"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/share"
-                    app:srcCompat="@drawable/share" />
+                    android:scaleType="fitCenter"/>
 
             </LinearLayout>
 

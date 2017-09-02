@@ -6,10 +6,8 @@ import android.content.SharedPreferences;
 
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -28,7 +26,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBQueryExpression;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.games.Games;
@@ -41,11 +38,7 @@ import com.licktopia.thechampionofsudoku.Activities.BaseActivity;
 import com.licktopia.thechampionofsudoku.Multiplayer.MultiGame;
 import com.licktopia.thechampionofsudoku.PlaySounds;
 import com.licktopia.thechampionofsudoku.R;
-import com.licktopia.thechampionofsudoku.DBOjects.CompletedGame;
 import com.squareup.picasso.Picasso;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -129,6 +122,8 @@ public class MainMenuFragment extends Fragment {
         else if(phoneSize == 4){
             view = inflater.inflate(R.layout.activity_main_menu_large, container, false);
         }
+
+        initializeImages();
 
         scrollView = (HorizontalScrollView)view.findViewById(R.id.gestures);
         mLevelSelect = (LinearLayout)view.findViewById(R.id.level_select);
@@ -248,6 +243,72 @@ public class MainMenuFragment extends Fragment {
         callback = null;
     }
 
+    // Call in bitmaps
+    private void initializeImages() {
+        ImageView mainTitle = (ImageView)view.findViewById(R.id.main_title);
+        ImageView connect = (ImageView)view.findViewById(R.id.connect);
+        ImageView blueDot = (ImageView)view.findViewById(R.id.blue_dot);
+        ImageView yellowDot = (ImageView)view.findViewById(R.id.yellow_dot);
+        ImageView pinkDot = (ImageView)view.findViewById(R.id.pink_dot);
+        ImageView purpleDot = (ImageView)view.findViewById(R.id.purple_dot);
+        ImageView darkRedDot = (ImageView)view.findViewById(R.id.dark_red_dot);
+        ImageView orangeDot = (ImageView)view.findViewById(R.id.orange_dot);
+        ImageView beginnerIcon = (ImageView)view.findViewById(R.id.beginner_icon);
+        ImageView easyIcon = (ImageView)view.findViewById(R.id.easy_icon);
+        ImageView mediumIcon = (ImageView)view.findViewById(R.id.medium_icon);
+        ImageView hardIcon = (ImageView)view.findViewById(R.id.hard_icon);
+        ImageView expertIcon = (ImageView)view.findViewById(R.id.expert_icon);
+        ImageView masterIcon = (ImageView)view.findViewById(R.id.master_icon);
+        ImageView peacockIcon = (ImageView)view.findViewById(R.id.peacock_icon);
+        ImageView rocketIcon = (ImageView)view.findViewById(R.id.rocket_icon);
+        ImageView menuBack = (ImageView)view.findViewById(R.id.menu_back);
+        ImageView rightPointer = (ImageView)view.findViewById(R.id.right_pointer);
+        ImageView rightPointerB = (ImageView)view.findViewById(R.id.right_pointer_b);
+        ImageView rightPointerC = (ImageView)view.findViewById(R.id.right_pointer_c);
+        ImageView rightPointerD = (ImageView)view.findViewById(R.id.right_pointer_d);
+        ImageView starIcon = (ImageView)view.findViewById(R.id.star_icon);
+        ImageView userBadgeLevel = (ImageView)view.findViewById(R.id.user_badge_level);
+        ImageView lickTop = (ImageView)view.findViewById(R.id.licktop);
+        ImageView lickBottom = (ImageView)view.findViewById(R.id.lickbottom);
+        ImageView browse = (ImageView)view.findViewById(R.id.browse);
+        ImageView shareIcon = (ImageView)view.findViewById(R.id.share_icon);
+        ImageView topiaChoice = (ImageView)view.findViewById(R.id.topiaChoice);
+        ImageView numberChoice = (ImageView)view.findViewById(R.id.numberChoice);
+        ImageView googleIcon = (ImageView)view.findViewById(R.id.google_icon);
+
+        Picasso.with(getContext()).load(R.drawable.sudoku).into(mainTitle);
+        Picasso.with(getContext()).load(R.drawable.mpholder).into(connect);
+        Picasso.with(getContext()).load(R.drawable.cbut_bluedot).into(blueDot);
+        Picasso.with(getContext()).load(R.drawable.cbut_yellowdot).into(yellowDot);
+        Picasso.with(getContext()).load(R.drawable.cbut_lightreddot).into(pinkDot);
+        Picasso.with(getContext()).load(R.drawable.cbut_purpledot).into(purpleDot);
+        Picasso.with(getContext()).load(R.drawable.cbut_darkreddot).into(darkRedDot);
+        Picasso.with(getContext()).load(R.drawable.cbut_orangedot).into(orangeDot);
+        Picasso.with(getContext()).load(R.drawable.beginnericon).into(beginnerIcon);
+        Picasso.with(getContext()).load(R.drawable.easyicon).into(easyIcon);
+        Picasso.with(getContext()).load(R.drawable.mediumicon).into(mediumIcon);
+        Picasso.with(getContext()).load(R.drawable.hardicon).into(hardIcon);
+        Picasso.with(getContext()).load(R.drawable.experticon).into(expertIcon);
+        Picasso.with(getContext()).load(R.drawable.mastericon).into(masterIcon);
+        Picasso.with(getContext()).load(R.drawable.peacock).into(peacockIcon);
+        Picasso.with(getContext()).load(R.drawable.rocket).into(rocketIcon);
+        Picasso.with(getContext()).load(R.drawable.backarrow).into(menuBack);
+        Picasso.with(getContext()).load(R.drawable.rightpointer).into(rightPointer);
+        Picasso.with(getContext()).load(R.drawable.rightpointer).into(rightPointerB);
+        Picasso.with(getContext()).load(R.drawable.rightpointer).into(rightPointerC);
+        Picasso.with(getContext()).load(R.drawable.rightpointer).into(rightPointerD);
+        Picasso.with(getContext()).load(R.drawable.star).into(starIcon);
+        Picasso.with(getContext()).load(R.drawable.rank0).into(userBadgeLevel);
+        Picasso.with(getContext()).load(R.drawable.licktop).into(lickTop);
+        Picasso.with(getContext()).load(R.drawable.lickbottom).into(lickBottom);
+        Picasso.with(getContext()).load(R.drawable.browse).into(browse);
+        Picasso.with(getContext()).load(R.drawable.share).into(shareIcon);
+        Picasso.with(getContext()).load(R.drawable.art_button).into(numberChoice);
+        Picasso.with(getContext()).load(R.drawable.art_button).into(topiaChoice);
+        Picasso.with(getContext()).load(R.drawable.googlelogo).into(googleIcon);
+
+    }
+
     private void initializeResumeButton(LinearLayout mResumeButton) {
         mResumeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -318,8 +379,7 @@ public class MainMenuFragment extends Fragment {
             mainScreen.setAlpha(1);
             setMessage();
         }
-        userBadge.setImageDrawable(ContextCompat.getDrawable(getActivity(), BADGETAGS[BaseActivity.level]));
-
+        Picasso.with(getContext()).load(BADGETAGS[BaseActivity.level]).into(userBadge);
 
         screenWait.setVisibility(GONE);
         mLevelSelect.setVisibility(VISIBLE);
@@ -390,7 +450,7 @@ public class MainMenuFragment extends Fragment {
 
             clickedOut = false;
 
-            userBadge.setImageDrawable(ContextCompat.getDrawable(getActivity(), callback.getBadgetag()));
+            Picasso.with(getContext()).load(callback.getBadgetag()).into(userBadge);
             loadPlayer();
 
         }
@@ -581,7 +641,7 @@ public class MainMenuFragment extends Fragment {
     }
 
     private void mBadgeButtonInitialize(final String gamername, final String gamerID){
-        userBadge.setImageDrawable(ContextCompat.getDrawable(getActivity(), BADGETAGS[BaseActivity.level]));
+        Picasso.with(getContext()).load(BADGETAGS[BaseActivity.level]).into(userBadge);
         mBadge.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
