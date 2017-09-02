@@ -29,6 +29,8 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+
+import static android.view.View.GONE;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.BOARD_FRAGMENT;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.phoneSize;
 
@@ -95,25 +97,21 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
             return new ViewHolder(v);
     }
 
-    public void toggleColor(boolean col){
-        if(col==false){
-            this.color = false;
-        }
-        else{
-            this.color = true;
-        }
-    }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         if(position == userGameListItems.size()) {
-            ImageView loadMoreButton = (ImageView)holder.itemView.findViewById(R.id.load_more);
-            loadMoreButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    fragment.paginationList();
-                }
-            });
+            if(fragment.levelNow>6){
+                holder.itemView.setVisibility(GONE);
+            }else {
+                ImageView loadMoreButton = (ImageView) holder.itemView.findViewById(R.id.load_more);
+                loadMoreButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        fragment.paginationList();
+                    }
+                });
+            }
 
 
         }else {
@@ -214,7 +212,7 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
                         public void run() {
                             //execute code on main thread
                             //mProgressBar.setVisibility(View.GONE);
-                            holder.progressBar.setVisibility(View.GONE);
+                            holder.progressBar.setVisibility(GONE);
                             showBoardStats(holder, thisUserGameListItem);
                         }
                     });
@@ -288,7 +286,7 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
                 if (usrTopScore > 0) {
                     userBestScore = String.valueOf(usrTopScore) + ". ";
                     userBestScoreWord = " Best score ";
-                    shareBlurb.append(context.getString(R.string.my_best_sc)).append(" ").append(String.valueOf(usrTopScore)).append(" ");
+                    shareBlurb.append(". ").append(context.getString(R.string.my_best_sc)).append(" ").append(String.valueOf(usrTopScore)).append(" ");
                 }
                 playerBlurb = new StringBuilder().append(userBestScoreWord).append(userBestScore).append(userBestTimeWord).append(userBestTime).toString();
             }
@@ -300,7 +298,7 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
         holder.statsBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                holder.statsBox.setVisibility(View.GONE);
+                holder.statsBox.setVisibility(GONE);
             }
         });
         holder.shareButton.setOnClickListener(new View.OnClickListener() {
@@ -350,7 +348,7 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                holder.statsBox.setVisibility(View.GONE);
+                                holder.statsBox.setVisibility(GONE);
                             }
                         })
                         .show();
@@ -360,7 +358,7 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
 
     private int getSeconds(String seconds) {
         seconds = seconds.replace(",", "");
-        int intSeconds = Integer.valueOf(seconds);
+        int intSeconds = Integer.valueOf(seconds)/1000;
         return intSeconds;
     }
 
