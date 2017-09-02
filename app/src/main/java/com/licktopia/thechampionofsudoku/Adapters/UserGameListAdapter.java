@@ -19,6 +19,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBQueryExpression;
 import com.licktopia.thechampionofsudoku.Activities.BaseActivity;
+import com.licktopia.thechampionofsudoku.Activities.UIActivities.UserBoardFragment;
 import com.licktopia.thechampionofsudoku.DBOjects.CompletedGame;
 import com.licktopia.thechampionofsudoku.ListItems.UserGameListItem;
 import com.licktopia.thechampionofsudoku.R;
@@ -45,6 +46,7 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
     public static boolean color = false;
     List<CompletedGame> thisBoardsCompletedGames;
     HashSet<Long> completedGameIds;
+    private UserBoardFragment fragment;
 
     //Interface to be implemented by containing activity.
     public interface UserGameLAListener {
@@ -52,37 +54,44 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
 
     }
 
-    public UserGameListAdapter(List<UserGameListItem> userGameListItem, Context context, boolean colors, HashSet<Long> completedGameIds) {
+    public UserGameListAdapter(List<UserGameListItem> userGameListItem, Context context, boolean colors, HashSet<Long> completedGameIds, UserBoardFragment fragment) {
         this.userGameListItems = userGameListItem;
         this.context = context;
         this.color = colors;
         this.completedGameIds = completedGameIds;
+        this.fragment = fragment;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v;
-        if(phoneSize==1) {
+        if(viewType == R.layout.user_game_list_item){
+            if(phoneSize==1) {
+                v = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.user_game_list_item_small, parent, false);
+            }
+            else if(phoneSize == 2){
+                v = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.user_game_list_item, parent, false);
+            }
+            else if(phoneSize == 3){
+                v = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.user_game_list_item_phablet, parent, false);
+            }
+            else{
+                v = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.user_game_list_item_large, parent, false);
+            }
+
+            squares = new TextView[81];
+            for(int i = 0; i < 81; i++) {
+                squares[i] = (TextView) v.findViewById(Tags.usSquareTags[i]);
+            }
+        }else{
             v = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.user_game_list_item_small, parent, false);
-        }
-        else if(phoneSize == 2){
-            v = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.user_game_list_item, parent, false);
-        }
-        else if(phoneSize == 3){
-            v = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.user_game_list_item_phablet, parent, false);
-        }
-        else{
-            v = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.user_game_list_item_large, parent, false);
+                    .inflate(R.layout.user_game_list_item_button, parent, false);
         }
 
-        squares = new TextView[81];
-        for(int i = 0; i < 81; i++) {
-            squares[i] = (TextView) v.findViewById(Tags.usSquareTags[i]);
-        }
             return new ViewHolder(v);
     }
 
@@ -97,17 +106,28 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
+        if(position == userGameListItems.size()) {
+            ImageView loadMoreButton = (ImageView)holder.itemView.findViewById(R.id.load_more);
+            loadMoreButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    fragment.paginationList();
+                }
+            });
 
-        final UserGameListItem userGameListItem = userGameListItems.get(position);
-        final int[] board = userGameListItem.getBoard();
-        String gamerName = userGameListItem.getGamerName();
-        int difficulty = userGameListItem.getDifficulty();
-        String identifier = userGameListItem.getBoardIdentifier();
-        final int level = userGameListItem.getLevel();
-        setUpItem(holder, userGameListItem, board, gamerName, difficulty, identifier);
-        setView(holder, level);
-        setHolderClickListener(holder, userGameListItem, level);
-        thisBoardsCompletedGames = new ArrayList<>();
+
+        }else {
+            final UserGameListItem userGameListItem = userGameListItems.get(position);
+            final int[] board = userGameListItem.getBoard();
+            String gamerName = userGameListItem.getGamerName();
+            int difficulty = userGameListItem.getDifficulty();
+            String identifier = userGameListItem.getBoardIdentifier();
+            final int level = userGameListItem.getLevel();
+            setUpItem(holder, userGameListItem, board, gamerName, difficulty, identifier);
+            setView(holder, level);
+            setHolderClickListener(holder, userGameListItem, level);
+            thisBoardsCompletedGames = new ArrayList<>();
+        }
     }
 
     private void setUpItem(ViewHolder holder, UserGameListItem userGameListItem, int[] board, String gamerName, int difficulty, String identifier) {
@@ -401,12 +421,13 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
 
     @Override
     public int getItemCount() {
-        return userGameListItems.size();
+        return userGameListItems.size() + 1;
     }
 
     @Override
     public int getItemViewType(int position) {
-        return position;
+        return (position == userGameListItems.size()) ? R.layout.user_game_list_item_button : R.layout.user_game_list_item;
+        //return position;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
