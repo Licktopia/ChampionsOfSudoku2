@@ -86,7 +86,7 @@ public class CompletedGameListItem {
 
     private String formatTime(String seconds){
         seconds = seconds.replace(",","");
-        int intSeconds = Integer.valueOf(seconds);
+        int intSeconds = (int) Math.round(Double.valueOf(seconds)/1000);
         String formattedTime;
         int minutes = intSeconds/60;
         int secs = intSeconds%60;

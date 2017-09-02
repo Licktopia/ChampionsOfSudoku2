@@ -2563,8 +2563,8 @@
 
                     <ImageView
                         android:id="@+id/user_icon"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
+                        android:layout_width="55dp"
+                        android:layout_height="55dp"
                         android:layout_gravity="center_vertical"
                         android:layout_weight="1"
                         app:srcCompat="@drawable/icon_user" />

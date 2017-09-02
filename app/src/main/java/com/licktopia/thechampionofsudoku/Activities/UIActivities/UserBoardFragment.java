@@ -59,7 +59,7 @@ public class UserBoardFragment extends Fragment {
     private ArrayList<UserGameListItem> ShuffledList;
     public static UserBoardFragment newInstance() {return new UserBoardFragment();}
     private View view;
-    private int levelNow = 6;
+    public int levelNow = 6;
     private DatabaseAccess databaseAccess;
     private ProgressBar mProgressBar;
     private TextView progressText;
@@ -421,7 +421,7 @@ public class UserBoardFragment extends Fragment {
         okButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                levelNow = 7;
                 String enteredNum = boardNum.getText().toString();
                 if(enteredNum.compareTo("")!=0) {
                     UserGameListItem usgli;
@@ -434,7 +434,7 @@ public class UserBoardFragment extends Fragment {
                         recyclerView.setAdapter(adapter);
                     } catch (Exception e) {
                         Log.d(TAG, "onClick: Couldn't retrieve user entered board");
-                        Toast.makeText(getContext(), new StringBuilder().append(getString(R.string.couldnt_find)).append(enteredNum).toString(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), new StringBuilder().append(getString(R.string.couldnt_find)).append(" ").append(enteredNum).toString(), Toast.LENGTH_SHORT).show();
                     }
                 }
                 try  {

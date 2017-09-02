@@ -89,7 +89,8 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
             for(int i = 0; i < 81; i++) {
                 squares[i] = (TextView) v.findViewById(Tags.usSquareTags[i]);
             }
-        }else{
+        }else {
+
             v = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.user_game_list_item_button, parent, false);
         }
@@ -358,7 +359,7 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
 
     private int getSeconds(String seconds) {
         seconds = seconds.replace(",", "");
-        int intSeconds = Integer.valueOf(seconds)/1000;
+        int intSeconds = (int) Math.round(Double.valueOf(seconds)/1000);
         return intSeconds;
     }
 
@@ -419,7 +420,11 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
 
     @Override
     public int getItemCount() {
-        return userGameListItems.size() + 1;
+        if(fragment.levelNow<= 6) {
+            return userGameListItems.size() + 1;
+        }else{
+            return userGameListItems.size();
+        }
     }
 
     @Override
