@@ -220,6 +220,14 @@ public class MainMenuFragment extends Fragment {
                 }
             }
         });
+        if((!gameHelper.isConnecting() && gameHelper.isSignedIn())){
+            mSignInButton.setVisibility(GONE);
+            userBadge.setImageDrawable(ContextCompat.getDrawable(getActivity(), BADGETAGS[BaseActivity.level]));
+            mBadge.setVisibility(VISIBLE);
+            //mProgressBar.setVisibility(GONE);
+            //mainScreen.setAlpha(1);
+            //setMessage();
+        }
 
         return view;
     }
@@ -384,6 +392,7 @@ public class MainMenuFragment extends Fragment {
         screenWait.setVisibility(GONE);
         mLevelSelect.setVisibility(VISIBLE);
         mModeSelect.setVisibility(GONE);
+        callback.emptyBackStack();
 
     }
 
@@ -785,6 +794,7 @@ public class MainMenuFragment extends Fragment {
         //void querySavedGameDb();
         int getBadgetag();
         void beginUserInitSignIn();
+        void emptyBackStack();
 
     }
 

@@ -158,6 +158,7 @@
         tools:visibility="visible">
 
         <RelativeLayout
+            android:id="@+id/color_background"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="80"
@@ -222,6 +223,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/fil1"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/background">
@@ -238,6 +240,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/fil2"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/background">
@@ -254,6 +257,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/fil3"
                     android:layout_width="match_parent"
                     android:layout_height="4dp"
                     android:background="@color/background">
@@ -270,6 +274,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/fil4"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/background">
@@ -286,6 +291,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/fil5"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/background">
@@ -302,6 +308,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/fil6"
                     android:layout_width="match_parent"
                     android:layout_height="4dp"
                     android:background="@color/background">
@@ -318,6 +325,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/fil7"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/background">
@@ -334,6 +342,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/fil8"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/background">
@@ -375,6 +384,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/fil9"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/background">
@@ -391,6 +401,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/fil10"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/background">
@@ -407,6 +418,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/fil11"
                     android:layout_width="match_parent"
                     android:layout_height="4dp"
                     android:background="@color/background">
@@ -423,6 +435,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/fil12"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/background">
@@ -439,6 +452,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/fil13"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/background">
@@ -455,6 +469,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/fil14"
                     android:layout_width="match_parent"
                     android:layout_height="4dp"
                     android:background="@color/background">
@@ -471,6 +486,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/fil15"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/background">
@@ -487,6 +503,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/fil16"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/background">
@@ -529,6 +546,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/fil17"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/background">
@@ -545,6 +563,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/fil18"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/background">
@@ -561,6 +580,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/fil19"
                     android:layout_width="match_parent"
                     android:layout_height="4dp"
                     android:background="@color/background">
@@ -577,6 +597,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/fil20"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/background">
@@ -593,6 +614,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/fil21"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/background">
@@ -609,6 +631,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/fil22"
                     android:layout_width="match_parent"
                     android:layout_height="4dp"
                     android:background="@color/background">
@@ -625,6 +648,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/fil23"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/background">
@@ -641,6 +665,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/fil24"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/background">
@@ -683,6 +708,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/fil25"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/background">
@@ -699,6 +725,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/fil26"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/background">
@@ -715,6 +742,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/fil27"
                     android:layout_width="match_parent"
                     android:layout_height="4dp"
                     android:background="@color/background">
@@ -731,6 +759,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/fil28"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/background">
@@ -747,6 +776,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/fil29"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/background">
@@ -763,6 +793,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/fil30"
                     android:layout_width="match_parent"
                     android:layout_height="4dp"
                     android:background="@color/background">
@@ -779,6 +810,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/fil31"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/background">
@@ -795,6 +827,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/fil32"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/background">
@@ -837,6 +870,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/fil33"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/background">
@@ -853,6 +887,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/fil34"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/background">
@@ -869,6 +904,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/fil35"
                     android:layout_width="match_parent"
                     android:layout_height="4dp"
                     android:background="@color/background">
@@ -885,6 +921,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/fil36"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/background">
@@ -901,6 +938,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/fil37"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/background">
@@ -917,6 +955,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/fil38"
                     android:layout_width="match_parent"
                     android:layout_height="4dp"
                     android:background="@color/background">
@@ -933,6 +972,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/fil39"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/background">
@@ -949,6 +989,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/fil40"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/background">
@@ -991,6 +1032,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/fil41"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/background">
@@ -1007,6 +1049,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/fil42"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/background">
@@ -1023,86 +1066,11 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/fil43"
                     android:layout_width="match_parent"
                     android:layout_height="4dp"
                     android:background="@color/background">
 
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="3dp"
-                        android:background="@color/background">
-
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="3dp"
-                        android:background="@color/background">
-
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="3dp"
-                        android:background="@color/background">
-
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="3dp"
-                        android:background="@color/background">
-
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="3dp"
-                        android:background="@color/background">
-
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="3dp"
-                        android:background="@color/background">
-
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="3dp"
-                        android:background="@color/background">
-
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="3dp"
-                        android:background="@color/background">
-
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="3dp"
-                        android:background="@color/background">
-
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="3dp"
-                        android:background="@color/background">
-
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="3dp"
-                        android:background="@color/background">
-
-                    </RelativeLayout>
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -1115,6 +1083,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/fil44"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/background">
@@ -1131,6 +1100,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/fil45"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/background">
@@ -1147,6 +1117,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/fil46"
                     android:layout_width="match_parent"
                     android:layout_height="4dp"
                     android:background="@color/background">
@@ -1163,6 +1134,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/fil47"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/background">
@@ -1179,6 +1151,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/fil48"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/background">
@@ -1221,6 +1194,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/fil49"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/background">
@@ -1237,6 +1211,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/fil50"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/background">
@@ -1253,6 +1228,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/fil51"
                     android:layout_width="match_parent"
                     android:layout_height="4dp"
                     android:background="@color/background">
@@ -1269,6 +1245,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/fil52"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/background">
@@ -1285,6 +1262,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/fil53"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/background">
@@ -1301,6 +1279,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/fil54"
                     android:layout_width="match_parent"
                     android:layout_height="4dp"
                     android:background="@color/background">
@@ -1317,6 +1296,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/fil55"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/background">
@@ -1333,6 +1313,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/fil56"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/background">
@@ -1375,6 +1356,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/fil57"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/background">
@@ -1391,6 +1373,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/fil58"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/background">
@@ -1407,6 +1390,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/fil59"
                     android:layout_width="match_parent"
                     android:layout_height="4dp"
                     android:background="@color/background">
@@ -1423,6 +1407,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/fil60"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/background">
@@ -1439,6 +1424,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/fil61"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/background">
@@ -1455,6 +1441,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/fil62"
                     android:layout_width="match_parent"
                     android:layout_height="4dp"
                     android:background="@color/background">
@@ -1471,6 +1458,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/fil63"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/background">
@@ -1487,6 +1475,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/fil64"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/background">
@@ -1529,6 +1518,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/fil65"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/background">
@@ -1545,6 +1535,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/fil66"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/background">
@@ -1561,6 +1552,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/fil67"
                     android:layout_width="match_parent"
                     android:layout_height="4dp"
                     android:background="@color/background">
@@ -1577,6 +1569,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/fil68"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/background">
@@ -1593,6 +1586,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/fil69"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/background">
@@ -1609,6 +1603,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/fil70"
                     android:layout_width="match_parent"
                     android:layout_height="4dp"
                     android:background="@color/background">
@@ -1625,6 +1620,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/fil71"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/background">
@@ -1641,6 +1637,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/fil72"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/background">
@@ -2068,7 +2065,7 @@
             </LinearLayout>
 
             <ImageView
-                android:id="@+id/imageView5"
+                android:id="@+id/hints_cover"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:alpha=".15"

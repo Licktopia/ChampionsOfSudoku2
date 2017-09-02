@@ -61,6 +61,7 @@ public class UserBoardFragment extends Fragment {
     private int levelNow = 6;
     private DatabaseAccess databaseAccess;
     private ProgressBar mProgressBar;
+    private TextView progressText;
     private boolean color = false;
     private ImageButton colorSwitcher;
     private int gridNum = 2;
@@ -171,6 +172,7 @@ public class UserBoardFragment extends Fragment {
 
         if(ShuffledList==null) {
             mProgressBar = (ProgressBar) view.findViewById(R.id.usr_progress);
+            progressText = (TextView) view.findViewById(R.id.loading_usr);
             recyclerView = (RecyclerView) view.findViewById(R.id.user_board_rv);
             gridLayoutManager = new GridLayoutManager(getContext(), gridNum);
             recyclerView.setLayoutManager((gridLayoutManager));
@@ -227,6 +229,7 @@ public class UserBoardFragment extends Fragment {
                             public void run() {
                                 //execute code on main thread
                                 mProgressBar.setVisibility(GONE);
+                                progressText.setVisibility(GONE);
                                 recyclerView.setAdapter(adapter);
                                 recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener()
                                 {
@@ -244,6 +247,7 @@ public class UserBoardFragment extends Fragment {
                                                         loading[0] = false;
                                                         Log.v("...", "Last Item Wow !");
                                                         mProgressBar.setVisibility(View.VISIBLE);
+                                                        progressText.setVisibility(View.VISIBLE);
                                                         Handler loadMoreHandle = new Handler();
                                                         loadMoreHandle.postDelayed(new Runnable() {  // Wait then remove error color
                                                             @Override
@@ -251,6 +255,7 @@ public class UserBoardFragment extends Fragment {
                                                                 paginationList();
                                                                 loading[0] = true;
                                                                 mProgressBar.setVisibility(View.GONE);
+                                                                progressText.setVisibility(View.GONE);
                                                             }
                                                         }, 1500);
 

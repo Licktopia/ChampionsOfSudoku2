@@ -448,4 +448,16 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true" />
 
+    <TextView
+        android:id="@+id/loading_usr"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/usr_progress"
+        android:layout_centerHorizontal="true"
+        android:layout_centerInParent="false"
+        android:layout_marginTop="5dp"
+        android:text="Loading..."
+        android:textColor="@color/white"
+        android:textSize="18sp" />
+
 </RelativeLayout>
