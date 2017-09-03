@@ -47,10 +47,6 @@ public class Strategies {
     public static final int SINGLES_CHAIN = 9;
     public static final int NUM_STRATEGIES = 9;
 
-    public static final int COLOR_ONE = 100;
-    public static final int COLOR_TWO = 200;
-    public static final int NO_COLOR = 0;
-
     /* Returns a single random element of type <T> from a list */
     public static <T> T getRandomElement(List<T> list) {
         int rand = ThreadLocalRandom.current().nextInt(0, list.size());
@@ -213,11 +209,15 @@ public class Strategies {
                                 hintInfo[SELECTED] = new int[] {idx1, idx2};
                                 hintInfo[CONNECTED] = group;
                                 int[] notepad = new int[board.getSize() - 2];
-                                for (int x = 0, y = 1; x < notepad.length; x++, y++) {
-                                    if (y == j || y == twoSquareNotepadNums.get(k)) y++;
-                                    notepad[x] = y;
+                                for (int x = 0, y = 1; x < notepad.length;) {
+                                    if (y == j || y == twoSquareNotepadNums.get(k))
+                                        y++;
+                                    else {
+                                        notepad[x++] = y++;
+                                    }
                                 }
                                 hintInfo[NOTEPAD] = notepad;
+                                Log.i("Strat", "Strat notepad: ");
                                 hiddenPairs.add(new Hint(hintInfo));
                             }
                         }
