@@ -149,7 +149,7 @@
                                 android:layout_centerHorizontal="false"
                                 android:layout_centerInParent="false"
                                 android:layout_weight="75"
-                                android:scaleType="fitCenter"/>
+                                android:scaleType="fitCenter" />
 
                             <TextView
                                 android:id="@+id/textView12"

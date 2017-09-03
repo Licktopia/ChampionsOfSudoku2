@@ -43,7 +43,7 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
     public List<UserGameListItem> userGameListItems;
     private Context context;
     private String[] mColors = {"#1E91D6","#ea3f6a","#7D1538","#7c8597","#E18335","#4A2772","#F2CA08","#329d53"};
-    TextView[] squares;
+
     private UserGameLAListener callback;
     public static boolean color = false;
     List<CompletedGame> thisBoardsCompletedGames;
@@ -85,10 +85,7 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
                         .inflate(R.layout.user_game_list_item_large, parent, false);
             }
 
-            squares = new TextView[81];
-            for(int i = 0; i < 81; i++) {
-                squares[i] = (TextView) v.findViewById(Tags.usSquareTags[i]);
-            }
+
         }else {
 
             v = LayoutInflater.from(parent.getContext())
@@ -133,18 +130,18 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
         for(int i =0; i<81; i++){
             if(board[i]!=0) {
                 if(!color) {
-                    squares[i].setText(String.format("%s", board[i]));
+                    holder.squares[i].setText(String.format("%s", board[i]));
                 }
                 else{
-                    squares[i].setBackgroundColor(ContextCompat.getColor(context, Tags.colors[board[i]-1]));
+                    holder.squares[i].setBackgroundColor(ContextCompat.getColor(context, Tags.colors[board[i]-1]));
                 }
             }
             else{
                 if(!color) {
-                    squares[i].setText("");
+                    holder.squares[i].setText("");
                 }
                 else{
-                    squares[i].setBackgroundColor(Color.WHITE);
+                    holder.squares[i].setBackgroundColor(Color.WHITE);
                 }
             }
         }
@@ -381,7 +378,7 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
         Intent i = new Intent(
                 Intent.ACTION_SEND);
         i.setType("text/plain");
-        i.putExtra(Intent.EXTRA_TEXT, new StringBuilder().append("You have received a Sudoku Challenge from ").append(BaseActivity.getUsername()).append(". BOARD KEY: ").append(uGLI.getBoardIdentifier()).append(shareBlurb).toString());
+        i.putExtra(Intent.EXTRA_TEXT, new StringBuilder().append("You have received a Sudoku Challenge from ").append(BaseActivity.getUsername()).append(". BOARD KEY: ").append(uGLI.getBoardIdentifier()).append(shareBlurb).append("\n\nDownload the app at https://play.google.com/store/apps/details?id=com.licktopia.thechampionofsudoku").toString());
 
         context.startActivity(Intent.createChooser(
                 i,
@@ -441,7 +438,7 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
         ImageView isCompleted;
         LinearLayout usBackground;
         LinearLayout statsBox;
-
+        TextView[] squares;
         TextView communityText;
         TextView playerText;
         TextView playerLabel;
@@ -469,6 +466,10 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
             shareButton = (ImageView)itemView.findViewById(R.id.us_share);
             key = (ImageView)itemView.findViewById(R.id.key);
             progressBar = (ProgressBar) itemView.findViewById(R.id.us_progress);
+            squares = new TextView[81];
+            for(int i = 0; i < 81; i++) {
+                squares[i] = (TextView) itemView.findViewById(Tags.usSquareTags[i]);
+            }
         }
     }
 }

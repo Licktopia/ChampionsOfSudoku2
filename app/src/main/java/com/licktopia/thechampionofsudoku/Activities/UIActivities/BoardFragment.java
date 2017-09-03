@@ -960,7 +960,7 @@ public class BoardFragment extends Fragment {
             mLevelBonusStats.setText("Level Bonus: " + String.format("%,d",(int) mGame.getLevelBonus()));
             if((mGame.getEarlyFinishTime() - mGame.getRunningTime()) >= 0)
             {
-                mTimeBonusStats.setText("Time Bonus: " + String.format("%,d",(int) (mGame.getEarlyFinishTime() - mGame.getRunningTime())) + " x " + String.format("%,d",(int) mGame.getEarlyFinishBonus()) );
+                mTimeBonusStats.setText("Time Bonus: " + String.format("%,d",(int) Math.round((mGame.getEarlyFinishTime() - mGame.getRunningTime())/1000)) + " x " + String.format("%,d",(int) mGame.getEarlyFinishBonus()) );
             }
             else
             {

@@ -22,9 +22,9 @@ public class ScoreCSV {
             new ScoreWeights(0, 30, 0, 0, 0, 0, 0, 0),
             new ScoreWeights(20, 60, 1, 30, 1.0/30.0, 0, 0, 5),
             new ScoreWeights(100, 100, 10, 25, 1.0/30.0, 0, 0, 10),
-            new ScoreWeights(200, 110, 10, 25, 1.0/25.0, 10, 10, 15),
-            new ScoreWeights(300, 120, 10, 25, 1.0/25.0, 10, 11, 20),
-            new ScoreWeights(400, 130, 10, 20, 1.0/25.0, 10, 12, 25)
+            new ScoreWeights(200, 110, 10, 25, 1.0/25.0, 10, 600000, 15),
+            new ScoreWeights(300, 120, 10, 25, 1.0/25.0, 10, 660000, 20),
+            new ScoreWeights(400, 130, 10, 20, 1.0/25.0, 10, 720000, 25)
     };
 
 

@@ -255,11 +255,18 @@ public class Game implements GameInterface, java.io.Serializable
         }
         else
         {
+            double isBonus = (getEarlyFinishTime() - getRunningTime());
+            if(isBonus<0){
+                isBonus = 0;
+            }
+            else{
+                isBonus = Math.round(isBonus/1000);
+            }
             return getLevelBonus() +
                     getTotalOneTimeGuesses() * getOneTimeGuessSquareBonus() -
                     (getTimePenalty() * totalPenaltyTimeIntervals()) -
                     (long)(getIncorrectGuessesPenalty() * (double)totalIncorrectGuesses()) +
-                    getEarlyFinishBonus() * (getEarlyFinishTime() - getRunningTime()) -
+                    getEarlyFinishBonus() * ((long)isBonus) -
                     (getHintPenalty() * getTotalHintsUsed());
         }
 

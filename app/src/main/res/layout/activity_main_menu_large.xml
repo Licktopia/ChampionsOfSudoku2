@@ -209,6 +209,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="match_parent"
                                     android:layout_centerVertical="false"
+                                    android:layout_toEndOf="@+id/blue_dot"
                                     android:layout_toRightOf="@+id/blue_dot"
                                     android:gravity="center_vertical"
                                     android:paddingLeft="20dp"
