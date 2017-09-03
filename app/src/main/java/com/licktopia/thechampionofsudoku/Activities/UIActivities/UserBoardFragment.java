@@ -267,7 +267,7 @@ public class UserBoardFragment extends Fragment {
                             }
                         });
                     } catch (Exception e) {
-
+                        inProcessFlag = false;
                     }
                 }
             };

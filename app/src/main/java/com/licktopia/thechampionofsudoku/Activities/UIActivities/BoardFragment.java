@@ -20,6 +20,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -89,6 +91,7 @@ import static android.content.ContentValues.TAG;
 import static android.view.View.GONE;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.gameHelper;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.getXp;
+import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.inProcessFlag;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.phoneSize;
 
 
@@ -564,6 +567,7 @@ public class BoardFragment extends Fragment {
             }
 
             // id field is null at this point
+            inProcessFlag = true;
             Runnable runnable = new Runnable() {
                 public void run() {
                     //DynamoDB calls go here
@@ -575,6 +579,7 @@ public class BoardFragment extends Fragment {
                             public void run() {
                                 //execute code on main thread
                                 Toast.makeText(getActivity(), new StringBuilder().append(getString(R.string.gamesavedwithalias)).append(fileSaveName).toString(),Toast.LENGTH_SHORT).show();
+                                inProcessFlag = false;
                             }
                         });
                     }
@@ -585,6 +590,7 @@ public class BoardFragment extends Fragment {
                             public void run() {
                                 //execute code on main thread
                                 Toast.makeText(getActivity(),  R.string.game_not_saved,Toast.LENGTH_SHORT).show();
+                                inProcessFlag = false;
                             }
                         });
                     }
@@ -1372,7 +1378,9 @@ public class BoardFragment extends Fragment {
         homeMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                homeClick();
+                if(!inProcessFlag) {
+                    homeClick();
+                }
 
             }
         });
@@ -2069,13 +2077,17 @@ public class BoardFragment extends Fragment {
 
     @Override
     public void onPrepareOptionsMenu(Menu menu){
-        /*
-        if(solvedState) {
+
+        if(solvedState) {/*
             SpannableString s = new SpannableString("Save game");
             s.setSpan(new ForegroundColorSpan(Color.LTGRAY), 0, s.length(), 0);
-            menu.getItem(5).setTitle(s);
+            menu.getItem(5).setTitle(s);*/
+            menu.getItem(5).setVisible(false);
         }
-        */
+        if(inProcessFlag){
+            menu.getItem(4).setVisible(false);
+        }
+
     }
 
     @Override

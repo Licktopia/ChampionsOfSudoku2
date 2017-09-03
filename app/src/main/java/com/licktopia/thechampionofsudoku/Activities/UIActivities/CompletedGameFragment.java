@@ -34,6 +34,7 @@ import java.util.List;
 
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.formatExactTime;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.gameHelper;
+import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.inProcessFlag;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.mapper;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.phoneSize;
 
@@ -90,7 +91,9 @@ public class CompletedGameFragment extends Fragment {
         iconView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                callback.swapFragment(BaseActivity.MAIN_MENU_FRAGMENT, new Bundle());
+                if(!inProcessFlag) {
+                    callback.swapFragment(BaseActivity.MAIN_MENU_FRAGMENT, new Bundle());
+                }
             }
         });
     }
@@ -284,6 +287,7 @@ public class CompletedGameFragment extends Fragment {
             final List<CompletedGame>[] list = new List[]{new ArrayList<CompletedGame>()};
 
             // id field is null at this point
+            inProcessFlag=true;
             Runnable runnable = new Runnable() {
                 public void run() {
                     //DynamoDB calls go here
@@ -303,10 +307,11 @@ public class CompletedGameFragment extends Fragment {
                                 mProgressIndicator.setVisibility(View.GONE);
                                 mLoadingText.setVisibility(View.GONE);
                                 initializeSorters();
+                                inProcessFlag = false;
                             }
                         });
                     }catch(Exception e){
-
+                        inProcessFlag = false;
                     }
                 }
             };
