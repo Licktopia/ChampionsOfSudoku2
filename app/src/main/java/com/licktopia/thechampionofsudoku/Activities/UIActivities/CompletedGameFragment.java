@@ -91,9 +91,9 @@ public class CompletedGameFragment extends Fragment {
         iconView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!inProcessFlag) {
+                //if(!inProcessFlag) {
                     callback.swapFragment(BaseActivity.MAIN_MENU_FRAGMENT, new Bundle());
-                }
+               // }
             }
         });
     }

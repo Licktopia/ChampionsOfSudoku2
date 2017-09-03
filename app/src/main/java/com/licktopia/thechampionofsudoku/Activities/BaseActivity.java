@@ -193,9 +193,11 @@ public class BaseActivity extends BaseGameActivity
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
         transaction.replace(R.id.fragment_container, fragment);
+        transaction.addToBackStack(null);
+        /*
         if(fragmentName!=BOARD_FRAGMENT && fragmentName!=MAIN_MENU_FRAGMENT) {
             transaction.addToBackStack(null);
-        }/*
+        }
         if(fragmentName==MAIN_MENU_FRAGMENT){
             for(int i = 0; i < getSupportFragmentManager().getBackStackEntryCount(); ++i) {
                 getSupportFragmentManager().popBackStack();
