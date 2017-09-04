@@ -84,6 +84,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
 
 import main.java.com.maximeroussy.invitrode.RandomWord;
 
@@ -961,21 +962,35 @@ public class BoardFragment extends Fragment {
             else{
                 userIcon.setVisibility(GONE);
             }
-            mTotalXpStats.setText(String.format("%,d",(int) gameXP)+ " XP");
-            mRpStats.setText("Multiplier: " + String.format("%,d",(int) mGame.getScore())+ " x " + String.format("%2.1f", callback.getMultiplier()));
+            mTotalXpStats.setText("Total XP Gained: " + String.format("%,d",(int) gameXP) + " XP");
+            mRpStats.setText("Multiplier Bonus: "
+                    + String.format("%,d",(int) mGame.getScore())+ " x "
+                    + String.format("%2.1f", (float)gameXP / (float)mGame.getScore()));
             mLevelBonusStats.setText("Level Bonus: " + String.format("%,d",(int) mGame.getLevelBonus()));
-            if((mGame.getEarlyFinishTime() - mGame.getRunningTime()) >= 0)
+            if((TimeUnit.MINUTES.toMillis(mGame.getEarlyFinishTime()) - mGame.getRunningTime()) >= 0)
             {
-                mTimeBonusStats.setText("Time Bonus: " + String.format("%,d",(int) Math.round((mGame.getEarlyFinishTime() - mGame.getRunningTime())/1000)) + " x " + String.format("%,d",(int) mGame.getEarlyFinishBonus()) );
+                mTimeBonusStats.setText("Under " +
+                        String.format("%,d",(int)mGame.getEarlyFinishTime()) +
+                        " mins Bonus: " + String.format("%,d",
+                        (int) (TimeUnit.MINUTES.toSeconds(mGame.getEarlyFinishTime())
+                        - TimeUnit.MILLISECONDS.toSeconds(mGame.getRunningTime())))
+                        + " x " + String.format("%,d",(int) mGame.getEarlyFinishBonus()) );
             }
             else
             {
-                mTimeBonusStats.setText("Time Bonus: 0 x " + String.format("%,d",(int) mGame.getEarlyFinishBonus()) );
+                mTimeBonusStats.setText("Under " +
+                        String.format("%,d",(int)mGame.getEarlyFinishTime())
+                        +" mins Bonus: 0 x "
+                        + String.format("%,d",(int) mGame.getEarlyFinishBonus()) );
             }
 
-            mGoodSquaresStats.setText("Square Points: " + String.format("%,d",(int) mGame.getTotalOneTimeGuesses())+ " x " + String.format("%,d",(int) mGame.getOneTimeGuessSquareBonus()));
+            mGoodSquaresStats.setText("Accuracy Bonus: "
+                    + String.format("%,d",(int) mGame.getTotalOneTimeGuesses())+ " x "
+                    + String.format("%,d",(int) mGame.getOneTimeGuessSquareBonus()));
             mAccuracyStats.setText("Accuracy: " + String.format("%,d",(int)Math.round(mGame.getAccuracy()*100),2)+"%");
-            mPenalty.setText("Penalty: " + String.format("%,d",(int) mGame.totalPenaltyTimeIntervals()) + " x " + String.format("%,d",(int) mGame.getTimePenalty()));
+            mPenalty.setText("Time Penalty: "
+                    + String.format("%,d",(int) mGame.totalPenaltyTimeIntervals()) + " x "
+                    + String.format("%,d",(int) mGame.getTimePenalty()));
 
         }
 

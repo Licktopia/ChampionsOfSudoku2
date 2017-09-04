@@ -11,7 +11,7 @@ class ScoreWeights implements java.io.Serializable {
     //Time, in seconds, interval when time is penalty removes points
             runningTimeRemovalInterval = -1,
             earlyFinishBonus = -1,
-    //The user gets a bonus if they finished before this time, in seconds
+    //The user gets a bonus if they finished before this time, in minutes
             earlyFinishTime = -1;
     private double incorrectGuessPenalty = -1;
 

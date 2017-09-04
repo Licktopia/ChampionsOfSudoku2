@@ -731,4 +731,20 @@ public class Board implements java.io.Serializable {
     {
         return idx % this.getSize();
     }
+
+    /**
+     * prints all of the current board numbers to the android monitor
+     */
+    protected void logBoardNums()
+    {
+        for(int i = 0; i < totalBoardRows(); i++)
+        {
+            String line = "";
+            for(int j = 0; j < totalBoardCols(); j++)
+            {
+                line += " " + getValueAt(i, j);
+            }
+            Log.d("Board", line);
+        }
+    }
 }

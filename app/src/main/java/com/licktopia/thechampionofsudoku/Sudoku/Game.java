@@ -56,6 +56,7 @@ public class Game implements GameInterface, java.io.Serializable
         scoreWeights = ScoreCSV.getScoreWeights(level);
         totalHintsUsed = 0;
         solvedBoard = solutionSolver.solve();
+        solvedBoard.logBoardNums();
         if(solvedBoard == null)
         {
             System.out.printf("Game cannot be solved!\n");
@@ -255,13 +256,15 @@ public class Game implements GameInterface, java.io.Serializable
         }
         else
         {
-            double isBonus = (getEarlyFinishTime() - getRunningTime());
+            // difference in time between the early finish time and the running time, in seconds
+            double isBonus = (TimeUnit.MINUTES.toSeconds(getEarlyFinishTime())
+                    - TimeUnit.MILLISECONDS.toSeconds(getRunningTime()));
+
+            // don't take away points if the user takes forever
             if(isBonus<0){
                 isBonus = 0;
             }
-            else{
-                isBonus = Math.round(isBonus/1000);
-            }
+
             return getLevelBonus() +
                     getTotalOneTimeGuesses() * getOneTimeGuessSquareBonus() -
                     (getTimePenalty() * totalPenaltyTimeIntervals()) -
