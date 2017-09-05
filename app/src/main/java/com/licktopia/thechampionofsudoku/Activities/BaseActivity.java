@@ -533,17 +533,15 @@ public class BaseActivity extends BaseGameActivity
                     })
                     .setNegativeButton(getString(R.string.no), null)
                     .show();
-        }else if(f instanceof UserBoardFragment){
-            if(!inProcessFlag) {
+        }/*else if(f instanceof UserBoardFragment){
                 swapFragment(BaseActivity.MAIN_MENU_FRAGMENT, new Bundle());
-            }
         }else if(f instanceof SavedGameFragment){
             swapFragment(BaseActivity.MAIN_MENU_FRAGMENT, new Bundle());
         }else if(f instanceof CompletedGameFragment){
             swapFragment(BaseActivity.MAIN_MENU_FRAGMENT, new Bundle());
         }else if(f instanceof GamerProfileFragment){
             swapFragment(BaseActivity.MAIN_MENU_FRAGMENT, new Bundle());
-        }
+        }*/
         else{
             super.onBackPressed();
         }
