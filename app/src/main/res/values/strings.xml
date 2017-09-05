@@ -121,4 +121,6 @@
     <string name="my_best_time">My best time is</string>
     <string name="my_best_score">My best score is</string>
     <string name="my_best_sc">My best score is</string>
+    <string name="view_number">Share puzzle</string>
+    <string name="my_sudokus">My Sudokus</string>
 </resources>

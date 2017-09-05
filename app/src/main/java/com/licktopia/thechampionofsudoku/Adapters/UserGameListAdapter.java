@@ -228,9 +228,9 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
         int totalTime = 0;
         int totalScore = 0;
         int topScore = 0;
-        int topTime = 0;
+        double topTime = Double.POSITIVE_INFINITY;
         int usrTopScore = 0;
-        int usrTopTime = 0;
+        double usrTopTime = Double.POSITIVE_INFINITY;
         String communityBlurb = "Be the first community member to play this Sudoku!";
         String playerBlurb = "Give this one a try?";
         final StringBuilder shareBlurb = new StringBuilder();
@@ -245,10 +245,10 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
                 usrTopScore = i.getRealScore();
                 userScoreCounter++;
             }
-            if(getSeconds(i.getTime())>topTime){
+            if(getSeconds(i.getTime())<topTime){
                 topTime = getSeconds(i.getTime());
             }
-            if(i.getGamerID().equals(BaseActivity.getId()) && getSeconds(i.getTime())>usrTopTime){
+            if(i.getGamerID().equals(BaseActivity.getId()) && getSeconds(i.getTime())<usrTopTime){
                 usrTopTime = getSeconds(i.getTime());
                 userTimeCounter++;
             }
@@ -259,9 +259,15 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
         if(size>0) {
             String bestTime = "";
             String topTimeWord = "";
-            if(topTime>0){
-                bestTime = formatTime(topTime) + ". ";
+            String bestScore = "";
+            String topScoreWord = "";
+            if(topTime>0 && topTime < Double.POSITIVE_INFINITY){
+                bestTime = formatTime((int)topTime) + ". ";
                 topTimeWord = "Top time ";
+            }
+            if(topScore>0){
+                bestScore = topScore + ". ";
+                topScoreWord = "Top score ";
             }
             int avgScore = Math.round(totalScore / size);
             String timeWord = " times ";
@@ -269,7 +275,7 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
                 timeWord= " time ";
             }
             String avgTime = formatTime(Math.round(totalTime / size));
-            communityBlurb = new StringBuilder().append(size).append(timeWord).append("played. ").append(topTimeWord).append(bestTime).append("Average time ").append(avgTime).append(". Average score ").append(avgScore).toString();
+            communityBlurb = new StringBuilder().append(size).append(timeWord).append("played. ").append(topTimeWord).append(bestTime).append(topScoreWord).append(bestScore).append("Average time ").append(avgTime).append(". Average score ").append(avgScore).toString();
             if(userScoreCounter>0 || userTimeCounter>0) {
                 String userBestTime = "";
                 String userBestTimeWord = "";
@@ -277,7 +283,7 @@ public class UserGameListAdapter extends RecyclerView.Adapter<UserGameListAdapte
                 String userBestScoreWord = "";
                 shareBlurb.append(". ");
                 if (usrTopTime > 0) {
-                    userBestTime = formatTime(usrTopTime);
+                    userBestTime = formatTime((int)usrTopTime);
                     userBestTimeWord = " Best time ";
                     shareBlurb.append(context.getString(R.string.my_best_time)).append(" ").append(userBestTime);
                 }

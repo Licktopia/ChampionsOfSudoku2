@@ -404,6 +404,7 @@ public class UserBoardFragment extends Fragment {
         userPlayedButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                titleLabel.setText(R.string.my_sudokus);
                 levelNow = 7;
                 ShuffledList.clear();
                 for(Long i : completedGameIds){

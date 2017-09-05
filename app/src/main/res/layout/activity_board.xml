@@ -2661,16 +2661,37 @@
                         android:textSize="20sp"
                         android:textStyle="bold" />
 
-                    <Button
-                        android:id="@+id/close_stats"
-                        style="@style/Widget.AppCompat.ImageButton"
+                    <RelativeLayout
                         android:layout_width="wrap_content"
                         android:layout_height="0dp"
-                        android:layout_alignParentBottom="true"
                         android:layout_gravity="center_horizontal"
                         android:layout_weight="14"
-                        android:background="@drawable/rounded_button"
-                        android:text="Close" />
+                        android:gravity="center">
+
+                        <ImageView
+                            android:id="@+id/share_statsbox"
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:layout_alignParentLeft="false"
+                            android:layout_alignParentStart="false"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="10dp"
+                            app:srcCompat="@drawable/share" />
+
+                        <Button
+                            android:id="@+id/close_stats"
+                            style="@style/Widget.AppCompat.ImageButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_alignParentBottom="false"
+                            android:layout_centerHorizontal="true"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginLeft="10dp"
+                            android:layout_toEndOf="@+id/share_statsbox"
+                            android:layout_toRightOf="@+id/share_statsbox"
+                            android:background="@drawable/rounded_button"
+                            android:text="Close" />
+                    </RelativeLayout>
 
                 </LinearLayout>
 

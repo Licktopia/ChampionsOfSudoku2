@@ -361,6 +361,7 @@ public class Game implements GameInterface, java.io.Serializable
 
     // Returns a set of the squares in the current board that are wrong
     public Set<Integer> checkCurrentProgress() {
+        totalHintsUsed++;
         Set<Integer> incorrectSquares = new HashSet<>();
 
         for (int i = 0; i < totalBoardElements(); i++) {

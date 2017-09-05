@@ -7,7 +7,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -15,13 +14,10 @@ import android.net.Uri;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.SpannableString;
-import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -31,18 +27,15 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Chronometer;
-import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
 import com.amazonaws.mobileconnectors.cognito.CognitoSyncManager;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
@@ -52,7 +45,6 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
 import com.google.android.gms.games.Games;
-import com.google.example.games.basegameutils.BaseGameActivity;
 import com.licktopia.thechampionofsudoku.Activities.BaseActivity;
 import com.licktopia.thechampionofsudoku.BackgroundImages;
 import com.licktopia.thechampionofsudoku.CircleTransform;
@@ -72,8 +64,6 @@ import com.licktopia.thechampionofsudoku.GameInterface;
 import com.licktopia.thechampionofsudoku.Tags;
 import com.squareup.picasso.Picasso;
 
-import java.lang.reflect.Array;
-import java.security.spec.ECField;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -91,7 +81,6 @@ import main.java.com.maximeroussy.invitrode.RandomWord;
 import static android.content.ContentValues.TAG;
 import static android.view.View.GONE;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.gameHelper;
-import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.getXp;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.inProcessFlag;
 import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.phoneSize;
 
@@ -99,7 +88,6 @@ import static com.licktopia.thechampionofsudoku.Activities.BaseActivity.phoneSiz
 public class BoardFragment extends Fragment {
 
     private static final float UNDOREDOALPHA = .45f;
-    private String mCurrentSaveName = "snapshotTemp";
     private PlaySounds mPlaySounds;
     private Chronometer mChronometer;
     private SudokuSettings settings;
@@ -175,10 +163,10 @@ public class BoardFragment extends Fragment {
     private long boardIdentifier;
     private byte[] myResumedGame;
 
-
     public static BoardFragment newInstance() {
         return new BoardFragment();
     }
+
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -196,6 +184,7 @@ public class BoardFragment extends Fragment {
         boardIdentifier = bundle.getLong("BOARD_IDENTIFIER");
         myResumedGame = bundle.getByteArray("SAVE_FILE");
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -809,18 +798,26 @@ public class BoardFragment extends Fragment {
 
     }
 
-
     /********************************
     * Updates Little numbers on keyboard that track number of values on board
      * ***************************************/
-    private void updateLilNums(){
-
+    private void updateLilNums(boolean starting){
         int[] array = mGame.getValueTotals();
-        for(int i=0; i< array.length;i++){
-             lilNums[i]=(TextView)view.findViewById(Tags.lilNumTags[i]);
-             lilNums[i].setText(String.valueOf(array[i]));
+        if(starting) {
+            for (int i = 0; i < array.length; i++) {
+                lilNums[i] = (TextView) view.findViewById(Tags.lilNumTags[i]);
+                lilNums[i].setAlpha(0f);
+                ObjectAnimator mainFade = ObjectAnimator.ofFloat(lilNums[i], "alpha", 0, 1);
+                lilNums[i].setText(String.valueOf(array[i]));
+                mainFade.setDuration(500);
+                mainFade.start();
+            }
+        }else{
+            for (int i = 0; i < array.length; i++) {
+                lilNums[i] = (TextView) view.findViewById(Tags.lilNumTags[i]);
+                lilNums[i].setText(String.valueOf(array[i]));
+            }
         }
-
     }
 
     /************************************
@@ -896,6 +893,8 @@ public class BoardFragment extends Fragment {
         TextView mGoodSquaresStats = (TextView)view.findViewById(R.id.goodsquares_stats);
         TextView mAccuracyStats = (TextView)view.findViewById(R.id.accurracy_stats);
         TextView mPenalty = (TextView)view.findViewById(R.id.penalty_stats);
+        ImageView mSharePuzzle= (ImageView)view.findViewById(R.id.share_statsbox);
+
         if(multiplayer)
         {
             if(mGame.isGameFinished())
@@ -993,17 +992,66 @@ public class BoardFragment extends Fragment {
                     + String.format("%,d",(int) mGame.getTimePenalty()));
 
         }
-
-
-
-
-
+        mSharePuzzle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sharePuzzle();
+            }
+        });
     }
 
+    private void sharePuzzle(){
 
-    /************************************
-     * Initialize undo redo buttons and sets
-     *********************************/
+        String shareBlurb = "";
+        if(!multiplayer && solvedState){
+            shareBlurb = (". I just finished in " + formatTime(mGame.getRunningTime()) + ". My score was " + String.valueOf(mGame.getScore()) + ".");
+        }
+        final String puzzleNumber = String.valueOf(mGame.getBoardNumber());
+        final String shareText =(new StringBuilder().append("You have received a Sudoku Challenge from ").append(BaseActivity.getUsername()).append(". BOARD KEY: ").append(puzzleNumber).append(shareBlurb).append("\n\nDownload the app at https://play.google.com/store/apps/details?id=com.licktopia.thechampionofsudoku").toString());
+       // i.putExtra(Intent.EXTRA_TEXT, new StringBuilder().append("You have received a Sudoku Challenge from ").append(BaseActivity.getUsername()).append(". BOARD KEY: ").append(uGLI.getBoardIdentifier()).append(shareBlurb).append("\n\nDownload the app at https://play.google.com/store/apps/details?id=com.licktopia.thechampionofsudoku").toString());
+                new AlertDialog.Builder(getContext())
+                        .setMessage("Share puzzle #" + puzzleNumber + " " + "with a friend?")
+                        .setCancelable(true)
+                        .setPositiveButton("Share", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                Intent i = new Intent(
+
+                                        Intent.ACTION_SEND);
+
+                                i.setType("text/plain");
+                                i.putExtra(
+
+                                        Intent.EXTRA_TEXT, shareText);
+
+                                startActivity(Intent.createChooser(
+
+                                        i,
+
+                                        "Share via"));
+                                gameHelper.getApiClient().connect();
+                                unlockAchievements(R.string.achievement_joy_giver);
+
+                            }
+                        })
+                        .setNegativeButton(R.string.no, null)
+                        .show();
+    }
+
+    private String formatTime(Long seconds){
+
+        int intSeconds = (int) Math.round(Double.valueOf(seconds)/1000);
+        String formattedTime;
+        int minutes = intSeconds/60;
+        int secs = intSeconds%60;
+        String minutos = String.format("%d",minutes);
+        String segundos = String.format("%d",secs);
+        if(segundos.length()==1){
+            segundos = "0" + segundos;
+        }
+        formattedTime = minutos +  ":" +segundos;
+
+        return formattedTime;
+    }
 
     private void updateScore(){
         if(!solveClicked) {
@@ -1020,6 +1068,10 @@ public class BoardFragment extends Fragment {
             }
         }
     }
+
+    /************************************
+     * Initialize undo redo buttons and sets
+     *********************************/
     private void undoRedoListener() {
 
         mUndoButton.setOnClickListener(new View.OnClickListener() {
@@ -1201,12 +1253,13 @@ public class BoardFragment extends Fragment {
                 animationFinished = true;
                 ///Make board clickable
                 allClickable(true);
-                updateLilNums();
+                updateLilNums(true);
 
 
             }
         },2950);
     }
+
     private void initializeBoardFromResume(Long stoppedTime) {
         fromResume = true;
         if(gameHelper.isSignedIn()){
@@ -1264,10 +1317,8 @@ public class BoardFragment extends Fragment {
 
         ///Make board clickable
         allClickable(true);
-        updateLilNums();
+        updateLilNums(true);
     }
-
-
 
     /************************************
      * Calls appropriate listener functions
@@ -1301,6 +1352,7 @@ public class BoardFragment extends Fragment {
             }
         });
     }
+
     private void userBadgeListener(){
         LinearLayout userBadgeButton =(LinearLayout)view.findViewById(R.id.user_button);
         userBadgeButton.setOnClickListener(new View.OnClickListener() {
@@ -1319,6 +1371,7 @@ public class BoardFragment extends Fragment {
             }
         });
     }
+
     private void leaderBoardsListener(){
         gameHelper.getApiClient().connect();
         LinearLayout leaderBoardButton =(LinearLayout)view.findViewById(R.id.leader_button);
@@ -1336,6 +1389,7 @@ public class BoardFragment extends Fragment {
             }
         });
     }
+
     private void facebookListener(){
         LinearLayout facebookButton =(LinearLayout)view.findViewById(R.id.facebook_button);
         facebookButton.setOnClickListener(new View.OnClickListener() {
@@ -1613,18 +1667,6 @@ public class BoardFragment extends Fragment {
     }
 
     /************************************
-     * Listeners onScrollHints
-     *********************************/
-   /* private void onScrollHintsListener() {
-        mHintsLayout.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
-            @Override
-            public void onScrollChanged() {
-
-            }
-        });
-    }
-*/
-    /************************************
      * Update board notepad display
      *********************************/
     private void updateBoard() {
@@ -1711,7 +1753,6 @@ public class BoardFragment extends Fragment {
             squareViews[i].setFullAlpha();
         }
     }
-
 
     /************************************
      * Highlight connected squares
@@ -1901,7 +1942,7 @@ public class BoardFragment extends Fragment {
         }
         updateScore();
         updateUndoRedoButtons();
-        updateLilNums();
+        updateLilNums(false);
         if(mGame.isGameFinished()&&!solveClicked){
                 endOfGame(false);
         }
@@ -2098,10 +2139,9 @@ public class BoardFragment extends Fragment {
             s.setSpan(new ForegroundColorSpan(Color.LTGRAY), 0, s.length(), 0);
             menu.getItem(5).setTitle(s);*/
             menu.getItem(5).setVisible(false);
+            menu.getItem(6).setVisible(false);
         }
-        if(inProcessFlag){
-            menu.getItem(4).setVisible(false);
-        }
+
 
     }
 
@@ -2135,10 +2175,13 @@ public class BoardFragment extends Fragment {
         if (id == R.id.action_share) {
             share();
         }
+
+        if (id == R.id.see_puzzle) {
+            sharePuzzle();
+        }
         return true;
 
     }
-
 
     private void homeClick() {
         goToMainMenu();
@@ -2200,17 +2243,11 @@ public class BoardFragment extends Fragment {
 
     }
 
-
-
-
-
     private void unlockAchievements(int achievement){
         if(gameHelper.isSignedIn()) {
             Games.Achievements.unlock(gameHelper.getApiClient(), getString(achievement));
         }
     }
-
-
 
     //Interface to be implemented by containing activity.
     public interface BoardFragmentListener {
@@ -2219,5 +2256,3 @@ public class BoardFragment extends Fragment {
         double getMultiplier();
     }
 }
-
-
