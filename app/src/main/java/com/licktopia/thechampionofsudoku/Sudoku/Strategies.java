@@ -240,8 +240,10 @@ public class Strategies {
         int size = board.getSize();
         boolean[] qualified = new boolean[size * size];
         for (int i = 0; i < board.totalBoardElements(); i++) {
-            int npVals =  board.getTotalNotepadValues(i);
-            qualified[i] = npVals == 2 || npVals == 3;
+            if (board.getValueAt(i) == 0) {
+                int npVals = board.getTotalNotepadValues(i);
+                qualified[i] = npVals == 2 || npVals == 3;
+            }
         }
 
         int[][] groups = board.getAllIndexGroups();
@@ -280,9 +282,10 @@ public class Strategies {
                             boolean valid = false;
                             for (int index : group) {
                                 if (index == idx1 || index == idx2 || index == idx3) continue;
-                                else if (board.getNotepadAt(index, nums[0]) ||
+                                else if (board.getValueAt(index) == 0 &&
+                                        (board.getNotepadAt(index, nums[0]) ||
                                         board.getNotepadAt(index, nums[1]) ||
-                                        board.getNotepadAt(index, nums[2])) {
+                                        board.getNotepadAt(index, nums[2]))) {
                                     valid = true;
                                     break;
                                 }
